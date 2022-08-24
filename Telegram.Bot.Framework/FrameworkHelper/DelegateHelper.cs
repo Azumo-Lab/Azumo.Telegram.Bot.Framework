@@ -87,6 +87,8 @@ namespace Telegram.Bot.Framework.FrameworkHelper
             }
 
             var paramInfos = constructorInfo.GetParameters();
+
+            return default;
         }
     }
 }
