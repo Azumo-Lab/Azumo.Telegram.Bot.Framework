@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Telegram.Bot.Framework.FrameworkHelper;
 
 namespace Telegram.Bot.Framework.DependencyInjection
 {
@@ -16,6 +17,10 @@ namespace Telegram.Bot.Framework.DependencyInjection
 
         public void Add(TelegramServiceDescriptor item)
         {
+            ThrowHelper.ThrowIfNull(item);
+
+            if (Contains(item))
+                return;
             telegramServiceDescriptors.Add(item);
         }
 
@@ -55,6 +60,10 @@ namespace Telegram.Bot.Framework.DependencyInjection
 
         public void Insert(int index, TelegramServiceDescriptor item)
         {
+            ThrowHelper.ThrowIfNull(item);
+
+            if (Contains(item))
+                return;
             telegramServiceDescriptors.Insert(index, item);
         }
 
