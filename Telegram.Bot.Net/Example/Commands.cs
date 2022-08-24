@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
@@ -17,10 +18,9 @@ namespace Telegram.Bot.Net.Example
         }
 
         [Command("Test")]
-        public void Test([Param("密码", false)]string Password, [Param("请输入用户名信息", true)]string Username)
+        public async Task Test([Param("密码", false)]string Password, [Param("请输入用户名信息", true)]string Username)
         {
-            SendPhoto("XXX.JPG");
-            SendSticker();
+            await SendTextMessage("Hello");
         }
     }
 }

@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.TelegramMessage;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
     public abstract class TelegramController
     {
+        protected TelegramContext TelegramContext { get; private set; }
         /// <summary>
         /// 执行调用
         /// </summary>
-        public void Invoke()
+        public void Invoke(TelegramContext context)
         {
-
+            TelegramContext = context;
         }
 
         /// <summary>
@@ -21,9 +24,12 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="Message"></param>
         /// <returns></returns>
-        protected virtual ICommandResult SendTextMessage(string Message)
+        protected virtual async Task SendTextMessage(string Message)
         {
-            return default;
+            await TelegramContext.BotClient.SendTextMessageAsync(
+                chatId: TelegramContext.ChatID,
+                Message, ParseMode.MarkdownV2
+                );
         }
 
         /// <summary>
