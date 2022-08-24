@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework
         public static void AddControllers(this IServiceCollection services)
         {
             Type basetype = typeof(TelegramController);
-            List<Type> types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => basetype.IsAssignableFrom(x)).ToList();
+            List<Type> types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => basetype.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
             Dictionary<string, Type> Command_ControllerMap = new Dictionary<string, Type>();
             Dictionary<string, MethodInfo> Command_MethodMap = new Dictionary<string, MethodInfo>();
             foreach (Type item in types)
