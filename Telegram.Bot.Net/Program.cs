@@ -18,26 +18,70 @@ namespace Telegram.Bot.Net
             //    .Build();
 
             //bot.Start();
+            
+
             var p = typeof(Program);
 
-            var methodInfo = p.GetMethod("Config");
-            var T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
+            var methodInfo = p.GetMethod(nameof(Test));
 
-            // 创建委托类型
-            var actionType = typeof(Action<>);
-            // 泛型委托
-            actionType = actionType.MakeGenericType(T.ToArray());
-
-            TelegramServiceCollection telegramServices = new TelegramServiceCollection();
+            object telegramServices = new TelegramServiceCollection();
 
             //创建委托
-            var method = Delegate.CreateDelegate(actionType, Activator.CreateInstance(p), methodInfo);
+            var method = GetDelegate(methodInfo);
             //执行
-            method.DynamicInvoke(telegramServices);
+            method.DynamicInvoke("TestAA", "TestBB");
+        }
 
+        private static Delegate GetDelegate(MethodInfo methodInfo)
+        {
+            var T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
+            var returnType = methodInfo.ReturnType;
 
+            Type delegateType = null;
+            if (returnType.FullName == typeof(void).FullName)
+            {
+                delegateType = typeof(Action<>);
+                delegateType = delegateType.MakeGenericType(T.ToArray());
+            }
+            else
+            {
+                switch (T.Count)
+                {
+                    case 0:
+                        delegateType = typeof(Func<>);
+                        break;
+                    case 1:
+                        delegateType = typeof(Func<,>);
+                        break;
+                    case 2:
+                        delegateType = typeof(Func<,,>);
+                        break;
+                    case 3:
+                        delegateType = typeof(Func<,,,>);
+                        break;
+                    case 4:
+                        delegateType = typeof(Func<,,,,>);
+                        break;
+                    case 5:
+                        delegateType = typeof(Func<,,,,,>);
+                        break;
+                    case 6:
+                        delegateType = typeof(Func<,,,,,,>);
+                        break;
+                    case 7:
+                        delegateType = typeof(Func<,,,,,,,>);
+                        break;
+                    case 8:
+                        delegateType = typeof(Func<,,,,,,,,>);
+                        break;
+                    default:
+                        break;
+                }
+                T.Add(returnType);
+                delegateType = delegateType.MakeGenericType(T.ToArray());
+            }
 
-            int count = telegramServices.Count;
+            return Delegate.CreateDelegate(delegateType, Activator.CreateInstance(methodInfo.ReflectedType), methodInfo);
         }
 
 
@@ -45,6 +89,14 @@ namespace Telegram.Bot.Net
         public void Config(IServiceCollection telegramServices)
         {
             telegramServices.Add(new TelegramServiceDescriptor());
+        }
+
+        public string Test(string AA, string BB)
+        {
+            Console.WriteLine(AA);
+            Console.WriteLine(BB);
+
+            return "CC";
         }
     }
 }
