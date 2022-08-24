@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.TelegramMessage;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework
 {
@@ -33,12 +34,56 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
+        /// 发送一条消息
+        /// </summary>
+        /// <param name="Message"></param>
+        /// <returns></returns>
+        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
+        {
+            await TelegramContext.BotClient.SendTextMessageAsync(
+                chatId: TelegramContext.ChatID,
+                Message, ParseMode.MarkdownV2
+                , replyMarkup: new InlineKeyboardMarkup(keyboardButton)
+                );
+        }
+
+        /// <summary>
         /// 发送一张图片
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendPhoto(string PhotoPath)
+        protected virtual async Task SendPhoto(string PhotoPath)
         {
-            return default;
+            await TelegramContext.BotClient.SendPhotoAsync(
+                chatId: TelegramContext.ChatID,
+                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath))
+                );
+        }
+
+        /// <summary>
+        /// 发送一张图片
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task SendPhoto(string PhotoPath, string Message)
+        {
+            await TelegramContext.BotClient.SendPhotoAsync(
+                chatId: TelegramContext.ChatID,
+                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
+                caption: Message
+                );
+        }
+
+        /// <summary>
+        /// 发送一张图片
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task SendPhoto(string PhotoPath, string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
+        {
+            await TelegramContext.BotClient.SendPhotoAsync(
+                chatId: TelegramContext.ChatID,
+                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
+                caption: Message,
+                replyMarkup: new InlineKeyboardMarkup(keyboardButton)
+                );
         }
 
         /// <summary>

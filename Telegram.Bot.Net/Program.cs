@@ -81,7 +81,7 @@ namespace Telegram.Bot.Net
                 delegateType = delegateType.MakeGenericType(T.ToArray());
             }
 
-            return Delegate.CreateDelegate(delegateType, Activator.CreateInstance(methodInfo.ReflectedType), methodInfo);
+            return Delegate.CreateDelegate(delegateType, methodInfo.ReflectedType, methodInfo.Name);
         }
 
 

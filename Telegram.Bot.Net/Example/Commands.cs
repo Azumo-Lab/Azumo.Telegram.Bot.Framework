@@ -6,6 +6,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Framework.TelegramMessage;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Net.Example
 {
@@ -21,6 +22,7 @@ namespace Telegram.Bot.Net.Example
         public async Task Test([Param("密码", false)]string Password, [Param("请输入用户名信息", true)]string Username)
         {
             await SendTextMessage("Hello");
+            await SendTextMessage("hello", new List<InlineKeyboardButton> { InlineKeyboardButton.WithUrl("百度一下", "") });
         }
     }
 }
