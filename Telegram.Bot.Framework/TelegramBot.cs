@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
-using Telegram.Bot.Framework.DependencyInjection;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -15,21 +15,19 @@ namespace Telegram.Bot.Framework
     {
         private readonly IServiceCollection telegramServiceCollection;
         private readonly IServiceProvider serviceProvider;
-        private readonly IServiceProviderBuild serviceProviderBuild;
 
         private readonly TelegramBotClient botClient;
 
         internal TelegramBot(TelegramBotClient botClient, ISetUp setUp)
         {
-            telegramServiceCollection = new TelegramServiceCollection();
+            telegramServiceCollection = new ServiceCollection();
 
             new BaseSetUp(new List<ISetUp>() { setUp }).Config(telegramServiceCollection);
-
-            serviceProviderBuild = (IServiceProviderBuild)telegramServiceCollection;
+            var factory = new DefaultServiceProviderFactory();
+            serviceProvider = factory.CreateServiceProvider(telegramServiceCollection);
 
             this.botClient = botClient;
 
-            serviceProvider = serviceProviderBuild.Build();
         }
 
         public void Start()

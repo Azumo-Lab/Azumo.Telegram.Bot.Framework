@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.DependencyInjection;
+using Telegram.Bot.Framework.DependencyInjection.Extends;
 
 namespace Telegram.Bot.Net
 {
@@ -18,7 +19,7 @@ namespace Telegram.Bot.Net
             //    .Build();
 
             //bot.Start();
-            
+            ServiceCollectionExtends.AddControllers(null);
 
             var p = typeof(Program);
 
@@ -81,7 +82,7 @@ namespace Telegram.Bot.Net
                 delegateType = delegateType.MakeGenericType(T.ToArray());
             }
 
-            return Delegate.CreateDelegate(delegateType, methodInfo.ReflectedType, methodInfo.Name);
+            return Delegate.CreateDelegate(delegateType, Activator.CreateInstance(methodInfo.ReflectedType), methodInfo.Name);
         }
 
 

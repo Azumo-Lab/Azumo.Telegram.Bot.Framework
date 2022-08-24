@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Telegram.Bot.Framework.DependencyInjection;
-using Telegram.Bot.Framework.DependencyInjection.Extends;
 
 namespace Telegram.Bot.Framework
 {
@@ -18,8 +17,6 @@ namespace Telegram.Bot.Framework
 
         public void Config(IServiceCollection telegramServices)
         {
-            telegramServices.AddControllers();
-
             setUps.ForEach(x => x.Config(telegramServices));
         }
     }
