@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Framework
 {
@@ -20,11 +21,11 @@ namespace Telegram.Bot.Framework
 
         public async Task StartProcess()
         {
-            IFactory factory = (IFactory)ServiceProvider.GetService(typeof(IFactory));
+            ITelegramRouteUserController factory = ServiceProvider.GetService<ITelegramRouteUserController>();
 
             long chatID = TelegramContext.ChatID;
             if (!ChatIDUser.ContainsKey(chatID))
-                ChatIDUser.Add(chatID, factory.NewTelegramRouteUserController());
+                ChatIDUser.Add(chatID, factory);
             await ChatIDUser[chatID].Invoke(TelegramContext, ServiceProvider);
         }
     }

@@ -90,18 +90,18 @@ namespace Telegram.Bot.Framework
         /// 发送一张图片
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendPhoto(PhotoInfo Photo)
+        protected virtual async Task SendPhoto(PhotoInfo Photo)
         {
-            return default;
+            
         }
 
         /// <summary>
         /// 发送多张图片
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendPhotos(IEnumerable<PhotoInfo> Photos)
+        protected virtual async Task SendPhotos(IEnumerable<PhotoInfo> Photos)
         {
-            return default;
+            
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        protected virtual ICommandResult SendFile(byte[] File, string FileName)
+        protected virtual async Task SendFile(byte[] File, string FileName)
         {
-            return default;
+            
         }
 
         /// <summary>
@@ -119,56 +119,57 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        protected virtual ICommandResult SendFile(string FilePath)
+        protected virtual async Task SendFile(string FilePath)
         {
             if (File.Exists(FilePath))
-                return SendFile(File.ReadAllBytes(FilePath), Path.GetFileName(FilePath));
-            throw new FileNotFoundException($"未找到文件 {FilePath}");
+                await SendFile(File.ReadAllBytes(FilePath), Path.GetFileName(FilePath));
+            else
+                throw new FileNotFoundException($"未找到文件 {FilePath}");
         }
 
         /// <summary>
         /// 发送一个表情贴纸
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendSticker()
+        protected virtual async Task SendSticker()
         {
-            return default;
+            
         }
 
         /// <summary>
         /// 发送一个音频
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendAudio()
+        protected virtual async Task SendAudio()
         {
-            return default;
+            
         }
 
         /// <summary>
         /// 发送一段视频
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendVideo()
+        protected virtual async Task SendVideo()
         {
-            return default;
+            
         }
 
         /// <summary>
         /// 发送一个联系人
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendContact()
+        protected virtual async Task SendContact()
         {
-            return default;
+            
         }
 
         /// <summary>
         /// 发送一个地图坐标
         /// </summary>
         /// <returns></returns>
-        protected virtual ICommandResult SendVenue()
+        protected virtual async Task SendVenue()
         {
-            return default;
+            
         }
     }
 }

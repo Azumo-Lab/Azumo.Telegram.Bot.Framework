@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.FrameworkHelper
             FuncTypes.Add(16, typeof(Func<,,,,,,,,,,,,,,,,>));
         }
 
-        public static Delegate CreateDelegate(MethodInfo methodInfo)
+        public static Delegate CreateDelegate(MethodInfo methodInfo, object controller)
         {
             var T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
             var returnType = methodInfo.ReturnType;
@@ -68,27 +68,7 @@ namespace Telegram.Bot.Framework.FrameworkHelper
                 delegateType = delegateType.MakeGenericType(T.ToArray());
             }
 
-            return Delegate.CreateDelegate(delegateType, methodInfo.ReflectedType, methodInfo);
-        }
-
-        public static Delegate CreateNewObj(Type type)
-        {
-            int Param = 100;
-            ConstructorInfo constructorInfo = null;
-
-            var constructors = type.GetConstructors().ToList();
-            foreach (var item in constructors)
-            {
-                var count = item.GetParameters().Length;
-                if (count < Param)
-                {
-                    constructorInfo = item;
-                }
-            }
-
-            var paramInfos = constructorInfo.GetParameters();
-
-            return default;
+            return Delegate.CreateDelegate(delegateType, controller, methodInfo);
         }
     }
 }

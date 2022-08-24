@@ -27,7 +27,6 @@ namespace Telegram.Bot.Framework
             serviceProvider = factory.CreateServiceProvider(telegramServiceCollection);
 
             this.botClient = botClient;
-
         }
 
         public void Start()
@@ -36,11 +35,14 @@ namespace Telegram.Bot.Framework
             {
                 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
                 {
-                    TelegramContext telegramContext = new TelegramContext(botClient, update, cancellationToken);
+                    using (IServiceScope service = serviceProvider.CreateScope())
+                    {
+                        TelegramContext telegramContext = new TelegramContext(botClient, update, cancellationToken);
 
-                    TelegramRouteController process = new TelegramRouteController(telegramContext, serviceProvider);
+                        TelegramRouteController process = new TelegramRouteController(telegramContext, service.ServiceProvider);
 
-                    await process.StartProcess();
+                        await process.StartProcess();
+                    }
                 }
 
                 Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -78,6 +80,7 @@ namespace Telegram.Bot.Framework
                     cts.Cancel();
                 }
             });
+            Console.ReadLine();
         }
     }
 }

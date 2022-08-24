@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.ControllerManger
 {
-    internal class ParamCheck : IParamCheck
+    internal class ParamManger : IParamManger
     {
-
-        public bool Check()
+        public object[] CreateParams(string Command)
         {
             throw new NotImplementedException();
         }
