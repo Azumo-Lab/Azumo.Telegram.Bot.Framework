@@ -20,5 +20,14 @@ namespace Telegram.Bot.Framework
         }
 
         public long ChatID => Update.Message.Chat.Id;
+
+        public string GetCommand()
+        {
+            string command;
+            if (!string.IsNullOrEmpty(command = Update.Message.Text))
+                if (!command.StartsWith('/'))
+                    command = null;
+            return command;
+        }
     }
 }

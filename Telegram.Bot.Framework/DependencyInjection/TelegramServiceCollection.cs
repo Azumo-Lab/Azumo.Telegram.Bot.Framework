@@ -21,7 +21,11 @@ namespace Telegram.Bot.Framework.DependencyInjection
 
         public IServiceProvider Build()
         {
-            throw new NotImplementedException();
+            foreach (TelegramServiceDescriptor item in telegramServiceDescriptors)
+            {
+                
+            }
+            return default;
         }
 
         public void Clear()

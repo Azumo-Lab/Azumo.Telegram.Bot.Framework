@@ -22,11 +22,13 @@ namespace Telegram.Bot.Framework
         internal TelegramBot(TelegramBotClient botClient, ISetUp setUp)
         {
             telegramServiceCollection = new TelegramServiceCollection();
+
+            new BaseSetUp(new List<ISetUp>() { setUp }).Config(telegramServiceCollection);
+
             serviceProviderBuild = (IServiceProviderBuild)telegramServiceCollection;
 
             this.botClient = botClient;
 
-            setUp.Config(telegramServiceCollection);
             serviceProvider = serviceProviderBuild.Build();
         }
 
@@ -38,7 +40,9 @@ namespace Telegram.Bot.Framework
                 {
                     TelegramContext telegramContext = new TelegramContext(botClient, update, cancellationToken);
 
+                    TelegramRouteController process = new TelegramRouteController(telegramContext, serviceProvider);
 
+                    await process.StartProcess();
                 }
 
                 Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

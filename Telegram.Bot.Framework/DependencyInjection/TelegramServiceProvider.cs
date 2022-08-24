@@ -4,8 +4,13 @@ using System.Text;
 
 namespace Telegram.Bot.Framework.DependencyInjection
 {
-    public class TelegramServiceProvider : IServiceProvider
+    internal class TelegramServiceProvider : IServiceProvider
     {
+        internal TelegramServiceProvider()
+        {
+
+        }
+
         public object GetService(Type serviceType)
         {
             throw new NotImplementedException();
