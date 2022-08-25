@@ -9,12 +9,12 @@ using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework
 {
-    internal class BaseSetUp : ISetUp
+    internal class BaseConfig : IConfig
     {
 
-        private readonly List<ISetUp> setUps;
+        private readonly List<IConfig> setUps;
 
-        public BaseSetUp(List<ISetUp> setUps)
+        public BaseConfig(List<IConfig> setUps)
         {
             this.setUps = setUps;
         }

@@ -10,7 +10,7 @@ using Telegram.Bot.Framework.FrameworkHelper;
 
 namespace Telegram.Bot.Net
 {
-    class Program : ISetUp
+    class Program : IConfig
     {
         static void Main(string[] args)
         {
@@ -20,10 +20,10 @@ namespace Telegram.Bot.Net
             string Proxy = Secrets.GetSection("Proxy").Value;
             int Port = int.Parse(Secrets.GetSection("Port").Value);
 
-            var bot = TelegramBotManger.Config()
+            var bot = TelegramBotManger.CreateConfig()
                 .SetToken(Token)
-                .Proxy(Proxy, Port)
-                .SetUp(new Program())
+                .SetProxy(Proxy, Port)
+                .SetConfig(new Program())
                 .Build();
 
             bot.Start();

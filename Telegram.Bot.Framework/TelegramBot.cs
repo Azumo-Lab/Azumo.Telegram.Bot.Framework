@@ -18,11 +18,11 @@ namespace Telegram.Bot.Framework
 
         private readonly TelegramBotClient botClient;
 
-        internal TelegramBot(TelegramBotClient botClient, ISetUp setUp)
+        internal TelegramBot(TelegramBotClient botClient, IConfig setUp)
         {
             telegramServiceCollection = new ServiceCollection();
 
-            new BaseSetUp(new List<ISetUp>() { setUp }).Config(telegramServiceCollection);
+            new BaseConfig(new List<IConfig>() { setUp }).Config(telegramServiceCollection);
             var factory = new DefaultServiceProviderFactory();
             serviceProvider = factory.CreateServiceProvider(telegramServiceCollection);
 

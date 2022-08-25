@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Telegram.Bot.Framework
 {
-    public interface ISetUp
+    public interface IConfig
     {
         public void Config(IServiceCollection telegramServices);
     }

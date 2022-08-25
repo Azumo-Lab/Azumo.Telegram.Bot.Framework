@@ -11,16 +11,16 @@ namespace Telegram.Bot.Framework
     {
         private HttpClient HttpClient;
         private string Token;
-        private ISetUp SetISetUp;
+        private IConfig SetISetUp;
 
         private TelegramBotManger() { }
 
-        public static TelegramBotManger Config()
+        public static TelegramBotManger CreateConfig()
         {
             return new TelegramBotManger();
         }
 
-        public TelegramBotManger Proxy(string URL, int Port, string Username = null, string Password = null)
+        public TelegramBotManger SetProxy(string URL, int Port, string Username = null, string Password = null)
         {
             ThrowHelper.ThrowIfNullOrEmpty(URL);
             ThrowHelper.ThrowIfZeroAndDown(Port);
@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework
             return this;
         }
 
-        public TelegramBotManger SetUp(ISetUp SetUp)
+        public TelegramBotManger SetConfig(IConfig SetUp)
         {
             SetISetUp = SetUp;
             return this;

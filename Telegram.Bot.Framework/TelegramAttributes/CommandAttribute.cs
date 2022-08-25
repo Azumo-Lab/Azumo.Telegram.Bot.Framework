@@ -10,7 +10,20 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandAttribute : Attribute
     {
+        /// <summary>
+        /// 命令名称
+        /// </summary>
         public string CommandName { get; }
+
+        /// <summary>
+        /// 可以使用的Bot名称
+        /// </summary>
+        public IEnumerable<string> BotName { get; }
+
+        /// <summary>
+        /// 使用标签
+        /// </summary>
+        /// <param name="CommandName">指令名称</param>
         public CommandAttribute(string CommandName)
         {
             if (!CommandName.StartsWith('/'))
@@ -18,6 +31,16 @@ namespace Telegram.Bot.Framework.TelegramAttributes
                 CommandName = $"/{CommandName}";
             }
             this.CommandName = CommandName;
+        }
+
+        /// <summary>
+        /// 使用标签
+        /// </summary>
+        /// <param name="CommandName">指令名称</param>
+        /// <param name="BotName">Bot名称(可以使用多个)</param>
+        public CommandAttribute(string CommandName, params string[] BotName) : this(CommandName)
+        {
+            this.BotName = new List<string>(BotName);
         }
     }
 }
