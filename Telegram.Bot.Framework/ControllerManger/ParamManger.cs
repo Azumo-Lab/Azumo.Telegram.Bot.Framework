@@ -28,7 +28,11 @@ namespace Telegram.Bot.Framework.ControllerManger
 
         public object[] GetParam(TelegramContext context)
         {
-            return Params[context.ChatID].ToArray();
+            var ID = context.ChatID;
+            if (ParamsOK.ContainsKey(ID))
+                if (ParamsOK[ID] && Params.ContainsKey(ID))
+                    return Params[context.ChatID].ToArray();
+            return null;
         }
 
         public bool IsReadParam(TelegramContext context)

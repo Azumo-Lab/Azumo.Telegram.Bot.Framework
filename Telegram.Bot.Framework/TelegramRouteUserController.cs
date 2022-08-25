@@ -19,12 +19,11 @@ namespace Telegram.Bot.Framework
                     paramManger.Cancel(context);
 
                 IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
-                IDelegateManger delegateManger = serviceProvider.GetService<IDelegateManger>();
 
                 if (controllersManger.HasCommand(command))
                 {
-                    var controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
-                    controller.Invoke(context, serviceProvider, command);
+                    TelegramController controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
+                    await controller.Invoke(context, serviceProvider, command);
                 }
                 else
                 {

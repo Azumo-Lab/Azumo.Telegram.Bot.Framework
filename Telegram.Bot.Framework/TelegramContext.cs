@@ -12,6 +12,12 @@ namespace Telegram.Bot.Framework
         public Update Update { get; }
         public CancellationToken CancellationToken { get; }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="BotClient"></param>
+        /// <param name="Update"></param>
+        /// <param name="CancellationToken"></param>
         internal TelegramContext(ITelegramBotClient BotClient, Update Update, CancellationToken CancellationToken)
         {
             this.BotClient = BotClient;
@@ -19,12 +25,28 @@ namespace Telegram.Bot.Framework
             this.CancellationToken = CancellationToken;
         }
 
-        public long ChatID => Update.Message.Chat.Id;
+        /// <summary>
+        /// 获取ChatID
+        /// </summary>
+        public long ChatID => GetChatID();
 
-        public string GetCommand()
+        private long GetChatID()
+        {
+            return Update.Type switch
+            {
+                Types.Enums.UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
+                _ => Update.Message.Chat.Id,
+            };
+        }
+
+        /// <summary>
+        /// 获取指令
+        /// </summary>
+        /// <returns></returns>
+        internal string GetCommand()
         {
             string command;
-            if (!string.IsNullOrEmpty(command = Update.Message.Text))
+            if (!string.IsNullOrEmpty(command = Update.Message?.Text))
                 if (!command.StartsWith('/'))
                     command = null;
             return command;

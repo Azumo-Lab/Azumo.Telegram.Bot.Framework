@@ -22,7 +22,7 @@ namespace Telegram.Bot.Net.Example
         public async Task Test()
         {
             await SendTextMessage("你好");
-            await SendTextMessage("打开百度", new List<InlineKeyboardButton> { InlineKeyboardButton.WithUrl("百度一下", "https://www.baidu.com/") });
+            await SendTextMessage("打开百度", new List<InlineKeyboardButton> { InlineKeyboardButton.WithCallbackData("百度一下", "CallBack_baidu") });
         }
     }
 }

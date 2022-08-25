@@ -19,7 +19,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 执行调用
         /// </summary>
-        internal void Invoke(TelegramContext context, IServiceProvider serviceProvider,string CommandName)
+        internal async Task Invoke(TelegramContext context, IServiceProvider serviceProvider,string CommandName)
         {
             TelegramContext = context;
             ServiceProvider = serviceProvider;
@@ -30,9 +30,9 @@ namespace Telegram.Bot.Framework
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam(context);
             if (Params == null || Params.Length == 0)
-                action.DynamicInvoke();
+                await Task.Run(() => action.DynamicInvoke());
             else
-                action.DynamicInvoke(Params);
+                await Task.Run(() => action.DynamicInvoke(Params));
         }
 
         /// <summary>
