@@ -80,7 +80,6 @@ namespace Telegram.Bot.Framework
                     cts.Cancel();
                 }
             });
-            Console.ReadLine();
         }
     }
 }

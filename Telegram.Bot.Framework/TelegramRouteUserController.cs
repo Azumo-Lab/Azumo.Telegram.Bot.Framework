@@ -25,7 +25,7 @@ namespace Telegram.Bot.Framework
                     command = "/";
 
                 paramManger.SetCommand(command, context);
-                paramManger.StartReadParam(context);
+                paramManger.StartReadParam(context, serviceProvider);
 
                 TelegramController controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
                 await controller.Invoke(context, serviceProvider, command);
@@ -34,7 +34,7 @@ namespace Telegram.Bot.Framework
             {
                 if (paramManger.IsReadParam(context))
                 {
-                    paramManger.StartReadParam(context);
+                    paramManger.StartReadParam(context, serviceProvider);
                 }
                 else
                 {

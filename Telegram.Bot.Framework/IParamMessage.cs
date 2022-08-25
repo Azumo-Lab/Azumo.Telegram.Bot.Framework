@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework
 {
-    public interface IParamMaker
+    public interface IParamMessage
     {
-        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
+        Task SendMessage(string Message, TelegramContext context);
     }
 }

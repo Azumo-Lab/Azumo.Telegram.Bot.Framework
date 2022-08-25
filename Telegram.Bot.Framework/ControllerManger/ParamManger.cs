@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Framework.ControllerManger
 {
@@ -38,7 +39,7 @@ namespace Telegram.Bot.Framework.ControllerManger
         public bool IsReadParam(TelegramContext context)
         {
             long id = context.ChatID;
-            return ParamsOK.ContainsKey(id) && ParamsOK[id];
+            return ParamsOK.ContainsKey(id) && !ParamsOK[id];
         }
 
         public void SetCommand(string Command, TelegramContext context)
@@ -62,6 +63,9 @@ namespace Telegram.Bot.Framework.ControllerManger
                 Params.Add(chatID, new List<object>());
                 ParamsOK.Add(chatID, false);
             }
+
+            IParamMessage paramMessage = serviceProvider.GetService<IParamMessage>();
+            paramMessage.SendMessage("", context);
 
             return false;
         }
