@@ -1,5 +1,7 @@
 # Telegram.Bot.Net
 
+https://github.com/sokushu/Telegram.Bot.Net/wiki
+
 ### 快速开始
 
 ```csharp
