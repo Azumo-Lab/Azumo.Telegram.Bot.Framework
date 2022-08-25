@@ -13,5 +13,7 @@ namespace Telegram.Bot.Framework.ControllerManger
         void Cancel(TelegramContext context);
 
         void SetCommand(string Command, TelegramContext context);
+
+        object[] GetParam(TelegramContext context);
     }
 }

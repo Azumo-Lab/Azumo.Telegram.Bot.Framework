@@ -26,6 +26,11 @@ namespace Telegram.Bot.Framework.ControllerManger
             CHatID_Command.Remove(context.ChatID);
         }
 
+        public object[] GetParam(TelegramContext context)
+        {
+            return Params[context.ChatID].ToArray();
+        }
+
         public bool IsReadParam(TelegramContext context)
         {
             long id = context.ChatID;
