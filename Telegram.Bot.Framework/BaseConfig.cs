@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Telegram.Bot.Framework.ControllerManger;
 using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.TelegramException;
 
 namespace Telegram.Bot.Framework
 {
@@ -47,6 +48,8 @@ namespace Telegram.Bot.Framework
                     CommandAttribute attr = (CommandAttribute)Attribute.GetCustomAttribute(method, typeof(CommandAttribute));
                     if (attr == null)
                         continue;
+                    if (Command_ControllerMap.ContainsKey(attr.CommandName))
+                        throw new RepeatedCommandException(attr.CommandName);
                     Command_ControllerMap.Add(attr.CommandName, item);
                     Command_MethodMap.Add(attr.CommandName, method);
 

@@ -41,10 +41,20 @@ namespace Telegram.Bot.Framework.ControllerManger
             return ParamsOK.ContainsKey(id) && ParamsOK[id];
         }
 
-        public void ReadParam(TelegramContext context, IServiceProvider serviceProvider)
+        public void SetCommand(string Command, TelegramContext context)
+        {
+            if (CHatID_Command.ContainsKey(context.ChatID))
+            {
+                CHatID_Command.Remove(context.ChatID);
+            }
+            CHatID_Command.Add(context.ChatID, Command);
+        }
+
+        public bool StartReadParam(TelegramContext context, IServiceProvider serviceProvider)
         {
             var chatID = context.ChatID;
             string Command = CHatID_Command[chatID];
+
             var parainfos = Command_ParamInfo[Command];
 
             if (!Params.ContainsKey(chatID))
@@ -53,16 +63,7 @@ namespace Telegram.Bot.Framework.ControllerManger
                 ParamsOK.Add(chatID, false);
             }
 
-
-        }
-
-        public void SetCommand(string Command, TelegramContext context)
-        {
-            if (CHatID_Command.ContainsKey(context.ChatID))
-            {
-                CHatID_Command.Remove(context.ChatID);
-            }
-            CHatID_Command.Add(context.ChatID, Command);
+            return false;
         }
     }
 }

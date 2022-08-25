@@ -12,29 +12,29 @@ namespace Telegram.Bot.Framework
         public async Task Invoke(TelegramContext context, IServiceProvider serviceProvider)
         {
             string command = context.GetCommand();
+
             IParamManger paramManger = serviceProvider.GetService<IParamManger>();
+            IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
+
             if (command != null)
             {
                 if (paramManger.IsReadParam(context))
                     paramManger.Cancel(context);
 
-                IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
+                if (!controllersManger.HasCommand(command))
+                    command = "/";
 
-                if (controllersManger.HasCommand(command))
-                {
-                    TelegramController controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
-                    await controller.Invoke(context, serviceProvider, command);
-                }
-                else
-                {
-                    
-                }
+                paramManger.SetCommand(command, context);
+                paramManger.StartReadParam(context);
+
+                TelegramController controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
+                await controller.Invoke(context, serviceProvider, command);
             }
             else
             {
                 if (paramManger.IsReadParam(context))
                 {
-
+                    paramManger.StartReadParam(context);
                 }
                 else
                 {
