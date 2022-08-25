@@ -7,9 +7,9 @@ namespace Telegram.Bot.Framework.ParamMakers
 {
     internal class StringParamMessage : IParamMessage
     {
-        public Task SendMessage(string Message, TelegramContext context)
+        public async Task SendMessage(string Message, TelegramContext context)
         {
-            throw new NotImplementedException();
+            await context.BotClient.SendTextMessageAsync(context.ChatID, Message);
         }
     }
 }

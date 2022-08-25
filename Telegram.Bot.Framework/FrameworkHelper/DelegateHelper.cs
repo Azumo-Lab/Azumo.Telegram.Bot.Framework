@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Telegram.Bot.Framework.FrameworkHelper
 {
     internal static class DelegateHelper
     {
-        private static Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
-        private static Dictionary<int, Type> FuncTypes = new Dictionary<int, Type>();
+        private static readonly Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
+        private static readonly Dictionary<int, Type> FuncTypes = new Dictionary<int, Type>();
 
         static DelegateHelper()
         {
@@ -52,8 +51,8 @@ namespace Telegram.Bot.Framework.FrameworkHelper
 
         public static Delegate CreateDelegate(MethodInfo methodInfo, object controller)
         {
-            var T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
-            var returnType = methodInfo.ReturnType;
+            List<Type> T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
+            Type returnType = methodInfo.ReturnType;
 
             Type delegateType = null;
             if (returnType.FullName == typeof(void).FullName)
