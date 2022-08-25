@@ -17,7 +17,15 @@ namespace Telegram.Bot.Framework
                 IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
                 IDelegateManger delegateManger = serviceProvider.GetService<IDelegateManger>();
 
-                Delegate action = delegateManger.CreateDelegate(command, controllersManger.GetController(command, serviceProvider));
+                if (controllersManger.HasCommand(command))
+                {
+                    Delegate action = delegateManger.CreateDelegate(command, controllersManger.GetController(command, serviceProvider));
+
+                }
+                else
+                {
+
+                }
             }
         }
     }

@@ -13,6 +13,10 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         public string CommandName { get; }
         public CommandAttribute(string CommandName)
         {
+            if (!CommandName.StartsWith('/'))
+            {
+                CommandName = $"/{CommandName}";
+            }
             this.CommandName = CommandName;
         }
     }

@@ -7,5 +7,7 @@ namespace Telegram.Bot.Framework.ControllerManger
     internal interface IControllersManger
     {
         object GetController(string CommandName, IServiceProvider serviceProvider);
+
+        bool HasCommand(string CommandName);
     }
 }

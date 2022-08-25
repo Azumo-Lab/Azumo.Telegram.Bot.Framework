@@ -17,5 +17,10 @@ namespace Telegram.Bot.Framework.ControllerManger
         {
             return serviceProvider.GetService(Command_ControllerMap[CommandName]);
         }
+
+        public bool HasCommand(string CommandName)
+        {
+            return Command_ControllerMap.ContainsKey(CommandName);
+        }
     }
 }
