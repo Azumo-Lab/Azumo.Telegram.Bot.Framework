@@ -66,5 +66,5 @@ class Program : ISetUp
         }
     }
 ```
-更多帮助和使用指南，请访问WIKI
-https://github.com/sokushu/Telegram.Bot.Net/Wiki
+
+[更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
