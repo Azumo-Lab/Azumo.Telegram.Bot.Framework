@@ -20,11 +20,11 @@ namespace Telegram.Bot.Framework
                 if (controllersManger.HasCommand(command))
                 {
                     Delegate action = delegateManger.CreateDelegate(command, controllersManger.GetController(command, serviceProvider));
-
+                    action.DynamicInvoke();
                 }
                 else
                 {
-
+                    
                 }
             }
         }

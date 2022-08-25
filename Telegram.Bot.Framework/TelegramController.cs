@@ -3,21 +3,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.ControllerManger;
 using Telegram.Bot.Framework.TelegramMessage;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Framework
 {
     public abstract class TelegramController
     {
         protected TelegramContext TelegramContext { get; private set; }
+
+        internal IServiceProvider ServiceProvider;
         /// <summary>
         /// 执行调用
         /// </summary>
-        public void Invoke(TelegramContext context)
+        internal void Invoke(TelegramContext context, IServiceProvider serviceProvider,string CommandName)
         {
             TelegramContext = context;
+            ServiceProvider = serviceProvider;
+
+            IDelegateManger delegateManger = ServiceProvider.GetService<IDelegateManger>();
+
+            Delegate action = delegateManger.CreateDelegate(CommandName, this);
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace Telegram.Bot.Net.Example
         }
 
         [Command("Test")]
-        public async Task Test([Param("密码", false)]string Password, [Param("请输入用户名信息", true)]string Username)
+        public async Task Test()
         {
             await SendTextMessage("Hello");
             await SendTextMessage("hello", new List<InlineKeyboardButton> { InlineKeyboardButton.WithUrl("百度一下", "") });
