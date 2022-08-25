@@ -2,6 +2,10 @@
 
 https://github.com/sokushu/Telegram.Bot.Net/wiki
 
+### 简单介绍
+
+这是一个可以帮助减少Telegram Bot开发难度的框架，如果你会使用ASP.NET，那么你也可以轻松上手这个框架。
+
 ### 快速开始
 
 ```csharp
