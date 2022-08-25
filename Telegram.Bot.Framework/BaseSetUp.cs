@@ -22,7 +22,6 @@ namespace Telegram.Bot.Framework
         public void Config(IServiceCollection telegramServices)
         {
             telegramServices.AddTransient<ITelegramRouteUserController, TelegramRouteUserController>();
-            telegramServices.AddScoped<IParamCheck, ParamCheck>();
             
             telegramServices.AddControllers();
 
@@ -65,7 +64,7 @@ namespace Telegram.Bot.Framework
 
             services.AddSingleton<IControllersManger>(controllersManger);
             services.AddSingleton<IDelegateManger>(delegateManger);
-            services.AddSingleton<IParamManger>(paramManger);
+            services.AddScoped<IParamManger, ParamManger>();
         }
     }
 }

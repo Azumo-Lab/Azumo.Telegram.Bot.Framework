@@ -6,8 +6,12 @@ namespace Telegram.Bot.Framework.ControllerManger
 {
     internal interface IParamManger
     {
-        object[] CreateParams(string Command, TelegramContext context);
+        void ReadParam(TelegramContext context, IServiceProvider serviceProvider);
 
         bool IsReadParam(TelegramContext context);
+
+        void Cancel(TelegramContext context);
+
+        void SetCommand(string Command, TelegramContext context);
     }
 }

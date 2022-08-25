@@ -12,19 +12,34 @@ namespace Telegram.Bot.Framework
         public async Task Invoke(TelegramContext context, IServiceProvider serviceProvider)
         {
             string command = context.GetCommand();
+            IParamManger paramManger = serviceProvider.GetService<IParamManger>();
             if (command != null)
             {
+                if (paramManger.IsReadParam(context))
+                    paramManger.Cancel(context);
+
                 IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
                 IDelegateManger delegateManger = serviceProvider.GetService<IDelegateManger>();
 
                 if (controllersManger.HasCommand(command))
                 {
-                    Delegate action = delegateManger.CreateDelegate(command, controllersManger.GetController(command, serviceProvider));
-                    action.DynamicInvoke();
+                    var controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
+                    controller.Invoke(context, serviceProvider, command);
                 }
                 else
                 {
                     
+                }
+            }
+            else
+            {
+                if (paramManger.IsReadParam(context))
+                {
+
+                }
+                else
+                {
+
                 }
             }
         }

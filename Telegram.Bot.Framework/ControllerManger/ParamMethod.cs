@@ -11,6 +11,7 @@ namespace Telegram.Bot.Framework.ControllerManger
         {
             var bot = context.BotClient;
             await bot.SendTextMessageAsync(context.ChatID, MessageInfo);
+            return default;
         }
     }
 }

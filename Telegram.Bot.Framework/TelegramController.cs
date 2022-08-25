@@ -25,8 +25,10 @@ namespace Telegram.Bot.Framework
             ServiceProvider = serviceProvider;
 
             IDelegateManger delegateManger = ServiceProvider.GetService<IDelegateManger>();
+            IParamManger paramManger = serviceProvider.GetService<IParamManger>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
+            action.DynamicInvoke();
         }
 
         /// <summary>
