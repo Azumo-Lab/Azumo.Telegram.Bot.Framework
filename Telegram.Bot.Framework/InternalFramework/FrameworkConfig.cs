@@ -88,7 +88,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                     var methodParams = method.GetParameters().ToList();
                     foreach (var para in methodParams)
                     {
-
+                        
                     }
                 }
             }
@@ -101,6 +101,11 @@ namespace Telegram.Bot.Framework.InternalFramework
             services.AddScoped<IControllersManger, ControllersManger>();
             services.AddScoped<IDelegateManger, DelegateManger>();
             services.AddScoped<IParamManger, ParamManger>();
+        }
+
+        public static void AddAuthentication(this IServiceCollection services)
+        {
+
         }
     }
 }
