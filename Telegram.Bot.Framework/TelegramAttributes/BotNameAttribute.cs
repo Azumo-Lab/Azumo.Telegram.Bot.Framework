@@ -33,6 +33,8 @@ namespace Telegram.Bot.Framework.TelegramAttributes
 
         public BotNameAttribute(string BotName)
         {
+            if (string.IsNullOrEmpty(BotName))
+                throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
             this.BotName = BotName;
         }
     }

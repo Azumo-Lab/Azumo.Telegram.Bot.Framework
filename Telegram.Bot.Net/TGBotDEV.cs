@@ -26,7 +26,7 @@ using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Net
 {
-    class Program : IConfig
+    public class TGBotDEV : IConfig
     {
         static void Main(string[] args)
         {
@@ -39,7 +39,7 @@ namespace Telegram.Bot.Net
             var bot = TelegramBotManger.CreateConfig()
                 .SetToken(Token)
                 .SetProxy(Proxy, Port)
-                .SetConfig(new Program())
+                .SetConfig(new TGBotDEV())
                 .SetBotName("DEV1")
                 .Build();
 
