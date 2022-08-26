@@ -16,16 +16,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.ParamMakers
+namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 {
-    internal class StringParamMessage : IParamMessage
+    internal class StringParamMaker : IParamMaker
     {
-        public async Task SendMessage(string Message, TelegramContext context)
+        public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
-            await context.BotClient.SendTextMessageAsync(context.ChatID, Message);
+
+            return null;
         }
     }
 }
