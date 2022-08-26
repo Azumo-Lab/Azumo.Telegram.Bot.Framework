@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Net
 {
@@ -39,17 +40,15 @@ namespace Telegram.Bot.Net
                 .SetToken(Token)
                 .SetProxy(Proxy, Port)
                 .SetConfig(new Program())
+                .SetBotName("DEV1")
                 .Build();
 
             bot.Start();
-            
-            //TestHelper.Test();
-
         }
 
         public void Config(IServiceCollection telegramServices)
         {
-            //throw new NotImplementedException();
+            // TODO Something...
         }
     }
 }

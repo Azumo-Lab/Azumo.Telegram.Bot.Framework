@@ -46,6 +46,10 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public long ChatID => GetChatID();
 
+        /// <summary>
+        /// 获取ChatID(相当于用户ID)
+        /// </summary>
+        /// <returns></returns>
         private long GetChatID()
         {
             return Update.Type switch

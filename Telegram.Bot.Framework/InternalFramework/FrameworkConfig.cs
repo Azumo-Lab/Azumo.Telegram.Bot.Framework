@@ -30,7 +30,6 @@ namespace Telegram.Bot.Framework.InternalFramework
 {
     internal class FrameworkConfig : IConfig
     {
-
         private readonly List<IConfig> setUps;
 
         public FrameworkConfig(List<IConfig> setUps)

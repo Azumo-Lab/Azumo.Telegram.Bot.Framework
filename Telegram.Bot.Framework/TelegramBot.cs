@@ -35,15 +35,20 @@ namespace Telegram.Bot.Framework
 
         private readonly TelegramBotClient botClient;
 
-        internal TelegramBot(TelegramBotClient botClient, IConfig setUp)
+        private readonly string BotName;
+        private readonly bool UseBotName = false;
+
+        internal TelegramBot(TelegramBotClient botClient, IConfig setUp, string BotName = null)
         {
+            this.botClient = botClient;
+            this.BotName = BotName;
+            if (!string.IsNullOrEmpty(this.BotName))
+                UseBotName = true;
+
             telegramServiceCollection = new ServiceCollection();
 
             new FrameworkConfig(new List<IConfig>() { setUp }).Config(telegramServiceCollection);
-            var factory = new DefaultServiceProviderFactory();
-            serviceProvider = factory.CreateServiceProvider(telegramServiceCollection);
-
-            this.botClient = botClient;
+            serviceProvider = new DefaultServiceProviderFactory().CreateServiceProvider(telegramServiceCollection);
         }
 
         public void Start()

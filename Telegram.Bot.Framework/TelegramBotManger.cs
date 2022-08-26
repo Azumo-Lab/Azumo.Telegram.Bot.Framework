@@ -28,6 +28,7 @@ namespace Telegram.Bot.Framework
         private HttpClient HttpClient;
         private string Token;
         private IConfig SetISetUp;
+        private string BotName;
 
         /// <summary>
         /// 初始化
@@ -41,6 +42,17 @@ namespace Telegram.Bot.Framework
         public static TelegramBotManger CreateConfig()
         {
             return new TelegramBotManger();
+        }
+
+        /// <summary>
+        /// 设置Bot名称
+        /// </summary>
+        /// <param name="Name">名称</param>
+        /// <returns></returns>
+        public TelegramBotManger SetBotName(string Name)
+        {
+            BotName = Name;
+            return this;
         }
 
         /// <summary>
@@ -103,7 +115,7 @@ namespace Telegram.Bot.Framework
             else
                 botClient = new TelegramBotClient(Token);
 
-            return new TelegramBot(botClient, SetISetUp);
+            return new TelegramBot(botClient, SetISetUp, BotName);
         }
     }
 }
