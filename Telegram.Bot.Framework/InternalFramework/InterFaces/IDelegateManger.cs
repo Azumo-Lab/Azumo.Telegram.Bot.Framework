@@ -16,13 +16,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
-    internal interface ITelegramRouteUserController
+    internal interface IDelegateManger
     {
-        Task Invoke(TelegramContext context, IServiceProvider serviceProvider);
+        Delegate CreateDelegate(string Command, object controller);
     }
 }

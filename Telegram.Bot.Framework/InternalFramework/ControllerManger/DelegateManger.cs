@@ -16,20 +16,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
 {
     internal class DelegateManger : IDelegateManger
     {
-        private readonly Dictionary<string, MethodInfo> Command_MethodMap;
+        private static Dictionary<string, MethodInfo> Command_MethodMap;
         private readonly Dictionary<string, Delegate> Command_DelegateMap = new Dictionary<string, Delegate>();
 
-        internal DelegateManger(Dictionary<string, MethodInfo> Command_MethodMap)
+        internal static void SetDic(Dictionary<string, MethodInfo> Command_MethodMap)
         {
-            this.Command_MethodMap = Command_MethodMap;
+            DelegateManger.Command_MethodMap = Command_MethodMap;
         }
 
         public Delegate CreateDelegate(string Command, object controller)

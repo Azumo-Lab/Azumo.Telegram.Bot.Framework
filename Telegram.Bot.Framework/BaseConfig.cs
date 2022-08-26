@@ -20,7 +20,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Telegram.Bot.Framework.ControllerManger;
+using Telegram.Bot.Framework.InternalFramework;
+using Telegram.Bot.Framework.InternalFramework.ControllerManger;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.ParameterManger;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
 
@@ -91,13 +94,14 @@ namespace Telegram.Bot.Framework
                     }
                 }
             }
-            
-            ControllersManger controllersManger = new ControllersManger(Command_ControllerMap);
-            DelegateManger delegateManger = new DelegateManger(Command_MethodMap);
-            ParamManger paramManger = new ParamManger();
 
-            services.AddSingleton<IControllersManger>(controllersManger);
-            services.AddSingleton<IDelegateManger>(delegateManger);
+            //设置方法与指令的对应信息
+            ControllersManger.SetDic(Command_ControllerMap);
+            DelegateManger.SetDic(Command_MethodMap);
+
+            //添加进入services
+            services.AddScoped<IControllersManger, ControllersManger>();
+            services.AddScoped<IDelegateManger, DelegateManger>();
             services.AddScoped<IParamManger, ParamManger>();
         }
     }

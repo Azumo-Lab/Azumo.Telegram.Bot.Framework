@@ -16,12 +16,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
-namespace Telegram.Bot.Framework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
-    internal interface IDelegateManger
+    /// <summary>
+    /// 管理控制器
+    /// </summary>
+    internal interface IControllersManger : ICommandIsExist
     {
-        Delegate CreateDelegate(string Command, object controller);
+        /// <summary>
+        /// 根据指令获取控制器
+        /// </summary>
+        /// <param name="CommandName">指令名称</param>
+        /// <returns></returns>
+        object GetController(string CommandName);
     }
 }

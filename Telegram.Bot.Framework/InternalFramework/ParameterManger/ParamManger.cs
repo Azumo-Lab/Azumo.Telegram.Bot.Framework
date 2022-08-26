@@ -16,11 +16,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Text;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 {
     internal class ParamManger : IParamManger
     {

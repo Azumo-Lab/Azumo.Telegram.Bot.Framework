@@ -16,30 +16,38 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
 {
     internal class ControllersManger : IControllersManger
     {
-        private readonly Dictionary<string, Type> Command_ControllerMap;
+        private static Dictionary<string, Type> Command_ControllerMap;
+        private readonly IServiceProvider serviceProvider;
+
+        internal static void SetDic(Dictionary<string, Type> Command_ControllerMap)
+        {
+            ControllersManger.Command_ControllerMap = Command_ControllerMap;
+        }
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="Command_ControllerMap"></param>
-        internal ControllersManger(Dictionary<string, Type> Command_ControllerMap)
+        internal ControllersManger(IServiceProvider serviceProvider)
         {
-            this.Command_ControllerMap = Command_ControllerMap;
+            this.serviceProvider = serviceProvider;
         }
 
         /// <summary>
         /// 获取控制器
         /// </summary>
         /// <param name="CommandName"></param>
-        /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        public object GetController(string CommandName, IServiceProvider serviceProvider)
+        public object GetController(string CommandName)
         {
             return serviceProvider.GetService(Command_ControllerMap[CommandName]);
         }

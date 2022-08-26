@@ -16,9 +16,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
-namespace Telegram.Bot.Framework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     internal interface IParamManger
     {

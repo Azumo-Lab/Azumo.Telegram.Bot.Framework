@@ -16,12 +16,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.ControllerManger;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework
 {
     internal class TelegramRouteUserController : ITelegramRouteUserController
     {
@@ -43,7 +45,7 @@ namespace Telegram.Bot.Framework
                 paramManger.SetCommand(command, context);
                 paramManger.StartReadParam(context, serviceProvider);
 
-                TelegramController controller = (TelegramController)controllersManger.GetController(command, serviceProvider);
+                TelegramController controller = (TelegramController)controllersManger.GetController(command);
                 await controller.Invoke(context, serviceProvider, command);
             }
             else

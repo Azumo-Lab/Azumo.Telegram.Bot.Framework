@@ -19,11 +19,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.ControllerManger;
 using Telegram.Bot.Framework.TelegramMessage;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
 namespace Telegram.Bot.Framework
 {
