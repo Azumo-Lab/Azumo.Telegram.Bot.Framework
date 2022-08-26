@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using Telegram.Bot.Framework.FrameworkHelper;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 
 namespace Telegram.Bot.Framework
 {

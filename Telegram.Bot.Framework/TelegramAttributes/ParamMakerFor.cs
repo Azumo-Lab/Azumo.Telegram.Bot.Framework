@@ -20,11 +20,21 @@ using System.Text;
 
 namespace Telegram.Bot.Framework.TelegramAttributes
 {
+    /// <summary>
+    /// 使用自定义的参数获取方式
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class ParamMakerFor : Attribute
     {
+        /// <summary>
+        /// 参数获取类
+        /// </summary>
         public Type Type { get; }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="type">要使用的类(实现IParamMaker)</param>
         public ParamMakerFor(Type type)
         {
             Type = type;

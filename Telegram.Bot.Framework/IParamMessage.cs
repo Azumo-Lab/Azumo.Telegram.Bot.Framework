@@ -21,8 +21,17 @@ using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// 用于返回参数接受时的提示消息
+    /// </summary>
     public interface IParamMessage
     {
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="Message">消息</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         Task SendMessage(string Message, TelegramContext context);
     }
 }

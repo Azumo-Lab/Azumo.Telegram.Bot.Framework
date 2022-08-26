@@ -21,6 +21,9 @@ using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// 用于接收返回时的参数，并组合返回对应的数据
+    /// </summary>
     public interface IParamMaker
     {
         Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);

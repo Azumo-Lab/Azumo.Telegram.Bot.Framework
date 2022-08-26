@@ -22,7 +22,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.FrameworkHelper;
 
 namespace Telegram.Bot.Net
 {

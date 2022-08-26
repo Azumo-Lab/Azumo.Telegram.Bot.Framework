@@ -16,10 +16,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Telegram.Bot.Framework.FrameworkHelper
+namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
     internal static class DelegateHelper
     {
