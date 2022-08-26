@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="InternalFramework\Filters\" />
+    <Folder Include="InternalFramework\Authentications\" />
   </ItemGroup>
 
 </Project>
