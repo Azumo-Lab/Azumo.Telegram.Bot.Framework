@@ -27,10 +27,9 @@ namespace Telegram.Bot.Framework.InternalFramework
 {
     internal class TelegramRouteController
     {
-        private TelegramContext TelegramContext { get; }
-        private IServiceProvider ServiceProvider { get; }
-
-        private Dictionary<long, ITelegramRouteUserController> ChatIDUser { get; } = new Dictionary<long, ITelegramRouteUserController>();
+        private readonly TelegramContext TelegramContext;
+        private readonly IServiceProvider ServiceProvider;
+        private static readonly Dictionary<long, ITelegramRouteUserController> ChatIDUser = new Dictionary<long, ITelegramRouteUserController>();
 
         public TelegramRouteController(TelegramContext context, IServiceProvider serviceProvider)
         {
@@ -38,13 +37,18 @@ namespace Telegram.Bot.Framework.InternalFramework
             ServiceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <returns></returns>
         public async Task StartProcess()
         {
-            ITelegramRouteUserController factory = ServiceProvider.GetService<ITelegramRouteUserController>();
-
             long chatID = TelegramContext.ChatID;
             if (!ChatIDUser.ContainsKey(chatID))
-                ChatIDUser.Add(chatID, factory);
+            {
+                ITelegramRouteUserController controller = ServiceProvider.GetService<ITelegramRouteUserController>();
+                ChatIDUser.Add(chatID, controller);
+            }
             await ChatIDUser[chatID].Invoke(TelegramContext, ServiceProvider);
         }
     }

@@ -17,24 +17,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.InternalFramework.ControllerManger;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.ParameterManger;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework
 {
-    internal class BaseConfig : IConfig
+    internal class FrameworkConfig : IConfig
     {
 
         private readonly List<IConfig> setUps;
 
-        public BaseConfig(List<IConfig> setUps)
+        public FrameworkConfig(List<IConfig> setUps)
         {
             this.setUps = setUps;
         }
@@ -46,14 +45,14 @@ namespace Telegram.Bot.Framework
         public void Config(IServiceCollection telegramServices)
         {
             telegramServices.AddTransient<ITelegramRouteUserController, TelegramRouteUserController>();
-            
+
             telegramServices.AddControllers();
 
             setUps.ForEach(x => x.Config(telegramServices));
         }
     }
 
-    public static class ServiceCollectionEx
+    internal static class ServiceCollectionEx
     {
         /// <summary>
         /// 添加控制器
@@ -63,7 +62,7 @@ namespace Telegram.Bot.Framework
         {
             Type basetype = typeof(TelegramController);
             List<Type> types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => basetype.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
-            
+
             Dictionary<string, Type> Command_ControllerMap = new Dictionary<string, Type>();
             Dictionary<string, MethodInfo> Command_MethodMap = new Dictionary<string, MethodInfo>();
             Dictionary<string, (Type ParamType, string ParamMessage)> Command_ParamInfos = new Dictionary<string, (Type ParamType, string ParamMessage)>();
