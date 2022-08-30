@@ -20,15 +20,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 {
+    [ParamMaker(typeof(string))]
     internal class StringParamMaker : IParamMaker
     {
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
-
-            return null;
+            return await Task.FromResult(context.Update.Message?.Text);
         }
     }
 }

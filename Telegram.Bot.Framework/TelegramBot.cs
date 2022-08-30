@@ -17,11 +17,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.InternalFramework;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -33,21 +35,19 @@ namespace Telegram.Bot.Framework
         private readonly IServiceCollection telegramServiceCollection;
         private readonly IServiceProvider serviceProvider;
 
-        private readonly TelegramBotClient botClient;
-
         private readonly string BotName;
         private readonly bool UseBotName = false;
 
         internal TelegramBot(TelegramBotClient botClient, IConfig setUp, string BotName = null)
         {
-            this.botClient = botClient;
             this.BotName = BotName;
             if (!string.IsNullOrEmpty(this.BotName))
                 UseBotName = true;
 
             telegramServiceCollection = new ServiceCollection();
 
-            new FrameworkConfig(new List<IConfig>() { setUp }).Config(telegramServiceCollection);
+            new FrameworkConfig(new List<IConfig>() { setUp }, UseBotName, botClient).Config(telegramServiceCollection);
+
             serviceProvider = new DefaultServiceProviderFactory().CreateServiceProvider(telegramServiceCollection);
         }
 
@@ -55,53 +55,30 @@ namespace Telegram.Bot.Framework
         {
             Task.Run(async () =>
             {
-                async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+                CancellationTokenSource cts = serviceProvider.GetService<CancellationTokenSource>();
+                ITelegramBotClient botClient = serviceProvider.GetService<ITelegramBotClient>();
+
+                ReceiverOptions receiverOptions = new ReceiverOptions
                 {
-                    using (IServiceScope service = serviceProvider.CreateScope())
-                    {
-                        TelegramContext telegramContext = new TelegramContext(botClient, update, cancellationToken);
+                    AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
+                };
+                IUpdateHandler updateHandler = serviceProvider.GetService<IUpdateHandler>();
+                botClient.StartReceiving(
+                    updateHandler: updateHandler.HandleUpdateAsync,
+                    pollingErrorHandler: updateHandler.HandlePollingErrorAsync,
+                    receiverOptions: receiverOptions,
+                    cancellationToken: cts.Token
+                );
 
-                        TelegramRouteController process = new TelegramRouteController(telegramContext, service.ServiceProvider);
+                User me = await botClient.GetMeAsync();
 
-                        await process.StartProcess();
-                    }
-                }
+                Console.WriteLine($"Start listening for @{me.Username}");
+                Console.ReadLine();
 
-                Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-                {
-                    var ErrorMessage = exception switch
-                    {
-                        ApiRequestException apiRequestException
-                            => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-                        _ => exception.ToString()
-                    };
-
-                    Console.WriteLine(ErrorMessage);
-                    return Task.CompletedTask;
-                }
-
-                using (var cts = new CancellationTokenSource())
-                {
-                    var receiverOptions = new ReceiverOptions
-                    {
-                        AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
-                    };
-                    botClient.StartReceiving(
-                        updateHandler: HandleUpdateAsync,
-                        pollingErrorHandler: HandlePollingErrorAsync,
-                        receiverOptions: receiverOptions,
-                        cancellationToken: cts.Token
-                    );
-
-                    var me = await botClient.GetMeAsync();
-
-                    Console.WriteLine($"Start listening for @{me.Username}");
-                    Console.ReadLine();
-
-                    // Send cancellation request to stop bot
-                    cts.Cancel();
-                }
+                // Send cancellation request to stop bot
+                cts.Cancel();
             });
+            Console.ReadLine();
         }
     }
 }

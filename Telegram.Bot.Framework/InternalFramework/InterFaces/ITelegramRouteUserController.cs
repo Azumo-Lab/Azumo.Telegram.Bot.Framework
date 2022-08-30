@@ -25,6 +25,6 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     internal interface ITelegramRouteUserController
     {
-        Task Invoke(TelegramContext context, IServiceProvider serviceProvider);
+        Task Invoke();
     }
 }

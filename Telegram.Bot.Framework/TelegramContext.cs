@@ -22,29 +22,32 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// 机器人的各类信息
+    /// </summary>
     public class TelegramContext
     {
-        public ITelegramBotClient BotClient { get; }
-        public Update Update { get; }
-        public CancellationToken CancellationToken { get; }
+        /// <summary>
+        /// 机器人接口
+        /// </summary>
+        public ITelegramBotClient BotClient { get; internal set; }
 
         /// <summary>
-        /// 初始化
+        /// 接收的信息
         /// </summary>
-        /// <param name="BotClient"></param>
-        /// <param name="Update"></param>
-        /// <param name="CancellationToken"></param>
-        internal TelegramContext(ITelegramBotClient BotClient, Update Update, CancellationToken CancellationToken)
-        {
-            this.BotClient = BotClient;
-            this.Update = Update;
-            this.CancellationToken = CancellationToken;
-        }
+        public Update Update { get; internal set; }
+
+        /// <summary>
+        /// Token
+        /// </summary>
+        public CancellationToken CancellationToken { get; internal set; }
 
         /// <summary>
         /// 获取ChatID
         /// </summary>
         public long ChatID => GetChatID();
+
+        internal TelegramContext() { }
 
         /// <summary>
         /// 获取ChatID(相当于用户ID)

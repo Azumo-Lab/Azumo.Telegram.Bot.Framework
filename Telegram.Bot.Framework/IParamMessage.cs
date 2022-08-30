@@ -32,6 +32,6 @@ namespace Telegram.Bot.Framework
         /// <param name="Message">消息</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task SendMessage(string Message, TelegramContext context);
+        Task SendMessage(string Message);
     }
 }

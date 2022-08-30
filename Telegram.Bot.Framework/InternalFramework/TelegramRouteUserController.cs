@@ -27,7 +27,16 @@ namespace Telegram.Bot.Framework.InternalFramework
 {
     internal class TelegramRouteUserController : ITelegramRouteUserController
     {
-        public async Task Invoke(TelegramContext context, IServiceProvider serviceProvider)
+        private readonly TelegramContext context;
+        private readonly IServiceProvider serviceProvider;
+
+        public TelegramRouteUserController(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+            context = this.serviceProvider.GetService<TelegramContext>();
+        }
+
+        public async Task Invoke()
         {
             string command = context.GetCommand();
 
@@ -36,23 +45,30 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             if (command != null)
             {
-                if (paramManger.IsReadParam(context))
-                    paramManger.Cancel(context);
+                if (paramManger.IsReadParam())
+                    paramManger.Cancel();
 
                 if (!controllersManger.HasCommand(command))
                     command = "/";
 
-                paramManger.SetCommand(command, context);
-                paramManger.StartReadParam(context, serviceProvider);
+                paramManger.SetCommand();
+                if (!await paramManger.StartReadParam())
+                    return;
 
                 TelegramController controller = (TelegramController)controllersManger.GetController(command);
                 await controller.Invoke(context, serviceProvider, command);
             }
             else
             {
-                if (paramManger.IsReadParam(context))
+                if (paramManger.IsReadParam())
                 {
-                    paramManger.StartReadParam(context, serviceProvider);
+                    if (!await paramManger.StartReadParam())
+                    {
+                        return;
+                    }
+                    command = paramManger.GetCommand();
+                    TelegramController controller = (TelegramController)controllersManger.GetController(command);
+                    await controller.Invoke(context, serviceProvider, command);
                 }
                 else
                 {

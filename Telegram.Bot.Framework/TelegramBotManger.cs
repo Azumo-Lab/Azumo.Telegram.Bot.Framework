@@ -51,9 +51,9 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public TelegramBotManger SetBotName(string Name)
         {
+            BotName = Name;
             if (string.IsNullOrEmpty(BotName))
                 throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
-            BotName = Name;
             return this;
         }
 
@@ -116,7 +116,6 @@ namespace Telegram.Bot.Framework
                 botClient = new TelegramBotClient(Token, HttpClient);
             else
                 botClient = new TelegramBotClient(Token);
-
             return new TelegramBot(botClient, SetISetUp, BotName);
         }
     }

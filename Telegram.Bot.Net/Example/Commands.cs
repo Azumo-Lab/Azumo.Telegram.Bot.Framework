@@ -36,10 +36,10 @@ namespace Telegram.Bot.Net.Example
         }
 
         [Command("Test")]
-        public async Task Test()
+        public async Task Test([Param("请输入要说的话：", true)] string Message)
         {
-            await SendTextMessage("你好");
-            await SendTextMessage("打开百度", new List<InlineKeyboardButton> { InlineKeyboardButton.WithCallbackData("百度一下", "CallBack_baidu") });
+            await SendTextMessage("你好，你要说的话是：");
+            await SendTextMessage(Message);
         }
     }
 }

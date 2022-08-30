@@ -1,5 +1,5 @@
 ﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Framework.TelegramAttributes/>
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,37 +21,18 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.TelegramAttributes
 {
-    internal interface IParamManger
+    /// <summary>
+    /// 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ParamMakerAttribute : Attribute
     {
-        /// <summary>
-        /// 是否处于读取参数的模式
-        /// </summary>
-        /// <returns></returns>
-        bool IsReadParam();
-
-        /// <summary>
-        /// 取消读取参数
-        /// </summary>
-        void Cancel();
-
-        /// <summary>
-        /// 设置指令
-        /// </summary>
-        void SetCommand();
-
-        /// <summary>
-        /// 设置指令
-        /// </summary>
-        Task<bool> StartReadParam();
-
-        /// <summary>
-        /// 获取读取过后的参数
-        /// </summary>
-        /// <returns></returns>
-        object[] GetParam();
-
-        string GetCommand();
+        public Type MakerType { get; }
+        public ParamMakerAttribute(Type makerType)
+        {
+            MakerType = makerType;
+        }
     }
 }

@@ -20,13 +20,29 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 {
+    /// <summary>
+    /// 用于处理文字类参数信息
+    /// </summary>
     internal class StringParamMessage : IParamMessage
     {
-        public async Task SendMessage(string Message, TelegramContext context)
+        private readonly IServiceProvider service;
+        public StringParamMessage(IServiceProvider serviceProvider)
         {
+            service = serviceProvider;
+        }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="Message">消息</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task SendMessage(string Message)
+        {
+            TelegramContext context = service.GetService<TelegramContext>();
             await context.BotClient.SendTextMessageAsync(context.ChatID, Message);
         }
     }

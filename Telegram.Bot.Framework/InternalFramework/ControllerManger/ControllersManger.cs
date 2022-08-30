@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
         /// 初始化
         /// </summary>
         /// <param name="Command_ControllerMap"></param>
-        internal ControllersManger(IServiceProvider serviceProvider)
+        public ControllersManger(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
