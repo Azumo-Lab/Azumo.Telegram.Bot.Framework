@@ -1,5 +1,5 @@
 ﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Framework.InternalFramework/>
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -14,36 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
-    internal class TelegramRouteController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TelegramUserScope : IDisposable
     {
-        private readonly TelegramContext TelegramContext;
-        private readonly IServiceProvider ScopeService;
+        private readonly IServiceScope UserScope;
 
-        public TelegramRouteController(IServiceProvider serviceProvider)
+        public TelegramUserScope(IServiceProvider service)
         {
-            ScopeService = serviceProvider;
-            TelegramContext = ScopeService.GetService<TelegramContext>();
+            UserScope = service.CreateScope();
         }
 
-        /// <summary>
-        /// 开始执行
-        /// </summary>
-        /// <returns></returns>
-        public async Task StartProcess()
+        public void Dispose()
         {
-            ITelegramRouteUserController controller = ScopeService.GetService<ITelegramRouteUserController>();
-            await controller.Invoke();
+            UserScope.Dispose();
+        }
+
+        public async Task Invoke(TelegramContext telegramContext)
+        {
+            using (var OneTimeScope = UserScope.ServiceProvider.CreateScope())
+            {
+                var controller = new TelegramRouteController(OneTimeScope);
+
+                await controller.StartProcess();
+            }
+            
         }
     }
 }

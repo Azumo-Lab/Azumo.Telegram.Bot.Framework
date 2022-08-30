@@ -37,6 +37,14 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
         private readonly IServiceProvider service;
         private readonly TelegramContext context;
 
+        /// <summary>
+        /// 清空指定用户的参数
+        /// </summary>
+        private void ClearParams()
+        {
+            Params.Remove(context.ChatID);
+        }
+
         public ParamManger() { }
 
         public static void SetDic(Dictionary<string, List<(Type ParamType, string ParamMessage)>> Command_ParamInfo)
