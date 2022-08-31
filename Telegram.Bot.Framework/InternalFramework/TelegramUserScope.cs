@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalFramework
@@ -30,29 +31,44 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// <summary>
     /// 
     /// </summary>
-    public class TelegramUserScope : IDisposable
+    internal class TelegramUserScope : IDisposable, ITelegramUserScope
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly IServiceScope UserScope;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="service"></param>
         public TelegramUserScope(IServiceProvider service)
         {
-            UserScope = service.CreateScope();
+            UserScope ??= service.CreateScope();
         }
 
+        /// <summary>
+        /// 销毁对象
+        /// </summary>
         public void Dispose()
         {
             UserScope.Dispose();
         }
 
-        public async Task Invoke(TelegramContext telegramContext)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="OneTimeScope"></param>
+        /// <returns></returns>
+        public async Task Invoke(IServiceScope OneTimeScope)
         {
-            using (var OneTimeScope = UserScope.ServiceProvider.CreateScope())
+            //创建单次访问的Scope
+            using (OneTimeScope)
             {
-                var controller = new TelegramRouteController(OneTimeScope);
+                TelegramRouteController controller = new TelegramRouteController(OneTimeScope.ServiceProvider);
 
                 await controller.StartProcess();
             }
-            
         }
     }
 }

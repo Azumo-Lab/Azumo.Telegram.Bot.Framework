@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
@@ -56,21 +57,20 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            TelegramContext telegramContext = null;
-            using (var scope = serviceProvider.CreateScope())
+            using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
             {
-                telegramContext = scope.ServiceProvider.GetService<TelegramContext>();
+                TelegramContext telegramContext = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
 
                 //设置TelegramContext
                 telegramContext.BotClient = botClient;
                 telegramContext.Update = update;
                 telegramContext.CancellationToken = cancellationToken;
+
+                //获取 | 创建 一个TelegramUserScope
+                ITelegramUserScopeManger telegramUserScopeManger = serviceProvider.GetService<ITelegramUserScopeManger>();
+                ITelegramUserScope telegramUserScope = telegramUserScopeManger.GetTelegramUserScope();
+                await telegramUserScope.Invoke();
             }
-            
-
-            TelegramUserScope telegramUserScope = new TelegramUserScope(serviceProvider);
-
-            await telegramUserScope.Invoke(telegramContext);
         }
     }
 }

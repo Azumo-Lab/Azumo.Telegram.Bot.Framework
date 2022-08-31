@@ -1,5 +1,5 @@
 ﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Framework.InternalFramework.InterFaces/>
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@ using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
-    internal interface ITelegramRouteUserController : ITelegramController
+    /// <summary>
+    /// 
+    /// </summary>
+    internal interface ITelegramController
     {
-        
+        Task Invoke();
     }
 }
