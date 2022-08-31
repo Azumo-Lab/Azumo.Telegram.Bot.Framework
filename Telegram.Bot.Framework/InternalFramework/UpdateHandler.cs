@@ -69,7 +69,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 //获取 | 创建 一个TelegramUserScope
                 ITelegramUserScopeManger telegramUserScopeManger = serviceProvider.GetService<ITelegramUserScopeManger>();
                 ITelegramUserScope telegramUserScope = telegramUserScopeManger.GetTelegramUserScope();
-                await telegramUserScope.Invoke();
+                await telegramUserScope.Invoke(OneTimeScope);
             }
         }
     }

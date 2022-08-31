@@ -25,15 +25,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class TelegramRouteController
     {
-        private readonly TelegramContext TelegramContext;
-        private readonly IServiceProvider ScopeService;
+        private readonly IServiceScope OneTimeScope;
+        private readonly IServiceScope UserScope;
 
-        public TelegramRouteController(IServiceProvider serviceProvider)
+        public TelegramRouteController(IServiceScope OneTimeScope, IServiceScope UserScope)
         {
-            ScopeService = serviceProvider;
-            TelegramContext = ScopeService.GetService<TelegramContext>();
+            this.OneTimeScope = OneTimeScope;
+            this.UserScope = UserScope;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task StartProcess()
         {
-            ITelegramRouteUserController controller = ScopeService.GetService<ITelegramRouteUserController>();
+            ITelegramRouteUserController controller = OneTimeScope.ServiceProvider.GetService<ITelegramRouteUserController>();
             await controller.Invoke();
         }
     }
