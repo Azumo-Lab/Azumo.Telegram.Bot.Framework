@@ -22,8 +22,17 @@ using System.Reflection;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
+    /// <summary>
+    /// 帮助创建委托
+    /// </summary>
     internal interface IDelegateManger
     {
+        /// <summary>
+        /// 创建一个委托
+        /// </summary>
+        /// <param name="Command">Command名称</param>
+        /// <param name="controller">控制器</param>
+        /// <returns></returns>
         Delegate CreateDelegate(string Command, object controller);
     }
 }

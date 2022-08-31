@@ -24,8 +24,15 @@ using Telegram.Bot.Framework.InternalFramework;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// IServiceCollection的公开扩展方法
+    /// </summary>
     public static class ServiceCollectionExtend
     {
+        /// <summary>
+        /// 添加认证模块
+        /// </summary>
+        /// <param name="services"></param>
         public static void AddAuthentication(this IServiceCollection services)
         {
             ServiceCollectionEx.AddAuthentication(services);

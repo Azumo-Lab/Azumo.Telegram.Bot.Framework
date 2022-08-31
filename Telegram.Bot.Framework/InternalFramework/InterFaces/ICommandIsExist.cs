@@ -22,8 +22,16 @@ using System.Reflection;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
+    /// <summary>
+    /// 判断一个Command是否存在
+    /// </summary>
     internal interface ICommandIsExist
     {
+        /// <summary>
+        /// 判断一个Command是否存在
+        /// </summary>
+        /// <param name="CommandName">Command名称</param>
+        /// <returns></returns>
         bool HasCommand(string CommandName);
     }
 }

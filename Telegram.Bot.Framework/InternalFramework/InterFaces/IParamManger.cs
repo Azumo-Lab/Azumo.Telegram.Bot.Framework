@@ -23,6 +23,9 @@ using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
+    /// <summary>
+    /// 帮助创建参数
+    /// </summary>
     internal interface IParamManger
     {
         /// <summary>
@@ -52,6 +55,10 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         /// <returns></returns>
         object[] GetParam();
 
+        /// <summary>
+        /// 获取Command的名称
+        /// </summary>
+        /// <returns></returns>
         string GetCommand();
     }
 }

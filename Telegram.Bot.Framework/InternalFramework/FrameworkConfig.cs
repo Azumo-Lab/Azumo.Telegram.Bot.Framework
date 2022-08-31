@@ -142,6 +142,10 @@ namespace Telegram.Bot.Framework.InternalFramework
             services.AddScoped<IParamManger, ParamManger>();
         }
 
+        /// <summary>
+        /// 添加认证
+        /// </summary>
+        /// <param name="services"></param>
         public static void AddAuthentication(this IServiceCollection services)
         {
 
