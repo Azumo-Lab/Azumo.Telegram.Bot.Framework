@@ -45,8 +45,38 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task StartProcess()
         {
+            await Authentication();
+
+            await FiltersBefore();
+
+            await ControllerInvoke();
+
+            await FiltersAfter();
+        }
+
+        private async Task Authentication()
+        {
+
+        }
+
+        private async Task FiltersBefore()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private async Task ControllerInvoke()
+        {
             ITelegramRouteUserController controller = OneTimeScope.ServiceProvider.GetService<ITelegramRouteUserController>();
             await controller.Invoke();
+        }
+
+        private async Task FiltersAfter()
+        {
+
         }
     }
 }

@@ -63,12 +63,9 @@ namespace Telegram.Bot.Framework.InternalFramework
         public async Task Invoke(IServiceScope OneTimeScope)
         {
             //创建单次访问的Scope
-            using (OneTimeScope)
-            {
-                TelegramRouteController controller = new TelegramRouteController(OneTimeScope.ServiceProvider);
+            TelegramRouteController controller = new TelegramRouteController(OneTimeScope, UserScope);
 
-                await controller.StartProcess();
-            }
+            await controller.StartProcess();
         }
     }
 }

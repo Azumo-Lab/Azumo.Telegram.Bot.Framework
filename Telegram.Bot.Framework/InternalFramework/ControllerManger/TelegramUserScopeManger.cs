@@ -61,17 +61,16 @@ namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
             return User_Controller[context.ChatID];
         }
 
+        /// <summary>
+        /// 删除旧的过期数据
+        /// </summary>
         private void ClearOldUser()
         {
             List<long> ClearUser = new List<long>();
             DateTime Before24H = DateTime.Now.AddDays(1);
-            foreach (var item in User_Time)
-            {
+            foreach (KeyValuePair<long, (int Count, DateTime LastUseTime)> item in User_Time)
                 if (item.Value.LastUseTime < Before24H)
-                {
                     ClearUser.Add(item.Key);
-                }
-            }
 
             ClearUser.ForEach(x =>
             {

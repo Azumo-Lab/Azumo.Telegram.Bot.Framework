@@ -42,17 +42,17 @@ namespace Telegram.Bot.Framework.InternalFramework
             this.serviceProvider = serviceProvider;
         }
 
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             var ErrorMessage = exception switch
             {
-                ApiRequestException apiRequestException
-                    => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+                ApiRequestException apiRequestException => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+
                 _ => exception.ToString()
             };
 
-            Console.WriteLine(ErrorMessage);
-            return Task.CompletedTask;
+            TelegramContext context = serviceProvider.GetService<TelegramContext>();
+            await botClient.SendTextMessageAsync(context.ChatID, ErrorMessage);
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
