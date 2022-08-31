@@ -51,7 +51,7 @@ public class TGBotDEV : IConfig
 
     public void Config(IServiceCollection telegramServices)
     {
-        // 配置各类服务
+        // 配置各类服务。
         // TODO Something...
     }
 }
