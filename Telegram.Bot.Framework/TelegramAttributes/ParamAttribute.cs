@@ -45,7 +45,8 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// <param name="UseCustom"></param>
         public ParamAttribute(string Infos, bool UseCustom)
         {
-            if (UseCustom)
+            this.UseCustom = UseCustom;
+            if (this.UseCustom)
             {
                 CustomInfos = Infos;
             }
