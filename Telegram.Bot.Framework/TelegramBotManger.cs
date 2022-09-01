@@ -99,9 +99,20 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="SetUp"></param>
         /// <returns></returns>
-        public TelegramBotManger SetConfig(IConfig SetUp)
+        public TelegramBotManger SetConfig<ConfigType>(ConfigType SetUp) where ConfigType : IConfig
         {
             SetISetUp = SetUp;
+            return this;
+        }
+
+        /// <summary>
+        /// 添加设置
+        /// </summary>
+        /// <param name="SetUp"></param>
+        /// <returns></returns>
+        public TelegramBotManger SetConfig<ConfigType>() where ConfigType : IConfig
+        {
+            SetConfig((IConfig)Activator.CreateInstance(typeof(ConfigType)));
             return this;
         }
 
