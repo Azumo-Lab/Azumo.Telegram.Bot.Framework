@@ -123,6 +123,8 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public TelegramBot Build()
         {
+            ThrowHelper.ThrowIfNullOrEmpty(Token);
+
             if (Tokens.Contains(Token))
                 throw new Exception($"重复的Token : {Token}");
             Tokens.Add(Token);

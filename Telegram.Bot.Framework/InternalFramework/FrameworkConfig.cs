@@ -32,12 +32,12 @@ namespace Telegram.Bot.Framework.InternalFramework
 {
     internal class FrameworkConfig : IConfig
     {
-        private readonly List<IConfig> setUps;
+        private readonly IConfig setUps;
         private readonly ITelegramBotClient botClient;
 
-        public FrameworkConfig(List<IConfig> setUps, bool UseBotName, ITelegramBotClient telegramBot)
+        public FrameworkConfig(IConfig setUp, bool UseBotName, ITelegramBotClient telegramBot)
         {
-            this.setUps = setUps;
+            setUps = setUp;
             botClient = telegramBot;
         }
 
@@ -60,7 +60,8 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             telegramServices.AddControllers();
 
-            setUps.ForEach(x => x.Config(telegramServices));
+            if (setUps != null)
+                setUps.Config(telegramServices);
         }
     }
 
