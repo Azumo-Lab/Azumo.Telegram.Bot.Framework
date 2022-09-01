@@ -42,7 +42,7 @@ public class TGBotDEV : IConfig
         var bot = TelegramBotManger.CreateConfig()
             .SetToken(Token)
             .SetProxy(Proxy, Port)
-            .SetConfig(new TGBotDEV())
+            .SetConfig<TGBotDEV>()
             .SetBotName("DEV1")
             .Build();
 
