@@ -104,13 +104,14 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
         {
             var command = CHatID_Command[context.ChatID];
             var ParamInfos = Command_ParamInfo[command];
-            if (ParamInfos == null)
+            if (ParamInfos == null || ParamInfos.Count == 0)
                 return true;
 
             if (!ParamsOK.ContainsKey(context.ChatID))
                 ParamsOK.Add(context.ChatID, (false, false));
             ParamsOK[context.ChatID] = (false, ParamsOK[context.ChatID].Reading);
 
+            REREAD:
             if (ParamsOK[context.ChatID].Reading == true)
             {
                 IParamMaker maker = (IParamMaker)service.GetService(ParamInfos[User_Index[context.ChatID]].ParamType);
@@ -126,7 +127,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                 User_Index[context.ChatID] += 1;
                 if (User_Index[context.ChatID] < ParamInfos.Count)
                 {
-                    return false;
+                    goto REREAD;
                 }
                 User_Index.Remove(context.ChatID);
                 ParamsOK[context.ChatID] = (true, false);
@@ -134,7 +135,8 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             }
             else
             {
-                User_Index.Add(context.ChatID, 0);
+                if (!User_Index.ContainsKey(context.ChatID))
+                    User_Index.Add(context.ChatID, 0);
                 var info = ParamInfos[User_Index[context.ChatID]];
 
                 IParamMessage message = service.GetService<IParamMessage>();

@@ -41,5 +41,19 @@ namespace Telegram.Bot.Net.Example
             await SendTextMessage("你好，你要说的话是：");
             await SendTextMessage(Message);
         }
+
+        [Command("Test2")]
+        public async Task Test([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
+        {
+            await SendTextMessage($"你说的第一句是：{FirstMessage}");
+            await SendTextMessage($"你说的第二句是：{TwoMessage}");
+            await SendTextMessage($"合起来是：{FirstMessage}，{TwoMessage}。");
+        }
+
+        [Command("SayHello")]
+        public async Task SayHello()
+        {
+            await SendTextMessage("Hello World");
+        }
     }
 }
