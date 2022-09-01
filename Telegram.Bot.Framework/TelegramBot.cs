@@ -75,7 +75,7 @@ namespace Telegram.Bot.Framework
         public Task Start()
         {
             if (Running)
-                throw new Exception();
+                throw new Exception("过多执行次数");
             Running = true;
 
             cts = serviceProvider.GetService<CancellationTokenSource>();

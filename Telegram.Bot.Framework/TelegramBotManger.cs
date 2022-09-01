@@ -25,10 +25,11 @@ namespace Telegram.Bot.Framework
 {
     public class TelegramBotManger
     {
-        private HttpClient HttpClient;
-        private string Token;
-        private IConfig SetISetUp;
-        private string BotName;
+        private static HashSet<string> Tokens = new HashSet<string>();  //判断重复Token
+        private HttpClient HttpClient;                                  //HttpClient
+        private string Token;                                           //Token
+        private IConfig SetISetUp;                                      //用户的各类设置
+        private string BotName;                                         //Bot名称
 
         /// <summary>
         /// 初始化
@@ -67,8 +68,8 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public TelegramBotManger SetProxy(string URL, int Port, string Username = null, string Password = null)
         {
-            ThrowHelper.ThrowIfNullOrEmpty(URL);
-            ThrowHelper.ThrowIfZeroAndDown(Port);
+            ThrowHelper.ThrowIfNullOrEmpty(URL);        //检查URL是否是空
+            ThrowHelper.ThrowIfZeroAndDown(Port);       //检查端口是否是0或小于0
 
             WebProxy webProxy = new WebProxy(Host: URL, Port: Port);
             if (!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password))
@@ -122,6 +123,10 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public TelegramBot Build()
         {
+            if (Tokens.Contains(Token))
+                throw new Exception($"重复的Token : {Token}");
+            Tokens.Add(Token);
+
             TelegramBotClient botClient;
             if (HttpClient != null)
                 botClient = new TelegramBotClient(Token, HttpClient);
