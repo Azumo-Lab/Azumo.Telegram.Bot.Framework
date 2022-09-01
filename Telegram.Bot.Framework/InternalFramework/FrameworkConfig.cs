@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading;
 using Telegram.Bot.Framework.InternalFramework.ControllerManger;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Log;
 using Telegram.Bot.Framework.InternalFramework.ParameterManger;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
@@ -48,12 +49,16 @@ namespace Telegram.Bot.Framework.InternalFramework
         public void Config(IServiceCollection telegramServices)
         {
             telegramServices.AddScoped<IParamMessage, StringParamMessage>();
+            telegramServices.AddScoped<ILogger, Logger>();
+
             telegramServices.AddTransient<ITelegramRouteUserController, TelegramRouteUserController>();
             telegramServices.AddTransient<ITelegramUserScopeManger, TelegramUserScopeManger>();
             telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
+
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();
             telegramServices.AddSingleton(botClient);
+
             telegramServices.AddScoped(x =>
             {
                 return new TelegramContext();
