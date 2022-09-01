@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +33,8 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         /// 获取控制器
         /// </summary>
         /// <returns></returns>
-        ITelegramUserScope GetTelegramUserScope(); 
+        ITelegramUserScope GetTelegramUserScope(TelegramContext context);
+
+        IServiceScope GetUserScope(TelegramContext context);
     }
 }

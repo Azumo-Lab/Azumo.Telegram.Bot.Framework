@@ -67,11 +67,18 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 
         public object[] GetParam()
         {
-            var ID = context.ChatID;
-            if (ParamsOK.ContainsKey(ID))
-                if (ParamsOK[ID].OK && Params.ContainsKey(ID))
-                    return Params[context.ChatID].ToArray();
-            return null;
+            try
+            {
+                var ID = context.ChatID;
+                if (ParamsOK.ContainsKey(ID))
+                    if (ParamsOK[ID].OK && Params.ContainsKey(ID))
+                        return Params[context.ChatID].ToArray();
+                return null;
+            }
+            finally
+            {
+                Params.Remove(context.ChatID);
+            }
         }
 
         public bool IsReadParam()
@@ -102,6 +109,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 
             if (!ParamsOK.ContainsKey(context.ChatID))
                 ParamsOK.Add(context.ChatID, (false, false));
+            ParamsOK[context.ChatID] = (false, ParamsOK[context.ChatID].Reading);
 
             if (ParamsOK[context.ChatID].Reading == true)
             {
@@ -120,6 +128,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                 {
                     return false;
                 }
+                User_Index.Remove(context.ChatID);
                 ParamsOK[context.ChatID] = (true, false);
                 return true;
             }

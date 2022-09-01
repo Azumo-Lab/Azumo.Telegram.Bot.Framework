@@ -43,9 +43,8 @@ namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
         /// 
         /// </summary>
         /// <returns></returns>
-        public ITelegramUserScope GetTelegramUserScope()
+        public ITelegramUserScope GetTelegramUserScope(TelegramContext context)
         {
-            TelegramContext context = serviceProvider.GetService<TelegramContext>();
             if (!User_Controller.ContainsKey(context.ChatID))
             {
                 ITelegramUserScope telegramUserScope = serviceProvider.GetService<ITelegramUserScope>();
@@ -77,6 +76,16 @@ namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
                 User_Controller.Remove(x);
                 User_Time.Remove(x);
             });
+        }
+
+        public IServiceScope GetUserScope(TelegramContext context)
+        {
+
+            if (User_Controller.ContainsKey(context.ChatID))
+            {
+                return User_Controller[context.ChatID].GetUserScope();
+            }
+            return null;
         }
     }
 }

@@ -49,6 +49,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         {
             telegramServices.AddScoped<IParamMessage, StringParamMessage>();
             telegramServices.AddTransient<ITelegramRouteUserController, TelegramRouteUserController>();
+            telegramServices.AddTransient<ITelegramUserScopeManger, TelegramUserScopeManger>();
             telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();

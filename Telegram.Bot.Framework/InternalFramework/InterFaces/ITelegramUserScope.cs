@@ -30,5 +30,7 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
     internal interface ITelegramUserScope
     {
         Task Invoke(IServiceScope OneTimeScope);
+
+        IServiceScope GetUserScope();
     }
 }

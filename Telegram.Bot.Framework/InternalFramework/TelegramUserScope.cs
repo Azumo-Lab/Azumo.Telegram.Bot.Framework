@@ -36,7 +36,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <summary>
         /// 
         /// </summary>
-        private readonly IServiceScope UserScope;
+        private IServiceScope UserScope { get; }
 
         /// <summary>
         /// 
@@ -66,6 +66,15 @@ namespace Telegram.Bot.Framework.InternalFramework
             TelegramRouteController controller = new TelegramRouteController(OneTimeScope, UserScope);
 
             await controller.StartProcess();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IServiceScope GetUserScope()
+        {
+            return UserScope;
         }
     }
 }
