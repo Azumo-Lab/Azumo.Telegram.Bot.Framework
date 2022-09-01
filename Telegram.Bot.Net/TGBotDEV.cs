@@ -21,6 +21,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
 
@@ -43,7 +44,9 @@ namespace Telegram.Bot.Net
                 .SetBotName("DEV1")
                 .Build();
 
-            bot.Start();
+            Task botTask = bot.Start();
+
+            botTask.Wait();
         }
 
         public void Config(IServiceCollection telegramServices)
