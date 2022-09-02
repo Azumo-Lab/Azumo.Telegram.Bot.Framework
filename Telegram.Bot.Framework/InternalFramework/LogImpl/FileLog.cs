@@ -21,13 +21,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.LogImpl
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramController
+    internal class FileLog
     {
-        Task Invoke();
+
     }
 }

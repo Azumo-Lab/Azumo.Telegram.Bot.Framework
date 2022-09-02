@@ -21,13 +21,25 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramController
+    public interface ILogger
     {
-        Task Invoke();
+        void Info();
+
+        void Info(string message);
+
+        void Warn();
+
+        void Warn(string message);
+
+        void Error();
+
+        void Error(string message);
+
+        void Error(Exception exception);
     }
 }

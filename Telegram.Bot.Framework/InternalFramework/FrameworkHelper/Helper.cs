@@ -21,13 +21,21 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramController
+    internal static class Helper
     {
-        Task Invoke();
+        public static string GetNowTime()
+        {
+            return DateTime.Now.ToString();
+        }
+
+        public static string GetTaskID()
+        {
+            return Task.CurrentId?.ToString();
+        }
     }
 }
