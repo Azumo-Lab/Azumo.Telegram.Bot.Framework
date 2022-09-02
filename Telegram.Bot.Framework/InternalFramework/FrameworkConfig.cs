@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Threading;
 using Telegram.Bot.Framework.InternalFramework.ControllerManger;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Telegram.Bot.Framework.InternalFramework.Log;
+using Telegram.Bot.Framework.InternalFramework.LogImpl;
 using Telegram.Bot.Framework.InternalFramework.ParameterManger;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
