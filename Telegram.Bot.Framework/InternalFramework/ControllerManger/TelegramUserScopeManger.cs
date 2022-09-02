@@ -80,7 +80,6 @@ namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
 
         public IServiceScope GetUserScope(TelegramContext context)
         {
-
             if (User_Controller.ContainsKey(context.ChatID))
             {
                 return User_Controller[context.ChatID].GetUserScope();

@@ -29,21 +29,18 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         public string CustomInfos { get;}
 
         /// <summary>
-        /// 参数名称
-        /// </summary>
-        public string ParamName { get; }
-
-        /// <summary>
         /// 是否自定义
         /// </summary>
         public bool UseCustom { get; }
+
+        public Type CustomMessageType { get; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Infos"></param>
         /// <param name="UseCustom"></param>
-        public ParamAttribute(string Infos, bool UseCustom)
+        public ParamAttribute(string Infos, bool UseCustom, Type ForType = null)
         {
             this.UseCustom = UseCustom;
             if (this.UseCustom)
@@ -52,7 +49,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
             }
             else
             {
-                ParamName = Infos;
+                CustomInfos = $"请输入【{Infos}】的值";
             }
         }
     }

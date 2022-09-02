@@ -63,7 +63,7 @@ namespace Telegram.Bot.Framework
 
             telegramServiceCollection = new ServiceCollection();
 
-            new FrameworkConfig(setUp, UseBotName, botClient).Config(telegramServiceCollection);
+            new FrameworkConfig(setUp, UseBotName, BotName, botClient).Config(telegramServiceCollection);
 
             serviceProvider = new DefaultServiceProviderFactory().CreateServiceProvider(telegramServiceCollection);
         }

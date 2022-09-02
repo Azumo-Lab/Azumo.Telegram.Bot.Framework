@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Telegram.Bot.Framework.InternalFramework.ControllerManger;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.LogImpl;
 using Telegram.Bot.Framework.InternalFramework.ParameterManger;
@@ -35,11 +36,21 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         private readonly IConfig setUps;
         private readonly ITelegramBotClient botClient;
+        private static readonly HashSet<string> BotNames = new HashSet<string>();
 
-        public FrameworkConfig(IConfig setUp, bool UseBotName, ITelegramBotClient telegramBot)
+        public FrameworkConfig(IConfig setUp, bool UseBotName, string BotName, ITelegramBotClient telegramBot)
         {
             setUps = setUp;
             botClient = telegramBot;
+
+            if (UseBotName)
+            {
+                if (string.IsNullOrEmpty(BotName))
+                    throw new ArgumentNullException();
+                if (!BotNames.Add(BotName))
+                    throw new RepeatedBotNameException();
+            }
+                
         }
 
         /// <summary>
@@ -64,7 +75,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 return new TelegramContext();
             });
 
-            telegramServices.AddControllers();
+            telegramServices.AddControllers(BotNames);
 
             if (setUps != null)
                 setUps.Config(telegramServices);
@@ -77,14 +88,12 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// 添加控制器
         /// </summary>
         /// <param name="services"></param>
-        public static void AddControllers(this IServiceCollection services)
+        public static void AddControllers(this IServiceCollection services, HashSet<string> BotNames)
         {
-            List<Type> AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
+            List<Type> AllTypes = ServiceCollextionHelper.GetAllTypes();
 
-            Type basetype = typeof(TelegramController);
-            List<Type> TelegramControllerTypes = AllTypes.Where(x => basetype.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
-            basetype = typeof(IParamMaker);
-            List<Type> IParamMakerTypes = AllTypes.Where(x => basetype.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
+            List<Type> TelegramControllerTypes = ServiceCollextionHelper.FilterBaseType(typeof(TelegramController));
+            List<Type> IParamMakerTypes = ServiceCollextionHelper.FilterBaseType(typeof(IParamMaker));
             IParamMakerTypes.ForEach(x => services.AddScoped(x));
 
             Dictionary<string, Type> Command_ControllerMap = new Dictionary<string, Type>();
@@ -99,16 +108,24 @@ namespace Telegram.Bot.Framework.InternalFramework
                 var methods = item.GetMethods(BindingFlags.Public | BindingFlags.Instance);
                 foreach (var method in methods)
                 {
+                    #region 指令Command
+
                     CommandAttribute attr = (CommandAttribute)Attribute.GetCustomAttribute(method, typeof(CommandAttribute));
                     if (attr == null)
                         continue;
                     if (Command_ControllerMap.ContainsKey(attr.CommandName))
+                        //重复
                         throw new RepeatedCommandException(attr.CommandName);
+
                     //指令名称和控制器的关系
                     Command_ControllerMap.Add(attr.CommandName, item);
                     //指令名称和方法的关系
                     Command_MethodMap.Add(attr.CommandName, method);
                     Command_ParamInfos.Add(attr.CommandName, new List<(Type ParamType, string ParamMessage)>());
+
+                    #endregion
+
+                    #region 参数相关的处理
 
                     //处理参数相关的一些操作
                     var methodParams = method.GetParameters().ToList();
@@ -128,13 +145,15 @@ namespace Telegram.Bot.Framework.InternalFramework
                         {
                             message = $"请输入【{attrParam.CustomInfos}】的值";
                         }
-                        
-                        Type IParamMakerType = IParamMakerTypes.Where(x => 
+
+                        Type IParamMakerType = IParamMakerTypes.Where(x =>
                         {
                             return Attribute.IsDefined(x, typeof(ParamMakerAttribute));
                         }).FirstOrDefault();
                         Command_ParamInfos[attr.CommandName].Add((IParamMakerType, message));
                     }
+
+                    #endregion
                 }
             }
 

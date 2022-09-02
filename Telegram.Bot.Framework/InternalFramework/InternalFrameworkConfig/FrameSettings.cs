@@ -16,37 +16,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.TelegramException;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.InternalFramework.InternalFrameworkConfig
 {
     /// <summary>
-    /// 设定Telegram Bot的名字
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class BotNameAttribute : Attribute
+    internal class FrameSettings
     {
-        /// <summary>
-        /// Bot 的名称
-        /// </summary>
-        public string[] BotName { get; }
-
-        public bool OverWrite { get; }
-
-        public BotNameAttribute(bool OverWrite = false, params string[] BotName)
+        public IEnumerable<CommandInfos> ConfigCommandController(Type ControllerType, HashSet<string> BotName)
         {
-            void Error()
-            {
-                throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
-            }
-            if (BotName == null || BotName.Length == 0)
-                Error();
-            foreach (var item in BotName)
-                if (string.IsNullOrEmpty(item))
-                    Error();
+            HashSet<string> ControllerBotNames = new HashSet<string>(new BotNameConfig().ConfigBotName(ControllerType, BotName));
 
-            this.BotName = BotName;
-            this.OverWrite = OverWrite;
+            IEnumerable<CommandInfos> Commands = new CommandConfig().ConfigCommand(ControllerType, BotName, ControllerBotNames);
+
+            return Commands;
         }
     }
 }

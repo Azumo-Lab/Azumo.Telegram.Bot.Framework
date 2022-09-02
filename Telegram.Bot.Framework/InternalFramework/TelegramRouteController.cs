@@ -45,9 +45,13 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task StartProcess()
         {
+            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
+
             await Authentication();
 
             await FiltersBefore();
+
+            await ParamCatch();
 
             await ControllerInvoke();
 
@@ -60,6 +64,11 @@ namespace Telegram.Bot.Framework.InternalFramework
         }
 
         private async Task FiltersBefore()
+        {
+
+        }
+
+        private async Task ParamCatch()
         {
 
         }

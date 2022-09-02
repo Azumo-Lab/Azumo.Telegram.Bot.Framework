@@ -16,37 +16,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.TelegramException
 {
     /// <summary>
-    /// 设定Telegram Bot的名字
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class BotNameAttribute : Attribute
+    public class RepeatedBotNameException : Exception
     {
-        /// <summary>
-        /// Bot 的名称
-        /// </summary>
-        public string[] BotName { get; }
-
-        public bool OverWrite { get; }
-
-        public BotNameAttribute(bool OverWrite = false, params string[] BotName)
+        public RepeatedBotNameException(string BotName) : base($"重复的BotName ：{BotName}")
         {
-            void Error()
-            {
-                throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
-            }
-            if (BotName == null || BotName.Length == 0)
-                Error();
-            foreach (var item in BotName)
-                if (string.IsNullOrEmpty(item))
-                    Error();
 
-            this.BotName = BotName;
-            this.OverWrite = OverWrite;
         }
+
+        public RepeatedBotNameException() : base() { }
     }
 }

@@ -16,37 +16,32 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
     /// <summary>
-    /// 设定Telegram Bot的名字
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class BotNameAttribute : Attribute
+    internal static class ServiceCollextionHelper
     {
-        /// <summary>
-        /// Bot 的名称
-        /// </summary>
-        public string[] BotName { get; }
-
-        public bool OverWrite { get; }
-
-        public BotNameAttribute(bool OverWrite = false, params string[] BotName)
+        private static List<Type> AllTypes;
+        static ServiceCollextionHelper()
         {
-            void Error()
-            {
-                throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
-            }
-            if (BotName == null || BotName.Length == 0)
-                Error();
-            foreach (var item in BotName)
-                if (string.IsNullOrEmpty(item))
-                    Error();
+            AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
+        }
 
-            this.BotName = BotName;
-            this.OverWrite = OverWrite;
+        public static List<Type> GetAllTypes()
+        {
+            return AllTypes;
+        }
+
+        public static List<Type> FilterBaseType(Type BaseType)
+        {
+            return AllTypes.Where(x => BaseType.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
         }
     }
 }
