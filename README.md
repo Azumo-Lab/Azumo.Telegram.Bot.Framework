@@ -1,7 +1,5 @@
 # Telegram.Bot.Framework
 
-https://github.com/sokushu/Telegram.Bot.Net/wiki
-
 ### 简单介绍
 
 [更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
