@@ -1,8 +1,10 @@
-# Telegram.Bot.Net
+# Telegram.Bot.Framework
 
 https://github.com/sokushu/Telegram.Bot.Net/wiki
 
 ### 简单介绍
+
+[更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
 
 这是一个可以帮助减少Telegram Bot开发难度的框架，如果你会使用ASP.NET，那么你也可以轻松上手这个框架。
 
@@ -56,5 +58,3 @@ public class TGBotDEV : IConfig
     }
 }
 ```
-
-[更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
