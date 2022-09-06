@@ -32,6 +32,7 @@ namespace Telegram.Bot.Framework
         protected TelegramContext TelegramContext { get; private set; }
 
         internal IServiceProvider ServiceProvider;
+
         /// <summary>
         /// 执行调用
         /// </summary>
@@ -45,10 +46,15 @@ namespace Telegram.Bot.Framework
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
+
+            Action commandAction = null;
+
             if (Params == null || Params.Length == 0)
-                await Task.Run(() => action.DynamicInvoke());
+                commandAction = () => action.DynamicInvoke();
             else
-                await Task.Run(() => action.DynamicInvoke(Params));
+                commandAction = () => action.DynamicInvoke(Params);
+
+            await Task.Run(commandAction);
         }
 
         /// <summary>
