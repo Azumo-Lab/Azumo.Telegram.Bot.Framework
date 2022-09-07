@@ -9,7 +9,6 @@
 ### 快速开始
 
 ```csharp
-[BotName("DEV1")]
 public class Commands : TelegramController
 {
     private readonly IServiceProvider serviceProvider;
@@ -18,12 +17,25 @@ public class Commands : TelegramController
         this.serviceProvider = serviceProvider;
     }
 
-    // 使用指令/Test
     [Command("Test")]
     public async Task Test([Param("请输入要说的话：", true)] string Message)
     {
         await SendTextMessage("你好，你要说的话是：");
         await SendTextMessage(Message);
+    }
+
+    [Command("Test2")]
+    public async Task Test([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
+    {
+        await SendTextMessage($"你说的第一句是：{FirstMessage}");
+        await SendTextMessage($"你说的第二句是：{TwoMessage}");
+        await SendTextMessage($"合起来是：{FirstMessage}，{TwoMessage}。");
+    }
+
+    [Command("SayHello")]
+    public async Task SayHello()
+    {
+        await SendTextMessage("Hello World");
     }
 }
 ```
@@ -46,12 +58,13 @@ public class TGBotDEV : IConfig
             .SetBotName("DEV1")
             .Build();
 
-        bot.Start();
+        Task botTask = bot.Start();
+
+        botTask.Wait();
     }
 
     public void Config(IServiceCollection telegramServices)
     {
-        // 配置各类服务。
         // TODO Something...
     }
 }
