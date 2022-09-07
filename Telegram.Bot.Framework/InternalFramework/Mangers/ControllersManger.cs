@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,38 +32,40 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
     internal class ControllersManger : IControllersManger, IDelegateManger
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly Dictionary<string, MethodInfo> Command_MethodInfoMap;
-        private readonly Dictionary<string, Type> Command_ControllersMap;
+        private readonly ITypeManger typeManger;
 
         public ControllersManger(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+            typeManger = this.serviceProvider.GetService<ITypeManger>();
         }
 
         public Delegate CreateDelegate(string CommandName)
         {
-            if (Command_MethodInfoMap.ContainsKey(CommandName))
+            if (typeManger.ContainsCommandName(CommandName))
                 return CreateDelegate(CommandName, GetController(CommandName));
             return null;
         }
 
         public Delegate CreateDelegate(string CommandName, object controller)
         {
-            if (Command_MethodInfoMap.ContainsKey(CommandName) && controller != null)
-                return DelegateHelper.CreateDelegate(Command_MethodInfoMap[CommandName], controller);
+            if (typeManger.ContainsCommandName(CommandName) && controller != null)
+                return DelegateHelper.CreateDelegate(typeManger.GetControllerMethod(CommandName), controller);
             return null;
         }
 
         public object GetController(string CommandName)
         {
-            if (Command_ControllersMap.ContainsKey(CommandName))
-                return serviceProvider.GetService(Command_ControllersMap[CommandName]);
+            if (CommandName == null)
+                return null;
+            if (typeManger.ContainsCommandName(CommandName))
+                return serviceProvider.GetService(typeManger.GetControllerType(CommandName));
             return null;
         }
 
         public bool HasCommand(string CommandName)
         {
-            return Command_MethodInfoMap.ContainsKey(CommandName);
+            return typeManger.ContainsCommandName(CommandName);
         }
     }
 }

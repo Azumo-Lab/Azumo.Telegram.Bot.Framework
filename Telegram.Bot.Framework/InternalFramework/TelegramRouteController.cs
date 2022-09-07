@@ -34,10 +34,14 @@ namespace Telegram.Bot.Framework.InternalFramework
         private readonly IServiceScope OneTimeScope;
         private readonly IServiceScope UserScope;
 
+        private readonly IControllersManger controllersManger;
+
         public TelegramRouteController(IServiceScope OneTimeScope, IServiceScope UserScope)
         {
             this.OneTimeScope = OneTimeScope;
             this.UserScope = UserScope;
+
+            controllersManger = this.UserScope.ServiceProvider.GetService<IControllersManger>();
         }
 
         /// <summary>
@@ -46,41 +50,37 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task StartProcess()
         {
-            // 获取Context
-            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
-
-            // 获取参数管理
-            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
-
-            Task taskResult = context.Update.Type switch
-            {
-                // 未知消息
-                UpdateType.Unknown => Task.Run(() => { }),
-                // 消息
-                UpdateType.Message => throw new NotImplementedException(),
-                UpdateType.InlineQuery => throw new NotImplementedException(),
-                UpdateType.ChosenInlineResult => throw new NotImplementedException(),
-                UpdateType.CallbackQuery => throw new NotImplementedException(),
-                UpdateType.EditedMessage => throw new NotImplementedException(),
-                UpdateType.ChannelPost => throw new NotImplementedException(),
-                UpdateType.EditedChannelPost => throw new NotImplementedException(),
-                UpdateType.ShippingQuery => throw new NotImplementedException(),
-                UpdateType.PreCheckoutQuery => throw new NotImplementedException(),
-                UpdateType.Poll => throw new NotImplementedException(),
-                UpdateType.PollAnswer => throw new NotImplementedException(),
-                UpdateType.MyChatMember => throw new NotImplementedException(),
-                UpdateType.ChatMember => throw new NotImplementedException(),
-                UpdateType.ChatJoinRequest => throw new NotImplementedException(),
-                _ => throw new NotImplementedException(),
-            };
+            //Task taskResult = context.Update.Type switch
+            //{
+            //    // 未知消息
+            //    UpdateType.Unknown => Task.Run(() => { }),
+            //    // 消息
+            //    UpdateType.Message => throw new NotImplementedException(),
+            //    UpdateType.InlineQuery => throw new NotImplementedException(),
+            //    UpdateType.ChosenInlineResult => throw new NotImplementedException(),
+            //    UpdateType.CallbackQuery => throw new NotImplementedException(),
+            //    UpdateType.EditedMessage => throw new NotImplementedException(),
+            //    UpdateType.ChannelPost => throw new NotImplementedException(),
+            //    UpdateType.EditedChannelPost => throw new NotImplementedException(),
+            //    UpdateType.ShippingQuery => throw new NotImplementedException(),
+            //    UpdateType.PreCheckoutQuery => throw new NotImplementedException(),
+            //    UpdateType.Poll => throw new NotImplementedException(),
+            //    UpdateType.PollAnswer => throw new NotImplementedException(),
+            //    UpdateType.MyChatMember => throw new NotImplementedException(),
+            //    UpdateType.ChatMember => throw new NotImplementedException(),
+            //    UpdateType.ChatJoinRequest => throw new NotImplementedException(),
+            //    _ => throw new NotImplementedException(),
+            //};
 
             await Authentication();
 
             await FiltersBefore();
 
-            await ParamCatch();
+            if (await ParamCatch())
+                return;
 
-            await ControllerInvoke();
+            if (await ControllerInvoke())
+                return;
 
             await FiltersAfter();
         }
@@ -95,19 +95,37 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         }
 
-        private async Task ParamCatch()
+        private async Task<bool> ParamCatch()
         {
+            // 获取Context
+            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
 
+            TelegramUser user = UserScope.ServiceProvider.GetService<TelegramUser>();
+            user.ChatID = context.ChatID;
+
+            // 获取参数管理
+            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
+
+            return await paramManger.ReadParam(context, OneTimeScope.ServiceProvider);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task ControllerInvoke()
+        private async Task<bool> ControllerInvoke()
         {
-            ITelegramRouteUserController controller = OneTimeScope.ServiceProvider.GetService<ITelegramRouteUserController>();
-            await controller.Invoke();
+            // 获取Context
+            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
+
+            // 获取参数管理
+            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
+
+            TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
+            if (controller == null)
+                return true;
+            await controller.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
+            return false;
         }
 
         private async Task FiltersAfter()

@@ -14,11 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Models;
@@ -32,15 +35,16 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
     /// </summary>
     internal class TypeManger : TypeHelper, ITypeManger
     {
-        private readonly Dictionary<string, CommandInfos> CommandInfos = new();
-        public TypeManger()
+        public Guid ID { get; } = Guid.NewGuid();
+        private readonly Dictionary<string, CommandInfos> CommandInfos;
+        public TypeManger(IServiceCollection services) : base(services)
         {
-            CommandInfos = GetCommandInfos();
+            CommandInfos = base.GetCommandInfos();
         }
 
         public string BotName { get; set; }
 
-        public bool BotNameContains(string CommandName)
+        public bool ContainsBotName(string CommandName)
         {
             return GetCommandBotNames(CommandName).Contains(BotName);
         }
@@ -65,14 +69,30 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
                 return CommandInfos[CommandName].Controller;
             return default;
         }
+
+        public bool ContainsCommandName(string CommandName)
+        {
+            return CommandInfos.ContainsKey(CommandName);
+        }
+
+        public new List<CommandInfos> GetCommandInfos()
+        {
+            return CommandInfos.Values.ToList();
+        }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     internal class TypeHelper
     {
+        private readonly IServiceCollection services;
+
         private readonly List<Type> AllType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
-        private List<Type> GetTypes(Type type) => 
-            AllType.Where(x => x.IsAssignableFrom(type) && !x.IsAbstract && !x.IsInterface).ToList();
+        private readonly List<Type> ParamMakerType;
+        private List<Type> GetTypes(Type type) =>
+            AllType.Where(x => type.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
 
         private List<Type> GetControllers() =>
             GetTypes(typeof(TelegramController));
@@ -84,8 +104,23 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
             (T)Attribute.GetCustomAttribute(memberInfo, typeof(T));
 
         private List<Type> GetParamMakerType() =>
-            GetTypes(typeof(IParamMaker)).Where(x => null != GetAttribute<ParamMakerAttribute>(x)).ToList();
+            ParamMakerType;
 
+        private MethodInfo[] GetMethods(Type ControllerType) =>
+            ControllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+
+        protected TypeHelper(IServiceCollection services)
+        {
+            this.services = services;
+            ParamMakerType = GetTypes(typeof(IParamMaker)).Where(x => Attribute.IsDefined(x, typeof(ParamMakerAttribute))).ToList();
+            ParamMakerType.ForEach(x => this.services.AddScoped(x));
+        }
+
+        /// <summary>
+        /// 获取参数信息
+        /// </summary>
+        /// <param name="paramsInfos"></param>
+        /// <returns></returns>
         private List<ParamInfos> GetParamInfos(ParameterInfo[] paramsInfos)
         {
             List<ParamInfos> paramInfos = new List<ParamInfos>();
@@ -136,16 +171,15 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
         /// <param name="commandInfos"></param>
         private void ConfigInfos(Type ControllerType, List<CommandInfos> commandInfos)
         {
+            services.AddScoped(ControllerType);
+
             List<string> BotNames = new List<string>();
 
-            List<Type> ParamMakerType = GetTypes(typeof(IParamMaker)).Where(x => null != GetAttribute<ParamMakerAttribute>(x)).ToList();
-
-            List<MethodInfo> commands = ControllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance).ToList();
             BotNameAttribute botNameController = GetAttribute<BotNameAttribute>(ControllerType);
             if (botNameController != null)
                 BotNames = botNameController.BotName.ToList();
 
-            foreach (var method in commands)
+            foreach (MethodInfo method in GetMethods(ControllerType))
             {
                 HashSet<string> commandBotNames = new HashSet<string>(BotNames);
                 

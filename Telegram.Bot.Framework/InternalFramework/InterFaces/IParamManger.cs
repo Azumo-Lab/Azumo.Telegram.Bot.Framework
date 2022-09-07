@@ -29,10 +29,11 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
     internal interface IParamManger
     {
         /// <summary>
-        /// 是否处于读取参数的模式
+        /// 读取参数
         /// </summary>
+        /// <param name="context"></param>
         /// <returns></returns>
-        bool IsReadParam();
+        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
 
         /// <summary>
         /// 取消读取参数
@@ -40,14 +41,10 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         void Cancel();
 
         /// <summary>
-        /// 设置指令
+        /// 获取Command的名称
         /// </summary>
-        void SetCommand();
-
-        /// <summary>
-        /// 设置指令
-        /// </summary>
-        Task<bool> StartReadParam();
+        /// <returns></returns>
+        string GetCommand();
 
         /// <summary>
         /// 获取读取过后的参数
@@ -56,9 +53,9 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         object[] GetParam();
 
         /// <summary>
-        /// 获取Command的名称
+        /// 是否处于读取参数的模式
         /// </summary>
         /// <returns></returns>
-        string GetCommand();
+        bool IsReadParam();
     }
 }

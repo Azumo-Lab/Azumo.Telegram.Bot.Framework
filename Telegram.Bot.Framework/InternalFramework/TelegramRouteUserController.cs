@@ -38,43 +38,43 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         public async Task Invoke()
         {
-            string command = context.GetCommand();
+            //string command = context.GetCommand();
 
-            IParamManger paramManger = serviceProvider.GetService<IParamManger>();
-            IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
+            //IParamManger paramManger = serviceProvider.GetService<IParamManger>();
+            //IControllersManger controllersManger = serviceProvider.GetService<IControllersManger>();
 
-            if (command != null)
-            {
-                if (paramManger.IsReadParam())
-                    paramManger.Cancel();
+            //if (command != null)
+            //{
+            //    if (paramManger.IsReadParam())
+            //        paramManger.Cancel();
 
-                if (!controllersManger.HasCommand(command))
-                    command = "/";
+            //    if (!controllersManger.HasCommand(command))
+            //        command = "/";
 
-                paramManger.SetCommand();
-                if (!await paramManger.StartReadParam())
-                    return;
+            //    paramManger.SetCommand(context);
+            //    if (!await paramManger.StartReadParam(context))
+            //        return;
 
-                TelegramController controller = (TelegramController)controllersManger.GetController(command);
-                await controller.Invoke(context, serviceProvider, command);
-            }
-            else
-            {
-                if (paramManger.IsReadParam())
-                {
-                    if (!await paramManger.StartReadParam())
-                    {
-                        return;
-                    }
-                    command = paramManger.GetCommand();
-                    TelegramController controller = (TelegramController)controllersManger.GetController(command);
-                    await controller.Invoke(context, serviceProvider, command);
-                }
-                else
-                {
+            //    TelegramController controller = (TelegramController)controllersManger.GetController(command);
+            //    await controller.Invoke(context, serviceProvider, command);
+            //}
+            //else
+            //{
+            //    if (paramManger.IsReadParam())
+            //    {
+            //        if (!await paramManger.StartReadParam(context))
+            //        {
+            //            return;
+            //        }
+            //        command = paramManger.GetCommand();
+            //        TelegramController controller = (TelegramController)controllersManger.GetController(command);
+            //        await controller.Invoke(context, serviceProvider, command);
+            //    }
+            //    else
+            //    {
 
-                }
-            }
+            //    }
+            //}
         }
     }
 }

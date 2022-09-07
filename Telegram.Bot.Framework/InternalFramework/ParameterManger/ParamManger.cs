@@ -23,133 +23,112 @@ using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 {
     internal class ParamManger : IParamManger
     {
-        private static Dictionary<long, List<object>> Params = new Dictionary<long, List<object>>();
-        private static Dictionary<long, (bool OK, bool Reading)> ParamsOK = new Dictionary<long, (bool OK, bool Reading)>();
-        private static Dictionary<long, string> CHatID_Command = new Dictionary<long, string>();
-        private static Dictionary<string, List<(Type ParamType, string ParamMessage)>> Command_ParamInfo = new Dictionary<string, List<(Type ParamType, string ParamMessage)>>();
-        private static Dictionary<long, int> User_Index = new Dictionary<long, int>();
+        private readonly Dictionary<string, CommandInfos> CommandCommandInfoMap;
+        private readonly IServiceProvider UserServiceProvider;
+        private readonly ITypeManger typeManger;
 
-        private readonly IServiceProvider service;
-        private readonly TelegramContext context;
+        private string CommandName;
+        private List<ParamInfos> ParamInfo;
+        private List<object> ParamList;
+        private bool Reading = false;
 
-        /// <summary>
-        /// 清空指定用户的参数
-        /// </summary>
-        private void ClearParams()
+        public ParamManger(IServiceProvider UserServiceProvider)
         {
-            Params.Remove(context.ChatID);
-        }
+            this.UserServiceProvider = UserServiceProvider;
+            typeManger = UserServiceProvider.GetService<ITypeManger>();
 
-        public ParamManger() { }
-
-        public static void SetDic(Dictionary<string, List<(Type ParamType, string ParamMessage)>> Command_ParamInfo)
-        {
-            ParamManger.Command_ParamInfo = Command_ParamInfo;
-        }
-
-        public ParamManger(IServiceProvider serviceProvider)
-        {
-            service = serviceProvider;
-            context = service.GetService<TelegramContext>();
+            CommandCommandInfoMap = new();
+            foreach (var item in typeManger.GetCommandInfos())
+                CommandCommandInfoMap.Add(item.CommandName, item);
         }
 
         public void Cancel()
         {
-            Params.Remove(context.ChatID);
-            ParamsOK.Remove(context.ChatID);
-            CHatID_Command.Remove(context.ChatID);
+            CommandName = null;
+            ParamInfo = null;
+            ParamList = null;
         }
 
-        public object[] GetParam()
+        private void ReadOK()
         {
-            try
-            {
-                var ID = context.ChatID;
-                if (ParamsOK.ContainsKey(ID))
-                    if (ParamsOK[ID].OK && Params.ContainsKey(ID))
-                        return Params[context.ChatID].ToArray();
-                return null;
-            }
-            finally
-            {
-                Params.Remove(context.ChatID);
-            }
-        }
-
-        public bool IsReadParam()
-        {
-            long id = context.ChatID;
-            return ParamsOK.ContainsKey(id) && !ParamsOK[id].OK;
-        }
-
-        public void SetCommand()
-        {
-            string Command;
-            if ((Command = context.GetCommand()) == null)
-                return;
-
-            if (CHatID_Command.ContainsKey(context.ChatID))
-            {
-                CHatID_Command.Remove(context.ChatID);
-            }
-            CHatID_Command.Add(context.ChatID, Command);
-        }
-
-        public async Task<bool> StartReadParam()
-        {
-            var command = CHatID_Command[context.ChatID];
-            var ParamInfos = Command_ParamInfo[command];
-            if (ParamInfos == null || ParamInfos.Count == 0)
-                return true;
-
-            if (!ParamsOK.ContainsKey(context.ChatID))
-                ParamsOK.Add(context.ChatID, (false, false));
-            ParamsOK[context.ChatID] = (false, ParamsOK[context.ChatID].Reading);
-
-            REREAD:
-            if (ParamsOK[context.ChatID].Reading == true)
-            {
-                IParamMaker maker = (IParamMaker)service.GetService(ParamInfos[User_Index[context.ChatID]].ParamType);
-
-                Task<object> result = maker.GetParam(context, service);
-
-                if (!Params.ContainsKey(context.ChatID))
-                    Params.Add(context.ChatID, new List<object>());
-                Params[context.ChatID].Add(result.Result);
-
-                ParamsOK[context.ChatID] = (ParamsOK[context.ChatID].OK, false);
-
-                User_Index[context.ChatID] += 1;
-                if (User_Index[context.ChatID] < ParamInfos.Count)
-                {
-                    goto REREAD;
-                }
-                User_Index.Remove(context.ChatID);
-                ParamsOK[context.ChatID] = (true, false);
-                return true;
-            }
-            else
-            {
-                if (!User_Index.ContainsKey(context.ChatID))
-                    User_Index.Add(context.ChatID, 0);
-                var info = ParamInfos[User_Index[context.ChatID]];
-
-                IParamMessage message = service.GetService<IParamMessage>();
-                await message.SendMessage(info.ParamMessage);
-                ParamsOK[context.ChatID] = (ParamsOK[context.ChatID].OK, true);
-                return false;
-            }
-            
+            ParamInfo = null;
         }
 
         public string GetCommand()
         {
-            return CHatID_Command[context.ChatID];
+            return CommandName;
+        }
+
+        public object[] GetParam()
+        {
+            if (ParamList == null)
+                return null;
+            return ParamList.ToArray();
+        }
+
+        public bool IsReadParam()
+        {
+            return ParamInfo != null;
+        }
+
+        public async Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider)
+        {
+            //TODO:BUG
+            if (ParamInfo == null)
+            {
+                Cancel();
+                if (string.IsNullOrEmpty(CommandName))
+                {
+                    CommandName = context.GetCommand();
+                    if (string.IsNullOrEmpty(CommandName))
+                        return false;
+                }
+
+                if (CommandCommandInfoMap.TryGetValue(CommandName, out CommandInfos cmdInfo))
+                    ParamInfo = cmdInfo.ParamInfos.ToList();
+                else
+                    return false;
+            }
+
+            ReadParam:
+
+            ParamInfos paramOne = ParamInfo.FirstOrDefault();
+
+            if (!Reading)
+            {
+                if (paramOne == null)
+                    return false;
+
+                if (paramOne.MessageInfo != null)
+                {
+                    IParamMessage paramMessage = OneTimeServiceProvider.GetService<IParamMessage>();
+                    await paramMessage.SendMessage(paramOne.MessageInfo);
+                    Reading = true;
+                    ParamList = new List<object>();
+                    return true;
+                }
+            }
+            else
+            {
+                IParamMaker paramMaker = (IParamMaker)OneTimeServiceProvider.GetService(paramOne.MessageType);
+                ParamList.Add(await paramMaker.GetParam(context, UserServiceProvider));
+                ParamInfo.Remove(paramOne);
+                Reading = false;
+                if (!ParamInfo.Any())
+                {
+                    ReadOK();
+                    return false;
+                }
+                goto ReadParam;
+            }
+
+            return false;
         }
     }
 }

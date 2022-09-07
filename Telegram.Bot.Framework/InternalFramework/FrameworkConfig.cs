@@ -48,8 +48,12 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <param name="telegramServices"></param>
         public void Config(IServiceCollection telegramServices)
         {
+            BotInfos botInfos = serviceProvider.GetService<BotInfos>();
+            HttpClient httpClient = serviceProvider.GetService<HttpClient>();
+
             telegramServices.AddScoped<IParamMessage, StringParamMessage>();
             telegramServices.AddScoped<ILogger, Logger>();
+            telegramServices.AddScoped<TelegramUser>();
             telegramServices.AddScoped(x =>
             {
                 return new TelegramContext();
@@ -61,11 +65,9 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();
-            telegramServices.AddSingleton<ITypeManger, TypeManger>();
+            telegramServices.AddSingleton<ITypeManger>(new TypeManger(telegramServices));
             telegramServices.AddSingleton<IBotNameManger>(x => 
             {
-                BotInfos botInfos = serviceProvider.GetService<BotInfos>();
-
                 BotNameManger botNameManger = new(x)
                 {
                     BotName = botInfos.BotName
@@ -74,8 +76,6 @@ namespace Telegram.Bot.Framework.InternalFramework
             });
             telegramServices.AddSingleton<ITelegramBotClient>(x => 
             {
-                BotInfos botInfos = serviceProvider.GetService<BotInfos>();
-                HttpClient httpClient = serviceProvider.GetService<HttpClient>();
                 if (httpClient == null)
                     return new TelegramBotClient(botInfos.Token);
                 else

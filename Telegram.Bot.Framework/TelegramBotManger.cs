@@ -129,7 +129,7 @@ namespace Telegram.Bot.Framework
             Tokens.Add(Token);
 
             services.AddScoped<IConfig, FrameworkConfig>();
-            services.AddScoped<TelegramBot>();
+            services.AddScoped(x => new TelegramBot(x));
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {

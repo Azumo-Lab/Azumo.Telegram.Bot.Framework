@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
@@ -33,16 +34,39 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         /// </summary>
         string BotName { get; }
 
-        Type GetControllerType(string CommandName);
-
-        MethodInfo GetControllerMethod(string CommandName);
-
         /// <summary>
-        /// 判断
+        /// 获取控制器类型
         /// </summary>
         /// <param name="CommandName"></param>
         /// <returns></returns>
-        bool BotNameContains(string CommandName);
+        Type GetControllerType(string CommandName);
+
+        /// <summary>
+        /// 获取所有的CommandInfos信息
+        /// </summary>
+        /// <returns></returns>
+        List<CommandInfos> GetCommandInfos();
+
+        /// <summary>
+        /// 获得一个方法
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        MethodInfo GetControllerMethod(string CommandName);
+
+        /// <summary>
+        /// 判断是否存在某个指令名
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool ContainsCommandName(string CommandName);
+
+        /// <summary>
+        /// 判断方法允许的BotName中是否有本Bot
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool ContainsBotName(string CommandName);
 
         /// <summary>
         /// 获取Bot名称列表

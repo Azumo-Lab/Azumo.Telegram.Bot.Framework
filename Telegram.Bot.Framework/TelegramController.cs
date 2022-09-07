@@ -36,13 +36,13 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 执行调用
         /// </summary>
-        internal async Task Invoke(TelegramContext context, IServiceProvider serviceProvider,string CommandName)
+        internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, string CommandName)
         {
             TelegramContext = context;
-            ServiceProvider = serviceProvider;
+            ServiceProvider = OneTimeService;
 
             IDelegateManger delegateManger = ServiceProvider.GetService<IDelegateManger>();
-            IParamManger paramManger = serviceProvider.GetService<IParamManger>();
+            IParamManger paramManger = UserService.GetService<IParamManger>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
