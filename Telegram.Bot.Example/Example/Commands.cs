@@ -26,7 +26,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Net.Example
 {
-    [BotName("")]
+    [BotName("FF", "GG")]
     public class Commands : TelegramController
     {
         private readonly IServiceProvider serviceProvider;

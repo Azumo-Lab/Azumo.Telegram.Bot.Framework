@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -45,7 +46,33 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task StartProcess()
         {
+            // 获取Context
             TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
+
+            // 获取参数管理
+            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
+
+            Task taskResult = context.Update.Type switch
+            {
+                // 未知消息
+                UpdateType.Unknown => Task.Run(() => { }),
+                // 消息
+                UpdateType.Message => throw new NotImplementedException(),
+                UpdateType.InlineQuery => throw new NotImplementedException(),
+                UpdateType.ChosenInlineResult => throw new NotImplementedException(),
+                UpdateType.CallbackQuery => throw new NotImplementedException(),
+                UpdateType.EditedMessage => throw new NotImplementedException(),
+                UpdateType.ChannelPost => throw new NotImplementedException(),
+                UpdateType.EditedChannelPost => throw new NotImplementedException(),
+                UpdateType.ShippingQuery => throw new NotImplementedException(),
+                UpdateType.PreCheckoutQuery => throw new NotImplementedException(),
+                UpdateType.Poll => throw new NotImplementedException(),
+                UpdateType.PollAnswer => throw new NotImplementedException(),
+                UpdateType.MyChatMember => throw new NotImplementedException(),
+                UpdateType.ChatMember => throw new NotImplementedException(),
+                UpdateType.ChatJoinRequest => throw new NotImplementedException(),
+                _ => throw new NotImplementedException(),
+            };
 
             await Authentication();
 

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.Mangers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     internal class TelegramUserScopeManger : ITelegramUserScopeManger
     {
         private readonly IServiceProvider serviceProvider;

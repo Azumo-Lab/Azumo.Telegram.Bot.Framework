@@ -24,33 +24,63 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
     internal static class ThrowHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
         public static void ThrowIfNullOrEmpty(string str)
         {
             ThrowIfNullOrEmpty(str, "文本不能为NULL，或空字符串");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="ErrorInfo"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void ThrowIfNullOrEmpty(string str, string ErrorInfo)
         {
             if (string.IsNullOrEmpty(str))
                 throw new ArgumentNullException(ErrorInfo);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="ErrorInfo"></param>
+        /// <exception cref="ArgumentException"></exception>
         public static void ThrowIfZeroAndDown(int number, string ErrorInfo)
         {
             if (number <= 0)
                 throw new ArgumentException(ErrorInfo);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number"></param>
         public static void ThrowIfZeroAndDown(int number)
         {
             ThrowIfZeroAndDown(number, "不能小于或等于零");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
         public static void ThrowIfNull(object obj)
         {
             ThrowIfNull(obj, "参数不能为NULL");
         }
 
+        /// <summary>
+        /// 如果为空则抛出异常
+        /// </summary>
+        /// <param name="obj">判断的对象</param>
+        /// <param name="errorMsg">错误信息</param>
+        /// <exception cref="ArgumentNullException">异常信息</exception>
         public static void ThrowIfNull(object obj, string errorMsg)
         {
             if (obj == null)

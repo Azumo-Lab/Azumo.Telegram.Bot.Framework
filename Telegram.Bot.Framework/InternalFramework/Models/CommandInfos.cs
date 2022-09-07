@@ -24,16 +24,33 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.InternalFramework.Models
 {
     /// <summary>
-    /// 
+    /// 指令信息
     /// </summary>
     internal class CommandInfos
     {
+        /// <summary>
+        /// 指令名称
+        /// </summary>
         public string CommandName { get; set; }
 
+        /// <summary>
+        /// 控制器类型
+        /// </summary>
         public Type Controller { get; set; }
 
-        public HashSet<string> BotName { get; set; }
+        /// <summary>
+        /// 方法信息
+        /// </summary>
+        public MethodInfo CommandMethod { get; set; }
 
+        /// <summary>
+        /// 能够使用的Bot名称
+        /// </summary>
+        public HashSet<string> BotNames { get; set; }
+
+        /// <summary>
+        /// 方法参数信息
+        /// </summary>
         public IEnumerable<ParamInfos> ParamInfos { get; set; }
     }
 }

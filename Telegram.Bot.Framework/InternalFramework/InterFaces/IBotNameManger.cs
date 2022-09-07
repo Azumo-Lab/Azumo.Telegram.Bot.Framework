@@ -19,26 +19,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 帮助创建委托
+    /// 
     /// </summary>
-    internal interface IDelegateManger
+    internal interface IBotNameManger
     {
         /// <summary>
-        /// 创建一个委托
+        /// 当前使用的Bot名称
         /// </summary>
-        /// <param name="Command">Command名称</param>
-        /// <returns></returns>
-        Delegate CreateDelegate(string CommandName);
+        string BotName { get; }
 
         /// <summary>
-        /// 创建一个委托
+        /// 获取Bot名称列表
         /// </summary>
-        /// <param name="Command">Command名称</param>
+        /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        Delegate CreateDelegate(string CommandName, object controller);
+        HashSet<string> GetBotNames(string CommandName);
+
+        /// <summary>
+        /// 判断
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool Contains(string CommandName);
     }
 }

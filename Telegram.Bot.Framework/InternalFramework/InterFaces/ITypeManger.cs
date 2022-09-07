@@ -19,47 +19,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
-    internal class ControllersManger : IControllersManger
+    /// <summary>
+    /// 
+    /// </summary>
+    internal interface ITypeManger
     {
-        private static Dictionary<string, Type> Command_ControllerMap;
-        private readonly IServiceProvider serviceProvider;
-
-        internal static void SetDic(Dictionary<string, Type> Command_ControllerMap)
-        {
-            ControllersManger.Command_ControllerMap = Command_ControllerMap;
-        }
-
         /// <summary>
-        /// 初始化
+        /// 当前使用的Bot名称
         /// </summary>
-        /// <param name="Command_ControllerMap"></param>
-        public ControllersManger(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider;
-        }
+        string BotName { get; }
+
+        Type GetControllerType(string CommandName);
+
+        MethodInfo GetControllerMethod(string CommandName);
 
         /// <summary>
-        /// 获取控制器
+        /// 判断
         /// </summary>
         /// <param name="CommandName"></param>
         /// <returns></returns>
-        public object GetController(string CommandName)
-        {
-            return serviceProvider.GetService(Command_ControllerMap[CommandName]);
-        }
+        bool BotNameContains(string CommandName);
 
         /// <summary>
-        /// 检查是否有支持该指令的控制器
+        /// 获取Bot名称列表
         /// </summary>
-        /// <param name="CommandName">要测试的指令</param>
+        /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        public bool HasCommand(string CommandName)
-        {
-            return Command_ControllerMap.ContainsKey(CommandName);
-        }
+        HashSet<string> GetCommandBotNames(string CommandName);
     }
 }

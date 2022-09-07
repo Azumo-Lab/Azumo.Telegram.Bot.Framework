@@ -40,7 +40,7 @@ namespace Telegram.Bot.Net
             var bot = TelegramBotManger.CreateConfig()
                 .SetToken(Token)
                 .SetProxy(Proxy, Port)
-                .SetConfig<TGBotDEV>()
+                .AddConfig<TGBotDEV>()
                 .SetBotName("DEV1")
                 .Build();
 

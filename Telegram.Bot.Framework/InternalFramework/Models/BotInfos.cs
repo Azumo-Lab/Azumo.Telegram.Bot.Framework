@@ -19,26 +19,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Models
 {
-    /// <summary>
-    /// 帮助创建委托
-    /// </summary>
-    internal interface IDelegateManger
+    internal class BotInfos
     {
         /// <summary>
-        /// 创建一个委托
+        /// Token
         /// </summary>
-        /// <param name="Command">Command名称</param>
-        /// <returns></returns>
-        Delegate CreateDelegate(string CommandName);
+        public string Token { get; set; }
 
         /// <summary>
-        /// 创建一个委托
+        /// Bot名称
         /// </summary>
-        /// <param name="Command">Command名称</param>
-        /// <returns></returns>
-        Delegate CreateDelegate(string CommandName, object controller);
+        public string BotName { get; set; }
     }
 }

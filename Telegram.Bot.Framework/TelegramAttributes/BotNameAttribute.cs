@@ -31,9 +31,9 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// </summary>
         public string[] BotName { get; }
 
-        public bool OverWrite { get; }
+        public bool OverWrite { get; set; }
 
-        public BotNameAttribute(bool OverWrite = false, params string[] BotName)
+        public BotNameAttribute(params string[] BotName)
         {
             void Error()
             {
@@ -46,7 +46,6 @@ namespace Telegram.Bot.Framework.TelegramAttributes
                     Error();
 
             this.BotName = BotName;
-            this.OverWrite = OverWrite;
         }
     }
 }

@@ -19,12 +19,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading;
-using Telegram.Bot.Framework.InternalFramework.ControllerManger;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.LogImpl;
+using Telegram.Bot.Framework.InternalFramework.Mangers;
+using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.ParameterManger;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
@@ -34,23 +36,10 @@ namespace Telegram.Bot.Framework.InternalFramework
 {
     internal class FrameworkConfig : IConfig
     {
-        private readonly IConfig setUps;
-        private readonly ITelegramBotClient botClient;
-        private static readonly HashSet<string> BotNames = new HashSet<string>();
-
-        public FrameworkConfig(IConfig setUp, bool UseBotName, string BotName, ITelegramBotClient telegramBot)
+        private readonly IServiceProvider serviceProvider;
+        public FrameworkConfig(IServiceProvider serviceProvider)
         {
-            setUps = setUp;
-            botClient = telegramBot;
-
-            if (UseBotName)
-            {
-                if (string.IsNullOrEmpty(BotName))
-                    throw new ArgumentNullException();
-                if (!BotNames.Add(BotName))
-                    throw new RepeatedBotNameException();
-            }
-                
+            this.serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -61,6 +50,10 @@ namespace Telegram.Bot.Framework.InternalFramework
         {
             telegramServices.AddScoped<IParamMessage, StringParamMessage>();
             telegramServices.AddScoped<ILogger, Logger>();
+            telegramServices.AddScoped(x =>
+            {
+                return new TelegramContext();
+            });
 
             telegramServices.AddTransient<ITelegramRouteUserController, TelegramRouteUserController>();
             telegramServices.AddTransient<ITelegramUserScopeManger, TelegramUserScopeManger>();
@@ -68,17 +61,28 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();
-            telegramServices.AddSingleton(botClient);
-
-            telegramServices.AddScoped(x =>
+            telegramServices.AddSingleton<ITypeManger, TypeManger>();
+            telegramServices.AddSingleton<IBotNameManger>(x => 
             {
-                return new TelegramContext();
+                BotInfos botInfos = serviceProvider.GetService<BotInfos>();
+
+                BotNameManger botNameManger = new(x)
+                {
+                    BotName = botInfos.BotName
+                };
+                return botNameManger;
+            });
+            telegramServices.AddSingleton<ITelegramBotClient>(x => 
+            {
+                BotInfos botInfos = serviceProvider.GetService<BotInfos>();
+                HttpClient httpClient = serviceProvider.GetService<HttpClient>();
+                if (httpClient == null)
+                    return new TelegramBotClient(botInfos.Token);
+                else
+                    return new TelegramBotClient(botInfos.Token, httpClient);
             });
 
-            telegramServices.AddControllers(BotNames);
-
-            if (setUps != null)
-                setUps.Config(telegramServices);
+            telegramServices.AddControllers();
         }
     }
 
@@ -88,83 +92,11 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// 添加控制器
         /// </summary>
         /// <param name="services"></param>
-        public static void AddControllers(this IServiceCollection services, HashSet<string> BotNames)
+        public static void AddControllers(this IServiceCollection services)
         {
-            List<Type> AllTypes = ServiceCollextionHelper.GetAllTypes();
-
-            List<Type> TelegramControllerTypes = ServiceCollextionHelper.FilterBaseType(typeof(TelegramController));
-            List<Type> IParamMakerTypes = ServiceCollextionHelper.FilterBaseType(typeof(IParamMaker));
-            IParamMakerTypes.ForEach(x => services.AddScoped(x));
-
-            Dictionary<string, Type> Command_ControllerMap = new Dictionary<string, Type>();
-            Dictionary<string, MethodInfo> Command_MethodMap = new Dictionary<string, MethodInfo>();
-            Dictionary<string, List<(Type ParamType, string ParamMessage)>> Command_ParamInfos = new Dictionary<string, List<(Type ParamType, string ParamMessage)>>();
-
-            foreach (Type item in TelegramControllerTypes)
-            {
-                //把控制器添加进入Scoped
-                services.AddScoped(item);
-
-                var methods = item.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-                foreach (var method in methods)
-                {
-                    #region 指令Command
-
-                    CommandAttribute attr = (CommandAttribute)Attribute.GetCustomAttribute(method, typeof(CommandAttribute));
-                    if (attr == null)
-                        continue;
-                    if (Command_ControllerMap.ContainsKey(attr.CommandName))
-                        //重复
-                        throw new RepeatedCommandException(attr.CommandName);
-
-                    //指令名称和控制器的关系
-                    Command_ControllerMap.Add(attr.CommandName, item);
-                    //指令名称和方法的关系
-                    Command_MethodMap.Add(attr.CommandName, method);
-                    Command_ParamInfos.Add(attr.CommandName, new List<(Type ParamType, string ParamMessage)>());
-
-                    #endregion
-
-                    #region 参数相关的处理
-
-                    //处理参数相关的一些操作
-                    var methodParams = method.GetParameters().ToList();
-
-                    foreach (var para in methodParams)
-                    {
-                        var attrParam = (ParamAttribute)Attribute.GetCustomAttribute(para, typeof(ParamAttribute));
-                        if (attrParam == null)
-                            continue;
-
-                        string message;
-                        if (attrParam.UseCustom)
-                        {
-                            message = attrParam.CustomInfos;
-                        }
-                        else
-                        {
-                            message = $"请输入【{attrParam.CustomInfos}】的值";
-                        }
-
-                        Type IParamMakerType = IParamMakerTypes.Where(x =>
-                        {
-                            return Attribute.IsDefined(x, typeof(ParamMakerAttribute));
-                        }).FirstOrDefault();
-                        Command_ParamInfos[attr.CommandName].Add((IParamMakerType, message));
-                    }
-
-                    #endregion
-                }
-            }
-
-            //设置方法与指令的对应信息
-            ControllersManger.SetDic(Command_ControllerMap);
-            DelegateManger.SetDic(Command_MethodMap);
-            ParamManger.SetDic(Command_ParamInfos);
-
             //添加进入services
             services.AddScoped<IControllersManger, ControllersManger>();
-            services.AddScoped<IDelegateManger, DelegateManger>();
+            services.AddScoped<IDelegateManger, ControllersManger>();
             services.AddScoped<IParamManger, ParamManger>();
         }
 

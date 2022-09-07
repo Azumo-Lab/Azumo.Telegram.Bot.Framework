@@ -20,24 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.TelegramAttributes;
-using Telegram.Bot.Framework.TelegramException;
 
-namespace Telegram.Bot.Framework.InternalFramework.InternalFrameworkConfig
+namespace Telegram.Bot.Framework.TelegramException
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class FrameSettings
+    public class TooManyExecutionsException : Exception
     {
-        public IEnumerable<CommandInfos> ConfigCommandController(Type ControllerType, HashSet<string> BotName)
-        {
-            HashSet<string> ControllerBotNames = new HashSet<string>(new BotNameConfig().ConfigBotName(ControllerType, BotName));
-
-            IEnumerable<CommandInfos> Commands = new CommandConfig().ConfigCommand(ControllerType, BotName, ControllerBotNames);
-
-            return Commands;
-        }
+        public TooManyExecutionsException(string Message) : base(Message) { }
     }
 }

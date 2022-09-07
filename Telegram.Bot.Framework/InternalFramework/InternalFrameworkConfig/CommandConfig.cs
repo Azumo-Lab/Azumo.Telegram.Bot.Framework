@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework.InternalFramework.InternalFrameworkConfig
                 yield return new CommandInfos
                 {
                     CommandName = commandAttr.CommandName,
-                    BotName = Names,
+                    BotNames = Names,
                     Controller = ControllerType,
                     ParamInfos = Parainfo
                 };

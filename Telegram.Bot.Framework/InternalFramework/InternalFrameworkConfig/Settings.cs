@@ -16,28 +16,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.TelegramException;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.InternalFramework.InternalFrameworkConfig
 {
     /// <summary>
-    /// 使用自定义的参数获取方式
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ParamMakerFor : Attribute
+    internal class Settings
     {
-        /// <summary>
-        /// 参数获取类
-        /// </summary>
-        public Type Type { get; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="type">要使用的类(实现IParamMaker)</param>
-        public ParamMakerFor(Type type)
+        public IEnumerable<CommandInfos> ConfigStart(Type ControllerType, HashSet<string> BotName)
         {
-            Type = type;
+            HashSet<string> ControllerBotNames = new HashSet<string>(new BotNameConfig().ConfigBotName(ControllerType, BotName));
+
+            IEnumerable<CommandInfos> Commands = new CommandConfig().ConfigCommand(ControllerType, BotName, ControllerBotNames);
+
+            return Commands;
         }
     }
 }

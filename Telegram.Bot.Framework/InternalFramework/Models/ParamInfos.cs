@@ -24,12 +24,18 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.InternalFramework.Models
 {
     /// <summary>
-    /// 
+    /// 参数信息
     /// </summary>
     internal class ParamInfos
     {
+        /// <summary>
+        /// 返回的信息
+        /// </summary>
         public string MessageInfo { get; set; }
 
+        /// <summary>
+        /// 参数处理类型
+        /// </summary>
         public Type MessageType { get; set; }
     }
 }
