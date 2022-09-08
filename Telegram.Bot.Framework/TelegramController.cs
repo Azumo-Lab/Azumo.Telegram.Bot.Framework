@@ -66,7 +66,7 @@ namespace Telegram.Bot.Framework
         {
             await TelegramContext.BotClient.SendTextMessageAsync(
                 chatId: TelegramContext.ChatID,
-                Message, ParseMode.MarkdownV2
+                Message
                 );
         }
 
