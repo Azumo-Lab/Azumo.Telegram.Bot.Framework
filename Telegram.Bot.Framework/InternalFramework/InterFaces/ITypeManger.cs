@@ -48,6 +48,12 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         List<CommandInfos> GetCommandInfos();
 
         /// <summary>
+        /// 获取所有的CommandInfos信息
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<string, CommandInfos> GetCommandInfosDic();
+
+        /// <summary>
         /// 获得一个方法
         /// </summary>
         /// <param name="CommandName"></param>

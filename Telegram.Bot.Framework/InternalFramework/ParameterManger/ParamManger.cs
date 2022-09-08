@@ -41,11 +41,9 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
         public ParamManger(IServiceProvider UserServiceProvider)
         {
             this.UserServiceProvider = UserServiceProvider;
-            typeManger = UserServiceProvider.GetService<ITypeManger>();
+            typeManger = this.UserServiceProvider.GetService<ITypeManger>();
 
-            CommandCommandInfoMap = new();
-            foreach (CommandInfos item in typeManger.GetCommandInfos())
-                CommandCommandInfoMap.Add(item.CommandName, item);
+            CommandCommandInfoMap = typeManger.GetCommandInfosDic();
         }
 
         public void Cancel()
@@ -116,7 +114,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             else
             {
                 IParamMaker paramMaker = (IParamMaker)OneTimeServiceProvider.GetService(paramOne.MessageType);
-                ParamList.Add(await paramMaker.GetParam(context, UserServiceProvider));
+                ParamList.Add(await paramMaker.GetParam(context, OneTimeServiceProvider));
                 ParamInfo.Remove(paramOne);
                 Reading = false;
                 if (!ParamInfo.Any())

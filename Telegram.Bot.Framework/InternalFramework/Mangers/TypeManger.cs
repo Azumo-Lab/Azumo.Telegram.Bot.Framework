@@ -79,6 +79,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
         {
             return CommandInfos.Values.ToList();
         }
+
+        public Dictionary<string, CommandInfos> GetCommandInfosDic()
+        {
+            return CommandInfos;
+        }
     }
 
     /// <summary>
