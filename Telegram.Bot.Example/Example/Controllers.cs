@@ -46,7 +46,7 @@ namespace Telegram.Bot.Example.Example
         [Command(nameof(NowTime))]
         public async Task NowTime()
         {
-            await SendTextMessage(DateTime.Now.ToString());
+            await SendTextMessage(DateTime.Now.ToString("现在的时间是 yyyy 年 MM 月 dd 日 HH 点 mm 分 ss 秒"));
         }
     }
 }
