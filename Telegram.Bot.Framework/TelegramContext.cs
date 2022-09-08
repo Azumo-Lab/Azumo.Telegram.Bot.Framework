@@ -72,7 +72,7 @@ namespace Telegram.Bot.Framework
             if (!string.IsNullOrEmpty(command = Update.Message?.Text))
                 if (!command.StartsWith('/'))
                     command = null;
-            return command;
+            return command.ToLower();
         }
     }
 }

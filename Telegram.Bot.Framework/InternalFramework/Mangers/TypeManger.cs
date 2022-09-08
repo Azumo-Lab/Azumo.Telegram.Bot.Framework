@@ -202,7 +202,7 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
                 commandInfos.Add(new CommandInfos
                 {
                     CommandMethod = method,
-                    CommandName = commandAttr.CommandName,
+                    CommandName = commandAttr.CommandName.ToLower(),
                     Controller = ControllerType,
                     BotNames = commandBotNames,
                     ParamInfos = GetParamInfos(method.GetParameters()),
