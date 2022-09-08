@@ -53,9 +53,10 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             ParamList = null;
         }
 
-        private void ReadOK()
+        private bool ReadOK()
         {
             ParamInfo = null;
+            return true;
         }
 
         public string GetCommand()
@@ -90,13 +91,13 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                 {
                     CommandName = context.GetCommand();
                     if (string.IsNullOrEmpty(CommandName))
-                        return true;
+                        return ReadOK();
                 }
 
                 if (CommandCommandInfoMap.TryGetValue(CommandName, out CommandInfos cmdInfo))
                     ParamInfo = cmdInfo.ParamInfos.ToList();
                 else
-                    return true;
+                    return ReadOK();
             }
 
             ReadParam:
@@ -106,7 +107,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             if (!Reading)
             {
                 if (paramOne == null)
-                    return true;
+                    return ReadOK();
 
                 if (paramOne.MessageInfo != null)
                 {
@@ -125,13 +126,12 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                 Reading = false;
                 if (!ParamInfo.Any())
                 {
-                    ReadOK();
-                    return true;
+                    return ReadOK();
                 }
                 goto ReadParam;
             }
 
-            return true;
+            return ReadOK();
         }
     }
 }
