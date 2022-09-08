@@ -75,6 +75,12 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             return ParamInfo != null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="OneTimeServiceProvider"></param>
+        /// <returns>true 参数读取完毕/false 继续读取参数</returns>
         public async Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider)
         {
             if (ParamInfo == null)
@@ -84,13 +90,13 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                 {
                     CommandName = context.GetCommand();
                     if (string.IsNullOrEmpty(CommandName))
-                        return false;
+                        return true;
                 }
 
                 if (CommandCommandInfoMap.TryGetValue(CommandName, out CommandInfos cmdInfo))
                     ParamInfo = cmdInfo.ParamInfos.ToList();
                 else
-                    return false;
+                    return true;
             }
 
             ReadParam:
@@ -100,7 +106,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             if (!Reading)
             {
                 if (paramOne == null)
-                    return false;
+                    return true;
 
                 if (paramOne.MessageInfo != null)
                 {
@@ -108,7 +114,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                     await paramMessage.SendMessage(paramOne.MessageInfo);
                     Reading = true;
                     ParamList ??= new List<object>();
-                    return true;
+                    return false;
                 }
             }
             else
@@ -120,12 +126,12 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                 if (!ParamInfo.Any())
                 {
                     ReadOK();
-                    return false;
+                    return true;
                 }
                 goto ReadParam;
             }
 
-            return false;
+            return true;
         }
     }
 }

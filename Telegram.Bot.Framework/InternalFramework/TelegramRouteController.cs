@@ -36,12 +36,15 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         private readonly IControllersManger controllersManger;
 
+        private readonly TelegramContext Context;
+
         public TelegramRouteController(IServiceScope OneTimeScope, IServiceScope UserScope)
         {
             this.OneTimeScope = OneTimeScope;
             this.UserScope = UserScope;
 
             controllersManger = this.UserScope.ServiceProvider.GetService<IControllersManger>();
+            Context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
         }
 
         /// <summary>
@@ -50,7 +53,9 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task StartProcess()
         {
-            //Task taskResult = context.Update.Type switch
+            //TODO:各类传入参数待完善
+
+            //Task taskResult = Context.Update.Type switch
             //{
             //    // 未知消息
             //    UpdateType.Unknown => Task.Run(() => { }),
@@ -72,65 +77,80 @@ namespace Telegram.Bot.Framework.InternalFramework
             //    _ => throw new NotImplementedException(),
             //};
 
-            await Authentication();
-
-            await FiltersBefore();
-
-            if (await ParamCatch())
+            if (!await Authentication())
                 return;
 
-            if (await ControllerInvoke())
+            if (!await FiltersBefore())
                 return;
 
-            await FiltersAfter();
+            if (!await ParamCatch())
+                return;
+
+            if (!await ControllerInvoke())
+                return;
+
+            if (!await FiltersAfter())
+                return;
         }
 
-        private async Task Authentication()
+        /// <summary>
+        /// 权限认证
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> Authentication()
         {
-
+            return true;
         }
 
-        private async Task FiltersBefore()
+        /// <summary>
+        /// 过滤前处理
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> FiltersBefore()
         {
-
+            return true;
         }
 
+        /// <summary>
+        /// 参数获取
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> ParamCatch()
         {
-            // 获取Context
-            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
-
             TelegramUser user = UserScope.ServiceProvider.GetService<TelegramUser>();
-            user.ChatID = context.ChatID;
+            user.ChatID = Context.ChatID;
 
             // 获取参数管理
             IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
 
-            return await paramManger.ReadParam(context, OneTimeScope.ServiceProvider);
+            return await paramManger.ReadParam(Context, OneTimeScope.ServiceProvider);
         }
 
         /// <summary>
-        /// 
+        /// 控制器执行
         /// </summary>
         /// <returns></returns>
         private async Task<bool> ControllerInvoke()
         {
-            // 获取Context
-            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
-
             // 获取参数管理
             IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
 
             TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
             if (controller == null)
-                return true;
-            await controller.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
-            return false;
+                return false;
+
+            await controller.Invoke(Context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
+            
+            return true;
         }
 
-        private async Task FiltersAfter()
+        /// <summary>
+        /// 过滤后处理
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> FiltersAfter()
         {
-
+            return true;
         }
     }
 }
