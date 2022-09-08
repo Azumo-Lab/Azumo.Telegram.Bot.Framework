@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
             typeManger = UserServiceProvider.GetService<ITypeManger>();
 
             CommandCommandInfoMap = new();
-            foreach (var item in typeManger.GetCommandInfos())
+            foreach (CommandInfos item in typeManger.GetCommandInfos())
                 CommandCommandInfoMap.Add(item.CommandName, item);
         }
 
@@ -79,7 +79,6 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
 
         public async Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider)
         {
-            //TODO:BUG
             if (ParamInfo == null)
             {
                 Cancel();
@@ -110,7 +109,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
                     IParamMessage paramMessage = OneTimeServiceProvider.GetService<IParamMessage>();
                     await paramMessage.SendMessage(paramOne.MessageInfo);
                     Reading = true;
-                    ParamList = new List<object>();
+                    ParamList ??= new List<object>();
                     return true;
                 }
             }
