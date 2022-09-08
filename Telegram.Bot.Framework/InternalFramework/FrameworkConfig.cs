@@ -59,7 +59,6 @@ namespace Telegram.Bot.Framework.InternalFramework
                 return new TelegramContext();
             });
 
-            telegramServices.AddTransient<ITelegramRouteUserController, TelegramRouteUserController>();
             telegramServices.AddTransient<ITelegramUserScopeManger, TelegramUserScopeManger>();
             telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
 
