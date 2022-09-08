@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -19,47 +19,53 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.Mangers
 {
-    internal class ControllersManger : IControllersManger
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class BotNameManger : IBotNameManger
     {
-        private static Dictionary<string, Type> Command_ControllerMap;
+        private readonly Dictionary<string, HashSet<string>> Command_BotNames;
         private readonly IServiceProvider serviceProvider;
-
-        internal static void SetDic(Dictionary<string, Type> Command_ControllerMap)
-        {
-            ControllersManger.Command_ControllerMap = Command_ControllerMap;
-        }
 
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="Command_ControllerMap"></param>
-        public ControllersManger(IServiceProvider serviceProvider)
+        /// <param name="serviceProvider"></param>
+        public BotNameManger(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
         /// <summary>
-        /// 获取控制器
+        /// 机器人名称
+        /// </summary>
+        public string BotName { get; set; } = null;
+
+        /// <summary>
+        /// 判断
         /// </summary>
         /// <param name="CommandName"></param>
         /// <returns></returns>
-        public object GetController(string CommandName)
+        public bool Contains(string CommandName)
         {
-            return serviceProvider.GetService(Command_ControllerMap[CommandName]);
+            return BotName != null && GetBotNames(CommandName).Contains(BotName);
         }
 
         /// <summary>
-        /// 检查是否有支持该指令的控制器
+        /// 获取Bot名称列表
         /// </summary>
-        /// <param name="CommandName">要测试的指令</param>
+        /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        public bool HasCommand(string CommandName)
+        public HashSet<string> GetBotNames(string CommandName)
         {
-            return Command_ControllerMap.ContainsKey(CommandName);
+            if (Command_BotNames.ContainsKey(CommandName))
+                return Command_BotNames[CommandName];
+            return new HashSet<string>();
         }
     }
 }

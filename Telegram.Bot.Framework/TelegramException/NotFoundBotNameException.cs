@@ -16,16 +16,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.TelegramException
 {
     /// <summary>
-    /// 用于接收返回时的参数，并组合返回对应的数据
+    /// 
     /// </summary>
-    public interface IParamMaker
+    public class NotFoundBotNameException : Exception
     {
-        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
+        public NotFoundBotNameException(string BotName) : base($"未找到BotName ：{BotName}")
+        {
+
+        }
+
+        public NotFoundBotNameException() : base() { }
     }
 }

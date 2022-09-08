@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -16,12 +16,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
 namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
+    /// <summary>
+    /// 创建委托
+    /// </summary>
     internal static class DelegateHelper
     {
         private static readonly Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
@@ -66,7 +68,13 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
             FuncTypes.Add(16, typeof(Func<,,,,,,,,,,,,,,,,>));
         }
 
-        public static Delegate CreateDelegate(MethodInfo methodInfo, object controller)
+        /// <summary>
+        /// 创建一个委托
+        /// </summary>
+        /// <param name="methodInfo">方法</param>
+        /// <param name="instance">新的实例</param>
+        /// <returns></returns>
+        public static Delegate CreateDelegate(MethodInfo methodInfo, object instance)
         {
             List<Type> T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
             Type returnType = methodInfo.ReturnType;
@@ -84,7 +92,10 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
                 delegateType = delegateType.MakeGenericType(T.ToArray());
             }
 
-            return Delegate.CreateDelegate(delegateType, controller, methodInfo);
+            if (instance == null)
+                return Delegate.CreateDelegate(delegateType, methodInfo);
+            else
+                return Delegate.CreateDelegate(delegateType, instance, methodInfo);
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
+namespace Telegram.Bot.Framework.InternalFramework.Mangers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     internal class TelegramUserScopeManger : ITelegramUserScopeManger
     {
         private readonly IServiceProvider serviceProvider;
@@ -80,7 +77,6 @@ namespace Telegram.Bot.Framework.InternalFramework.ControllerManger
 
         public IServiceScope GetUserScope(TelegramContext context)
         {
-
             if (User_Controller.ContainsKey(context.ChatID))
             {
                 return User_Controller[context.ChatID].GetUserScope();

@@ -20,42 +20,65 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 帮助创建参数
+    /// 
     /// </summary>
-    internal interface IParamManger
+    internal interface ITypeManger
     {
         /// <summary>
-        /// 读取参数
+        /// 当前使用的Bot名称
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
+        string BotName { get; }
 
         /// <summary>
-        /// 取消读取参数
+        /// 获取控制器类型
         /// </summary>
-        void Cancel();
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        Type GetControllerType(string CommandName);
 
         /// <summary>
-        /// 获取Command的名称
+        /// 获取所有的CommandInfos信息
         /// </summary>
         /// <returns></returns>
-        string GetCommand();
+        List<CommandInfos> GetCommandInfos();
 
         /// <summary>
-        /// 获取读取过后的参数
+        /// 获取所有的CommandInfos信息
         /// </summary>
         /// <returns></returns>
-        object[] GetParam();
+        Dictionary<string, CommandInfos> GetCommandInfosDic();
 
         /// <summary>
-        /// 是否处于读取参数的模式
+        /// 获得一个方法
         /// </summary>
+        /// <param name="CommandName"></param>
         /// <returns></returns>
-        bool IsReadParam();
+        MethodInfo GetControllerMethod(string CommandName);
+
+        /// <summary>
+        /// 判断是否存在某个指令名
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool ContainsCommandName(string CommandName);
+
+        /// <summary>
+        /// 判断方法允许的BotName中是否有本Bot
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool ContainsBotName(string CommandName);
+
+        /// <summary>
+        /// 获取Bot名称列表
+        /// </summary>
+        /// <param name="CommandName">指令名称</param>
+        /// <returns></returns>
+        HashSet<string> GetCommandBotNames(string CommandName);
     }
 }

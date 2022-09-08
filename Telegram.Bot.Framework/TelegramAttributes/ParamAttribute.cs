@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -29,21 +29,18 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         public string CustomInfos { get;}
 
         /// <summary>
-        /// 参数名称
-        /// </summary>
-        public string ParamName { get; }
-
-        /// <summary>
         /// 是否自定义
         /// </summary>
         public bool UseCustom { get; }
+
+        public Type CustomMessageType { get; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Infos"></param>
         /// <param name="UseCustom"></param>
-        public ParamAttribute(string Infos, bool UseCustom)
+        public ParamAttribute(string Infos, bool UseCustom = false, Type ForType = null)
         {
             this.UseCustom = UseCustom;
             if (this.UseCustom)
@@ -52,8 +49,9 @@ namespace Telegram.Bot.Framework.TelegramAttributes
             }
             else
             {
-                ParamName = Infos;
+                CustomInfos = $"请输入【{Infos}】的值";
             }
+            CustomMessageType = ForType;
         }
     }
 }

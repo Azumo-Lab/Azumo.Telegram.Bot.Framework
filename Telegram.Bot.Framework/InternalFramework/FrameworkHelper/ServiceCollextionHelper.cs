@@ -16,16 +16,32 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
     /// <summary>
-    /// 用于接收返回时的参数，并组合返回对应的数据
+    /// 
     /// </summary>
-    public interface IParamMaker
+    internal static class ServiceCollextionHelper
     {
-        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
+        private static List<Type> AllTypes;
+        static ServiceCollextionHelper()
+        {
+            AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
+        }
+
+        public static List<Type> GetAllTypes()
+        {
+            return AllTypes;
+        }
+
+        public static List<Type> FilterBaseType(Type BaseType)
+        {
+            return AllTypes.Where(x => BaseType.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
+        }
     }
 }

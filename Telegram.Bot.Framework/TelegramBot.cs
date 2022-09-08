@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -40,32 +42,24 @@ namespace Telegram.Bot.Framework
         private CancellationTokenSource cts;    //CancellationTokenSource
 
         /// <summary>
-        /// Bot名称
-        /// </summary>
-        private readonly string BotName;
-
-        /// <summary>
-        /// 是否使用Bot的标识
-        /// </summary>
-        private readonly bool UseBotName = false;
-
-        /// <summary>
         /// 创建 & 设置Bot
         /// </summary>
         /// <param name="botClient"></param>
         /// <param name="setUp"></param>
         /// <param name="BotName"></param>
-        internal TelegramBot(TelegramBotClient botClient, IConfig setUp, string BotName = null)
+        internal TelegramBot(IServiceProvider serviceProvider)
         {
-            this.BotName = BotName;
-            if (!string.IsNullOrEmpty(this.BotName))
-                UseBotName = true;
+            BotInfos infos = serviceProvider.GetService<BotInfos>();
 
             telegramServiceCollection = new ServiceCollection();
 
-            new FrameworkConfig(setUp, UseBotName, botClient).Config(telegramServiceCollection);
+            List<IConfig> configs = serviceProvider.GetServices<IConfig>().ToList();
+            configs.ForEach(x => 
+            {
+                x.Config(telegramServiceCollection);
+            });
 
-            serviceProvider = new DefaultServiceProviderFactory().CreateServiceProvider(telegramServiceCollection);
+            this.serviceProvider = telegramServiceCollection.BuildServiceProvider();
         }
 
         /// <summary>
@@ -74,8 +68,9 @@ namespace Telegram.Bot.Framework
         /// <param name="Wait">等待</param>
         public Task Start()
         {
-            if (Running)
-                throw new Exception("过多执行次数");
+            lock (this)
+                if (Running)
+                    throw new TooManyExecutionsException("Too Many Executions");
             Running = true;
 
             cts = serviceProvider.GetService<CancellationTokenSource>();

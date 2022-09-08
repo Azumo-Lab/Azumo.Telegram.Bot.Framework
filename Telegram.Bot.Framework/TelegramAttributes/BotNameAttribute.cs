@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -23,18 +23,28 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     /// <summary>
     /// 设定Telegram Bot的名字
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class BotNameAttribute : Attribute
     {
         /// <summary>
         /// Bot 的名称
         /// </summary>
-        public string BotName { get; }
+        public string[] BotName { get; }
 
-        public BotNameAttribute(string BotName)
+        public bool OverWrite { get; set; }
+
+        public BotNameAttribute(params string[] BotName)
         {
-            if (string.IsNullOrEmpty(BotName))
+            void Error()
+            {
                 throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
+            }
+            if (BotName == null || BotName.Length == 0)
+                Error();
+            foreach (var item in BotName)
+                if (string.IsNullOrEmpty(item))
+                    Error();
+
             this.BotName = BotName;
         }
     }

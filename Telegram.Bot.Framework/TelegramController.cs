@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -32,23 +32,29 @@ namespace Telegram.Bot.Framework
         protected TelegramContext TelegramContext { get; private set; }
 
         internal IServiceProvider ServiceProvider;
+
         /// <summary>
         /// 执行调用
         /// </summary>
-        internal async Task Invoke(TelegramContext context, IServiceProvider serviceProvider,string CommandName)
+        internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, string CommandName)
         {
             TelegramContext = context;
-            ServiceProvider = serviceProvider;
+            ServiceProvider = OneTimeService;
 
             IDelegateManger delegateManger = ServiceProvider.GetService<IDelegateManger>();
-            IParamManger paramManger = serviceProvider.GetService<IParamManger>();
+            IParamManger paramManger = UserService.GetService<IParamManger>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
+
+            Action commandAction = null;
+
             if (Params == null || Params.Length == 0)
-                await Task.Run(() => action.DynamicInvoke());
+                commandAction = () => action.DynamicInvoke();
             else
-                await Task.Run(() => action.DynamicInvoke(Params));
+                commandAction = () => action.DynamicInvoke(Params);
+
+            await Task.Run(commandAction);
         }
 
         /// <summary>
@@ -60,7 +66,7 @@ namespace Telegram.Bot.Framework
         {
             await TelegramContext.BotClient.SendTextMessageAsync(
                 chatId: TelegramContext.ChatID,
-                Message, ParseMode.MarkdownV2
+                Message
                 );
         }
 

@@ -16,16 +16,26 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework.Models
 {
     /// <summary>
-    /// 用于接收返回时的参数，并组合返回对应的数据
+    /// 参数信息
     /// </summary>
-    public interface IParamMaker
+    internal class ParamInfos
     {
-        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
+        /// <summary>
+        /// 返回的信息
+        /// </summary>
+        public string MessageInfo { get; set; }
+
+        /// <summary>
+        /// 参数处理类型
+        /// </summary>
+        public Type MessageType { get; set; }
     }
 }

@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -42,6 +42,13 @@ namespace Telegram.Bot.Framework.InternalFramework
             this.serviceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// 错误的执行者
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             var ErrorMessage = exception switch
@@ -55,6 +62,13 @@ namespace Telegram.Bot.Framework.InternalFramework
             await botClient.SendTextMessageAsync(context.ChatID, ErrorMessage);
         }
 
+        /// <summary>
+        /// 正确的执行者
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="update"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
@@ -68,7 +82,9 @@ namespace Telegram.Bot.Framework.InternalFramework
 
                 //获取 | 创建 一个TelegramUserScope
                 ITelegramUserScopeManger telegramUserScopeManger = serviceProvider.GetService<ITelegramUserScopeManger>();
+
                 ITelegramUserScope telegramUserScope = telegramUserScopeManger.GetTelegramUserScope(telegramContext);
+
                 await telegramUserScope.Invoke(OneTimeScope);
             }
         }

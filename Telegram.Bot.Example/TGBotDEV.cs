@@ -1,7 +1,7 @@
-﻿//  < Telegram.Bot.Framework >
-//  Copyright (C) <2022>  <Sokushu> see <https://github.com/sokushu/Telegram.Bot.Net/>
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
-//  This program is free software: you can redistribute it and/or modify
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
@@ -40,7 +40,7 @@ namespace Telegram.Bot.Net
             var bot = TelegramBotManger.CreateConfig()
                 .SetToken(Token)
                 .SetProxy(Proxy, Port)
-                .SetConfig<TGBotDEV>()
+                .AddConfig<TGBotDEV>()
                 .SetBotName("DEV1")
                 .Build();
 
