@@ -37,6 +37,11 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         public IEnumerable<string> BotName { get; }
 
         /// <summary>
+        /// 指令的使用信息
+        /// </summary>
+        public string UseInfo { get; set; }
+
+        /// <summary>
         /// 使用标签
         /// </summary>
         /// <param name="CommandName">指令名称</param>
