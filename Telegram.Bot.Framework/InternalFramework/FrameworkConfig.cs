@@ -24,7 +24,6 @@ using System.Reflection;
 using System.Threading;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Telegram.Bot.Framework.InternalFramework.LogImpl;
 using Telegram.Bot.Framework.InternalFramework.Mangers;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.ParameterManger;
@@ -52,7 +51,6 @@ namespace Telegram.Bot.Framework.InternalFramework
             HttpClient httpClient = serviceProvider.GetService<HttpClient>();
 
             telegramServices.AddScoped<IParamMessage, StringParamMessage>();
-            telegramServices.AddScoped<ILogger, Logger>();
             telegramServices.AddScoped<TelegramUser>();
             telegramServices.AddScoped(x =>
             {
