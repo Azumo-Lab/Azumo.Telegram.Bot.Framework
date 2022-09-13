@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
@@ -30,20 +31,18 @@ namespace Telegram.Bot.Example.Example
     /// </summary>
     public class Controllers : TelegramController
     {
-        [Command(nameof(Start))]
+        [Command(nameof(Start), CommandInfo = "本条指令")]
         public async Task Start()
         {
-            await SendTextMessage(
-@"你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：
-/Start      本指令
-/Test       测试指令，一个参数
-/Test2      测试指令，两个参数
-/SayHello   让机器人输出 Hello World
-/NowTime    让机器人输出现在的时间
-");
+            string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
+
+            message += Environment.NewLine;
+            message += GetCommandInfosString();
+
+            await SendTextMessage(message);
         }
 
-        [Command(nameof(NowTime))]
+        [Command(nameof(NowTime), CommandInfo = "输出现在的时间")]
         public async Task NowTime()
         {
             await SendTextMessage(DateTime.Now.ToString("现在的时间是 yyyy 年 MM 月 dd 日 HH 点 mm 分 ss 秒"));

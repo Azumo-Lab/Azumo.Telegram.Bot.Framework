@@ -35,14 +35,14 @@ namespace Telegram.Bot.Net.Example
             this.serviceProvider = serviceProvider;
         }
 
-        [Command("Test")]
+        [Command("Test", CommandInfo = "一个参数的测试命令")]
         public async Task Test([Param("请输入要说的话：", true)] string Message)
         {
             await SendTextMessage("你好，你要说的话是：");
             await SendTextMessage(Message);
         }
 
-        [Command("Test2")]
+        [Command("Test2", CommandInfo = "两个参数的测试命令")]
         public async Task Test([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
         {
             await SendTextMessage($"你说的第一句是：{FirstMessage}");
@@ -50,7 +50,7 @@ namespace Telegram.Bot.Net.Example
             await SendTextMessage($"合起来是：{FirstMessage}，{TwoMessage}。");
         }
 
-        [Command("SayHello")]
+        [Command("SayHello", CommandInfo = "输出HelloWorld")]
         public async Task SayHello()
         {
             await SendTextMessage("Hello World");

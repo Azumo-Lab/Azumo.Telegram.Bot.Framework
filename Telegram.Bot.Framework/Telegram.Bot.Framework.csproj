@@ -13,7 +13,9 @@
     <Description>一个使用简单的Telegram Bot框架</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Title>$(AssemblyName)</Title>
+    <Title>Telegram.Bot.Framework</Title>
+    <RepositoryUrl>https://github.com/Azumo-Lab/Telegram.Bot.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

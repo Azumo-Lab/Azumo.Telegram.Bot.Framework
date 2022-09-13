@@ -24,6 +24,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using System.Linq;
 
 namespace Telegram.Bot.Framework
 {
@@ -55,6 +56,24 @@ namespace Telegram.Bot.Framework
                 commandAction = () => action.DynamicInvoke(Params);
 
             await Task.Run(commandAction);
+        }
+
+        protected virtual string GetCommandInfosString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            GetCommandInfos().ForEach(x =>
+            {
+                stringBuilder.AppendLine($"{x.CommandName}  {x.CommandInfo}");
+            });
+            return stringBuilder.ToString();
+        }
+
+        protected virtual List<(string CommandName, string CommandInfo)> GetCommandInfos()
+        {
+            ITypeManger typeManger = ServiceProvider.GetService<ITypeManger>();
+            return typeManger.GetCommandInfos()
+                .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
+                .ToList();
         }
 
         /// <summary>

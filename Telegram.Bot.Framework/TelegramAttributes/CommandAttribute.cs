@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// <summary>
         /// 指令的使用信息
         /// </summary>
-        public string UseInfo { get; set; }
+        public string CommandInfo { get; set; }
 
         /// <summary>
         /// 使用标签

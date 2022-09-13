@@ -16,18 +16,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.Controllers
+namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
-    public class DefaultCommandController : TelegramController
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class TypesHelper
     {
-        [Command("")]
-        public async Task DefaultCommand()
-        {
-            await SendTextMessage("非常抱歉，本Bot不支持这个指令");
-        }
+
     }
 }

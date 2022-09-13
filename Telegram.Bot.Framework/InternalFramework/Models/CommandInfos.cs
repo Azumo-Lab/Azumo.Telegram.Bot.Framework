@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.Models
 {
@@ -52,5 +53,10 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         /// 方法参数信息
         /// </summary>
         public IEnumerable<ParamInfos> ParamInfos { get; set; }
+
+        /// <summary>
+        /// 标记信息
+        /// </summary>
+        public CommandAttribute CommandAttribute { get; set; }
     }
 }

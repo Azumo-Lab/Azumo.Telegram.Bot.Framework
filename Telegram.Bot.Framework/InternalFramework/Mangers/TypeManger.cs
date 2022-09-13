@@ -206,6 +206,7 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
                     Controller = ControllerType,
                     BotNames = commandBotNames,
                     ParamInfos = GetParamInfos(method.GetParameters()),
+                    CommandAttribute = commandAttr,
                 });
             }
         }

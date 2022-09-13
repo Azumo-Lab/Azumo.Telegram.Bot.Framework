@@ -29,6 +29,7 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
         private static readonly Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
         private static readonly Dictionary<int, Type> FuncTypes = new Dictionary<int, Type>();
 
+        #region 初始化
         static DelegateHelper()
         {
             ActionTypes.Add(0, typeof(Action));
@@ -67,6 +68,7 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
             FuncTypes.Add(15, typeof(Func<,,,,,,,,,,,,,,,>));
             FuncTypes.Add(16, typeof(Func<,,,,,,,,,,,,,,,,>));
         }
+        #endregion
 
         /// <summary>
         /// 创建一个委托
@@ -76,6 +78,8 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
         /// <returns></returns>
         public static Delegate CreateDelegate(MethodInfo methodInfo, object instance)
         {
+            ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
+
             List<Type> T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
             Type returnType = methodInfo.ReturnType;
 
