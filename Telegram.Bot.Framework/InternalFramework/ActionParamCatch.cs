@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,13 +23,22 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.Authentications
+namespace Telegram.Bot.Framework.InternalFramework
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserAuthentication : IActionAuth
+    internal class ActionParamCatch : IAction
     {
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        {
+            // 获取参数管理
+            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
 
+            if (await paramManger.ReadParam(context, OneTimeScope.ServiceProvider))
+                return;
+
+            await NextHandle(context, UserScope, OneTimeScope);
+        }
     }
 }

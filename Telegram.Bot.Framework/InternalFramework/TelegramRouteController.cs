@@ -152,5 +152,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         {
             return true;
         }
+
+        private delegate Task ActionInvoker(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionInvoker next);
     }
 }

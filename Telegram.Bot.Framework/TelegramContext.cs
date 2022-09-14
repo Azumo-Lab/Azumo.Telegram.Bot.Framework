@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Telegram.Bot.Types;
@@ -68,11 +69,14 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         internal string GetCommand()
         {
-            string command;
-            if (!string.IsNullOrEmpty(command = Update.Message?.Text))
-                if (!command.StartsWith('/'))
-                    command = null;
-            return command?.ToLower();
+            MessageEntity[] entities = Update.Message?.Entities;
+            if (entities != null 
+                && entities.Length == 1
+                && entities.FirstOrDefault().Type == Types.Enums.MessageEntityType.BotCommand)
+            {
+                return Update.Message.EntityValues.FirstOrDefault()?.ToLower();
+            }
+            return null;
         }
     }
 }

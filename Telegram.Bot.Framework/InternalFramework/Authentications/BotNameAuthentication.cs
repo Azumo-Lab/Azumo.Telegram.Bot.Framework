@@ -20,13 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
 namespace Telegram.Bot.Framework.InternalFramework.Authentications
 {
     /// <summary>
     /// 
     /// </summary>
-    public class BotNameAuthentication
+    internal class BotNameAuthentication : IActionAuth
     {
 
     }
