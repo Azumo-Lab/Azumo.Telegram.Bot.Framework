@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// </summary>
         /// <param name="Infos"></param>
         /// <param name="UseCustom"></param>
-        public ParamAttribute(string Infos, bool UseCustom = false, Type ForType = null)
+        public ParamAttribute(string Infos, bool UseCustom = false, IParamMaker ForType = null)
         {
             this.UseCustom = UseCustom;
             if (this.UseCustom)
@@ -51,7 +51,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
             {
                 CustomInfos = $"请输入【{Infos}】的值";
             }
-            CustomMessageType = ForType;
+            CustomMessageType = ForType?.GetType();
         }
     }
 }
