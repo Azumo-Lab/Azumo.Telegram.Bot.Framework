@@ -14,37 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Framework.InternalFramework
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Controllers : TelegramController
+    internal class ActionCallBack : IAction, IHandleSort
     {
-        [Command(nameof(Start), CommandInfo = "本条指令")]
-        public async Task Start()
+        public int Sort => 150;
+
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
         {
-            string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
+            if (context.Update.Type == Types.Enums.UpdateType.CallbackQuery)
+            {
+                ICallBackManger callBackManger = UserScope.ServiceProvider.GetService<ICallBackManger>();
 
-            message += Environment.NewLine;
-            message += Environment.NewLine;
+                Action<TelegramContext, IServiceScope> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
 
-            message += GetCommandInfosString();
+                if (action != null)
+                {
+                    action.Invoke(context, UserScope);
+                    return;
+                }
+            }
 
-            message += Environment.NewLine;
-            message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
-
-            await SendTextMessage(message);
+            await NextHandle(context, UserScope, OneTimeScope);
         }
     }
 }

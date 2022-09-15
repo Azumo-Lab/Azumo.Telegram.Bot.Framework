@@ -14,37 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Framework.InternalFramework.Mangers
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Controllers : TelegramController
+    internal class CallBackManger : ICallBackManger
     {
-        [Command(nameof(Start), CommandInfo = "本条指令")]
-        public async Task Start()
+        private readonly Dictionary<string, Action<TelegramContext, IServiceScope>> CallBacks = new Dictionary<string, Action<TelegramContext, IServiceScope>>();
+        public string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction)
         {
-            string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
+            string key = Guid.NewGuid().ToString();
+            CallBacks.Add(key, CallBackAction);
+            return key;
+        }
 
-            message += Environment.NewLine;
-            message += Environment.NewLine;
-
-            message += GetCommandInfosString();
-
-            message += Environment.NewLine;
-            message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
-
-            await SendTextMessage(message);
+        public Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey)
+        {
+            if (CallBackKey != null && CallBacks.ContainsKey(CallBackKey))
+                return CallBacks[CallBackKey];
+            return null;
         }
     }
 }

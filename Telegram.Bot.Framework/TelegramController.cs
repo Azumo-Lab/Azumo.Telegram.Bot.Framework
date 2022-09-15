@@ -81,5 +81,12 @@ namespace Telegram.Bot.Framework
                 .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
                 .ToList();
         }
+
+        protected virtual string CreateCallBack(Action<TelegramContext, IServiceScope> callback)
+        {
+            ICallBackManger callBackManger = UserService.GetService<ICallBackManger>();
+
+            return callBackManger.CreateCallBack(callback);
+        }
     }
 }

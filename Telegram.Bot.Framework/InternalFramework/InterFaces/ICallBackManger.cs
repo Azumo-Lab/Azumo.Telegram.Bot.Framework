@@ -14,37 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Controllers : TelegramController
+    internal interface ICallBackManger
     {
-        [Command(nameof(Start), CommandInfo = "本条指令")]
-        public async Task Start()
-        {
-            string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
+        string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction);
 
-            message += Environment.NewLine;
-            message += Environment.NewLine;
-
-            message += GetCommandInfosString();
-
-            message += Environment.NewLine;
-            message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
-
-            await SendTextMessage(message);
-        }
+        Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey);
     }
 }

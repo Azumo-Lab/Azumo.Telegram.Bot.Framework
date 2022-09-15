@@ -35,25 +35,44 @@ namespace Telegram.Bot.Net.Example
             this.serviceProvider = serviceProvider;
         }
 
-        [Command("Test", CommandInfo = "一个参数的测试命令")]
-        public async Task Test([Param("请输入要说的话：", true)] string Message)
+        [Command(nameof(Test1), CommandInfo = "传递一个参数，询问并捕获一个参数")]
+        public async Task Test1([Param("请输入要说的话：", true)] string Message)
         {
             await SendTextMessage("你好，你要说的话是：");
             await SendTextMessage(Message);
         }
 
-        [Command("Test2", CommandInfo = "两个参数的测试命令")]
-        public async Task Test([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
+        [Command(nameof(Test2), CommandInfo = "传递两个参数，询问并捕获两个参数")]
+        public async Task Test2([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
         {
             await SendTextMessage($"你说的第一句是：{FirstMessage}");
             await SendTextMessage($"你说的第二句是：{TwoMessage}");
             await SendTextMessage($"合起来是：{FirstMessage}，{TwoMessage}。");
         }
 
-        [Command("SayHello", CommandInfo = "输出HelloWorld")]
+        [Command(nameof(SayHello), CommandInfo = "输出一个简单的 Hello World")]
         public async Task SayHello()
         {
             await SendTextMessage("Hello World");
+        }
+
+        [Command(nameof(NowTime), CommandInfo = "输出现在的时间")]
+        public async Task NowTime()
+        {
+            await SendTextMessage(DateTime.Now.ToString("现在的时间是 yyyy 年 MM 月 dd 日 HH 点 mm 分 ss 秒"));
+        }
+
+        [Command(nameof(CallBackTest), CommandInfo = "测试一个具有回调函数的方法")]
+        public async Task CallBackTest()
+        {
+            await SendTextMessage("回调函数", new List<InlineKeyboardButton>
+            {
+                InlineKeyboardButton.WithCallbackData("点击说你好",
+                CreateCallBack((context, userscope)=>
+                {
+                    context.BotClient.SendTextMessageAsync(context.ChatID, "你好！！");
+                }))
+            });
         }
     }
 }
