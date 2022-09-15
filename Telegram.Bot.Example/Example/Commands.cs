@@ -74,5 +74,49 @@ namespace Telegram.Bot.Net.Example
                 }))
             });
         }
+
+        [Command(nameof(Game1), CommandInfo = "通过回调函数实现的 剪子包袱锤 小游戏")]
+        public async Task Game1()
+        {
+            await SendTextMessage("请选择你要出的项目", new List<InlineKeyboardButton>
+            {
+                InlineKeyboardButton.WithCallbackData("剪子",
+                CreateCallBack((context, userscope)=>
+                {
+                    string[] item = { "剪子", "包袱", "锤" };
+                    int index = new Random(Guid.NewGuid().GetHashCode()).Next(0, 3);
+                    if (index == 2)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"嘿嘿嘿，你输了，我出{item[index]}");
+                        return;
+                    }
+                    context.BotClient.SendTextMessageAsync(context.ChatID, $"回合结束，我出{item[index]}");
+                })),
+                InlineKeyboardButton.WithCallbackData("包袱",
+                CreateCallBack((context, userscope) =>
+                {
+                    string[] item = { "剪子", "包袱", "锤" };
+                    int index = new Random(Guid.NewGuid().GetHashCode()).Next(0, 3);
+                    if (index == 0)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"嘿嘿嘿，你输了，我出{item[index]}");
+                        return;
+                    }
+                    context.BotClient.SendTextMessageAsync(context.ChatID, $"回合结束，我出{item[index]}");
+                })),
+                InlineKeyboardButton.WithCallbackData("锤",
+                CreateCallBack((context, userscope) =>
+                {
+                    string[] item = { "剪子", "包袱", "锤" };
+                    int index = new Random(Guid.NewGuid().GetHashCode()).Next(0, 3);
+                    if (index == 1)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"嘿嘿嘿，你输了，我出{item[index]}");
+                        return;
+                    }
+                    context.BotClient.SendTextMessageAsync(context.ChatID, $"回合结束，我出{item[index]}");
+                })),
+            });
+        }
     }
 }
