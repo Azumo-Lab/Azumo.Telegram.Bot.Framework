@@ -21,15 +21,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
-    /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope);
+    internal class ActionFilterBefore : IAction, IHandleSort
+    {
+        public int Sort => 100;
+
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        {
+            Console.WriteLine("ActionFilterBefore...");
+            await NextHandle(context, UserScope, OneTimeScope);
+        }
+    }
 }

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,17 +22,32 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Mangers;
 
-namespace Telegram.Bot.Framework.InternalFramework.Authentications
+namespace Telegram.Bot.Framework.InternalFramework
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class BotNameAuthentication : IAuthentication
+    internal class ActionControllerInvoke : IAction, IHandleSort
     {
-        public bool Auth(TelegramContext context)
+        public int Sort => 300;
+
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("ActionControllerInvoke...");
+
+            IControllersManger controllersManger = UserScope.ServiceProvider.GetService<IControllersManger>();
+            // 获取参数管理
+            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
+
+            TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
+            if (controller == null)
+                return;
+
+            await controller.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
+
+            await NextHandle(context, UserScope, OneTimeScope);
         }
     }
 }

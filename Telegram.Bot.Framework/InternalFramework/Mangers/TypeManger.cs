@@ -39,6 +39,10 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
         private readonly Dictionary<string, CommandInfos> CommandInfos;
         public TypeManger(IServiceCollection services) : base(services)
         {
+            GetTypes(typeof(IAction)).ForEach(x => 
+            {
+                services.AddScoped(typeof(IAction), x);
+            });
             CommandInfos = base.GetCommandInfos();
         }
 
@@ -91,12 +95,12 @@ namespace Telegram.Bot.Framework.InternalFramework.Mangers
     /// </summary>
     internal class TypeHelper
     {
-        private readonly IServiceCollection services;
+        protected readonly IServiceCollection services;
 
         private readonly List<Type> AllType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
         private readonly List<Type> ParamMakerType;
-        private List<Type> GetTypes(Type type) =>
+        protected List<Type> GetTypes(Type type) =>
             AllType.Where(x => type.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
 
         private List<Type> GetControllers() =>

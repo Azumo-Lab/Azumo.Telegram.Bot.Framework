@@ -20,16 +20,39 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.TelegramControllerEX
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
-    /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope);
+    public partial class TelegramControllerPartial
+    {
+        /// <summary>
+        /// 发送一个文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        protected virtual async Task SendFile(byte[] File, string FileName)
+        {
+
+        }
+
+        /// <summary>
+        /// 发送一个文件
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        protected virtual async Task SendFile(string FilePath)
+        {
+            if (File.Exists(FilePath))
+                await SendFile(File.ReadAllBytes(FilePath), Path.GetFileName(FilePath));
+            else
+                throw new FileNotFoundException($"未找到文件 {FilePath}");
+        }
+    }
 }

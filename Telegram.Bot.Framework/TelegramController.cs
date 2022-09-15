@@ -25,29 +25,27 @@ using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using System.Linq;
+using Telegram.Bot.Framework.TelegramControllerEX;
 
 namespace Telegram.Bot.Framework
 {
-    public abstract class TelegramController
-    {
-        protected TelegramContext TelegramContext { get; private set; }
-
-        internal IServiceProvider ServiceProvider;
-
+    public abstract class TelegramController : TelegramControllerPartial
+    { 
         /// <summary>
         /// 执行调用
         /// </summary>
         internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, string CommandName)
         {
             TelegramContext = context;
-            ServiceProvider = OneTimeService;
+            this.OneTimeService = OneTimeService;
+            this.UserService = UserService;
 
-            IDelegateManger delegateManger = ServiceProvider.GetService<IDelegateManger>();
-            IParamManger paramManger = UserService.GetService<IParamManger>();
+            IDelegateManger delegateManger = this.OneTimeService.GetService<IDelegateManger>();
+            IParamManger paramManger = this.UserService.GetService<IParamManger>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
-
+            
             Action commandAction = null;
 
             if (Params == null || Params.Length == 0)
@@ -58,6 +56,10 @@ namespace Telegram.Bot.Framework
             await Task.Run(commandAction);
         }
 
+        /// <summary>
+        /// 获取命令信息文本
+        /// </summary>
+        /// <returns></returns>
         protected virtual string GetCommandInfosString()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -68,164 +70,16 @@ namespace Telegram.Bot.Framework
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// 获取命令信息
+        /// </summary>
+        /// <returns></returns>
         protected virtual List<(string CommandName, string CommandInfo)> GetCommandInfos()
         {
-            ITypeManger typeManger = ServiceProvider.GetService<ITypeManger>();
+            ITypeManger typeManger = OneTimeService.GetService<ITypeManger>();
             return typeManger.GetCommandInfos()
                 .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
                 .ToList();
-        }
-
-        /// <summary>
-        /// 发送一条消息
-        /// </summary>
-        /// <param name="Message"></param>
-        /// <returns></returns>
-        protected virtual async Task SendTextMessage(string Message)
-        {
-            await TelegramContext.BotClient.SendTextMessageAsync(
-                chatId: TelegramContext.ChatID,
-                Message
-                );
-        }
-
-        /// <summary>
-        /// 发送一条消息
-        /// </summary>
-        /// <param name="Message"></param>
-        /// <returns></returns>
-        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
-        {
-            await TelegramContext.BotClient.SendTextMessageAsync(
-                chatId: TelegramContext.ChatID,
-                Message, ParseMode.MarkdownV2
-                , replyMarkup: new InlineKeyboardMarkup(keyboardButton)
-                );
-        }
-
-        /// <summary>
-        /// 发送一张图片
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendPhoto(string PhotoPath)
-        {
-            await TelegramContext.BotClient.SendPhotoAsync(
-                chatId: TelegramContext.ChatID,
-                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath))
-                );
-        }
-
-        /// <summary>
-        /// 发送一张图片
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendPhoto(string PhotoPath, string Message)
-        {
-            await TelegramContext.BotClient.SendPhotoAsync(
-                chatId: TelegramContext.ChatID,
-                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
-                caption: Message
-                );
-        }
-
-        /// <summary>
-        /// 发送一张图片
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendPhoto(string PhotoPath, string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
-        {
-            await TelegramContext.BotClient.SendPhotoAsync(
-                chatId: TelegramContext.ChatID,
-                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
-                caption: Message,
-                replyMarkup: new InlineKeyboardMarkup(keyboardButton)
-                );
-        }
-
-        /// <summary>
-        /// 发送一张图片
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendPhoto(PhotoInfo Photo)
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送多张图片
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendPhotos(IEnumerable<PhotoInfo> Photos)
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送一个文件
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        protected virtual async Task SendFile(byte[] File, string FileName)
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送一个文件
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        protected virtual async Task SendFile(string FilePath)
-        {
-            if (File.Exists(FilePath))
-                await SendFile(File.ReadAllBytes(FilePath), Path.GetFileName(FilePath));
-            else
-                throw new FileNotFoundException($"未找到文件 {FilePath}");
-        }
-
-        /// <summary>
-        /// 发送一个表情贴纸
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendSticker()
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送一个音频
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendAudio()
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送一段视频
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendVideo()
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送一个联系人
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendContact()
-        {
-            
-        }
-
-        /// <summary>
-        /// 发送一个地图坐标
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendVenue()
-        {
-            
         }
     }
 }

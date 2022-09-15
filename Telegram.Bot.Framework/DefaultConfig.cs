@@ -22,14 +22,23 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 默认
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
-    /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope);
+    public class DefaultConfig : IConfig
+    {
+        internal Action<IServiceCollection> action;
+
+        public void Config(IServiceCollection telegramServices)
+        {
+            action?.Invoke(telegramServices);
+        }
+
+        internal void SetAction(Action<IServiceCollection> action)
+        {
+            this.action = action;
+        }
+    }
 }

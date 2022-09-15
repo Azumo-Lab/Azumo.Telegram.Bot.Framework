@@ -14,29 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.TelegramControllerEX
 {
     /// <summary>
-    /// 接口
+    /// 
     /// </summary>
-    internal interface IAction
+    public partial class TelegramControllerPartial
     {
         /// <summary>
-        /// 执行
+        /// 发送一条消息
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="UserScope"></param>
-        /// <param name="OneTimeScope"></param>
-        /// <param name="NextHandle"></param>
+        /// <param name="Message">普通文本信息</param>
         /// <returns></returns>
-        Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle);
+        protected virtual async Task SendTextMessage(string Message)
+        {
+            await TelegramContext.BotClient.SendTextMessageAsync(
+                chatId: TelegramContext.ChatID,
+                Message
+                );
+        }
+
+        /// <summary>
+        /// 发送一条消息
+        /// </summary>
+        /// <param name="Message">普通文本信息</param>
+        /// <returns></returns>
+        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
+        {
+            await TelegramContext.BotClient.SendTextMessageAsync(
+                chatId: TelegramContext.ChatID,
+                Message, replyMarkup: new InlineKeyboardMarkup(keyboardButton)
+                );
+        }
     }
 }

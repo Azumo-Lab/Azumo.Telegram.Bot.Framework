@@ -21,15 +21,28 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework
 {
     /// <summary>
-    /// 
+    /// 认证相关的类
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
-    /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope);
+    internal class ActionAuthentication : IAction, IHandleSort
+    {
+        public int Sort => 000;
+
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        {
+            Console.WriteLine("ActionAuthentication。。。");
+
+            IEnumerable<IAuthentication> authentications = UserScope.ServiceProvider.GetServices<IAuthentication>();
+
+            foreach (IAuthentication auth in authentications)
+                if (!auth.Auth(context))
+                    return;
+
+            await NextHandle(context, UserScope, OneTimeScope);
+        }
+    }
 }

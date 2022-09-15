@@ -117,6 +117,22 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
+        /// 添加设置
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public TelegramBotManger AddConfig(Action<IServiceCollection> action)
+        {
+            services.AddScoped<IConfig, DefaultConfig>(x =>
+            {
+                DefaultConfig defConf = new();
+                defConf.SetAction(action);
+                return defConf;
+            });
+            return this;
+        }
+
+        /// <summary>
         /// 创建一个Bot对象
         /// </summary>
         /// <returns></returns>

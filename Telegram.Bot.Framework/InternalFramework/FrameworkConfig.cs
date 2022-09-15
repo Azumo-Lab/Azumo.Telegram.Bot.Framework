@@ -33,6 +33,9 @@ using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
+    /// <summary>
+    /// 整个框架的一些相关配置
+    /// </summary>
     internal class FrameworkConfig : IConfig
     {
         private readonly IServiceProvider serviceProvider;

@@ -37,6 +37,9 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         public static Dictionary<long, TelegramUserScope> routes = new Dictionary<long, TelegramUserScope>();
         public readonly IServiceProvider serviceProvider;
+
+        
+
         public UpdateHandler(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;

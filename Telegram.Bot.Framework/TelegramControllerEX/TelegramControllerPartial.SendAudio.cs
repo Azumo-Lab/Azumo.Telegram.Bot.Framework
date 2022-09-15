@@ -14,22 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.TelegramControllerEX
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
-    /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope);
+    public partial class TelegramControllerPartial
+    {
+        /// <summary>
+        /// 发送一个音频
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task SendAudio()
+        {
+
+        }
+    }
 }

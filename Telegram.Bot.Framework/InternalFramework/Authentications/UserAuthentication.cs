@@ -27,8 +27,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Authentications
     /// <summary>
     /// 
     /// </summary>
-    internal class UserAuthentication : IActionAuth
+    internal class UserAuthentication : IAuthentication
     {
-
+        public bool Auth(TelegramContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
