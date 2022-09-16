@@ -28,16 +28,16 @@ using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Mangers
+namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class TypeManger : TypeHelper, ITypeManger
+    internal class TypeManager : TypeHelper, ITypeManager
     {
         public Guid ID { get; } = Guid.NewGuid();
         private readonly Dictionary<string, CommandInfos> CommandInfos;
-        public TypeManger(IServiceCollection services) : base(services)
+        public TypeManager(IServiceCollection services) : base(services)
         {
             GetTypes(typeof(IAction)).ForEach(x => 
             {

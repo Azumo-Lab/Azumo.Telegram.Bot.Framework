@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,25 +27,14 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
     /// <summary>
     /// 
     /// </summary>
-    internal interface IBotNameManger
+    internal interface ITelegramUserScopeManager
     {
         /// <summary>
-        /// 当前使用的Bot名称
+        /// 获取控制器
         /// </summary>
-        string BotName { get; }
-
-        /// <summary>
-        /// 获取Bot名称列表
-        /// </summary>
-        /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        HashSet<string> GetBotNames(string CommandName);
+        ITelegramUserScope GetTelegramUserScope(TelegramContext context);
 
-        /// <summary>
-        /// 判断
-        /// </summary>
-        /// <param name="CommandName"></param>
-        /// <returns></returns>
-        bool Contains(string CommandName);
+        IServiceScope GetUserScope(TelegramContext context);
     }
 }

@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,12 +24,38 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 
+    /// 帮助创建参数
     /// </summary>
-    internal interface ICallBackManger
+    internal interface IParamManager
     {
-        string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction);
+        /// <summary>
+        /// 读取参数
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
 
-        Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey);
+        /// <summary>
+        /// 取消读取参数
+        /// </summary>
+        void Cancel();
+
+        /// <summary>
+        /// 获取Command的名称
+        /// </summary>
+        /// <returns></returns>
+        string GetCommand();
+
+        /// <summary>
+        /// 获取读取过后的参数
+        /// </summary>
+        /// <returns></returns>
+        object[] GetParam();
+
+        /// <summary>
+        /// 是否处于读取参数的模式
+        /// </summary>
+        /// <returns></returns>
+        bool IsReadParam();
     }
 }

@@ -22,7 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Telegram.Bot.Framework.InternalFramework.Mangers;
+using Telegram.Bot.Framework.InternalFramework.Managers;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -35,11 +35,9 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
         {
-            Console.WriteLine("ActionControllerInvoke...");
-
-            IControllersManger controllersManger = UserScope.ServiceProvider.GetService<IControllersManger>();
+            IControllersManager controllersManger = UserScope.ServiceProvider.GetService<IControllersManager>();
             // 获取参数管理
-            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
+            IParamManager paramManger = UserScope.ServiceProvider.GetService<IParamManager>();
 
             TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
             if (controller == null)

@@ -24,9 +24,9 @@ using System.Reflection;
 using System.Threading;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
-using Telegram.Bot.Framework.InternalFramework.Mangers;
+using Telegram.Bot.Framework.InternalFramework.Managers;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.ParameterManger;
+using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Polling;
@@ -55,21 +55,21 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             telegramServices.AddScoped<IParamMessage, StringParamMessage>();
             telegramServices.AddScoped<TelegramUser>();
-            telegramServices.AddScoped<ICallBackManger, CallBackManger>();
+            telegramServices.AddScoped<ICallBackManager, CallBackManager>();
             telegramServices.AddScoped(x =>
             {
                 return new TelegramContext();
             });
 
-            telegramServices.AddTransient<ITelegramUserScopeManger, TelegramUserScopeManger>();
+            telegramServices.AddTransient<ITelegramUserScopeManager, TelegramUserScopeManager>();
             telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
 
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();
-            telegramServices.AddSingleton<ITypeManger>(new TypeManger(telegramServices));
-            telegramServices.AddSingleton<IBotNameManger>(x => 
+            telegramServices.AddSingleton<ITypeManager>(new TypeManager(telegramServices));
+            telegramServices.AddSingleton<IBotNameManager>(x => 
             {
-                BotNameManger botNameManger = new(x)
+                BotNameManager botNameManger = new(x)
                 {
                     BotName = botInfos.BotName
                 };
@@ -96,9 +96,9 @@ namespace Telegram.Bot.Framework.InternalFramework
         public static void AddControllers(this IServiceCollection services)
         {
             //添加进入services
-            services.AddScoped<IControllersManger, ControllersManger>();
-            services.AddScoped<IDelegateManger, ControllersManger>();
-            services.AddScoped<IParamManger, ParamManger>();
+            services.AddScoped<IControllersManager, ControllersManager>();
+            services.AddScoped<IDelegateManager, ControllersManager>();
+            services.AddScoped<IParamManager, ParamManager>();
         }
 
         /// <summary>

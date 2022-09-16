@@ -24,20 +24,20 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.Mangers
+namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ControllersManger : IControllersManger, IDelegateManger
+    internal class ControllersManager : IControllersManager, IDelegateManager
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly ITypeManger typeManger;
+        private readonly ITypeManager typeManger;
 
-        public ControllersManger(IServiceProvider serviceProvider)
+        public ControllersManager(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            typeManger = this.serviceProvider.GetService<ITypeManger>();
+            typeManger = this.serviceProvider.GetService<ITypeManager>();
         }
 
         public Delegate CreateDelegate(string CommandName)

@@ -20,65 +20,52 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITypeManger
+    internal class BotNameManager : IBotNameManager
     {
-        /// <summary>
-        /// 当前使用的Bot名称
-        /// </summary>
-        string BotName { get; }
+        private readonly Dictionary<string, HashSet<string>> Command_BotNames;
+        private readonly IServiceProvider serviceProvider;
 
         /// <summary>
-        /// 获取控制器类型
+        /// 初始化
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public BotNameManager(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
+        /// <summary>
+        /// 机器人名称
+        /// </summary>
+        public string BotName { get; set; } = null;
+
+        /// <summary>
+        /// 判断
         /// </summary>
         /// <param name="CommandName"></param>
         /// <returns></returns>
-        Type GetControllerType(string CommandName);
-
-        /// <summary>
-        /// 获取所有的CommandInfos信息
-        /// </summary>
-        /// <returns></returns>
-        List<CommandInfos> GetCommandInfos();
-
-        /// <summary>
-        /// 获取所有的CommandInfos信息
-        /// </summary>
-        /// <returns></returns>
-        Dictionary<string, CommandInfos> GetCommandInfosDic();
-
-        /// <summary>
-        /// 获得一个方法
-        /// </summary>
-        /// <param name="CommandName"></param>
-        /// <returns></returns>
-        MethodInfo GetControllerMethod(string CommandName);
-
-        /// <summary>
-        /// 判断是否存在某个指令名
-        /// </summary>
-        /// <param name="CommandName"></param>
-        /// <returns></returns>
-        bool ContainsCommandName(string CommandName);
-
-        /// <summary>
-        /// 判断方法允许的BotName中是否有本Bot
-        /// </summary>
-        /// <param name="CommandName"></param>
-        /// <returns></returns>
-        bool ContainsBotName(string CommandName);
+        public bool Contains(string CommandName)
+        {
+            return BotName != null && GetBotNames(CommandName).Contains(BotName);
+        }
 
         /// <summary>
         /// 获取Bot名称列表
         /// </summary>
         /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        HashSet<string> GetCommandBotNames(string CommandName);
+        public HashSet<string> GetBotNames(string CommandName)
+        {
+            if (Command_BotNames.ContainsKey(CommandName))
+                return Command_BotNames[CommandName];
+            return new HashSet<string>();
+        }
     }
 }

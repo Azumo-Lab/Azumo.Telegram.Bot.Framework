@@ -14,33 +14,36 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {
     /// <summary>
-    /// 认证相关的类
+    /// 用于处理文字类参数信息
     /// </summary>
-    internal class ActionAuthentication : IAction, IHandleSort
+    internal class StringParamMessage : IParamMessage
     {
-        public int Sort => 000;
-
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        private readonly IServiceProvider service;
+        public StringParamMessage(IServiceProvider serviceProvider)
         {
-            IEnumerable<IAuthentication> authentications = UserScope.ServiceProvider.GetServices<IAuthentication>();
-
-            foreach (IAuthentication auth in authentications)
-                if (!auth.Auth(context))
-                    return;
-
-            await NextHandle(context, UserScope, OneTimeScope);
+            service = serviceProvider;
+        }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="Message">消息</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task SendMessage(string Message)
+        {
+            TelegramContext context = service.GetService<TelegramContext>();
+            await context.BotClient.SendTextMessageAsync(context.ChatID, Message);
         }
     }
 }

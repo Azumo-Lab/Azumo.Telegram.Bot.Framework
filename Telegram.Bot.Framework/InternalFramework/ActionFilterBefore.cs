@@ -34,7 +34,6 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
         {
-            Console.WriteLine("ActionFilterBefore...");
             await NextHandle(context, UserScope, OneTimeScope);
         }
     }

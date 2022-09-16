@@ -23,22 +23,15 @@ using System.Reflection;
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 帮助创建委托
+    /// 管理控制器
     /// </summary>
-    internal interface IDelegateManger
+    internal interface IControllersManager : ICommandIsExist
     {
         /// <summary>
-        /// 创建一个委托
+        /// 根据指令获取控制器
         /// </summary>
-        /// <param name="Command">Command名称</param>
+        /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        Delegate CreateDelegate(string CommandName);
-
-        /// <summary>
-        /// 创建一个委托
-        /// </summary>
-        /// <param name="Command">Command名称</param>
-        /// <returns></returns>
-        Delegate CreateDelegate(string CommandName, object controller);
+        object GetController(string CommandName);
     }
 }

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -85,12 +86,21 @@ namespace Telegram.Bot.Net.Example
                 {
                     string[] item = { "剪子", "包袱", "锤" };
                     int index = new Random(Guid.NewGuid().GetHashCode()).Next(0, 3);
-                    if (index == 2)
+                    if (index == 0)
                     {
-                        context.BotClient.SendTextMessageAsync(context.ChatID, $"嘿嘿嘿，你输了，我出{item[index]}");
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 是平局");
                         return;
                     }
-                    context.BotClient.SendTextMessageAsync(context.ChatID, $"回合结束，我出{item[index]}");
+                    if (index == 1)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 啊啊啊，我输了");
+                        return;
+                    }
+                    if (index == 2)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 嘿嘿嘿，你输了");
+                        return;
+                    }
                 })),
                 InlineKeyboardButton.WithCallbackData("包袱",
                 CreateCallBack((context, userscope) =>
@@ -99,22 +109,40 @@ namespace Telegram.Bot.Net.Example
                     int index = new Random(Guid.NewGuid().GetHashCode()).Next(0, 3);
                     if (index == 0)
                     {
-                        context.BotClient.SendTextMessageAsync(context.ChatID, $"嘿嘿嘿，你输了，我出{item[index]}");
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 嘿嘿嘿，你输了");
                         return;
                     }
-                    context.BotClient.SendTextMessageAsync(context.ChatID, $"回合结束，我出{item[index]}");
+                    if (index == 1)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 是平局");
+                        return;
+                    }
+                    if (index == 2)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 啊啊啊，我输了");
+                        return;
+                    }
                 })),
                 InlineKeyboardButton.WithCallbackData("锤",
                 CreateCallBack((context, userscope) =>
                 {
                     string[] item = { "剪子", "包袱", "锤" };
                     int index = new Random(Guid.NewGuid().GetHashCode()).Next(0, 3);
-                    if (index == 1)
+                    if (index == 0)
                     {
-                        context.BotClient.SendTextMessageAsync(context.ChatID, $"嘿嘿嘿，你输了，我出{item[index]}");
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 啊啊啊，我输了");
                         return;
                     }
-                    context.BotClient.SendTextMessageAsync(context.ChatID, $"回合结束，我出{item[index]}");
+                    if (index == 1)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 嘿嘿嘿，你输了");
+                        return;
+                    }
+                    if (index == 2)
+                    {
+                        context.BotClient.SendTextMessageAsync(context.ChatID, $"我出{item[index]}, 是平局");
+                        return;
+                    }
                 })),
             });
         }

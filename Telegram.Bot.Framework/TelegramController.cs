@@ -40,8 +40,8 @@ namespace Telegram.Bot.Framework
             this.OneTimeService = OneTimeService;
             this.UserService = UserService;
 
-            IDelegateManger delegateManger = this.OneTimeService.GetService<IDelegateManger>();
-            IParamManger paramManger = this.UserService.GetService<IParamManger>();
+            IDelegateManager delegateManger = this.OneTimeService.GetService<IDelegateManager>();
+            IParamManager paramManger = this.UserService.GetService<IParamManager>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
@@ -76,7 +76,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         protected virtual List<(string CommandName, string CommandInfo)> GetCommandInfos()
         {
-            ITypeManger typeManger = OneTimeService.GetService<ITypeManger>();
+            ITypeManager typeManger = OneTimeService.GetService<ITypeManager>();
             return typeManger.GetCommandInfos()
                 .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
                 .ToList();
@@ -84,7 +84,7 @@ namespace Telegram.Bot.Framework
 
         protected virtual string CreateCallBack(Action<TelegramContext, IServiceScope> callback)
         {
-            ICallBackManger callBackManger = UserService.GetService<ICallBackManger>();
+            ICallBackManager callBackManger = UserService.GetService<ICallBackManager>();
 
             return callBackManger.CreateCallBack(callback);
         }

@@ -36,7 +36,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         {
             if (context.Update.Type == Types.Enums.UpdateType.CallbackQuery)
             {
-                ICallBackManger callBackManger = UserScope.ServiceProvider.GetService<ICallBackManger>();
+                ICallBackManager callBackManger = UserScope.ServiceProvider.GetService<ICallBackManager>();
 
                 Action<TelegramContext, IServiceScope> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
 

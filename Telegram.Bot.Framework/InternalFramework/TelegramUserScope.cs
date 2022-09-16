@@ -49,7 +49,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             UserScope ??= service.CreateScope();
 
             IEnumerable<IAction> actions = UserScope.ServiceProvider.GetServices<IAction>();
-            List<Func<ActionHandle, ActionHandle>> ActionHandles = new List<Func<ActionHandle, ActionHandle>>();
+            List<Func<ActionHandle, ActionHandle>> ActionHandles = new();
 
             actions = actions.OrderByDescending(x => ((IHandleSort)x).Sort).ToList();
 

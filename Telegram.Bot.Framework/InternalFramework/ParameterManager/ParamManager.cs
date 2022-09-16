@@ -25,23 +25,23 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
 
-namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
+namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {
-    internal class ParamManger : IParamManger
+    internal class ParamManager : IParamManager
     {
         private readonly Dictionary<string, CommandInfos> CommandCommandInfoMap;
         private readonly IServiceProvider UserServiceProvider;
-        private readonly ITypeManger typeManger;
+        private readonly ITypeManager typeManger;
 
         private string CommandName;
         private List<ParamInfos> ParamInfo;
         private List<object> ParamList;
         private bool Reading = false;
 
-        public ParamManger(IServiceProvider UserServiceProvider)
+        public ParamManager(IServiceProvider UserServiceProvider)
         {
             this.UserServiceProvider = UserServiceProvider;
-            typeManger = this.UserServiceProvider.GetService<ITypeManger>();
+            typeManger = this.UserServiceProvider.GetService<ITypeManager>();
 
             CommandCommandInfoMap = typeManger.GetCommandInfosDic();
         }

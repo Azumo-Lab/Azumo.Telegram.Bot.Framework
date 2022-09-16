@@ -34,9 +34,8 @@ namespace Telegram.Bot.Framework.InternalFramework
 
         public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
         {
-            Console.WriteLine("ActionParamCatch...");
             // 获取参数管理
-            IParamManger paramManger = UserScope.ServiceProvider.GetService<IParamManger>();
+            IParamManager paramManger = UserScope.ServiceProvider.GetService<IParamManager>();
 
             if (!await paramManger.ReadParam(context, OneTimeScope.ServiceProvider))
                 return;

@@ -19,17 +19,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.ParameterManger
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
-    [ParamMaker(typeof(string))]
-    internal class StringParamMaker : IParamMaker
+    /// <summary>
+    /// 帮助创建委托
+    /// </summary>
+    internal interface IDelegateManager
     {
-        public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
-        {
-            return await Task.FromResult(context.Update.Message?.Text);
-        }
+        /// <summary>
+        /// 创建一个委托
+        /// </summary>
+        /// <param name="Command">Command名称</param>
+        /// <returns></returns>
+        Delegate CreateDelegate(string CommandName);
+
+        /// <summary>
+        /// 创建一个委托
+        /// </summary>
+        /// <param name="Command">Command名称</param>
+        /// <returns></returns>
+        Delegate CreateDelegate(string CommandName, object controller);
     }
 }

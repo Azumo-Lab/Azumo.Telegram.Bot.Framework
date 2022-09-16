@@ -21,20 +21,28 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramUserScopeManger
+    internal class CallBackManager : ICallBackManager
     {
-        /// <summary>
-        /// 获取控制器
-        /// </summary>
-        /// <returns></returns>
-        ITelegramUserScope GetTelegramUserScope(TelegramContext context);
+        private readonly Dictionary<string, Action<TelegramContext, IServiceScope>> CallBacks = new Dictionary<string, Action<TelegramContext, IServiceScope>>();
+        public string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction)
+        {
+            string key = Guid.NewGuid().ToString();
+            CallBacks.Add(key, CallBackAction);
+            return key;
+        }
 
-        IServiceScope GetUserScope(TelegramContext context);
+        public Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey)
+        {
+            if (CallBackKey != null && CallBacks.ContainsKey(CallBackKey))
+                return CallBacks[CallBackKey];
+            return null;
+        }
     }
 }

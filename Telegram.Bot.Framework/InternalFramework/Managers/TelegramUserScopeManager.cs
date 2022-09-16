@@ -23,15 +23,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.Mangers
+namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
-    internal class TelegramUserScopeManger : ITelegramUserScopeManger
+    internal class TelegramUserScopeManager : ITelegramUserScopeManager
     {
         private readonly IServiceProvider serviceProvider;
         private readonly static Dictionary<long, ITelegramUserScope> User_Controller = new Dictionary<long, ITelegramUserScope>();
         private readonly static Dictionary<long, (int Count, DateTime LastUseTime)> User_Time = new Dictionary<long, (int Count, DateTime LastUseTime)>();
 
-        public TelegramUserScopeManger(IServiceProvider serviceProvider)
+        public TelegramUserScopeManager(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }

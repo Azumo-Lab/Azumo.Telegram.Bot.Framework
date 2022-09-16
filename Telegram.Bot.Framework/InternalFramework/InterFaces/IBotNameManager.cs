@@ -14,35 +14,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.Mangers
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class CallBackManger : ICallBackManger
+    internal interface IBotNameManager
     {
-        private readonly Dictionary<string, Action<TelegramContext, IServiceScope>> CallBacks = new Dictionary<string, Action<TelegramContext, IServiceScope>>();
-        public string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction)
-        {
-            string key = Guid.NewGuid().ToString();
-            CallBacks.Add(key, CallBackAction);
-            return key;
-        }
+        /// <summary>
+        /// 当前使用的Bot名称
+        /// </summary>
+        string BotName { get; }
 
-        public Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey)
-        {
-            if (CallBackKey != null && CallBacks.ContainsKey(CallBackKey))
-                return CallBacks[CallBackKey];
-            return null;
-        }
+        /// <summary>
+        /// 获取Bot名称列表
+        /// </summary>
+        /// <param name="CommandName">指令名称</param>
+        /// <returns></returns>
+        HashSet<string> GetBotNames(string CommandName);
+
+        /// <summary>
+        /// 判断
+        /// </summary>
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool Contains(string CommandName);
     }
 }
