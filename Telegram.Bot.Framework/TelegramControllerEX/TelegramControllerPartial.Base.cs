@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
     /// </summary>
     public partial class TelegramControllerPartial
     {
-        protected TelegramContext TelegramContext { get; set; }
+        public TelegramContext Context { get; internal set; }
 
         internal IServiceProvider OneTimeService;
         internal IServiceProvider UserService;

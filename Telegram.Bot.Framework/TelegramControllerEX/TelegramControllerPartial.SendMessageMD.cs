@@ -31,8 +31,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
     {
         protected virtual async Task SendTextMessageWithMD(string MDMessage)
         {
-            await TelegramContext.BotClient.SendTextMessageAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
                 text: MDMessage, parseMode: ParseMode.MarkdownV2
                 );
         }

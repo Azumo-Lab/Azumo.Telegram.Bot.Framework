@@ -52,7 +52,7 @@ namespace Telegram.Bot.Example.Example
             {
                 using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
                 {
-                    sw.WriteLine(JsonConvert.SerializeObject(TelegramContext.Update.Message.Chat));
+                    sw.WriteLine(JsonConvert.SerializeObject(Context.Update.Message.Chat));
                 }
             }
             

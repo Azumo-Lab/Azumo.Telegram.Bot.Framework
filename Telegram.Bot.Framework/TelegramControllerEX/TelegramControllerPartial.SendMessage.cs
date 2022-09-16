@@ -36,8 +36,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendTextMessage(string Message)
         {
-            await TelegramContext.BotClient.SendTextMessageAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
                 Message
                 );
         }
@@ -49,8 +49,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
         {
-            await TelegramContext.BotClient.SendTextMessageAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
                 Message, replyMarkup: new InlineKeyboardMarkup(keyboardButton)
                 );
         }

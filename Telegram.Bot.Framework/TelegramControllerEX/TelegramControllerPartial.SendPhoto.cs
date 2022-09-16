@@ -37,8 +37,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendPhoto(string PhotoPath)
         {
-            await TelegramContext.BotClient.SendPhotoAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendPhotoAsync(
+                chatId: Context.ChatID,
                 photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath))
                 );
         }
@@ -49,8 +49,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendPhoto(string PhotoPath, string Message)
         {
-            await TelegramContext.BotClient.SendPhotoAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendPhotoAsync(
+                chatId: Context.ChatID,
                 photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
                 caption: Message
                 );
@@ -62,8 +62,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendPhoto(string PhotoPath, string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
         {
-            await TelegramContext.BotClient.SendPhotoAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendPhotoAsync(
+                chatId: Context.ChatID,
                 photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
                 caption: Message,
                 replyMarkup: new InlineKeyboardMarkup(keyboardButton)

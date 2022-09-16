@@ -36,8 +36,8 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendTextMessageWithHtml(string HtmlMessage)
         {
-            await TelegramContext.BotClient.SendTextMessageAsync(
-                chatId: TelegramContext.ChatID,
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
                 text: HtmlMessage, parseMode: ParseMode.Html
                 );
         }

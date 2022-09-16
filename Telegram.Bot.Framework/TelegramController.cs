@@ -36,7 +36,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, string CommandName)
         {
-            TelegramContext = context;
+            Context = context;
             this.OneTimeService = OneTimeService;
             this.UserService = UserService;
 
