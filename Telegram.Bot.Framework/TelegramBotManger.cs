@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework
         /// 创建一个新的配置对象
         /// </summary>
         /// <returns></returns>
-        public static TelegramBotManger CreateConfig()
+        public static TelegramBotManger Create()
         {
             return new TelegramBotManger();
         }

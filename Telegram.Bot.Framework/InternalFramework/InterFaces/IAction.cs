@@ -32,11 +32,11 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         /// <summary>
         /// 执行
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="Context"></param>
         /// <param name="UserScope"></param>
         /// <param name="OneTimeScope"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle);
+        Task Invoke(TelegramContext Context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle);
     }
 }

@@ -32,15 +32,15 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         public int Sort => 000;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext Context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
         {
             IEnumerable<IAuthentication> authentications = UserScope.ServiceProvider.GetServices<IAuthentication>();
 
             foreach (IAuthentication auth in authentications)
-                if (!auth.Auth(context))
+                if (!auth.Auth(Context))
                     return;
 
-            await NextHandle(context, UserScope, OneTimeScope);
+            await NextHandle(Context, UserScope, OneTimeScope);
         }
     }
 }

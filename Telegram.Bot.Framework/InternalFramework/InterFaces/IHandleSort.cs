@@ -28,6 +28,9 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
     /// </summary>
     internal interface IHandleSort
     {
+        /// <summary>
+        /// 排序
+        /// </summary>
         int Sort { get; }
     }
 }

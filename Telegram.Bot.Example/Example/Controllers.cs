@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,6 +45,17 @@ namespace Telegram.Bot.Example.Example
             message += Environment.NewLine;
             message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
 
+            string logFile = "UsersInfo.log";
+            if (!File.Exists(logFile))
+                File.Create(logFile).Close();
+            using (FileStream fs = new(logFile, FileMode.Append))
+            {
+                using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    sw.WriteLine(JsonConvert.SerializeObject(TelegramContext.Update.Message.Chat));
+                }
+            }
+            
             await SendTextMessage(message);
         }
     }
