@@ -77,10 +77,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             });
             telegramServices.AddSingleton<ITelegramBotClient>(x => 
             {
-                if (httpClient == null)
-                    return new TelegramBotClient(botInfos.Token);
-                else
-                    return new TelegramBotClient(botInfos.Token, httpClient);
+                return httpClient == null ? new TelegramBotClient(botInfos.Token) : new TelegramBotClient(botInfos.Token, httpClient);
             });
 
             telegramServices.AddControllers();
