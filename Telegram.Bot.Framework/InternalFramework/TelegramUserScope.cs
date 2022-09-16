@@ -56,7 +56,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             foreach (IAction item in actions)
                 ActionHandles.Add(
                     handle =>
-                    (x, y, z) => item.Invoke(x, y, z, handle));
+                    (context, userscope, onetimescope) => item.Invoke(context, userscope, onetimescope, handle));
 
             foreach (Func<ActionHandle, ActionHandle> item in ActionHandles)
                 handle = item(handle);
