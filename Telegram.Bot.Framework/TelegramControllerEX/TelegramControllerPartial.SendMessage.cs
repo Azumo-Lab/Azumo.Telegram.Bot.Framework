@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Components;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.TelegramControllerEX
@@ -47,11 +48,11 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// </summary>
         /// <param name="Message">普通文本信息</param>
         /// <returns></returns>
-        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
+        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineButtons> keyboardButton)
         {
             await Context.BotClient.SendTextMessageAsync(
                 chatId: Context.ChatID,
-                Message, replyMarkup: new InlineKeyboardMarkup(keyboardButton)
+                Message, replyMarkup: new InlineKeyboardMarkup(CreateInlineKeyboardButton(keyboardButton))
                 );
         }
     }

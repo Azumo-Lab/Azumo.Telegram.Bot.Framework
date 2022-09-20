@@ -26,10 +26,9 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
     /// </summary>
     internal static class DelegateHelper
     {
+        #region 初始化
         private static readonly Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
         private static readonly Dictionary<int, Type> FuncTypes = new Dictionary<int, Type>();
-
-        #region 初始化
         static DelegateHelper()
         {
             ActionTypes.Add(0, typeof(Action));

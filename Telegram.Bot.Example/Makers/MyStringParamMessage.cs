@@ -20,27 +20,29 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Example.Makers
 {
     /// <summary>
-    /// 参数信息
+    /// 
     /// </summary>
-    internal class ParamInfos
+    public class MyStringParamMessage : IParamMessage
     {
-        /// <summary>
-        /// 返回的信息
-        /// </summary>
-        public string MessageInfo { get; set; }
+        IServiceProvider serviceProvider;
+        public MyStringParamMessage(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
 
-        /// <summary>
-        /// 自定义的消息发送
-        /// </summary>
-        public Type CustomMessageType { get; set; }
+        public async Task SendMessage(string Message)
+        {
+            string message = Message + " :你好这里是自定义的Message, 无论你输入什么，都会始终以Hello入参";
 
-        /// <summary>
-        /// 自定义的消息获取
-        /// </summary>
-        public Type CustomParamMaker { get; set; }
+            TelegramContext telegramContext = serviceProvider.GetService<TelegramContext>();
+
+            await telegramContext.BotClient.SendTextMessageAsync(telegramContext.ChatID, message);
+        }
     }
 }

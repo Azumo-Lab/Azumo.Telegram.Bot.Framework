@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramMessage;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,39 +53,6 @@ namespace Telegram.Bot.Framework
                 commandAction = () => action.DynamicInvoke(Params);
 
             await Task.Run(commandAction);
-        }
-
-        /// <summary>
-        /// 获取命令信息文本
-        /// </summary>
-        /// <returns></returns>
-        protected virtual string GetCommandInfosString()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            GetCommandInfos().ForEach(x =>
-            {
-                stringBuilder.AppendLine($"{x.CommandName}  {x.CommandInfo}");
-            });
-            return stringBuilder.ToString();
-        }
-
-        /// <summary>
-        /// 获取命令信息
-        /// </summary>
-        /// <returns></returns>
-        protected virtual List<(string CommandName, string CommandInfo)> GetCommandInfos()
-        {
-            ITypeManager typeManger = OneTimeService.GetService<ITypeManager>();
-            return typeManger.GetCommandInfos()
-                .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
-                .ToList();
-        }
-
-        protected virtual string CreateCallBack(Action<TelegramContext, IServiceScope> callback)
-        {
-            ICallBackManager callBackManger = UserService.GetService<ICallBackManager>();
-
-            return callBackManger.CreateCallBack(callback);
         }
     }
 }

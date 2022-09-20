@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramMessage;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         {
             await Context.BotClient.SendPhotoAsync(
                 chatId: Context.ChatID,
-                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath))
+                photo: new Types.InputFiles.InputOnlineFile(System.IO.File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath))
                 );
         }
 
@@ -51,7 +51,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         {
             await Context.BotClient.SendPhotoAsync(
                 chatId: Context.ChatID,
-                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
+                photo: new Types.InputFiles.InputOnlineFile(System.IO.File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
                 caption: Message
                 );
         }
@@ -64,7 +64,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         {
             await Context.BotClient.SendPhotoAsync(
                 chatId: Context.ChatID,
-                photo: new Types.InputFiles.InputOnlineFile(File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
+                photo: new Types.InputFiles.InputOnlineFile(System.IO.File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
                 caption: Message,
                 replyMarkup: new InlineKeyboardMarkup(keyboardButton)
                 );
@@ -74,7 +74,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// 发送一张图片
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task SendPhoto(PhotoInfo Photo)
+        protected virtual async Task SendPhoto(PhotoSize Photo)
         {
 
         }
@@ -83,7 +83,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// 发送多张图片
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task SendPhotos(IEnumerable<PhotoInfo> Photos)
+        protected virtual async Task SendPhotos(IEnumerable<PhotoSize> Photos)
         {
 
         }

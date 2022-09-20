@@ -111,7 +111,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 
                 if (paramOne.MessageInfo != null)
                 {
-                    IParamMessage paramMessage = OneTimeServiceProvider.GetService<IParamMessage>();
+                    IParamMessage paramMessage = (IParamMessage)OneTimeServiceProvider.GetService(paramOne.CustomMessageType);
                     await paramMessage.SendMessage(paramOne.MessageInfo);
                     Reading = true;
                     ParamList ??= new List<object>();
@@ -120,7 +120,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
             }
             else
             {
-                IParamMaker paramMaker = (IParamMaker)OneTimeServiceProvider.GetService(paramOne.MessageType);
+                IParamMaker paramMaker = (IParamMaker)OneTimeServiceProvider.GetService(paramOne.CustomParamMaker);
                 ParamList.Add(await paramMaker.GetParam(context, OneTimeServiceProvider));
                 ParamInfo.Remove(paramOne);
                 Reading = false;

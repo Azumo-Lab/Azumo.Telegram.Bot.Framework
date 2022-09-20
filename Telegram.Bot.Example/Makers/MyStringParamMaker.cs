@@ -16,11 +16,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 
-namespace Telegram.Bot.Framework.TelegramMessage
+namespace Telegram.Bot.Example.Makers
 {
-    public class PhotoInfo
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MyStringParamMaker : IParamMaker
     {
+        public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return await Task.FromResult("Hello");
+        }
     }
 }
