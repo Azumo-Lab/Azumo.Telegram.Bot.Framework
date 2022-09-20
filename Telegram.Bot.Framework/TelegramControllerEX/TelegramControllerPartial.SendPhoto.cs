@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Components;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -60,13 +61,13 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// 发送一张图片
         /// </summary>
         /// <returns></returns>
-        protected virtual async Task SendPhoto(string PhotoPath, string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
+        protected virtual async Task SendPhoto(string PhotoPath, string Message, IEnumerable<InlineButtons> keyboardButton)
         {
             await Context.BotClient.SendPhotoAsync(
                 chatId: Context.ChatID,
                 photo: new Types.InputFiles.InputOnlineFile(System.IO.File.OpenRead(PhotoPath), Path.GetFileName(PhotoPath)),
                 caption: Message,
-                replyMarkup: new InlineKeyboardMarkup(keyboardButton)
+                replyMarkup: new InlineKeyboardMarkup(CreateInlineKeyboardButton(keyboardButton))
                 );
         }
 
