@@ -90,6 +90,11 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
 
             return inlineKeyboardButtons;
         }
+
+        protected virtual int Random(int minNum, int maxNum)
+        {
+            return new Random(Guid.NewGuid().GetHashCode()).Next(minNum, maxNum + 1);
+        }
     }
 }
 
