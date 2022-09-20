@@ -21,10 +21,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types.Enums;
 
@@ -121,8 +123,9 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
         protected TypeHelper(IServiceCollection services)
         {
             this.services = services;
-            ParamMakerType = GetTypes(typeof(IParamMaker)).Where(x => Attribute.IsDefined(x, typeof(ParamMakerAttribute))).ToList();
+            ParamMakerType = GetTypes(typeof(IParamMaker)).ToList();
             ParamMakerType.ForEach(x => this.services.AddScoped(x));
+            GetTypes(typeof(IParamMessage)).ToList().ForEach(x => this.services.AddScoped(x));
         }
 
         /// <summary>
@@ -136,41 +139,53 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             foreach (var parameter in paramsInfos)
             {
                 string message = null;
-                Type messageType = null;
+                Type messageType = typeof(StringParamMessage);
+                Type makerType;
 
                 ParamAttribute paramAttr = GetAttribute<ParamAttribute>(parameter);
                 if (paramAttr != null)
                 {
-                    if (paramAttr.UseCustom)
+                    if (paramAttr.UseCustom)//使用自定义信息
                         message = paramAttr.CustomInfos;
                     else
                         message = $"请输入【{paramAttr.CustomInfos}】的值";
-                    if (paramAttr.CustomMessageType != null)
+
+                    if (paramAttr.CustomMessageType != null) //自定义消息发送
                         messageType = paramAttr.CustomMessageType;
+
+                    if (paramAttr.CustomParamMaker != null) //自定义参数制造
+                        makerType = paramAttr.CustomParamMaker;
                     else
                     {
-                        messageType = GetParamMakerType().Where(x =>
-                        {
-                            ParamMakerAttribute paramMaker = GetAttribute<ParamMakerAttribute>(x);
-                            return paramMaker.MakerType.FullName == parameter.ParameterType.FullName;
-                        }).FirstOrDefault();
+                        makerType = GetDefMakerType(parameter);
                     }
                 }
                 else
                 {
-                    messageType = GetParamMakerType().Where(x =>
-                    {
-                        ParamMakerAttribute paramMaker = GetAttribute<ParamMakerAttribute>(x);
-                        return paramMaker.MakerType.FullName == parameter.ParameterType.FullName;
-                    }).FirstOrDefault();
+                    makerType = GetDefMakerType(parameter);
                 }
                 paramInfos.Add(new ParamInfos
                 {
                     MessageInfo = message ?? string.Empty,
-                    MessageType = messageType,
+                    CustomMessageType = messageType,
+                    CustomParamMaker = makerType,
                 });
             }
             return paramInfos;
+        }
+
+        private Type GetDefMakerType(ParameterInfo parameter)
+        {
+            Type messageType = GetParamMakerType().Where(x =>
+            {
+                ParamMakerAttribute paramMaker = GetAttribute<ParamMakerAttribute>(x);
+                if (paramMaker != null)
+                {
+                    return paramMaker.MakerType.FullName == parameter.ParameterType.FullName;
+                }
+                return false;
+            }).FirstOrDefault();
+            return messageType;
         }
 
         /// <summary>

@@ -22,7 +22,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Components;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.TelegramControllerEX
 {
@@ -56,7 +58,7 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual List<(string CommandName, string CommandInfo)> GetCommandInfos()
         {
-            ITypeManager typeManger = OneTimeService.GetService<ITypeManager>();
+            ITypeManager typeManger = UserService.GetService<ITypeManager>();
             return typeManger.GetCommandInfos()
                 .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
                 .ToList();
@@ -64,9 +66,29 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
 
         protected virtual string CreateCallBack(Action<TelegramContext, IServiceScope> callback)
         {
+            if (callback == null)
+                return null;
+
             ICallBackManager callBackManger = UserService.GetService<ICallBackManager>();
 
             return callBackManger.CreateCallBack(callback);
+        }
+
+        protected virtual IEnumerable<InlineKeyboardButton> CreateInlineKeyboardButton(IEnumerable<InlineButtons> keyboardButton)
+        {
+            IEnumerable<InlineKeyboardButton> inlineKeyboardButtons = keyboardButton.Select(x => new InlineKeyboardButton(x.Text)
+            {
+                CallbackData = CreateCallBack(x.Callback),
+                CallbackGame = x.CallbackGame,
+                Url = x.Url,
+                LoginUrl = x.LoginUrl,
+                Pay = x.Pay,
+                SwitchInlineQuery = x.SwitchInlineQuery,
+                SwitchInlineQueryCurrentChat = x.SwitchInlineQueryCurrentChat,
+                WebApp = x.WebApp,
+            }).ToList();
+
+            return inlineKeyboardButtons;
         }
     }
 }
