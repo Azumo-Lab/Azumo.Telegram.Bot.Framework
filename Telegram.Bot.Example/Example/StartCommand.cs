@@ -30,7 +30,7 @@ namespace Telegram.Bot.Example.Example
     /// <summary>
     /// 
     /// </summary>
-    public class Controllers : TelegramController
+    public class StartCommand : TelegramController
     {
         [Command(nameof(Start), CommandInfo = "本条指令")]
         public async Task Start()
@@ -45,17 +45,6 @@ namespace Telegram.Bot.Example.Example
             message += Environment.NewLine;
             message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
 
-            string logFile = "UsersInfo.log";
-            if (!File.Exists(logFile))
-                File.Create(logFile).Close();
-            using (FileStream fs = new(logFile, FileMode.Append))
-            {
-                using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
-                {
-                    sw.WriteLine(JsonConvert.SerializeObject(Context.Update.Message.Chat));
-                }
-            }
-            
             await SendTextMessage(message);
         }
     }
