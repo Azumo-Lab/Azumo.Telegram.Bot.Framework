@@ -20,43 +20,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.TelegramControllerEX
 {
     /// <summary>
-    /// 指令信息
+    /// 
     /// </summary>
-    internal class CommandInfos
+    public partial class TelegramControllerPartial
     {
         /// <summary>
-        /// 指令名称
+        /// 用Html的方式发送一条信息
         /// </summary>
-        public string CommandName { get; set; }
-
-        /// <summary>
-        /// 控制器类型
-        /// </summary>
-        public Type Controller { get; set; }
-
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <param name="HtmlMessage">Html格式的信息</param>
+        /// <returns></returns>
+        protected virtual async Task SendTextMessageWithHtml(string HtmlMessage)
+        {
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
+                text: HtmlMessage, parseMode: ParseMode.Html
+                );
+        }
     }
 }

@@ -14,49 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.InternalFramework
 {
     /// <summary>
-    /// 指令信息
+    /// 
     /// </summary>
-    internal class CommandInfos
+    internal class ActionCallBack : IAction, IHandleSort
     {
-        /// <summary>
-        /// 指令名称
-        /// </summary>
-        public string CommandName { get; set; }
+        public int Sort => 150;
 
-        /// <summary>
-        /// 控制器类型
-        /// </summary>
-        public Type Controller { get; set; }
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        {
+            if (context.Update.Type == Types.Enums.UpdateType.CallbackQuery)
+            {
+                ICallBackManager callBackManger = UserScope.ServiceProvider.GetService<ICallBackManager>();
 
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
+                Action<TelegramContext, IServiceScope> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
 
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
+                if (action != null)
+                {
+                    action.Invoke(context, UserScope);
+                    return;
+                }
+            }
 
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+            await NextHandle(context, UserScope, OneTimeScope);
+        }
     }
 }

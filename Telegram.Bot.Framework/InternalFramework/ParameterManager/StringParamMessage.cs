@@ -20,43 +20,30 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {
     /// <summary>
-    /// 指令信息
+    /// 用于处理文字类参数信息
     /// </summary>
-    internal class CommandInfos
+    internal class StringParamMessage : IParamMessage
     {
+        private readonly IServiceProvider service;
+        public StringParamMessage(IServiceProvider serviceProvider)
+        {
+            service = serviceProvider;
+        }
         /// <summary>
-        /// 指令名称
+        /// 发送消息
         /// </summary>
-        public string CommandName { get; set; }
-
-        /// <summary>
-        /// 控制器类型
-        /// </summary>
-        public Type Controller { get; set; }
-
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <param name="Message">消息</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public async Task SendMessage(string Message)
+        {
+            TelegramContext context = service.GetService<TelegramContext>();
+            await context.BotClient.SendTextMessageAsync(context.ChatID, Message);
+        }
     }
 }

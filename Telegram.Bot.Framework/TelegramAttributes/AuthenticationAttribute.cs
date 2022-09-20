@@ -31,13 +31,13 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// <summary>
         /// 允许的用户类型
         /// </summary>
-        public AuthenticationRole AuthenticationRole { get; }
+        public AuthenticationRole[] AuthenticationRole { get; }
 
         /// <summary>
         /// 权限
         /// </summary>
         /// <param name="authenticationRole">允许的用户类型</param>
-        public AuthenticationAttribute(AuthenticationRole authenticationRole)
+        public AuthenticationAttribute(params AuthenticationRole[] authenticationRole)
         {
             AuthenticationRole = authenticationRole;
         }

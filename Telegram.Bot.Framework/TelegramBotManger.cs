@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework
         /// 创建一个新的配置对象
         /// </summary>
         /// <returns></returns>
-        public static TelegramBotManger CreateConfig()
+        public static TelegramBotManger Create()
         {
             return new TelegramBotManger();
         }
@@ -113,6 +113,22 @@ namespace Telegram.Bot.Framework
         public TelegramBotManger AddConfig<ConfigType>() where ConfigType : class, IConfig
         {
             services.AddScoped<IConfig, ConfigType>();
+            return this;
+        }
+
+        /// <summary>
+        /// 添加设置
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public TelegramBotManger AddConfig(Action<IServiceCollection> action)
+        {
+            services.AddScoped<IConfig, DefaultConfig>(x =>
+            {
+                DefaultConfig defConf = new();
+                defConf.SetAction(action);
+                return defConf;
+            });
             return this;
         }
 

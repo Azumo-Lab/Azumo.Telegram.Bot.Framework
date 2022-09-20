@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{237A0F2B-778
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Host", "Telegram.Bot.Framework.Host\Telegram.Bot.Framework.Host.csproj", "{11E2BC16-74AC-4E73-B698-63C4435C0731}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

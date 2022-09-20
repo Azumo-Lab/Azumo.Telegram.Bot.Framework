@@ -19,44 +19,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 指令信息
+    /// 帮助创建委托
     /// </summary>
-    internal class CommandInfos
+    internal interface IDelegateManager
     {
         /// <summary>
-        /// 指令名称
+        /// 创建一个委托
         /// </summary>
-        public string CommandName { get; set; }
+        /// <param name="Command">Command名称</param>
+        /// <returns></returns>
+        Delegate CreateDelegate(string CommandName);
 
         /// <summary>
-        /// 控制器类型
+        /// 创建一个委托
         /// </summary>
-        public Type Controller { get; set; }
-
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <param name="Command">Command名称</param>
+        /// <returns></returns>
+        Delegate CreateDelegate(string CommandName, object controller);
     }
 }

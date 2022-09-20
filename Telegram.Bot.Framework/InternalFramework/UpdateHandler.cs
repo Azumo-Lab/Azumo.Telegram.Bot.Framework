@@ -37,6 +37,9 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         public static Dictionary<long, TelegramUserScope> routes = new Dictionary<long, TelegramUserScope>();
         public readonly IServiceProvider serviceProvider;
+
+        
+
         public UpdateHandler(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -58,8 +61,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 _ => exception.ToString()
             };
 
-            TelegramContext context = serviceProvider.GetService<TelegramContext>();
-            await botClient.SendTextMessageAsync(context.ChatID, ErrorMessage);
+            Console.WriteLine(ErrorMessage);
         }
 
         /// <summary>
@@ -81,9 +83,9 @@ namespace Telegram.Bot.Framework.InternalFramework
                 telegramContext.CancellationToken = cancellationToken;
 
                 //获取 | 创建 一个TelegramUserScope
-                ITelegramUserScopeManger telegramUserScopeManger = serviceProvider.GetService<ITelegramUserScopeManger>();
+                ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();
 
-                ITelegramUserScope telegramUserScope = telegramUserScopeManger.GetTelegramUserScope(telegramContext);
+                ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(telegramContext);
 
                 await telegramUserScope.Invoke(OneTimeScope);
             }

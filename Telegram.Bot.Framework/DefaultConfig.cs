@@ -14,49 +14,31 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 指令信息
+    /// 默认
     /// </summary>
-    internal class CommandInfos
+    public class DefaultConfig : IConfig
     {
-        /// <summary>
-        /// 指令名称
-        /// </summary>
-        public string CommandName { get; set; }
+        internal Action<IServiceCollection> action;
 
-        /// <summary>
-        /// 控制器类型
-        /// </summary>
-        public Type Controller { get; set; }
+        public void Config(IServiceCollection telegramServices)
+        {
+            action?.Invoke(telegramServices);
+        }
 
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        internal void SetAction(Action<IServiceCollection> action)
+        {
+            this.action = action;
+        }
     }
 }

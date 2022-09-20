@@ -20,43 +20,31 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 指令信息
+    /// 
     /// </summary>
-    internal class CommandInfos
+    internal interface IBotNameManager
     {
         /// <summary>
-        /// 指令名称
+        /// 当前使用的Bot名称
         /// </summary>
-        public string CommandName { get; set; }
+        string BotName { get; }
 
         /// <summary>
-        /// 控制器类型
+        /// 获取Bot名称列表
         /// </summary>
-        public Type Controller { get; set; }
+        /// <param name="CommandName">指令名称</param>
+        /// <returns></returns>
+        HashSet<string> GetBotNames(string CommandName);
 
         /// <summary>
-        /// 方法信息
+        /// 判断
         /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <param name="CommandName"></param>
+        /// <returns></returns>
+        bool Contains(string CommandName);
     }
 }

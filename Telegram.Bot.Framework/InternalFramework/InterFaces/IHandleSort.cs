@@ -20,43 +20,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 指令信息
+    /// 
     /// </summary>
-    internal class CommandInfos
+    internal interface IHandleSort
     {
         /// <summary>
-        /// 指令名称
+        /// 排序
         /// </summary>
-        public string CommandName { get; set; }
-
-        /// <summary>
-        /// 控制器类型
-        /// </summary>
-        public Type Controller { get; set; }
-
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        int Sort { get; }
     }
 }

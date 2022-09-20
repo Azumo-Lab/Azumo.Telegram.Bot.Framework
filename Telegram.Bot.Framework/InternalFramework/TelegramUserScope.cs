@@ -38,6 +38,8 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// </summary>
         private IServiceScope UserScope { get; }
 
+        private readonly ActionHandle handle = async (x, y, z) => { await Task.Delay(1); };
+
         /// <summary>
         /// 
         /// </summary>
@@ -45,6 +47,19 @@ namespace Telegram.Bot.Framework.InternalFramework
         public TelegramUserScope(IServiceProvider service)
         {
             UserScope ??= service.CreateScope();
+
+            IEnumerable<IAction> actions = UserScope.ServiceProvider.GetServices<IAction>();
+            List<Func<ActionHandle, ActionHandle>> ActionHandles = new();
+
+            actions = actions.OrderByDescending(x => ((IHandleSort)x).Sort).ToList();
+
+            foreach (IAction item in actions)
+                ActionHandles.Add(
+                    handle =>
+                    (context, userscope, onetimescope) => item.Invoke(context, userscope, onetimescope, handle));
+
+            foreach (Func<ActionHandle, ActionHandle> item in ActionHandles)
+                handle = item(handle);
         }
 
         /// <summary>
@@ -62,10 +77,8 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task Invoke(IServiceScope OneTimeScope)
         {
-            //创建单次访问的Scope
-            TelegramRouteController controller = new TelegramRouteController(OneTimeScope, UserScope);
-
-            await controller.StartProcess();
+            TelegramContext context = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
+            await handle.Invoke(context, UserScope, OneTimeScope);
         }
 
         /// <summary>

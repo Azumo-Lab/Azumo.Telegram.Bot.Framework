@@ -37,7 +37,7 @@ namespace Telegram.Bot.Net
             string Proxy = Secrets.GetSection("Proxy").Value;
             int Port = int.Parse(Secrets.GetSection("Port").Value);
 
-            var bot = TelegramBotManger.CreateConfig()
+            var bot = TelegramBotManger.Create()
                 .SetToken(Token)
                 .SetProxy(Proxy, Port)
                 .AddConfig<TGBotDEV>()

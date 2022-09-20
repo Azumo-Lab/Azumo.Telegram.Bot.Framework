@@ -20,43 +20,42 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
     /// <summary>
-    /// 指令信息
+    /// 帮助创建参数
     /// </summary>
-    internal class CommandInfos
+    internal interface IParamManager
     {
         /// <summary>
-        /// 指令名称
+        /// 读取参数
         /// </summary>
-        public string CommandName { get; set; }
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
 
         /// <summary>
-        /// 控制器类型
+        /// 取消读取参数
         /// </summary>
-        public Type Controller { get; set; }
+        void Cancel();
 
         /// <summary>
-        /// 方法信息
+        /// 获取Command的名称
         /// </summary>
-        public MethodInfo CommandMethod { get; set; }
+        /// <returns></returns>
+        string GetCommand();
 
         /// <summary>
-        /// 能够使用的Bot名称
+        /// 获取读取过后的参数
         /// </summary>
-        public HashSet<string> BotNames { get; set; }
+        /// <returns></returns>
+        object[] GetParam();
 
         /// <summary>
-        /// 方法参数信息
+        /// 是否处于读取参数的模式
         /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <returns></returns>
+        bool IsReadParam();
     }
 }

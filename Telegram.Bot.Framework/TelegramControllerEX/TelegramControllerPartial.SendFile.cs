@@ -14,49 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.TelegramControllerEX
 {
     /// <summary>
-    /// 指令信息
+    /// 
     /// </summary>
-    internal class CommandInfos
+    public partial class TelegramControllerPartial
     {
         /// <summary>
-        /// 指令名称
+        /// 发送一个文件
         /// </summary>
-        public string CommandName { get; set; }
+        /// <param name="file"></param>
+        /// <returns></returns>
+        protected virtual async Task SendFile(byte[] File, string FileName)
+        {
+
+        }
 
         /// <summary>
-        /// 控制器类型
+        /// 发送一个文件
         /// </summary>
-        public Type Controller { get; set; }
-
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <param name="file"></param>
+        /// <returns></returns>
+        protected virtual async Task SendFile(string FilePath)
+        {
+            if (File.Exists(FilePath))
+                await SendFile(File.ReadAllBytes(FilePath), Path.GetFileName(FilePath));
+            else
+                throw new FileNotFoundException($"未找到文件 {FilePath}");
+        }
     }
 }

@@ -20,43 +20,39 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Telegram.Bot.Framework.InternalFramework.Models
+namespace Telegram.Bot.Framework.TelegramControllerEX
 {
     /// <summary>
-    /// 指令信息
+    /// 
     /// </summary>
-    internal class CommandInfos
+    public partial class TelegramControllerPartial
     {
         /// <summary>
-        /// 指令名称
+        /// 发送一条消息
         /// </summary>
-        public string CommandName { get; set; }
+        /// <param name="Message">普通文本信息</param>
+        /// <returns></returns>
+        protected virtual async Task SendTextMessage(string Message)
+        {
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
+                Message
+                );
+        }
 
         /// <summary>
-        /// 控制器类型
+        /// 发送一条消息
         /// </summary>
-        public Type Controller { get; set; }
-
-        /// <summary>
-        /// 方法信息
-        /// </summary>
-        public MethodInfo CommandMethod { get; set; }
-
-        /// <summary>
-        /// 能够使用的Bot名称
-        /// </summary>
-        public HashSet<string> BotNames { get; set; }
-
-        /// <summary>
-        /// 方法参数信息
-        /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
-
-        /// <summary>
-        /// 标记信息
-        /// </summary>
-        public CommandAttribute CommandAttribute { get; set; }
+        /// <param name="Message">普通文本信息</param>
+        /// <returns></returns>
+        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineKeyboardButton> keyboardButton)
+        {
+            await Context.BotClient.SendTextMessageAsync(
+                chatId: Context.ChatID,
+                Message, replyMarkup: new InlineKeyboardMarkup(keyboardButton)
+                );
+        }
     }
 }
