@@ -55,38 +55,5 @@ namespace Telegram.Bot.Framework
 
             await Task.Run(commandAction);
         }
-
-        /// <summary>
-        /// 获取命令信息文本
-        /// </summary>
-        /// <returns></returns>
-        protected virtual string GetCommandInfosString()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            GetCommandInfos().ForEach(x =>
-            {
-                stringBuilder.AppendLine($"{x.CommandName}  {x.CommandInfo}");
-            });
-            return stringBuilder.ToString();
-        }
-
-        /// <summary>
-        /// 获取命令信息
-        /// </summary>
-        /// <returns></returns>
-        protected virtual List<(string CommandName, string CommandInfo)> GetCommandInfos()
-        {
-            ITypeManager typeManger = OneTimeService.GetService<ITypeManager>();
-            return typeManger.GetCommandInfos()
-                .Select(x => (x.CommandAttribute.CommandName, x.CommandAttribute.CommandInfo))
-                .ToList();
-        }
-
-        protected virtual string CreateCallBack(Action<TelegramContext, IServiceScope> callback)
-        {
-            ICallBackManager callBackManger = UserService.GetService<ICallBackManager>();
-
-            return callBackManger.CreateCallBack(callback);
-        }
     }
 }
