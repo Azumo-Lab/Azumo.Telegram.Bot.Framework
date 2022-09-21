@@ -77,7 +77,19 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
         /// <returns></returns>
         protected virtual async Task SendPhoto(PhotoSize Photo)
         {
+            await Context.BotClient.SendPhotoAsync(Context.ChatID, new Types.InputFiles.InputOnlineFile(Photo.FileId));
+        }
 
+        /// <summary>
+        /// 发送一张图片
+        /// </summary>
+        /// <returns></returns>
+        protected virtual async Task SendPhoto(PhotoSize Photo, string Message)
+        {
+            await Context.BotClient.SendPhotoAsync(
+                chatId: Context.ChatID,
+                photo: new Types.InputFiles.InputOnlineFile(Photo.FileId),
+                caption: Message);
         }
 
         /// <summary>
