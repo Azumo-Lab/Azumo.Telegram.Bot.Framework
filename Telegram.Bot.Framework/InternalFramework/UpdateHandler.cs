@@ -61,7 +61,15 @@ namespace Telegram.Bot.Framework.InternalFramework
                 _ => exception.ToString()
             };
 
-            Console.WriteLine(ErrorMessage);
+            string logFile = "TelegramErrorLog.log";
+            if (!System.IO.File.Exists(logFile))
+                System.IO.File.Create(logFile).Close();
+
+            using (StreamWriter sw = System.IO.File.AppendText(logFile))
+            {
+                await sw.WriteAsync(ErrorMessage);
+                await sw.FlushAsync();
+            }
         }
 
         /// <summary>
