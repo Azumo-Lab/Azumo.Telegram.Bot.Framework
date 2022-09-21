@@ -91,9 +91,11 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
             return inlineKeyboardButtons;
         }
 
+        private Random RandomNumber = new Random(Guid.NewGuid().GetHashCode());
+
         protected virtual int Random(int minNum, int maxNum)
         {
-            return new Random(Guid.NewGuid().GetHashCode()).Next(minNum, maxNum + 1);
+            return RandomNumber.Next(minNum, maxNum);
         }
     }
 }
