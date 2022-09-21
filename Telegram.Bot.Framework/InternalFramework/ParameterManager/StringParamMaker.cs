@@ -31,5 +31,10 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
         {
             return await Task.FromResult(context.Update.Message?.Text);
         }
+
+        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return await Task.FromResult(true);
+        }
     }
 }

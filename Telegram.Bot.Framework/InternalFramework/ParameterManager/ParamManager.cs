@@ -77,7 +77,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
         }
 
         /// <summary>
-        /// 
+        /// 读取参数
         /// </summary>
         /// <param name="context"></param>
         /// <param name="OneTimeServiceProvider"></param>
@@ -121,12 +121,15 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
             else
             {
                 IParamMaker paramMaker = (IParamMaker)OneTimeServiceProvider.GetService(paramOne.CustomParamMaker);
-                ParamList.Add(await paramMaker.GetParam(context, OneTimeServiceProvider));
-                ParamInfo.Remove(paramOne);
                 Reading = false;
-                if (!ParamInfo.Any())
+                if (await paramMaker.ParamCheck(context, OneTimeServiceProvider))
                 {
-                    return ReadOK();
+                    ParamList.Add(await paramMaker.GetParam(context, OneTimeServiceProvider));
+                    ParamInfo.Remove(paramOne);
+                    if (!ParamInfo.Any())
+                    {
+                        return ReadOK();
+                    }
                 }
                 goto ReadParam;
             }

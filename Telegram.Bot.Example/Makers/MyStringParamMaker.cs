@@ -33,5 +33,10 @@ namespace Telegram.Bot.Example.Makers
         {
             return await Task.FromResult("Hello");
         }
+
+        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return await Task.FromResult(true);
+        }
     }
 }

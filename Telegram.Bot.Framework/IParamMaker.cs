@@ -26,6 +26,20 @@ namespace Telegram.Bot.Framework
     /// </summary>
     public interface IParamMaker
     {
+        /// <summary>
+        /// 获取参数
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
         Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
+
+        /// <summary>
+        /// 检查参数
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider);
     }
 }

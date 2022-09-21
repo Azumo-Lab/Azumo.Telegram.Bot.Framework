@@ -34,5 +34,15 @@ namespace Telegram.Bot.Example.Makers
             var photos = context.Update.Message.Photo.ToList();
             return await Task.FromResult(photos.OrderBy(x=>x.FileSize).LastOrDefault());
         }
+
+        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            if (string.IsNullOrEmpty(context.Update.Message?.MediaGroupId))
+            {
+                return await Task.FromResult(true);
+            }
+            await context.BotClient.SendTextMessageAsync(context.ChatID, "非常抱歉，暂时还不支持多张组图，请发送一张图片。");
+            return await Task.FromResult(false);
+        }
     }
 }
