@@ -26,6 +26,7 @@ using Telegram.Bot.Example.Makers;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types;
+using static System.Net.WebRequestMethods;
 
 namespace Telegram.Bot.Example.Example
 {
@@ -67,6 +68,20 @@ namespace Telegram.Bot.Example.Example
             PhotoSize onephoto = JsonConvert.DeserializeObject<PhotoSize>(System.IO.File.ReadAllText(file));
             
             await SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(file).LastWriteTime}");
+        }
+
+        [Command(nameof(GetAllSendPhoto), CommandInfo = "获取全部接收到的图片，这会发送大量图片")]
+        public async Task GetAllSendPhoto([Param("此操作可能会发送大量图片，是否确定？(确定/取消)", true, CustomParamMaker = typeof(MyBoolParamMaker))]bool Yes)
+        {
+            if (Yes)
+            {
+                var photos = Directory.GetFiles("TESTPIC");
+                foreach (var item in photos)
+                {
+                    PhotoSize onephoto = JsonConvert.DeserializeObject<PhotoSize>(System.IO.File.ReadAllText(item));
+                    await SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(item).LastWriteTime}");
+                }
+            }
         }
     }
 }
