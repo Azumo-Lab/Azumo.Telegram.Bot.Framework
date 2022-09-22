@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class MessageTypeAttribute : Attribute
+    public class DefaultMessageTypeAttribute : Attribute
     {
         /// <summary>
         /// 消息类型
@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// 
         /// </summary>
         /// <param name="messageType"></param>
-        public MessageTypeAttribute(MessageType messageType)
+        public DefaultMessageTypeAttribute(MessageType messageType)
         {
             MessageType = messageType;
         }
