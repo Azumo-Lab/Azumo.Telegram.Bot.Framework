@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
@@ -33,5 +34,12 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
         object GetController(string CommandName);
+
+        /// <summary>
+        /// 根据消息类型获取保底控制器
+        /// </summary>
+        /// <param name="MessageType"></param>
+        /// <returns></returns>
+        object GetController(MessageType MessageType);
     }
 }

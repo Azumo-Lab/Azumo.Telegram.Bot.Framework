@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
@@ -61,6 +62,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             if (typeManger.ContainsCommandName(CommandName))
                 return serviceProvider.GetService(typeManger.GetControllerType(CommandName));
             return null;
+        }
+
+        public object GetController(MessageType MessageType)
+        {
+            throw new NotImplementedException();
         }
 
         public bool HasCommand(string CommandName)

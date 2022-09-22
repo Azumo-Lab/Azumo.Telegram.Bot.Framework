@@ -42,6 +42,11 @@ namespace Telegram.Bot.Framework.InternalFramework
             TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
             if (controller != null)
                 await controller.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
+            else
+            {
+
+            }
+
 
             await NextHandle(context, UserScope, OneTimeScope);
         }
