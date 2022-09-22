@@ -14,38 +14,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
 {
     /// <summary>
-    /// 设定Telegram Bot的名字
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class BotNameAttribute : Attribute
+    internal class ConfigManager
     {
-        /// <summary>
-        /// Bot 的名称
-        /// </summary>
-        public string[] BotName { get; }
+        private ServiceProvider serviceProvider;
 
-        public bool OverWrite { get; set; }
-
-        public BotNameAttribute(params string[] BotName)
+        internal ConfigManager()
         {
-            void Error()
-            {
-                throw new ArgumentNullException(nameof(BotName));
-            }
-            if (BotName == null || BotName.Length == 0)
-                Error();
-            foreach (var item in BotName)
-                if (string.IsNullOrEmpty(item))
-                    Error();
+            IServiceCollection serviceDescriptors = new ServiceCollection();
 
-            this.BotName = BotName;
+
+
+            serviceProvider = serviceDescriptors.BuildServiceProvider();
+        }
+
+        internal List<CommandInfos> GetCommandInfos()
+        {
+            return null;
+        }
+
+        internal List<MessageTypeInfos> GetMessageTypeInfos()
+        {
+            return null;
         }
     }
 }

@@ -16,36 +16,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface
 {
     /// <summary>
-    /// 设定Telegram Bot的名字
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class BotNameAttribute : Attribute
+    internal interface ICreateObj
     {
-        /// <summary>
-        /// Bot 的名称
-        /// </summary>
-        public string[] BotName { get; }
-
-        public bool OverWrite { get; set; }
-
-        public BotNameAttribute(params string[] BotName)
-        {
-            void Error()
-            {
-                throw new ArgumentNullException(nameof(BotName));
-            }
-            if (BotName == null || BotName.Length == 0)
-                Error();
-            foreach (var item in BotName)
-                if (string.IsNullOrEmpty(item))
-                    Error();
-
-            this.BotName = BotName;
-        }
+        object CreateObj();
     }
 }

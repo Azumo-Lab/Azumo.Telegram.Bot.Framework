@@ -16,36 +16,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.InternalFramework.Models
 {
     /// <summary>
-    /// 设定Telegram Bot的名字
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-    public class BotNameAttribute : Attribute
+    internal class MessageTypeInfos
     {
-        /// <summary>
-        /// Bot 的名称
-        /// </summary>
-        public string[] BotName { get; }
+        public MessageType MessageType { get; set; }
 
-        public bool OverWrite { get; set; }
+        public MethodInfo MethodInfo { get; set; }
 
-        public BotNameAttribute(params string[] BotName)
-        {
-            void Error()
-            {
-                throw new ArgumentNullException(nameof(BotName));
-            }
-            if (BotName == null || BotName.Length == 0)
-                Error();
-            foreach (var item in BotName)
-                if (string.IsNullOrEmpty(item))
-                    Error();
-
-            this.BotName = BotName;
-        }
+        public Type ControllerType { get; set; }
     }
 }
