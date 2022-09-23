@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Example.Example
 {
@@ -34,6 +36,22 @@ namespace Telegram.Bot.Example.Example
         public async Task StringCatch()
         {
             await SendTextMessage("保底消息");
+        }
+
+        [DefaultMessageType(Types.Enums.MessageType.Photo)]
+        public async Task PhotoCatch()
+        {
+            var photoSize = Context.Update.Message.Photo.ToList().OrderBy(x => x.FileSize).LastOrDefault();
+            Directory.CreateDirectory("TESTPIC");
+            using (StreamWriter sw = new StreamWriter(new FileStream($"TESTPIC/{photoSize.FileId}", FileMode.OpenOrCreate)))
+            {
+                sw.Write(JsonConvert.SerializeObject(photoSize));
+            }
+            await SendTextMessage("已保存");
+            await SendTextMessage(
+@"
+你可以使用 /GetAllSendPhoto 获取全部图片，
+也可以使用 /GetSendPhoto 随机获取一张图片");
         }
     }
 }
