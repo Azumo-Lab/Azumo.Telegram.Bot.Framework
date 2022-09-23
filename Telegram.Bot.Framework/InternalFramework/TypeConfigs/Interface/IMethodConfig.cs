@@ -34,6 +34,6 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface
         /// </summary>
         /// <param name="methodInfo"></param>
         /// <param name="classConfig"></param>
-        public List<CommandInfos> ConfigMethod(List<CommandInfos> commandInfos);
+        public CommandInfos ConfigMethod(MethodInfo methodInfo, IEnumerable<Attribute> attributes);
     }
 }

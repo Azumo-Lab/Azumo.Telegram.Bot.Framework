@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,16 +24,32 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.MethodsConf
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.ParamConf
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ClassBotNameConfig : IClassConfig
+    internal class MethodParamConfig : IParamConfig
     {
-        public List<CommandInfos> ConfigClass(Type ClassType)
+        private IServiceProvider serviceProvider;
+        public MethodParamConfig(IServiceProvider serviceProvider)
         {
-            return null;
+            this.serviceProvider = serviceProvider;
+        }
+        public void ParamConfig(MethodInfo methodInfo, ref CommandInfos commandInfos)
+        {
+            IEnumerable<IParamAttrConf> paramAttrConfs = serviceProvider.GetServices<IParamAttrConf>();
+            List<ParamInfos> paramInfos = new();
+            foreach (ParameterInfo item in methodInfo.GetParameters())
+            {
+                ParamInfos paramInfo = new();
+                foreach (IParamAttrConf conf in paramAttrConfs)
+                {
+                    conf.AttributeConfig(item, ref paramInfo);
+                }
+                paramInfos.Add(paramInfo);
+            }
+            commandInfos.ParamInfos = paramInfos;
         }
     }
 }

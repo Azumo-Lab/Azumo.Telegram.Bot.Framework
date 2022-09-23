@@ -25,11 +25,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using System.Linq;
 using Telegram.Bot.Framework.TelegramControllerEX;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework
 {
     public abstract class TelegramController : TelegramControllerPartial
-    { 
+    {
         /// <summary>
         /// 执行调用
         /// </summary>
@@ -44,13 +45,33 @@ namespace Telegram.Bot.Framework
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
-            
+
             Action commandAction = null;
 
             if (Params == null || Params.Length == 0)
                 commandAction = () => action.DynamicInvoke();
             else
                 commandAction = () => action.DynamicInvoke(Params);
+
+            await Task.Run(commandAction);
+        }
+
+        /// <summary>
+        /// 执行调用
+        /// </summary>
+        internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, CommandInfos CommandName)
+        {
+            Context = context;
+            this.OneTimeService = OneTimeService;
+            this.UserService = UserService;
+
+            IDelegateManager delegateManger = this.OneTimeService.GetService<IDelegateManager>();
+
+            Delegate action = delegateManger.CreateDelegate(CommandName, this);
+
+            Action commandAction = null;
+
+            commandAction = () => action.DynamicInvoke();
 
             await Task.Run(commandAction);
         }

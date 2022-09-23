@@ -21,18 +21,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.MethodsConf
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class MethodBotNameConfig : IMethodConfig
+    internal interface IAttributeConfig
     {
-        public List<CommandInfos> ConfigMethod(List<CommandInfos> commandInfos)
-        {
-            throw new NotImplementedException();
-        }
+        void AttributeConfig(MethodInfo methodInfo, IEnumerable<Attribute> ClassAttrs, ref CommandInfos commandInfos);
     }
 }

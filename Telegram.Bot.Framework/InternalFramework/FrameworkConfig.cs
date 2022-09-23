@@ -27,6 +27,7 @@ using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Managers;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.ParameterManager;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Polling;

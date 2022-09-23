@@ -19,30 +19,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttrConfig
 {
     /// <summary>
-    /// 管理控制器
+    /// 
     /// </summary>
-    internal interface IControllersManager : ICommandIsExist
+    internal class MessageTypeConf : IAttributeConfig
     {
-        /// <summary>
-        /// 根据指令获取控制器
-        /// </summary>
-        /// <param name="CommandName">指令名称</param>
-        /// <returns></returns>
-        object GetController(string CommandName);
+        public void AttributeConfig(MethodInfo methodInfo, IEnumerable<Attribute> ClassAttrs, ref CommandInfos commandInfos)
+        {
+            DefaultMessageTypeAttribute defaultMessageTypeAttribute = (DefaultMessageTypeAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(DefaultMessageTypeAttribute));
+            if (defaultMessageTypeAttribute == null)
+                return;
 
-        /// <summary>
-        /// 根据消息类型获取保底控制器
-        /// </summary>
-        /// <param name="MessageType"></param>
-        /// <returns></returns>
-        object GetController(MessageType MessageType, List<Type> ParamType);
-
-        CommandInfos GetMessageTypeCommandInfos(MessageType MessageType, List<Type> ParamType);
+            commandInfos.MessageType = defaultMessageTypeAttribute.MessageType;
+            if (commandInfos.CommandAttribute == null)
+            {
+                commandInfos.Controller = methodInfo.DeclaringType;
+                commandInfos.CommandMethod = methodInfo;
+            }
+        }
     }
 }

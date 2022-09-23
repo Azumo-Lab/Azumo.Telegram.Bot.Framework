@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Managers;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -44,9 +45,10 @@ namespace Telegram.Bot.Framework.InternalFramework
                 await controller.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
             else
             {
-
+                CommandInfos infos = controllersManger.GetMessageTypeCommandInfos(context.Update.Message.Type, Array.Empty<Type>().ToList());
+                TelegramController telegramController = (TelegramController)UserScope.ServiceProvider.GetService(infos.Controller);
+                await telegramController.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, infos);
             }
-
 
             await NextHandle(context, UserScope, OneTimeScope);
         }

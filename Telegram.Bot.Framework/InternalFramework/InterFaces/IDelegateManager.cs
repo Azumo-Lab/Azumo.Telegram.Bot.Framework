@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework.InterFaces
 {
@@ -40,5 +42,12 @@ namespace Telegram.Bot.Framework.InternalFramework.InterFaces
         /// <param name="Command">Command名称</param>
         /// <returns></returns>
         Delegate CreateDelegate(string CommandName, object controller);
+
+        /// <summary>
+        /// 创建一个委托
+        /// </summary>
+        /// <param name="Command">Command名称</param>
+        /// <returns></returns>
+        Delegate CreateDelegate(CommandInfos type, object controller);
     }
 }

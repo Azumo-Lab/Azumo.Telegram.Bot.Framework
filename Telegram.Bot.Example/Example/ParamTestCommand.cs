@@ -32,14 +32,14 @@ namespace Telegram.Bot.Example.Example
     public class ParamTestCommand : TelegramController
     {
         [Command(nameof(Test1), CommandInfo = "传递一个参数，询问并捕获一个参数")]
-        public async Task Test1([Param("请输入要说的话：", true)] string Message)
+        public async Task Test1([Param("请输入要说的话：")] string Message)
         {
             await SendTextMessage($"你好，你要说的话是：{Message}");
             await SendTextMessage($"这个测试例是方法中有一个参数并获取一个参数的值");
         }
 
         [Command(nameof(Test2), CommandInfo = "传递两个参数，询问并捕获两个参数")]
-        public async Task Test2([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
+        public async Task Test2([Param("请输入第一句话：")] string FirstMessage, [Param("请输入第二句话：")] string TwoMessage)
         {
             await SendTextMessage($"你说的第一句是：{FirstMessage}，第二句话是：{TwoMessage}");
             await SendTextMessage($"这个测试例是方法中有两个参数并获取两个参数的值");
@@ -54,7 +54,7 @@ namespace Telegram.Bot.Example.Example
 
         [Command("HelloAway", CommandInfo = "自定义的Message类型和参数获取类型，始终输出Hello")]
         public async Task ParamTest01(
-            [Param("Test", true,
+            [Param("Test",
                 CustomMessageType = typeof(MyStringParamMessage),
                 CustomParamMaker = typeof(MyStringParamMaker))]
             string str

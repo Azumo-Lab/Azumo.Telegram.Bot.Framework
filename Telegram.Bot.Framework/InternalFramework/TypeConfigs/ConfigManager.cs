@@ -21,7 +21,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttrConfig;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.MethodsConf;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.ParamConf;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.ParamConfig;
 
 namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
 {
@@ -36,19 +42,37 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
         {
             IServiceCollection serviceDescriptors = new ServiceCollection();
 
+            serviceDescriptors.AddScoped<ClassConfig>();
+            serviceDescriptors.AddScoped<IMethodConfig, MethodConfig>();
+            serviceDescriptors.AddScoped<IParamConfig, MethodParamConfig>();
 
+            serviceDescriptors.AddScoped<IAttributeConfig, BotNameConf>();
+            serviceDescriptors.AddScoped<IAttributeConfig, CommandConf>();
+            serviceDescriptors.AddScoped<IAttributeConfig, MessageTypeConf>();
+
+            serviceDescriptors.AddScoped<IParamAttrConf, ParamAttrConf>();
 
             serviceProvider = serviceDescriptors.BuildServiceProvider();
         }
 
+        private List<CommandInfos> CommandInfos = null;
         internal List<CommandInfos> GetCommandInfos()
         {
-            return null;
+            if (CommandInfos == null)
+            {
+                CommandInfos = new List<CommandInfos>();
+                ClassConfig classConfig = serviceProvider.GetService<ClassConfig>();
+                foreach (Type type in TypesHelper.GetTypes<TelegramController>())
+                {
+                    CommandInfos.AddRange(classConfig.ConfigClass(type));
+                }
+            }
+            return CommandInfos.Where(x => !string.IsNullOrEmpty(x.ToString())).ToList();
         }
 
-        internal List<MessageTypeInfos> GetMessageTypeInfos()
+        internal List<CommandInfos> GetMessageTypeInfos()
         {
-            return null;
+            return GetCommandInfos().Where(x => x.MessageType != null).ToList();
         }
     }
 }

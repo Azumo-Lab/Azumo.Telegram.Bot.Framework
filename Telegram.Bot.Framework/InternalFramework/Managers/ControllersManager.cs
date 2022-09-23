@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework.Managers
@@ -55,6 +56,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             return null;
         }
 
+        public Delegate CreateDelegate(CommandInfos type, object controller)
+        {
+            return DelegateHelper.CreateDelegate(type.CommandMethod, controller);
+        }
+
         public object GetController(string CommandName)
         {
             if (CommandName == null)
@@ -64,9 +70,37 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             return null;
         }
 
-        public object GetController(MessageType MessageType)
+        public object GetController(MessageType MessageType, List<Type> ParamType)
         {
-            throw new NotImplementedException();
+            CommandInfos commandinfo = GetMessageTypeCommandInfos(MessageType, ParamType);
+            if (commandinfo == null)
+                return null;
+            return serviceProvider.GetService(commandinfo.Controller);
+        }
+
+        public CommandInfos GetMessageTypeCommandInfos(MessageType MessageType, List<Type> ParamType)
+        {
+            CommandInfos result = null;
+            List<CommandInfos> commandInfos = typeManger.GetMessageController(MessageType);
+            commandInfos = commandInfos.Where(x => x.ParamInfos.Count == ParamType.Count).ToList();
+            if (commandInfos.Count > 1)
+            {
+                commandInfos = commandInfos.Where(x =>
+                {
+                    for (int i = 0; i < ParamType.Count; i++)
+                        if (ParamType[i].FullName != x.ParamInfos[i].ParamType.FullName)
+                            return false;
+                    return true;
+                }).ToList();
+                result = commandInfos.FirstOrDefault();
+            }
+            else if (commandInfos.Any())
+            {
+                result = commandInfos.FirstOrDefault();
+            }
+            if (result == null)
+                return null;
+            return result;
         }
 
         public bool HasCommand(string CommandName)

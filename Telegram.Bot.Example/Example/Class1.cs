@@ -20,18 +20,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface
+namespace Telegram.Bot.Example.Example
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IClassConfig
+    public class StringTestCommand : TelegramController
     {
-        /// <summary>
-        /// 配置类
-        /// </summary>
-        public List<CommandInfos> ConfigClass(Type ClassType);
+        [DefaultMessageType(Types.Enums.MessageType.Text)]
+        public async Task StringCatch()
+        {
+            await SendTextMessage("保底消息");
+        }
     }
 }

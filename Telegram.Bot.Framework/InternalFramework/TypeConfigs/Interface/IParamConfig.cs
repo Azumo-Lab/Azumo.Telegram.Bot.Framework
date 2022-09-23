@@ -20,14 +20,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ICreateObj
+    internal interface IParamConfig
     {
-        object CreateObj();
+        void ParamConfig(MethodInfo methodInfo, ref CommandInfos commandInfos);
     }
 }
