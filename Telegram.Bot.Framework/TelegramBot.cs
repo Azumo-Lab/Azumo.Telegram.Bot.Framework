@@ -59,6 +59,8 @@ namespace Telegram.Bot.Framework
                 x.Config(telegramServiceCollection);
             });
 
+            telegramServiceCollection.AddSingleton(this);
+
             this.serviceProvider = telegramServiceCollection.BuildServiceProvider();
         }
 
@@ -75,7 +77,7 @@ namespace Telegram.Bot.Framework
 
             cts = serviceProvider.GetService<CancellationTokenSource>();
             ITelegramBotClient botClient = serviceProvider.GetService<ITelegramBotClient>();
-
+            
             ReceiverOptions receiverOptions = new ReceiverOptions
             {
                 AllowedUpdates = Array.Empty<UpdateType>() // receive all update types

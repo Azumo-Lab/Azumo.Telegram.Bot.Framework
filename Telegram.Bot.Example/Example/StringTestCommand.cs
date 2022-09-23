@@ -14,12 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
@@ -32,6 +35,12 @@ namespace Telegram.Bot.Example.Example
     /// </summary>
     public class StringTestCommand : TelegramController
     {
+        private IServiceProvider serviceProvider;
+        public StringTestCommand(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
         [DefaultMessageType(Types.Enums.MessageType.Text)]
         public async Task StringCatch()
         {
@@ -52,6 +61,18 @@ namespace Telegram.Bot.Example.Example
 @"
 你可以使用 /GetAllSendPhoto 获取全部图片，
 也可以使用 /GetSendPhoto 随机获取一张图片");
+        }
+
+        [Command("Stop", CommandInfo = "停止这个机器人")]
+        public async Task ExitExe([Param("密码：")]string password)
+        {
+            var Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
+            string Password = Secrets.GetSection("PASSWORD").Value;
+            if (password == Password)
+            {
+                TelegramBot bot = serviceProvider.GetService<TelegramBot>();
+                bot.Stop();
+            }
         }
     }
 }
