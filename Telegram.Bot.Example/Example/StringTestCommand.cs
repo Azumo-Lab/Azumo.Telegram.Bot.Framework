@@ -44,7 +44,51 @@ namespace Telegram.Bot.Example.Example
         [DefaultMessageType(Types.Enums.MessageType.Text)]
         public async Task StringCatch()
         {
-            await SendTextMessage("保底消息");
+            string message = string.Empty;
+            string msg = Context.Update.Message.Text;
+
+            if (msg.ToUpper().Contains("TEST"))
+            {
+                await SendTextMessage("我也来个Test (*^_^*)， Test，TEst，teST");
+                return;
+            }
+
+            if (long.TryParse(msg, out long l))
+            {
+                await SendTextMessage("纯数字？反转啦！！");
+                await SendTextMessage(string.Join("", msg.Reverse()));
+                await SendTextMessage("12345，上山打老虎是吧");
+                return;
+            }
+
+            if (ISCHAR(msg))
+            {
+                await SendTextMessage("你输入的这一串是什么，看不懂啦");
+                await SendTextMessage("你试试输入纯数字和TEST。");
+                await SendTextMessage("试试输入：河南");
+                return;
+            }
+
+            if (msg.Contains("河南"))
+            {
+                await SendTextMessage("我们河南人就是神，创造不朽的神话！！");
+                return;
+            }
+
+            await SendTextMessage("你试试输入纯数字和TEST。");
+            await SendTextMessage("试试输入：河南");
+        }
+
+        private bool ISCHAR(string c)
+        {
+            foreach (var item in c)
+            {
+                if (item is >= 'A' and <= 'Z' or >= 'a' and <= 'z')
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         [DefaultMessageType(Types.Enums.MessageType.Photo)]
