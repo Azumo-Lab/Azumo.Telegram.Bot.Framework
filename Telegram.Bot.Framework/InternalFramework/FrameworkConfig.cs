@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
+using Telegram.Bot.Framework.InternalFramework.Authentications;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Managers;
@@ -103,9 +104,14 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// 添加认证
         /// </summary>
         /// <param name="services"></param>
-        public static void AddAuthentication(this IServiceCollection services)
+        public static void AddBotNameAuthentication(this IServiceCollection services)
         {
+            services.AddScoped<IAuthentication, BotNameAuthentication>();
+        }
 
+        public static void AddUserAuthentication(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthentication, UserAuthentication>();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework
         /// <param name="services"></param>
         public static void AddAuthentication(this IServiceCollection services)
         {
-            ServiceCollectionEx.AddAuthentication(services);
+            ServiceCollectionEx.AddBotNameAuthentication(services);
         }
     }
 }
