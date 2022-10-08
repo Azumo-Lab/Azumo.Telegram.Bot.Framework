@@ -14,24 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.Authentications
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserAuthentication : IAuthentication
+    internal interface ITelegramUserScopeManager
     {
-        public bool Auth(TelegramContext context)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// 获取控制器
+        /// </summary>
+        /// <returns></returns>
+        ITelegramUserScope GetTelegramUserScope(TelegramContext context);
+
+        IServiceScope GetUserScope(TelegramContext context);
     }
 }

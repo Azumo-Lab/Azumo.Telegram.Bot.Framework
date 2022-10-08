@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {

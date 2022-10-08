@@ -19,15 +19,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 过滤器
     /// </summary>
-    internal interface ITelegramController
+    public interface IFilter
     {
-        Task Invoke();
+
     }
 }

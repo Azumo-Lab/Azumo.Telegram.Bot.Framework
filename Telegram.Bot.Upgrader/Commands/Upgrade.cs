@@ -18,18 +18,39 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Upgrader.Commands
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
-    /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope);
+    public class Upgrade : TelegramController
+    {
+        private IServiceProvider serviceProvider;
+        public Upgrade(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
+
+        [Command("Upgrade", CommandInfo = "升级Bot")]
+        public async Task BotUpgrade([Param("请发送升级文件", CustomParamMaker = typeof(string))] ZipArchive zipArchive)
+        {
+            if (Directory.Exists("BotEXE"))
+            {
+                Directory.Delete("BotEXE", true);
+            }
+            var zipfile = Directory.CreateDirectory("BotEXE");
+            zipArchive.ExtractToDirectory("BotEXE", true);
+
+            zipfile.GetFiles();
+        }
+    }
 }

@@ -19,30 +19,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Types.Enums;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 管理控制器
+    /// 权限验证
     /// </summary>
-    internal interface IControllersManager : ICommandIsExist
+    public interface IAuthentication
     {
         /// <summary>
-        /// 根据指令获取控制器
+        /// 
         /// </summary>
-        /// <param name="CommandName">指令名称</param>
         /// <returns></returns>
-        object GetController(string CommandName);
-
-        /// <summary>
-        /// 根据消息类型获取保底控制器
-        /// </summary>
-        /// <param name="MessageType"></param>
-        /// <returns></returns>
-        object GetController(MessageType MessageType, List<Type> ParamType);
-
-        CommandInfos GetMessageTypeCommandInfos(MessageType MessageType, List<Type> ParamType);
+        bool Auth(ITelegramContext context);
     }
 }

@@ -22,9 +22,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Authentications;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Managers;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.ParameterManager;
@@ -60,7 +61,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             telegramServices.AddScoped<ICallBackManager, CallBackManager>();
             telegramServices.AddScoped(x =>
             {
-                return new TelegramContext();
+                return new TelegramContext(x);
             });
 
             telegramServices.AddTransient<ITelegramUserScopeManager, TelegramUserScopeManager>();

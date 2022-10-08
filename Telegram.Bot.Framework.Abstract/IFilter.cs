@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,15 +21,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 过滤器
     /// </summary>
-    internal interface ICallBackManager
+    public interface IFilter
     {
-        string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction);
 
-        Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey);
     }
 }

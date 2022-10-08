@@ -17,25 +17,51 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
+namespace Telegram.Bot.Upgrader.Makers
 {
-    [ParamMaker(typeof(string))]
-    internal class StringParamMaker : IParamMaker
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ZipFileCatch : IParamMaker
     {
+        ZipArchive zipArchive;
+
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
-            return await Task.FromResult(context.Update.Message?.Text);
+            return await Task.FromResult(zipArchive);
         }
 
         public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
         {
-            return await Task.FromResult(true);
+            if (context.Update.Type == Types.Enums.UpdateType.Message)
+            {
+                if (context.Update.Message?.Type == Types.Enums.MessageType.Document)
+                {
+                    if (context.Update.Message.Document?.FileId != null)
+                    {
+                        MemoryStream Stream = new();
+                        await context.BotClient.DownloadFileAsync(context.Update.Message.Document.FileId, Stream);
+
+                        try
+                        {
+                            zipArchive = new ZipArchive(Stream);
+
+                            return true;
+                        }
+                        catch (Exception)
+                        {}
+                    }
+                }
+            }
+            await context.BotClient.SendTextMessageAsync(context.ChatID, "你发送的不是ZIP文件，请重新发送");
+            return false;
         }
     }
 }

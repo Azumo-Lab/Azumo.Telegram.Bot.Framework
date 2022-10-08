@@ -16,22 +16,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.Authentications
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 用于返回参数接受时的提示消息
     /// </summary>
-    internal class UserAuthentication : IAuthentication
+    public interface IParamMessage
     {
-        public bool Auth(TelegramContext context)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="Message">消息</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task SendMessage(string Message);
     }
 }

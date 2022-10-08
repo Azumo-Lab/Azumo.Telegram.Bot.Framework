@@ -19,35 +19,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Types.Enums;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 帮助创建委托
+    /// 
     /// </summary>
-    internal interface IDelegateManager
+    public interface IAuthentication
     {
         /// <summary>
-        /// 创建一个委托
+        /// 
         /// </summary>
-        /// <param name="Command">Command名称</param>
         /// <returns></returns>
-        Delegate CreateDelegate(string CommandName);
-
-        /// <summary>
-        /// 创建一个委托
-        /// </summary>
-        /// <param name="Command">Command名称</param>
-        /// <returns></returns>
-        Delegate CreateDelegate(string CommandName, object controller);
-
-        /// <summary>
-        /// 创建一个委托
-        /// </summary>
-        /// <param name="Command">Command名称</param>
-        /// <returns></returns>
-        Delegate CreateDelegate(CommandInfos type, object controller);
+        bool Auth(TelegramContext context);
     }
 }

@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Components;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.TelegramControllerEX

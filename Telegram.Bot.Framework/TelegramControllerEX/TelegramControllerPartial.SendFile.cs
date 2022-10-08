@@ -22,7 +22,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.TelegramControllerEX

@@ -14,29 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
-    /// 接口
+    /// 判断一个Command是否存在
     /// </summary>
-    internal interface IAction
+    internal interface ICommandIsExist
     {
         /// <summary>
-        /// 执行
+        /// 判断一个Command是否存在
         /// </summary>
-        /// <param name="Context"></param>
-        /// <param name="UserScope"></param>
-        /// <param name="OneTimeScope"></param>
-        /// <param name="NextHandle"></param>
+        /// <param name="CommandName">Command名称</param>
         /// <returns></returns>
-        Task Invoke(TelegramContext Context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle);
+        bool HasCommand(string CommandName);
     }
 }

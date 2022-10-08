@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
@@ -43,12 +44,17 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public CancellationToken CancellationToken { get; internal set; }
 
+        public IServiceProvider OneTimeScope { get; internal set; }
+
         /// <summary>
         /// 获取ChatID
         /// </summary>
         public long ChatID => GetChatID();
 
-        internal TelegramContext() { }
+        internal TelegramContext(IServiceProvider serviceProvider) 
+        {
+            OneTimeScope = serviceProvider;
+        }
 
         /// <summary>
         /// 获取ChatID(相当于用户ID)
@@ -58,7 +64,7 @@ namespace Telegram.Bot.Framework
         {
             return Update.Type switch
             {
-                Types.Enums.UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
+                UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
                 _ => Update.Message.Chat.Id,
             };
         }

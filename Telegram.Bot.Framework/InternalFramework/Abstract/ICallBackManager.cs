@@ -22,19 +22,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramUserScopeManager
+    internal interface ICallBackManager
     {
-        /// <summary>
-        /// 获取控制器
-        /// </summary>
-        /// <returns></returns>
-        ITelegramUserScope GetTelegramUserScope(TelegramContext context);
+        string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction);
 
-        IServiceScope GetUserScope(TelegramContext context);
+        Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey);
     }
 }

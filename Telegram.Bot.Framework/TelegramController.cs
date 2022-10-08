@@ -22,10 +22,10 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using System.Linq;
 using Telegram.Bot.Framework.TelegramControllerEX;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework
 {

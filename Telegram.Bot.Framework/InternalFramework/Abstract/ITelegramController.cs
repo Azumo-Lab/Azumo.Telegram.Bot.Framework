@@ -20,18 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.Authentications
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserAuthentication : IAuthentication
+    internal interface ITelegramController
     {
-        public bool Auth(TelegramContext context)
-        {
-            throw new NotImplementedException();
-        }
+        Task Invoke();
     }
 }

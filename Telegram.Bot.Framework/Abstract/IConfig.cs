@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.Abstract
 {
     public interface IConfig
     {

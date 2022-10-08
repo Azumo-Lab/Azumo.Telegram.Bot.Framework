@@ -21,17 +21,15 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IAuthentication
+    public interface ITelegramContext
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        bool Auth(TelegramContext context);
+        long ChatID { get; }
+
+        string GetCommand();
     }
 }

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
     /// 

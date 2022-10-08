@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,30 +22,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IBotNameManager
-    {
-        /// <summary>
-        /// 当前使用的Bot名称
-        /// </summary>
-        string BotName { get; }
-
-        /// <summary>
-        /// 获取Bot名称列表
-        /// </summary>
-        /// <param name="CommandName">指令名称</param>
-        /// <returns></returns>
-        HashSet<string> GetBotNames(string CommandName);
-
-        /// <summary>
-        /// 判断
-        /// </summary>
-        /// <param name="CommandName"></param>
-        /// <returns></returns>
-        bool Contains(string CommandName);
-    }
+    /// <param name="context"></param>
+    /// <param name="UserScope"></param>
+    /// <param name="OneTimeScope"></param>
+    /// <returns></returns>
+    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope);
 }

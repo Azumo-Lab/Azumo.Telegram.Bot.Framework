@@ -16,30 +16,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
-    /// 用于接收返回时的参数，并组合返回对应的数据
+    /// 
     /// </summary>
-    public interface IParamMaker
+    internal interface IHandleSort
     {
         /// <summary>
-        /// 获取参数
+        /// 排序
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="serviceProvider"></param>
-        /// <returns></returns>
-        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
-
-        /// <summary>
-        /// 检查参数
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="serviceProvider"></param>
-        /// <returns></returns>
-        Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider);
+        int Sort { get; }
     }
 }

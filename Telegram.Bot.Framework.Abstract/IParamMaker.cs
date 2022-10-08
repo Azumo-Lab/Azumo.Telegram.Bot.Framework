@@ -21,41 +21,27 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.InterFaces
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 帮助创建参数
+    /// 用于接收返回时的参数，并组合返回对应的数据
     /// </summary>
-    internal interface IParamManager
+    public interface IParamMaker
     {
         /// <summary>
-        /// 读取参数
+        /// 获取参数
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
+        Task<object> GetParam(ITelegramContext context, IServiceProvider serviceProvider);
 
         /// <summary>
-        /// 取消读取参数
+        /// 检查参数
         /// </summary>
-        void Cancel();
-
-        /// <summary>
-        /// 获取Command的名称
-        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        string GetCommand();
-
-        /// <summary>
-        /// 获取读取过后的参数
-        /// </summary>
-        /// <returns></returns>
-        object[] GetParam();
-
-        /// <summary>
-        /// 是否处于读取参数的模式
-        /// </summary>
-        /// <returns></returns>
-        bool IsReadParam();
+        Task<bool> ParamCheck(ITelegramContext context, IServiceProvider serviceProvider);
     }
 }

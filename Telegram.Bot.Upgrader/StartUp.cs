@@ -14,24 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
+using IConfig = Telegram.Bot.Framework.Abstract.IConfig;
 
-namespace Telegram.Bot.Framework.InternalFramework.Authentications
+namespace Telegram.Bot.Upgrader
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserAuthentication : IAuthentication
+    public class StartUp : IConfig
     {
-        public bool Auth(TelegramContext context)
+        public void Config(IServiceCollection telegramServices)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

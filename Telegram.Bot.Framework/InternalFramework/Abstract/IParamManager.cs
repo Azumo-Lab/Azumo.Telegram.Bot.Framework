@@ -16,22 +16,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
-    /// 用于返回参数接受时的提示消息
+    /// 帮助创建参数
     /// </summary>
-    public interface IParamMessage
+    internal interface IParamManager
     {
         /// <summary>
-        /// 发送消息
+        /// 读取参数
         /// </summary>
-        /// <param name="Message">消息</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task SendMessage(string Message);
+        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
+
+        /// <summary>
+        /// 取消读取参数
+        /// </summary>
+        void Cancel();
+
+        /// <summary>
+        /// 获取Command的名称
+        /// </summary>
+        /// <returns></returns>
+        string GetCommand();
+
+        /// <summary>
+        /// 获取读取过后的参数
+        /// </summary>
+        /// <returns></returns>
+        object[] GetParam();
+
+        /// <summary>
+        /// 是否处于读取参数的模式
+        /// </summary>
+        /// <returns></returns>
+        bool IsReadParam();
     }
 }
