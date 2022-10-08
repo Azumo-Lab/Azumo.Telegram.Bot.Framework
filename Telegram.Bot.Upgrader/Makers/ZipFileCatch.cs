@@ -47,7 +47,7 @@ namespace Telegram.Bot.Upgrader.Makers
                     if (context.Update.Message.Document?.FileId != null)
                     {
                         MemoryStream Stream = new();
-                        await context.BotClient.DownloadFileAsync(context.Update.Message.Document.FileId, Stream);
+                        await context.BotClient.GetInfoAndDownloadFileAsync(context.Update.Message.Document.FileId, Stream);
 
                         try
                         {

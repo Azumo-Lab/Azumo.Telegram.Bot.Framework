@@ -51,10 +51,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public long ChatID => GetChatID();
 
-        internal TelegramContext(IServiceProvider serviceProvider) 
-        {
-            OneTimeScope = serviceProvider;
-        }
+        internal TelegramContext() {}
 
         /// <summary>
         /// 获取ChatID(相当于用户ID)

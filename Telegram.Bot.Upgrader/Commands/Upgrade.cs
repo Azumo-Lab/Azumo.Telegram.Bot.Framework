@@ -17,14 +17,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Upgrader.Makers;
 
 namespace Telegram.Bot.Upgrader.Commands
 {
@@ -33,6 +36,8 @@ namespace Telegram.Bot.Upgrader.Commands
     /// </summary>
     public class Upgrade : TelegramController
     {
+        private static Process process;
+
         private IServiceProvider serviceProvider;
         public Upgrade(IServiceProvider serviceProvider)
         {
@@ -41,7 +46,7 @@ namespace Telegram.Bot.Upgrader.Commands
 
 
         [Command("Upgrade", CommandInfo = "升级Bot")]
-        public async Task BotUpgrade([Param("请发送升级文件", CustomParamMaker = typeof(string))] ZipArchive zipArchive)
+        public async Task BotUpgrade([Param("请发送升级文件", CustomParamMaker = typeof(ZipFileCatch))] ZipArchive zipArchive)
         {
             if (Directory.Exists("BotEXE"))
             {
@@ -50,7 +55,33 @@ namespace Telegram.Bot.Upgrader.Commands
             var zipfile = Directory.CreateDirectory("BotEXE");
             zipArchive.ExtractToDirectory("BotEXE", true);
 
-            zipfile.GetFiles();
+            FileInfo exefile = zipfile.GetFiles().Where(x=>x.Extension.ToLower() == ".exe").FirstOrDefault();
+            if (exefile == null)
+            {
+                await SendTextMessage("启动失败");
+                return;
+            }
+
+            if (process != null)
+                process.Kill();
+
+            process = new Process();
+            process.StartInfo = new ProcessStartInfo
+            {
+                FileName = exefile.FullName,
+            };
+            process.Start();
+
+            await SendTextMessage("启动成功");
+        }
+
+        [Command("Stop", CommandInfo = "停止Bot")]
+        public async Task Stop()
+        {
+            if (process != null)
+                process.Kill();
+
+            await SendTextMessage("停止成功");
         }
     }
 }

@@ -89,6 +89,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 telegramContext.BotClient = botClient;
                 telegramContext.Update = update;
                 telegramContext.CancellationToken = cancellationToken;
+                telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
 
                 //获取 | 创建 一个TelegramUserScope
                 ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();

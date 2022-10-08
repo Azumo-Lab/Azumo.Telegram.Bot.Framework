@@ -61,7 +61,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             telegramServices.AddScoped<ICallBackManager, CallBackManager>();
             telegramServices.AddScoped(x =>
             {
-                return new TelegramContext(x);
+                return new TelegramContext();
             });
 
             telegramServices.AddTransient<ITelegramUserScopeManager, TelegramUserScopeManager>();

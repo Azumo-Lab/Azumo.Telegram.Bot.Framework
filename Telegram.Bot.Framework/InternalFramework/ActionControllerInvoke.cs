@@ -46,8 +46,11 @@ namespace Telegram.Bot.Framework.InternalFramework
             else
             {
                 CommandInfos infos = controllersManger.GetMessageTypeCommandInfos(context.Update.Message.Type, Array.Empty<Type>().ToList());
-                TelegramController telegramController = (TelegramController)UserScope.ServiceProvider.GetService(infos.Controller);
-                await telegramController.Invoke(context, context.OneTimeScope, UserScope.ServiceProvider, infos);
+                if(infos != null)
+                {
+                    TelegramController telegramController = (TelegramController)UserScope.ServiceProvider.GetService(infos.Controller);
+                    await telegramController.Invoke(context, context.OneTimeScope, UserScope.ServiceProvider, infos);
+                }
             }
 
             await NextHandle(context, UserScope);

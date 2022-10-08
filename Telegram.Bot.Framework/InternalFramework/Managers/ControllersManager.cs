@@ -82,6 +82,8 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
         {
             CommandInfos result = null;
             List<CommandInfos> commandInfos = typeManger.GetMessageController(MessageType);
+            if (commandInfos == null)
+                return result;
             commandInfos = commandInfos.Where(x => x.ParamInfos.Count == ParamType.Count).ToList();
             if (commandInfos.Count > 1)
             {
