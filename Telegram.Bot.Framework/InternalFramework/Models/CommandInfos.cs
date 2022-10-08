@@ -65,6 +65,8 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         /// </summary>
         public CommandAttribute CommandAttribute { get; set; }
 
+        public AuthenticationAttribute AuthenticationAttribute { get; set; }
+
         public override string ToString()
         {
             return $"{CommandName}{MessageType}{Controller}{CommandMethod}{CommandAttribute}";

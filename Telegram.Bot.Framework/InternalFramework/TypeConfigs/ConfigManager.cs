@@ -49,6 +49,7 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
             serviceDescriptors.AddScoped<IAttributeConfig, BotNameConf>();
             serviceDescriptors.AddScoped<IAttributeConfig, CommandConf>();
             serviceDescriptors.AddScoped<IAttributeConfig, MessageTypeConf>();
+            serviceDescriptors.AddScoped<IAttributeConfig, AuthenticationsConf>();
 
             serviceDescriptors.AddScoped<IParamAttrConf, ParamAttrConf>();
 

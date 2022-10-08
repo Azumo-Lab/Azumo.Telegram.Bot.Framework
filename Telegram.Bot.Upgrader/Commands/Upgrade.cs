@@ -44,7 +44,7 @@ namespace Telegram.Bot.Upgrader.Commands
             this.serviceProvider = serviceProvider;
         }
 
-
+        [Authentication(AuthenticationRole.ADMIN)]
         [Command("Upgrade", CommandInfo = "升级Bot")]
         public async Task BotUpgrade([Param("请发送升级文件", CustomParamMaker = typeof(ZipFileCatch))] ZipArchive zipArchive)
         {
@@ -75,6 +75,7 @@ namespace Telegram.Bot.Upgrader.Commands
             await SendTextMessage("启动成功");
         }
 
+        [Authentication(AuthenticationRole.ADMIN)]
         [Command("Stop", CommandInfo = "停止Bot")]
         public async Task Stop()
         {

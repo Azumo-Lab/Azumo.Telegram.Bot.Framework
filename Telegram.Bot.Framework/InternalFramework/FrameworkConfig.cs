@@ -87,13 +87,13 @@ namespace Telegram.Bot.Framework.InternalFramework
         }
     }
 
-    internal static class ServiceCollectionEx
+    public static class ServiceCollectionEx
     {
         /// <summary>
         /// 添加控制器
         /// </summary>
         /// <param name="services"></param>
-        public static void AddControllers(this IServiceCollection services)
+        internal static void AddControllers(this IServiceCollection services)
         {
             //添加进入services
             services.AddScoped<IControllersManager, ControllersManager>();

@@ -14,28 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Telegram.Bot.Framework.InternalFramework;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttrConfig
 {
     /// <summary>
-    /// IServiceCollection的公开扩展方法
+    /// 
     /// </summary>
-    public static class ServiceCollectionExtend
+    internal class AuthenticationsConf : IAttributeConfig
     {
-        /// <summary>
-        /// 添加认证模块
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddAuthentication(this IServiceCollection services)
+        public void AttributeConfig(MethodInfo methodInfo, IEnumerable<Attribute> ClassAttrs, ref CommandInfos commandInfos)
         {
-            ServiceCollectionEx.AddBotNameAuthentication(services);
+            AuthenticationAttribute authenticationAttribute = (AuthenticationAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(AuthenticationAttribute));
+            commandInfos.AuthenticationAttribute = authenticationAttribute;
         }
     }
 }

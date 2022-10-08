@@ -22,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.InternalFramework;
 using IConfig = Telegram.Bot.Framework.Abstract.IConfig;
 
 namespace Telegram.Bot.Upgrader
@@ -33,7 +35,7 @@ namespace Telegram.Bot.Upgrader
     {
         public void Config(IServiceCollection telegramServices)
         {
-            
+            telegramServices.AddUserAuthentication();
         }
     }
 }
