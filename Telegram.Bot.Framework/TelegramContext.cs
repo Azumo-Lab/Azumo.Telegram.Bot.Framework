@@ -66,12 +66,11 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 获取指令
         /// </summary>
-        /// <returns></returns>
-        internal string GetCommand()
+        /// <returns>返回Command</returns>
+        public string GetCommand()
         {
             MessageEntity[] entities = Update.Message?.Entities;
             if (entities != null 
-                && entities.Length == 1
                 && entities.FirstOrDefault().Type == Types.Enums.MessageEntityType.BotCommand)
             {
                 return Update.Message.EntityValues.FirstOrDefault()?.ToLower();
