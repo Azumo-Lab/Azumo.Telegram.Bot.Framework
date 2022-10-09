@@ -62,7 +62,7 @@ namespace Telegram.Bot.Upgrader.Commands
                 return;
             }
 
-            if (process != null)
+            if (process != null && !process.HasExited)
                 process.Kill();
 
             process = new Process();
@@ -79,7 +79,7 @@ namespace Telegram.Bot.Upgrader.Commands
         [Command("Stop", CommandInfo = "停止Bot")]
         public async Task Stop()
         {
-            if (process != null)
+            if (process != null && !process.HasExited)
                 process.Kill();
 
             await SendTextMessage("停止成功");

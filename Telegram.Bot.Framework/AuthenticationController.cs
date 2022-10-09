@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
@@ -32,13 +34,33 @@ namespace Telegram.Bot.Framework
     public class AuthenticationController : TelegramController
     {
         [Command("Admin", CommandInfo = "管理员认证")]
-        public virtual async Task AdminAuth([Param("请输入密码")]string Password)
+        public virtual async Task AdminAuth([Param("输入或设定密码")]string Password)
         {
-            if (Password == "testPassword")
+            if (File.Exists("PASSWORD"))
             {
+                if (File.ReadAllText("PASSWORD") == HashPassword(Password))
+                {
+                    IAuthManager authManager = UserService.GetService<IAuthManager>();
+                    authManager.SetAuth(AuthenticationRole.ADMIN);
+                }
+            }
+            else
+            {
+                File.WriteAllText("PASSWORD", HashPassword(Password));
                 IAuthManager authManager = UserService.GetService<IAuthManager>();
                 authManager.SetAuth(AuthenticationRole.ADMIN);
             }
+        }
+
+        private string HashPassword(string Password)
+        {
+            SHA256 hA256 = SHA256.Create();
+            byte[] hash = Encoding.UTF8.GetBytes(Password);
+            for (int i = 0; i < 765; i++)
+            {
+                hash = hA256.ComputeHash(hash);
+            }
+            return Encoding.UTF8.GetString(hash);
         }
     }
 }

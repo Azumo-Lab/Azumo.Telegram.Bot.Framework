@@ -39,7 +39,10 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             foreach (IAuthentication auth in authentications)
                 if (!auth.Auth(Context))
+                {
+                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
                     return;
+                }
 
             await NextHandle(Context, UserScope);
         }
