@@ -21,25 +21,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Abstract
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramUserScopeManager
+    public class AuthenticationController : TelegramController
     {
-        /// <summary>
-        /// 获取控制器
-        /// </summary>
-        /// <returns></returns>
-        ITelegramUserScope GetTelegramUserScope(long ChatID);
-
-        /// <summary>
-        /// 获取指定用户的UserScope
-        /// </summary>
-        /// <param name="ChatID"></param>
-        /// <returns></returns>
-        IServiceScope GetUserScope(long ChatID);
+        [Command("Admin", CommandInfo = "管理员认证")]
+        public virtual async Task AdminAuth([Param("请输入密码")]string Password)
+        {
+            if (Password == "testPassword")
+            {
+                IAuthManager authManager = UserService.GetService<IAuthManager>();
+                authManager.SetAuth(AuthenticationRole.ADMIN);
+            }
+        }
     }
 }

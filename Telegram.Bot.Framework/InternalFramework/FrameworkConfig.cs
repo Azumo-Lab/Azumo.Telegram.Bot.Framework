@@ -64,7 +64,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 return new TelegramContext();
             });
 
-            telegramServices.AddTransient<ITelegramUserScopeManager, TelegramUserScopeManager>();
+            telegramServices.AddSingleton<ITelegramUserScopeManager, TelegramUserScopeManager>();
             telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
 
             telegramServices.AddSingleton(new CancellationTokenSource());
@@ -113,6 +113,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         public static void AddUserAuthentication(this IServiceCollection services)
         {
             services.AddScoped<IAuthentication, UserAuthentication>();
+            services.AddScoped<IAuthManager, AuthManager>();
         }
     }
 }

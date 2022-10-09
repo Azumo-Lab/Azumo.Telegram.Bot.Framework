@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework.InternalFramework.Authentications
             string Command = context.GetCommand();
             if (Command == null)
                 return true;
-            ITypeManager typeManager = context.OneTimeScope.GetService<ITypeManager>();
+            ITypeManager typeManager = UserService.GetService<ITypeManager>();
             Dictionary<string, CommandInfos> Dic = typeManager.GetCommandInfosDic();
             if (Dic.ContainsKey(Command))
             {
@@ -58,7 +58,7 @@ namespace Telegram.Bot.Framework.InternalFramework.Authentications
 
                 if (role.Contains(AuthenticationRole.ADMIN))
                 {
-                    return false;
+                    return context.AuthenticationRole == AuthenticationRole.ADMIN;
                 }
             }
             return true;

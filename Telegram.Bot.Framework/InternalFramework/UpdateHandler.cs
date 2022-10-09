@@ -35,10 +35,7 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// </summary>
     internal class UpdateHandler : IUpdateHandler
     {
-        public static Dictionary<long, TelegramUserScope> routes = new Dictionary<long, TelegramUserScope>();
         public readonly IServiceProvider serviceProvider;
-
-        
 
         public UpdateHandler(IServiceProvider serviceProvider)
         {
@@ -83,18 +80,15 @@ namespace Telegram.Bot.Framework.InternalFramework
         {
             using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
             {
-                TelegramContext telegramContext = OneTimeScope.ServiceProvider.GetService<TelegramContext>();
-
-                //设置TelegramContext
-                telegramContext.BotClient = botClient;
-                telegramContext.Update = update;
-                telegramContext.CancellationToken = cancellationToken;
-                telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
-
                 //获取 | 创建 一个TelegramUserScope
                 ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();
+                ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(TelegramContext.GetChatID(update));
 
-                ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(telegramContext);
+                TelegramContext telegramContext = telegramUserScope.CreateTelegramContext();
+                telegramContext.Update = update;
+                telegramContext.CancellationToken = cancellationToken;
+                telegramContext.BotClient = botClient;
+                telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
 
                 await telegramUserScope.Invoke(OneTimeScope);
             }

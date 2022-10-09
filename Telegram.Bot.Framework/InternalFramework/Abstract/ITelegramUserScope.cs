@@ -29,8 +29,19 @@ namespace Telegram.Bot.Framework.InternalFramework.Abstract
     /// </summary>
     internal interface ITelegramUserScope
     {
+        /// <summary>
+        /// 执行
+        /// </summary>
+        /// <param name="OneTimeScope"></param>
+        /// <returns></returns>
         Task Invoke(IServiceScope OneTimeScope);
 
+        /// <summary>
+        /// 获取用户Scope
+        /// </summary>
+        /// <returns></returns>
         IServiceScope GetUserScope();
+
+        TelegramContext CreateTelegramContext();
     }
 }

@@ -84,5 +84,12 @@ namespace Telegram.Bot.Upgrader.Commands
 
             await SendTextMessage("停止成功");
         }
+
+        [Authentication(AuthenticationRole.ADMIN)]
+        [Command("Message")]
+        public async Task TestMessage()
+        {
+            await SendTextMessage("管理员");
+        }
     }
 }

@@ -14,32 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramUserScopeManager
+    internal interface IAuthManager
     {
-        /// <summary>
-        /// 获取控制器
-        /// </summary>
-        /// <returns></returns>
-        ITelegramUserScope GetTelegramUserScope(long ChatID);
+        void SetAuth(AuthenticationRole authenticationRole);
 
-        /// <summary>
-        /// 获取指定用户的UserScope
-        /// </summary>
-        /// <param name="ChatID"></param>
-        /// <returns></returns>
-        IServiceScope GetUserScope(long ChatID);
+        AuthenticationRole GetAuthenticationRole();
+
+        bool IsAuth(AuthenticationRole authenticationRole);
     }
 }
