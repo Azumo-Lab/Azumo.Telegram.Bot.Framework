@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework.Models
 {
@@ -33,6 +34,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         /// 指令名称
         /// </summary>
         public string CommandName { get; set; }
+
+        /// <summary>
+        /// 该方法对应的消息类型
+        /// </summary>
+        public MessageType? MessageType { get; set; }
 
         /// <summary>
         /// 控制器类型
@@ -52,11 +58,18 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         /// <summary>
         /// 方法参数信息
         /// </summary>
-        public IEnumerable<ParamInfos> ParamInfos { get; set; }
+        public List<ParamInfos> ParamInfos { get; set; }
 
         /// <summary>
         /// 标记信息
         /// </summary>
         public CommandAttribute CommandAttribute { get; set; }
+
+        public AuthenticationAttribute AuthenticationAttribute { get; set; }
+
+        public override string ToString()
+        {
+            return $"{CommandName}{MessageType}{Controller}{CommandMethod}{CommandAttribute}";
+        }
     }
 }

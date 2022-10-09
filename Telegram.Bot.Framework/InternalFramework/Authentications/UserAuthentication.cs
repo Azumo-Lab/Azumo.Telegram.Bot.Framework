@@ -14,13 +14,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Managers;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.Authentications
 {
@@ -29,9 +34,34 @@ namespace Telegram.Bot.Framework.InternalFramework.Authentications
     /// </summary>
     internal class UserAuthentication : IAuthentication
     {
+        private Dictionary<AuthenticationRole, long> UserRole = new Dictionary<AuthenticationRole, long>();
+
+        private IServiceProvider UserService;
+        public UserAuthentication(IServiceProvider UserService)
+        {
+            this.UserService = UserService;
+        }
+
         public bool Auth(TelegramContext context)
         {
-            throw new NotImplementedException();
+            string Command = context.GetCommand();
+            if (Command == null)
+                return true;
+            ITypeManager typeManager = UserService.GetService<ITypeManager>();
+            Dictionary<string, CommandInfos> Dic = typeManager.GetCommandInfosDic();
+            if (Dic.ContainsKey(Command))
+            {
+                CommandInfos commandInfos = Dic[Command];
+                AuthenticationRole[] role = commandInfos.AuthenticationAttribute?.AuthenticationRole;
+                if (role == null)
+                    return true;
+
+                if (role.Contains(AuthenticationRole.ADMIN))
+                {
+                    return context.AuthenticationRole == AuthenticationRole.ADMIN;
+                }
+            }
+            return true;
         }
     }
 }

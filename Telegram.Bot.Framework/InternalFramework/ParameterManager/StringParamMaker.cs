@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
@@ -30,6 +31,11 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
             return await Task.FromResult(context.Update.Message?.Text);
+        }
+
+        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return await Task.FromResult(true);
         }
     }
 }

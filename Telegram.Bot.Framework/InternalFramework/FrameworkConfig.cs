@@ -22,11 +22,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Authentications;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Managers;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.ParameterManager;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Polling;
@@ -61,7 +64,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 return new TelegramContext();
             });
 
-            telegramServices.AddTransient<ITelegramUserScopeManager, TelegramUserScopeManager>();
+            telegramServices.AddSingleton<ITelegramUserScopeManager, TelegramUserScopeManager>();
             telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
 
             telegramServices.AddSingleton(new CancellationTokenSource());
@@ -84,13 +87,13 @@ namespace Telegram.Bot.Framework.InternalFramework
         }
     }
 
-    internal static class ServiceCollectionEx
+    public static class ServiceCollectionEx
     {
         /// <summary>
         /// 添加控制器
         /// </summary>
         /// <param name="services"></param>
-        public static void AddControllers(this IServiceCollection services)
+        internal static void AddControllers(this IServiceCollection services)
         {
             //添加进入services
             services.AddScoped<IControllersManager, ControllersManager>();
@@ -102,9 +105,15 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// 添加认证
         /// </summary>
         /// <param name="services"></param>
-        public static void AddAuthentication(this IServiceCollection services)
+        public static void AddBotNameAuthentication(this IServiceCollection services)
         {
+            services.AddScoped<IAuthentication, BotNameAuthentication>();
+        }
 
+        public static void AddUserAuthentication(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthentication, UserAuthentication>();
+            services.AddScoped<IAuthManager, AuthManager>();
         }
     }
 }

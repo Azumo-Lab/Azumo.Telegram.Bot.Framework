@@ -14,13 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework.Authentications
 {
@@ -29,9 +31,28 @@ namespace Telegram.Bot.Framework.InternalFramework.Authentications
     /// </summary>
     internal class BotNameAuthentication : IAuthentication
     {
+        private IBotNameManager _botNameManager;
+        public BotNameAuthentication(IServiceProvider serviceProvider)
+        {
+            _botNameManager = serviceProvider.GetService<IBotNameManager>();
+        }
+
+        /// <summary>
+        /// 对机器人名称进行验证
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public bool Auth(TelegramContext context)
         {
-            throw new NotImplementedException();
+            string Command = context.GetCommand();
+            if (Command == null)
+            {
+                return true;
+            }
+            else
+            {
+                return _botNameManager.Contains(Command);
+            }
         }
     }
 }

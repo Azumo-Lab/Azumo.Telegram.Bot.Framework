@@ -24,9 +24,12 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.ParameterManager;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types.Enums;
 
@@ -35,17 +38,24 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
     /// <summary>
     /// 
     /// </summary>
-    internal class TypeManager : TypeHelper, ITypeManager
+    internal class TypeManager : ITypeManager
     {
         public Guid ID { get; } = Guid.NewGuid();
         private readonly Dictionary<string, CommandInfos> CommandInfos;
-        public TypeManager(IServiceCollection services) : base(services)
+        private readonly Dictionary<MessageType?, List<CommandInfos>> MessageInfos;
+
+        public TypeManager(IServiceCollection services)
         {
-            GetTypes(typeof(IAction)).ForEach(x => 
-            {
-                services.AddScoped(typeof(IAction), x);
-            });
-            CommandInfos = base.GetCommandInfos();
+            TypesHelper.GetTypes<IAction>().ForEach(x => { services.AddScoped(typeof(IAction), x); });
+            TypesHelper.GetTypes<IParamMaker>().ForEach(x => { services.AddScoped(x); });
+            TypesHelper.GetTypes<IParamMessage>().ForEach(x => { services.AddScoped(x); });
+            TypesHelper.GetTypes<TelegramController>().ForEach(x => { services.AddScoped(x); });
+
+            ConfigManager configManager = new ConfigManager();
+
+            CommandInfos = configManager.GetCommandInfos().Where(x => x.CommandName != null)
+                .ToDictionary(k => k.CommandName, v => v);
+            MessageInfos = configManager.GetMessageTypeInfos().GroupBy(x => x.MessageType).ToDictionary(k => k.Key, v => v.ToList());
         }
 
         public string BotName { get; set; }
@@ -81,7 +91,7 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             return CommandInfos.ContainsKey(CommandName);
         }
 
-        public new List<CommandInfos> GetCommandInfos()
+        public List<CommandInfos> GetCommandInfos()
         {
             return CommandInfos.Values.ToList();
         }
@@ -90,156 +100,12 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
         {
             return CommandInfos;
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    internal class TypeHelper
-    {
-        protected readonly IServiceCollection services;
-
-        private readonly List<Type> AllType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
-
-        private readonly List<Type> ParamMakerType;
-        protected List<Type> GetTypes(Type type) =>
-            AllType.Where(x => type.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface).ToList();
-
-        private List<Type> GetControllers() =>
-            GetTypes(typeof(TelegramController));
-
-        private T GetAttribute<T>(MemberInfo memberInfo) where T : Attribute =>
-            (T)Attribute.GetCustomAttribute(memberInfo, typeof(T));
-
-        private T GetAttribute<T>(ParameterInfo memberInfo) where T : Attribute =>
-            (T)Attribute.GetCustomAttribute(memberInfo, typeof(T));
-
-        private List<Type> GetParamMakerType() =>
-            ParamMakerType;
-
-        private MethodInfo[] GetMethods(Type ControllerType) =>
-            ControllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-        protected TypeHelper(IServiceCollection services)
+        public List<CommandInfos> GetMessageController(MessageType messageType)
         {
-            this.services = services;
-            ParamMakerType = GetTypes(typeof(IParamMaker)).ToList();
-            ParamMakerType.ForEach(x => this.services.AddScoped(x));
-            GetTypes(typeof(IParamMessage)).ToList().ForEach(x => this.services.AddScoped(x));
-        }
-
-        /// <summary>
-        /// 获取参数信息
-        /// </summary>
-        /// <param name="paramsInfos"></param>
-        /// <returns></returns>
-        private List<ParamInfos> GetParamInfos(ParameterInfo[] paramsInfos)
-        {
-            List<ParamInfos> paramInfos = new List<ParamInfos>();
-            foreach (var parameter in paramsInfos)
-            {
-                string message = null;
-                Type messageType = typeof(StringParamMessage);
-                Type makerType;
-
-                ParamAttribute paramAttr = GetAttribute<ParamAttribute>(parameter);
-                if (paramAttr != null)
-                {
-                    if (paramAttr.UseCustom)//使用自定义信息
-                        message = paramAttr.CustomInfos;
-                    else
-                        message = $"请输入【{paramAttr.CustomInfos}】的值";
-
-                    if (paramAttr.CustomMessageType != null) //自定义消息发送
-                        messageType = paramAttr.CustomMessageType;
-
-                    if (paramAttr.CustomParamMaker != null) //自定义参数制造
-                        makerType = paramAttr.CustomParamMaker;
-                    else
-                    {
-                        makerType = GetDefMakerType(parameter);
-                    }
-                }
-                else
-                {
-                    makerType = GetDefMakerType(parameter);
-                }
-                paramInfos.Add(new ParamInfos
-                {
-                    MessageInfo = message ?? string.Empty,
-                    CustomMessageType = messageType,
-                    CustomParamMaker = makerType,
-                });
-            }
-            return paramInfos;
-        }
-
-        private Type GetDefMakerType(ParameterInfo parameter)
-        {
-            Type messageType = GetParamMakerType().Where(x =>
-            {
-                ParamMakerAttribute paramMaker = GetAttribute<ParamMakerAttribute>(x);
-                if (paramMaker != null)
-                {
-                    return paramMaker.MakerType.FullName == parameter.ParameterType.FullName;
-                }
-                return false;
-            }).FirstOrDefault();
-            return messageType;
-        }
-
-        /// <summary>
-        /// 开始解析
-        /// </summary>
-        /// <param name="ControllerType"></param>
-        /// <param name="commandInfos"></param>
-        private void ConfigInfos(Type ControllerType, List<CommandInfos> commandInfos)
-        {
-            services.AddScoped(ControllerType);
-
-            List<string> BotNames = new List<string>();
-
-            BotNameAttribute botNameController = GetAttribute<BotNameAttribute>(ControllerType);
-            if (botNameController != null)
-                BotNames = botNameController.BotName.ToList();
-
-            foreach (MethodInfo method in GetMethods(ControllerType))
-            {
-                HashSet<string> commandBotNames = new HashSet<string>(BotNames);
-                
-                BotNameAttribute BotNameAttr = GetAttribute<BotNameAttribute>(method);
-                if (BotNameAttr != null)
-                {
-                    if (BotNameAttr.OverWrite)
-                        commandBotNames.Clear();
-                    BotNameAttr.BotName.ToList().ForEach(x => commandBotNames.Add(x));
-                }
-                CommandAttribute commandAttr = GetAttribute<CommandAttribute>(method);
-                if (commandAttr == null)
-                    continue;
-
-                commandInfos.Add(new CommandInfos
-                {
-                    CommandMethod = method,
-                    CommandName = commandAttr.CommandName.ToLower(),
-                    Controller = ControllerType,
-                    BotNames = commandBotNames,
-                    ParamInfos = GetParamInfos(method.GetParameters()),
-                    CommandAttribute = commandAttr,
-                });
-            }
-        }
-
-        /// <summary>
-        /// 获取Command信息
-        /// </summary>
-        /// <returns></returns>
-        protected Dictionary<string, CommandInfos> GetCommandInfos()
-        {
-            List<CommandInfos> commandInfos = new List<CommandInfos>();
-            foreach (Type ControllerType in GetControllers())
-                ConfigInfos(ControllerType, commandInfos);
-            return commandInfos.ToDictionary(k => k.CommandName, v => v);
+            if (MessageInfos.ContainsKey(messageType))
+                return MessageInfos[messageType];
+            return null;
         }
     }
 }

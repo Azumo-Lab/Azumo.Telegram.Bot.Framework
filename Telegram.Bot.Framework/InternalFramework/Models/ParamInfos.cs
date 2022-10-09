@@ -34,6 +34,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         public string MessageInfo { get; set; }
 
         /// <summary>
+        /// 参数类型
+        /// </summary>
+        public Type ParamType { get; set; }
+
+        /// <summary>
         /// 自定义的消息发送
         /// </summary>
         public Type CustomMessageType { get; set; }

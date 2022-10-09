@@ -19,11 +19,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {
@@ -77,12 +78,12 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
         }
 
         /// <summary>
-        /// 
+        /// 读取参数
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="OneTimeServiceProvider"></param>
+        /// <param name="UserScopeService"></param>
         /// <returns>true 参数读取完毕/false 继续读取参数</returns>
-        public async Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider)
+        public async Task<bool> ReadParam(TelegramContext context, IServiceProvider UserScopeService)
         {
             if (ParamInfo == null)
             {
@@ -111,7 +112,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 
                 if (paramOne.MessageInfo != null)
                 {
-                    IParamMessage paramMessage = (IParamMessage)OneTimeServiceProvider.GetService(paramOne.CustomMessageType);
+                    IParamMessage paramMessage = (IParamMessage)UserScopeService.GetService(paramOne.CustomMessageType);
                     await paramMessage.SendMessage(paramOne.MessageInfo);
                     Reading = true;
                     ParamList ??= new List<object>();
@@ -120,13 +121,16 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
             }
             else
             {
-                IParamMaker paramMaker = (IParamMaker)OneTimeServiceProvider.GetService(paramOne.CustomParamMaker);
-                ParamList.Add(await paramMaker.GetParam(context, OneTimeServiceProvider));
-                ParamInfo.Remove(paramOne);
+                IParamMaker paramMaker = (IParamMaker)UserScopeService.GetService(paramOne.CustomParamMaker);
                 Reading = false;
-                if (!ParamInfo.Any())
+                if (await paramMaker.ParamCheck(context, UserScopeService))
                 {
-                    return ReadOK();
+                    ParamList.Add(await paramMaker.GetParam(context, UserScopeService));
+                    ParamInfo.Remove(paramOne);
+                    if (!ParamInfo.Any())
+                    {
+                        return ReadOK();
+                    }
                 }
                 goto ReadParam;
             }

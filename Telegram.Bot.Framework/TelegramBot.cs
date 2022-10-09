@@ -22,8 +22,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Polling;
@@ -59,6 +59,8 @@ namespace Telegram.Bot.Framework
                 x.Config(telegramServiceCollection);
             });
 
+            telegramServiceCollection.AddSingleton(this);
+
             this.serviceProvider = telegramServiceCollection.BuildServiceProvider();
         }
 
@@ -75,7 +77,7 @@ namespace Telegram.Bot.Framework
 
             cts = serviceProvider.GetService<CancellationTokenSource>();
             ITelegramBotClient botClient = serviceProvider.GetService<ITelegramBotClient>();
-
+            
             ReceiverOptions receiverOptions = new ReceiverOptions
             {
                 AllowedUpdates = Array.Empty<UpdateType>() // receive all update types

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 
 namespace Telegram.Bot.Framework.TelegramAttributes
 {
@@ -27,11 +28,6 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// 自定义的信息
         /// </summary>
         public string CustomInfos { get;}
-
-        /// <summary>
-        /// 是否自定义
-        /// </summary>
-        public bool UseCustom { get; }
 
         /// <summary>
         /// 自定义的消息发送
@@ -48,17 +44,11 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// </summary>
         /// <param name="Infos"></param>
         /// <param name="UseCustom"></param>
-        public ParamAttribute(string Infos, bool UseCustom = false)
+        public ParamAttribute(string Infos)
         {
-            this.UseCustom = UseCustom;
-            if (this.UseCustom)
-            {
-                CustomInfos = Infos;
-            }
-            else
-            {
-                CustomInfos = $"请输入【{Infos}】的值";
-            }
+            ThrowHelper.ThrowIfNull(Infos);
+
+            CustomInfos = Infos;
         }
     }
 }

@@ -21,7 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         public int Sort => 150;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, ActionHandle NextHandle)
         {
             if (context.Update.Type == Types.Enums.UpdateType.CallbackQuery)
             {
@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 }
             }
 
-            await NextHandle(context, UserScope, OneTimeScope);
+            await NextHandle(context, UserScope);
         }
     }
 }

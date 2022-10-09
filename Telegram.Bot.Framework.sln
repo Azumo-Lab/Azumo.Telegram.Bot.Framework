@@ -12,7 +12,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{237A0F2B-778
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Host", "Telegram.Bot.Framework.Host\Telegram.Bot.Framework.Host.csproj", "{11E2BC16-74AC-4E73-B698-63C4435C0731}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Host", "Telegram.Bot.Framework.Host\Telegram.Bot.Framework.Host.csproj", "{11E2BC16-74AC-4E73-B698-63C4435C0731}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bots", "Bots", "{7E91FAE0-7BC5-4617-8423-B710F5D331E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Upgrader", "Telegram.Bot.Upgrader\Telegram.Bot.Upgrader.csproj", "{0D92EFF3-88F6-4604-BF53-B349A78E86F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED1CEE58-456A-40CD-A49B-191BD0573682}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +41,16 @@ Global
 		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11E2BC16-74AC-4E73-B698-63C4435C0731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D92EFF3-88F6-4604-BF53-B349A78E86F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D92EFF3-88F6-4604-BF53-B349A78E86F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D92EFF3-88F6-4604-BF53-B349A78E86F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D92EFF3-88F6-4604-BF53-B349A78E86F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0D92EFF3-88F6-4604-BF53-B349A78E86F1} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}

@@ -4,32 +4,17 @@
 
 [更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
 
-这是一个可以帮助减少Telegram Bot开发难度的框架，如果你会使用ASP.NET，那么你也可以轻松上手这个框架。
+这是一个可以帮助减少Telegram Bot开发难度的框架，仿照了ASP.NET的方式，如果你会一点ASP.NET，那么你也可以轻松上手这个框架。
 
 ### 快速开始
 
 ```csharp
-public class Commands : TelegramController
+public class TestCommands : TelegramController
 {
     private readonly IServiceProvider serviceProvider;
     public Commands(IServiceProvider serviceProvider)
     {
         this.serviceProvider = serviceProvider;
-    }
-
-    [Command("Test")]
-    public async Task Test([Param("请输入要说的话：", true)] string Message)
-    {
-        await SendTextMessage("你好，你要说的话是：");
-        await SendTextMessage(Message);
-    }
-
-    [Command("Test2")]
-    public async Task Test([Param("请输入第一句话：", true)] string FirstMessage, [Param("请输入第二句话：", true)] string TwoMessage)
-    {
-        await SendTextMessage($"你说的第一句是：{FirstMessage}");
-        await SendTextMessage($"你说的第二句是：{TwoMessage}");
-        await SendTextMessage($"合起来是：{FirstMessage}，{TwoMessage}。");
     }
 
     [Command("SayHello")]

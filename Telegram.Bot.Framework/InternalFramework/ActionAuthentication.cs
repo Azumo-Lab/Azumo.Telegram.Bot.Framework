@@ -21,7 +21,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -32,15 +33,18 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         public int Sort => 000;
 
-        public async Task Invoke(TelegramContext Context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext Context, IServiceScope UserScope, ActionHandle NextHandle)
         {
             IEnumerable<IAuthentication> authentications = UserScope.ServiceProvider.GetServices<IAuthentication>();
 
             foreach (IAuthentication auth in authentications)
                 if (!auth.Auth(Context))
+                {
+                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
                     return;
+                }
 
-            await NextHandle(Context, UserScope, OneTimeScope);
+            await NextHandle(Context, UserScope);
         }
     }
 }

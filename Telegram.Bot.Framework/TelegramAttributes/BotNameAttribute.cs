@@ -23,7 +23,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     /// <summary>
     /// 设定Telegram Bot的名字
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class BotNameAttribute : Attribute
     {
         /// <summary>
@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         {
             void Error()
             {
-                throw new ArgumentNullException($"{nameof(BotName)} : is Null or Empty");
+                throw new ArgumentNullException(nameof(BotName));
             }
             if (BotName == null || BotName.Length == 0)
                 Error();

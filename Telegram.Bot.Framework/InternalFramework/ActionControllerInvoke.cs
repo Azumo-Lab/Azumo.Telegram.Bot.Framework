@@ -21,8 +21,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Managers;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -33,7 +34,7 @@ namespace Telegram.Bot.Framework.InternalFramework
     {
         public int Sort => 300;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, IServiceScope OneTimeScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext context, IServiceScope UserScope, ActionHandle NextHandle)
         {
             IControllersManager controllersManger = UserScope.ServiceProvider.GetService<IControllersManager>();
             // 获取参数管理
@@ -41,9 +42,18 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
             if (controller != null)
-                await controller.Invoke(context, OneTimeScope.ServiceProvider, UserScope.ServiceProvider, paramManger.GetCommand());
+                await controller.Invoke(context, context.OneTimeScope, UserScope.ServiceProvider, paramManger.GetCommand());
+            else
+            {
+                CommandInfos infos = controllersManger.GetMessageTypeCommandInfos(context.Update.Message.Type, Array.Empty<Type>().ToList());
+                if(infos != null)
+                {
+                    TelegramController telegramController = (TelegramController)UserScope.ServiceProvider.GetService(infos.Controller);
+                    await telegramController.Invoke(context, context.OneTimeScope, UserScope.ServiceProvider, infos);
+                }
+            }
 
-            await NextHandle(context, UserScope, OneTimeScope);
+            await NextHandle(context, UserScope);
         }
     }
 }

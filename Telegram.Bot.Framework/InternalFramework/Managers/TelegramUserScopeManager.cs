@@ -21,15 +21,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     internal class TelegramUserScopeManager : ITelegramUserScopeManager
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly static Dictionary<long, ITelegramUserScope> User_Controller = new Dictionary<long, ITelegramUserScope>();
-        private readonly static Dictionary<long, (int Count, DateTime LastUseTime)> User_Time = new Dictionary<long, (int Count, DateTime LastUseTime)>();
+        private readonly Dictionary<long, ITelegramUserScope> User_Controller = new Dictionary<long, ITelegramUserScope>();
+        private readonly Dictionary<long, (int Count, DateTime LastUseTime)> User_Time = new Dictionary<long, (int Count, DateTime LastUseTime)>();
 
         public TelegramUserScopeManager(IServiceProvider serviceProvider)
         {
@@ -40,21 +40,21 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
         /// 
         /// </summary>
         /// <returns></returns>
-        public ITelegramUserScope GetTelegramUserScope(TelegramContext context)
+        public ITelegramUserScope GetTelegramUserScope(long ChatID)
         {
-            if (!User_Controller.ContainsKey(context.ChatID))
+            if (!User_Controller.ContainsKey(ChatID))
             {
                 ITelegramUserScope telegramUserScope = serviceProvider.GetService<ITelegramUserScope>();
-                User_Controller.Add(context.ChatID, telegramUserScope);
+                User_Controller.Add(ChatID, telegramUserScope);
                 ClearOldUser();
             }
-            if (!User_Time.ContainsKey(context.ChatID))
-                User_Time.Add(context.ChatID, (0, DateTime.Now));
+            if (!User_Time.ContainsKey(ChatID))
+                User_Time.Add(ChatID, (0, DateTime.Now));
 
-            (int Count, DateTime _) = User_Time[context.ChatID];
-            User_Time[context.ChatID] = (Count += 1, DateTime.Now);
+            (int Count, DateTime _) = User_Time[ChatID];
+            User_Time[ChatID] = (Count += 1, DateTime.Now);
 
-            return User_Controller[context.ChatID];
+            return User_Controller[ChatID];
         }
 
         /// <summary>
@@ -75,11 +75,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             });
         }
 
-        public IServiceScope GetUserScope(TelegramContext context)
+        public IServiceScope GetUserScope(long ChatID)
         {
-            if (User_Controller.ContainsKey(context.ChatID))
+            if (User_Controller.ContainsKey(ChatID))
             {
-                return User_Controller[context.ChatID].GetUserScope();
+                return User_Controller[ChatID].GetUserScope();
             }
             return null;
         }

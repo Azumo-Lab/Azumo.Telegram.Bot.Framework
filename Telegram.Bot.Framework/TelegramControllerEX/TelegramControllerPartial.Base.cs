@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Components;
-using Telegram.Bot.Framework.InternalFramework.InterFaces;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.TelegramControllerEX
@@ -89,6 +89,13 @@ namespace Telegram.Bot.Framework.TelegramControllerEX
             }).ToList();
 
             return inlineKeyboardButtons;
+        }
+
+        private Random RandomNumber = new Random(Guid.NewGuid().GetHashCode());
+
+        protected virtual int Random(int minNum, int maxNum)
+        {
+            return RandomNumber.Next(minNum, maxNum);
         }
     }
 }

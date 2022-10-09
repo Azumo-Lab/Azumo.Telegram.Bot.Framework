@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract;
 
 namespace Telegram.Bot.Example.Makers
 {
@@ -32,6 +33,11 @@ namespace Telegram.Bot.Example.Makers
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
             return await Task.FromResult("Hello");
+        }
+
+        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return await Task.FromResult(true);
         }
     }
 }

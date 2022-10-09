@@ -14,12 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
@@ -43,22 +47,42 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public CancellationToken CancellationToken { get; internal set; }
 
+        public IServiceProvider OneTimeScope { get; internal set; }
+
+        public IServiceProvider UserScope { get; internal set; }
+
         /// <summary>
         /// 获取ChatID
         /// </summary>
-        public long ChatID => GetChatID();
+        public long ChatID => GetChatID(Update);
 
-        internal TelegramContext() { }
+        /// <summary>
+        /// 获取权限
+        /// </summary>
+        public AuthenticationRole AuthenticationRole => GetAuthenticationRole();
+
+        /// <summary>
+        /// 获取权限
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private AuthenticationRole GetAuthenticationRole()
+        {
+            IAuthManager authManager = UserScope.GetService<IAuthManager>();
+            return authManager.GetAuthenticationRole();
+        }
+
+        internal TelegramContext() {}
 
         /// <summary>
         /// 获取ChatID(相当于用户ID)
         /// </summary>
         /// <returns></returns>
-        private long GetChatID()
+        public static long GetChatID(Update Update)
         {
             return Update.Type switch
             {
-                Types.Enums.UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
+                UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
                 _ => Update.Message.Chat.Id,
             };
         }
@@ -66,13 +90,12 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 获取指令
         /// </summary>
-        /// <returns></returns>
-        internal string GetCommand()
+        /// <returns>返回Command</returns>
+        public string GetCommand()
         {
             MessageEntity[] entities = Update.Message?.Entities;
             if (entities != null 
-                && entities.Length == 1
-                && entities.FirstOrDefault().Type == Types.Enums.MessageEntityType.BotCommand)
+                && entities.FirstOrDefault().Type == MessageEntityType.BotCommand)
             {
                 return Update.Message.EntityValues.FirstOrDefault()?.ToLower();
             }
