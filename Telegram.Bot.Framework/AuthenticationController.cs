@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework
             }
         }
 
-        private string HashPassword(string Password)
+        protected string HashPassword(string Password)
         {
             SHA256 hA256 = SHA256.Create();
             byte[] hash = Encoding.UTF8.GetBytes(Password);
