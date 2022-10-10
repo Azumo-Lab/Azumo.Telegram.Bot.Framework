@@ -70,6 +70,7 @@ namespace Telegram.Bot.Example.Example
             await SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(file).LastWriteTime}");
         }
 
+        [Authentication(AuthenticationRole.ADMIN)]
         [Command(nameof(GetAllSendPhoto), CommandInfo = "获取全部接收到的图片，这会发送大量图片")]
         public async Task GetAllSendPhoto([Param("此操作可能会发送大量图片，是否确定？(确定/取消)", CustomParamMaker = typeof(MyBoolParamMaker))]bool Yes)
         {
