@@ -21,8 +21,15 @@ using System.Text;
 
 namespace Telegram.Bot.Framework.Abstract
 {
+    /// <summary>
+    /// 框架的设置与配置
+    /// </summary>
     public interface IConfig
     {
+        /// <summary>
+        /// 执行配置
+        /// </summary>
+        /// <param name="telegramServices"></param>
         public void Config(IServiceCollection telegramServices);
     }
 }

@@ -30,30 +30,30 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// <summary>
     /// 
     /// </summary>
-    internal class ActionControllerInvoke : IAction, IHandleSort
+    internal class ActionControllerInvoke : IAction
     {
         public int Sort => 300;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext context, ActionHandle NextHandle)
         {
-            IControllersManager controllersManger = UserScope.ServiceProvider.GetService<IControllersManager>();
+            IControllersManager controllersManger = context.UserScope.GetService<IControllersManager>();
             // 获取参数管理
-            IParamManager paramManger = UserScope.ServiceProvider.GetService<IParamManager>();
+            IParamManager paramManger = context.UserScope.GetService<IParamManager>();
 
             TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
             if (controller != null)
-                await controller.Invoke(context, context.OneTimeScope, UserScope.ServiceProvider, paramManger.GetCommand());
+                await controller.Invoke(context, paramManger.GetCommand());
             else
             {
                 CommandInfos infos = controllersManger.GetMessageTypeCommandInfos(context.Update.Message.Type, Array.Empty<Type>().ToList());
                 if(infos != null)
                 {
-                    TelegramController telegramController = (TelegramController)UserScope.ServiceProvider.GetService(infos.Controller);
-                    await telegramController.Invoke(context, context.OneTimeScope, UserScope.ServiceProvider, infos);
+                    TelegramController telegramController = (TelegramController)context.UserScope.GetService(infos.Controller);
+                    await telegramController.Invoke(context, infos);
                 }
             }
 
-            await NextHandle(context, UserScope);
+            await NextHandle(context);
         }
     }
 }

@@ -20,22 +20,32 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.TelegramControllerEX
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// Command 指令管理器
     /// </summary>
-    public partial class TelegramControllerPartial
+    public interface ICommandManager
     {
         /// <summary>
-        /// 发送一段视频
+        /// 系统中是否具有此Command
         /// </summary>
+        /// <param name="commandName"></param>
         /// <returns></returns>
-        protected virtual async Task SendVideo()
-        {
+        bool ContainsCommand(string commandName);
 
-        }
+        /// <summary>
+        /// 清除一个Command
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        void RemoveCommand(string commandName);
+
+        /// <summary>
+        /// 恢复一个Command
+        /// </summary>
+        /// <param name="commandName"></param>
+        void RestoreCommand(string commandName);
     }
 }

@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 机器人的各类信息
     /// </summary>
-    public class TelegramContext
+    public sealed class TelegramContext
     {
         /// <summary>
         /// 机器人接口

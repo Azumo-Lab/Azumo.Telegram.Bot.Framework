@@ -29,13 +29,13 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// <summary>
     /// 认证相关的类
     /// </summary>
-    internal class ActionAuthentication : IAction, IHandleSort
+    internal class ActionAuthentication : IAction
     {
         public int Sort => 000;
 
-        public async Task Invoke(TelegramContext Context, IServiceScope UserScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            IEnumerable<IAuthentication> authentications = UserScope.ServiceProvider.GetServices<IAuthentication>();
+            IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
 
             foreach (IAuthentication auth in authentications)
                 if (!auth.Auth(Context))
@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                     return;
                 }
 
-            await NextHandle(Context, UserScope);
+            await NextHandle(Context);
         }
     }
 }

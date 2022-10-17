@@ -30,15 +30,15 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
     /// </summary>
     internal class CallBackManager : ICallBackManager
     {
-        private readonly Dictionary<string, Action<TelegramContext, IServiceScope>> CallBacks = new Dictionary<string, Action<TelegramContext, IServiceScope>>();
-        public string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction)
+        private readonly Dictionary<string, Action<TelegramContext>> CallBacks = new();
+        public string CreateCallBack(Action<TelegramContext> CallBackAction)
         {
             string key = Guid.NewGuid().ToString();
             CallBacks.Add(key, CallBackAction);
             return key;
         }
 
-        public Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey)
+        public Action<TelegramContext> GetCallBack(string CallBackKey)
         {
             if (CallBackKey != null && CallBacks.ContainsKey(CallBackKey))
                 return CallBacks[CallBackKey];

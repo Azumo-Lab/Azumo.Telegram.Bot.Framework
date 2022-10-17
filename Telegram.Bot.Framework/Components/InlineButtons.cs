@@ -34,7 +34,7 @@ namespace Telegram.Bot.Framework.Components
     {
         public string Text { get; private set; }
 
-        public Action<TelegramContext, IServiceScope> Callback { get; private set; }
+        public Action<TelegramContext> Callback { get; private set; }
 
         public string Url { get; set; }
 
@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.Components
 
         public bool Pay { get; set; }
 
-        public static InlineButtons WithCallback(string text, Action<TelegramContext, IServiceScope> callback) =>
+        public static InlineButtons WithCallback(string text, Action<TelegramContext> callback) =>
             new() { Text = text, Callback = callback };
 
         public static InlineButtons WithUrl(string text, string url) =>

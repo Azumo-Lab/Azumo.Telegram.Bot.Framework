@@ -25,7 +25,7 @@ using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {
-    [ParamMaker(typeof(string))]
+    [ParamTypeFor(typeof(string))]
     internal class StringParamMaker : IParamMaker
     {
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)

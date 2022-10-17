@@ -20,17 +20,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.Abstract
+namespace Telegram.Bot.Framework.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IHandleSort
+    [ParamTypeFor(typeof(string))]
+    public class StringParamMessage : IParamMessage
     {
-        /// <summary>
-        /// 排序
-        /// </summary>
-        int Sort { get; }
+        public Task SendMessage(string Message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

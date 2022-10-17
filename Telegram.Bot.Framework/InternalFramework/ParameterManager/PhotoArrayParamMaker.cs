@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
     /// <summary>
     /// 
     /// </summary>
-    [ParamMaker(typeof(PhotoSize[]))]
+    [ParamTypeFor(typeof(PhotoSize[]))]
     public class PhotoArrayParamMaker : IParamMaker
     {
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)

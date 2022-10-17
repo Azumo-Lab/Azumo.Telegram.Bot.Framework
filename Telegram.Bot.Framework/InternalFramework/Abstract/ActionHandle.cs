@@ -25,11 +25,11 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
-    /// 
+    /// 委托
     /// </summary>
     /// <param name="context"></param>
     /// <param name="UserScope"></param>
     /// <param name="OneTimeScope"></param>
     /// <returns></returns>
-    internal delegate Task ActionHandle(TelegramContext context, IServiceScope UserScope);
+    internal delegate Task ActionHandle(TelegramContext context);
 }

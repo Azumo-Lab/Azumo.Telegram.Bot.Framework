@@ -23,25 +23,26 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
-using Telegram.Bot.Framework.TelegramControllerEX;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework
 {
-    public abstract class TelegramController : TelegramControllerPartial
+    public abstract class TelegramController
     {
+        public TelegramContext Context { get; internal set; }
+
         /// <summary>
         /// 执行调用
         /// </summary>
-        internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, string CommandName)
+        internal async Task Invoke(TelegramContext context, string CommandName)
         {
             Context = context;
-            this.OneTimeService = OneTimeService;
-            this.UserService = UserService;
 
-            IDelegateManager delegateManger = this.OneTimeService.GetService<IDelegateManager>();
-            IParamManager paramManger = this.UserService.GetService<IParamManager>();
+            IServiceProvider userService = context.UserScope;
+
+            IDelegateManager delegateManger = userService.GetService<IDelegateManager>();
+            IParamManager paramManger = userService.GetService<IParamManager>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
             object[] Params = paramManger.GetParam();
@@ -59,13 +60,11 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 执行调用
         /// </summary>
-        internal async Task Invoke(TelegramContext context, IServiceProvider OneTimeService, IServiceProvider UserService, CommandInfos CommandName)
+        internal async Task Invoke(TelegramContext context, CommandInfos CommandName)
         {
             Context = context;
-            this.OneTimeService = OneTimeService;
-            this.UserService = UserService;
 
-            IDelegateManager delegateManger = this.OneTimeService.GetService<IDelegateManager>();
+            IDelegateManager delegateManger = context.UserScope.GetService<IDelegateManager>();
 
             Delegate action = delegateManger.CreateDelegate(CommandName, this);
 

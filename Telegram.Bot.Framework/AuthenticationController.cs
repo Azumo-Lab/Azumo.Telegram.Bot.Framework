@@ -40,14 +40,14 @@ namespace Telegram.Bot.Framework
             {
                 if (File.ReadAllText("PASSWORD") == HashPassword(Password))
                 {
-                    IAuthManager authManager = UserService.GetService<IAuthManager>();
+                    IAuthManager authManager = Context.UserScope.GetService<IAuthManager>();
                     authManager.SetAuth(AuthenticationRole.ADMIN);
                 }
             }
             else
             {
                 File.WriteAllText("PASSWORD", HashPassword(Password));
-                IAuthManager authManager = UserService.GetService<IAuthManager>();
+                IAuthManager authManager = Context.UserScope.GetService<IAuthManager>();
                 authManager.SetAuth(AuthenticationRole.ADMIN);
             }
         }

@@ -20,22 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.TelegramControllerEX
+namespace Telegram.Bot.Framework.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    public partial class TelegramControllerPartial
+    public class StringParamMaker
     {
-        /// <summary>
-        /// 发送一个地图坐标
-        /// </summary>
-        /// <returns></returns>
-        protected virtual async Task SendVenue()
-        {
 
-        }
     }
 }

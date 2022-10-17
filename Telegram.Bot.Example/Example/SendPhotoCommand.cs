@@ -43,8 +43,8 @@ namespace Telegram.Bot.Example.Example
             var Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
 
             var files = Directory.GetFiles(Secrets.GetSection("iCloudPhotoPath").Value);
-            await SendTextMessage("请稍后...正在发送...");
-            await SendPhoto(files[Random(0, files.Length)], "这是一张随机的照片");
+            await Context.SendTextMessage("请稍后...正在发送...");
+            await Context.SendPhoto(files[Random(0, files.Length)], "这是一张随机的照片");
         }
 
         [Command(nameof(SendMyPhoto), CommandInfo = "向机器人发送一张图片")]
@@ -55,7 +55,7 @@ namespace Telegram.Bot.Example.Example
             {
                 sw.Write(JsonConvert.SerializeObject(photoSize));
             }
-            await SendTextMessage("已经接收");
+            await Context.SendTextMessage("已经接收");
         }
 
         [Command(nameof(GetSendPhoto), CommandInfo = "从机器人那里随机获取一张图片")]
@@ -67,7 +67,7 @@ namespace Telegram.Bot.Example.Example
 
             PhotoSize onephoto = JsonConvert.DeserializeObject<PhotoSize>(System.IO.File.ReadAllText(file));
             
-            await SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(file).LastWriteTime}");
+            await Context.SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(file).LastWriteTime}");
         }
 
         [Authentication(AuthenticationRole.ADMIN)]
@@ -80,7 +80,7 @@ namespace Telegram.Bot.Example.Example
                 foreach (var item in photos)
                 {
                     PhotoSize onephoto = JsonConvert.DeserializeObject<PhotoSize>(System.IO.File.ReadAllText(item));
-                    await SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(item).LastWriteTime}");
+                    await Context.SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(item).LastWriteTime}");
                 }
             }
         }

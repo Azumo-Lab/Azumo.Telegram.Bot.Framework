@@ -27,10 +27,10 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class ParamMakerAttribute : Attribute
+    public class ParamTypeForAttribute : Attribute
     {
         public Type MakerType { get; }
-        public ParamMakerAttribute(Type makerType)
+        public ParamTypeForAttribute(Type makerType)
         {
             MakerType = makerType;
         }

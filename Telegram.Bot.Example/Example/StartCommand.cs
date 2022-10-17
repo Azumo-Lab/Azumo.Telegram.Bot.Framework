@@ -45,7 +45,7 @@ namespace Telegram.Bot.Example.Example
             message += Environment.NewLine;
             message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
 
-            await SendTextMessage(message);
+            await Context.SendTextMessage(message);
         }
     }
 }

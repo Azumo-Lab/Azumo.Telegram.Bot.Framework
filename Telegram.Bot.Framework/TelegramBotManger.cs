@@ -28,7 +28,7 @@ using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework
 {
-    public class TelegramBotManger
+    public sealed class TelegramBotManger
     {
         private static HashSet<string> Tokens = new HashSet<string>();  //判断重复Token
         private string Token;                                           //Token

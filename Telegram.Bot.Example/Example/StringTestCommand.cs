@@ -49,34 +49,34 @@ namespace Telegram.Bot.Example.Example
 
             if (msg.ToUpper().Contains("TEST"))
             {
-                await SendTextMessage("我也来个Test (*^_^*)， Test，TEst，teST");
+                await Context.SendTextMessage("我也来个Test (*^_^*)， Test，TEst，teST");
                 return;
             }
 
             if (long.TryParse(msg, out long l))
             {
-                await SendTextMessage("纯数字？反转啦！！");
-                await SendTextMessage(string.Join("", msg.Reverse()));
-                await SendTextMessage("12345，上山打老虎是吧");
+                await Context.SendTextMessage("纯数字？反转啦！！");
+                await Context.SendTextMessage(string.Join("", msg.Reverse()));
+                await Context.SendTextMessage("12345，上山打老虎是吧");
                 return;
             }
 
             if (ISCHAR(msg))
             {
-                await SendTextMessage("你输入的这一串是什么，看不懂啦");
-                await SendTextMessage("你试试输入纯数字和TEST。");
-                await SendTextMessage("试试输入：河南");
+                await Context.SendTextMessage("你输入的这一串是什么，看不懂啦");
+                await Context.SendTextMessage("你试试输入纯数字和TEST。");
+                await Context.SendTextMessage("试试输入：河南");
                 return;
             }
 
             if (msg.Contains("河南"))
             {
-                await SendTextMessage("我们河南人就是神，创造不朽的神话！！");
+                await Context.SendTextMessage("我们河南人就是神，创造不朽的神话！！");
                 return;
             }
 
-            await SendTextMessage("你试试输入纯数字和TEST。");
-            await SendTextMessage("试试输入：河南");
+            await Context.SendTextMessage("你试试输入纯数字和TEST。");
+            await Context.SendTextMessage("试试输入：河南");
         }
 
         private bool ISCHAR(string c)
@@ -100,8 +100,8 @@ namespace Telegram.Bot.Example.Example
             {
                 sw.Write(JsonConvert.SerializeObject(photoSize));
             }
-            await SendTextMessage("已保存");
-            await SendTextMessage(
+            await Context.SendTextMessage("已保存");
+            await Context.SendTextMessage(
 @"
 你可以使用 /GetAllSendPhoto 获取全部图片，
 也可以使用 /GetSendPhoto 随机获取一张图片");
@@ -123,7 +123,7 @@ namespace Telegram.Bot.Example.Example
         [Command("AdminTest", CommandInfo = "测试管理员权限认证")]
         public async Task AdminTest()
         {
-            await SendTextMessage("你已经通过了管理员认证");
+            await Context.SendTextMessage("你已经通过了管理员认证");
         }
     }
 }

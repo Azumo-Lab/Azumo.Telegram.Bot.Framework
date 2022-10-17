@@ -20,26 +20,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.TelegramControllerEX
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    public partial class TelegramControllerPartial
+    public interface ILog
     {
-        /// <summary>
-        /// 用Html的方式发送一条信息
-        /// </summary>
-        /// <param name="HtmlMessage">Html格式的信息</param>
-        /// <returns></returns>
-        protected virtual async Task SendTextMessageWithHtml(string HtmlMessage)
-        {
-            await Context.BotClient.SendTextMessageAsync(
-                chatId: Context.ChatID,
-                text: HtmlMessage, parseMode: ParseMode.Html
-                );
-        }
+        void Log(string message);
+
+        void Log(string message, Exception exception);
     }
 }

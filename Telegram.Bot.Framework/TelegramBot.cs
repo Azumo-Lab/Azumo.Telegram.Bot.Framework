@@ -32,7 +32,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
-    public class TelegramBot
+    public sealed class TelegramBot
     {
         private readonly IServiceCollection telegramServiceCollection;
         private readonly IServiceProvider serviceProvider;

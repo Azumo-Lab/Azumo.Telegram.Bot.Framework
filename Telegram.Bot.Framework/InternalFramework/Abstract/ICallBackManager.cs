@@ -25,12 +25,22 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
-    /// 
+    /// 回调管理
     /// </summary>
     internal interface ICallBackManager
     {
-        string CreateCallBack(Action<TelegramContext, IServiceScope> CallBackAction);
+        /// <summary>
+        /// 创建一个CallBack
+        /// </summary>
+        /// <param name="CallBackAction"></param>
+        /// <returns></returns>
+        string CreateCallBack(Action<TelegramContext> CallBackAction);
 
-        Action<TelegramContext, IServiceScope> GetCallBack(string CallBackKey);
+        /// <summary>
+        /// 获取CallBack
+        /// </summary>
+        /// <param name="CallBackKey"></param>
+        /// <returns></returns>
+        Action<TelegramContext> GetCallBack(string CallBackKey);
     }
 }

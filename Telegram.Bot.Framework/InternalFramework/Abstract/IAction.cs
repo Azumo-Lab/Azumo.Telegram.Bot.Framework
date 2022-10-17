@@ -30,13 +30,16 @@ namespace Telegram.Bot.Framework.InternalFramework.Abstract
     internal interface IAction
     {
         /// <summary>
+        /// 排序
+        /// </summary>
+        int Sort { get; }
+
+        /// <summary>
         /// 执行
         /// </summary>
         /// <param name="Context"></param>
-        /// <param name="UserScope"></param>
-        /// <param name="OneTimeScope"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        Task Invoke(TelegramContext Context, IServiceScope UserScope, ActionHandle NextHandle);
+        Task Invoke(TelegramContext Context, ActionHandle NextHandle);
     }
 }

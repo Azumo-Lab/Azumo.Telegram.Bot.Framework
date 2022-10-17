@@ -25,14 +25,27 @@ using Telegram.Bot.Framework.TelegramAttributes;
 namespace Telegram.Bot.Framework.InternalFramework.Abstract
 {
     /// <summary>
-    /// 
+    /// 用户权限管理
     /// </summary>
     internal interface IAuthManager
     {
+        /// <summary>
+        /// 设置权限
+        /// </summary>
+        /// <param name="authenticationRole"></param>
         void SetAuth(AuthenticationRole authenticationRole);
 
+        /// <summary>
+        /// 获取权限
+        /// </summary>
+        /// <returns></returns>
         AuthenticationRole GetAuthenticationRole();
 
+        /// <summary>
+        /// 验证权限
+        /// </summary>
+        /// <param name="authenticationRole"></param>
+        /// <returns></returns>
         bool IsAuth(AuthenticationRole authenticationRole);
     }
 }

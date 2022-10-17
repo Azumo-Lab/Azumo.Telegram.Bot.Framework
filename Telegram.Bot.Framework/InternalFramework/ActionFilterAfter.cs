@@ -28,13 +28,13 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// <summary>
     /// 
     /// </summary>
-    internal class ActionFilterAfter : IAction, IHandleSort
+    internal class ActionFilterAfter : IAction
     {
         public int Sort => 400;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext context, ActionHandle NextHandle)
         {
-            await NextHandle(context, UserScope);
+            await NextHandle(context);
         }
     }
 }

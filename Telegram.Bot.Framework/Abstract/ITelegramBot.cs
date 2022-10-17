@@ -20,40 +20,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Components;
-using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Telegram.Bot.Framework.TelegramControllerEX
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 机器人接口
     /// </summary>
-    public partial class TelegramControllerPartial
+    public interface ITelegramBot
     {
         /// <summary>
-        /// 发送一条消息
+        /// 启动机器人
         /// </summary>
-        /// <param name="Message">普通文本信息</param>
         /// <returns></returns>
-        protected virtual async Task SendTextMessage(string Message)
-        {
-            await Context.BotClient.SendTextMessageAsync(
-                chatId: Context.ChatID,
-                Message
-                );
-        }
+        Task BotStart();
 
         /// <summary>
-        /// 发送一条消息
+        /// 停止当前机器人
         /// </summary>
-        /// <param name="Message">普通文本信息</param>
         /// <returns></returns>
-        protected virtual async Task SendTextMessage(string Message, IEnumerable<InlineButtons> keyboardButton)
-        {
-            await Context.BotClient.SendTextMessageAsync(
-                chatId: Context.ChatID,
-                Message, replyMarkup: new InlineKeyboardMarkup(CreateInlineKeyboardButton(keyboardButton))
-                );
-        }
+        Task BotStop();
     }
 }

@@ -28,19 +28,19 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// <summary>
     /// 
     /// </summary>
-    internal class ActionParamCatch : IAction, IHandleSort
+    internal class ActionParamCatch : IAction
     {
         public int Sort => 200;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext context, ActionHandle NextHandle)
         {
             // 获取参数管理
-            IParamManager paramManger = UserScope.ServiceProvider.GetService<IParamManager>();
+            IParamManager paramManger = context.UserScope.GetService<IParamManager>();
 
             if (!await paramManger.ReadParam(context, context.UserScope))
                 return;
 
-            await NextHandle(context, UserScope);
+            await NextHandle(context);
         }
     }
 }

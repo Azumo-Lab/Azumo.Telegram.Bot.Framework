@@ -28,26 +28,26 @@ namespace Telegram.Bot.Framework.InternalFramework
     /// <summary>
     /// 
     /// </summary>
-    internal class ActionCallBack : IAction, IHandleSort
+    internal class ActionCallBack : IAction
     {
         public int Sort => 150;
 
-        public async Task Invoke(TelegramContext context, IServiceScope UserScope, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext context, ActionHandle NextHandle)
         {
             if (context.Update.Type == Types.Enums.UpdateType.CallbackQuery)
             {
-                ICallBackManager callBackManger = UserScope.ServiceProvider.GetService<ICallBackManager>();
+                ICallBackManager callBackManger = context.UserScope.GetService<ICallBackManager>();
 
-                Action<TelegramContext, IServiceScope> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
+                Action<TelegramContext> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
 
                 if (action != null)
                 {
-                    action.Invoke(context, UserScope);
+                    action.Invoke(context);
                     return;
                 }
             }
 
-            await NextHandle(context, UserScope);
+            await NextHandle(context);
         }
     }
 }

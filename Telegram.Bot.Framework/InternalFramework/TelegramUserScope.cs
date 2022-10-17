@@ -38,7 +38,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// </summary>
         private IServiceScope UserScope { get; }
 
-        private readonly ActionHandle handle = async (x, y) => { await Task.Delay(1); };
+        private readonly ActionHandle handle = async x => { await Task.Delay(1); };
 
         /// <summary>
         /// 
@@ -51,12 +51,12 @@ namespace Telegram.Bot.Framework.InternalFramework
             IEnumerable<IAction> actions = UserScope.ServiceProvider.GetServices<IAction>();
             List<Func<ActionHandle, ActionHandle>> ActionHandles = new();
 
-            actions = actions.OrderByDescending(x => ((IHandleSort)x).Sort).ToList();
+            actions = actions.OrderByDescending(x => x.Sort).ToList();
 
             foreach (IAction item in actions)
                 ActionHandles.Add(
                     handle =>
-                    (context, userscope) => item.Invoke(context, userscope, handle));
+                    context => item.Invoke(context, handle));
 
             foreach (Func<ActionHandle, ActionHandle> item in ActionHandles)
                 handle = item(handle);
@@ -78,7 +78,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         public async Task Invoke(IServiceScope OneTimeScope)
         {
             TelegramContext context = UserScope.ServiceProvider.GetService<TelegramContext>();
-            await handle.Invoke(context, UserScope);
+            await handle.Invoke(context);
         }
 
         /// <summary>

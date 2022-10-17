@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.ParamConfig
             //默认根据参数类型选择
             paramInfos.CustomParamMaker ??= TypesHelper.GetTypes<IParamMaker>().Where(x =>
             {
-                ParamMakerAttribute paramMakerAttribute = (ParamMakerAttribute)Attribute.GetCustomAttribute(x, typeof(ParamMakerAttribute));
+                ParamTypeForAttribute paramMakerAttribute = (ParamTypeForAttribute)Attribute.GetCustomAttribute(x, typeof(ParamTypeForAttribute));
                 if (paramMakerAttribute != null)
                 {
                     return paramMakerAttribute.MakerType.FullName == parameterInfo.ParameterType.FullName;

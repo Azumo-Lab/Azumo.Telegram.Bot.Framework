@@ -34,22 +34,22 @@ namespace Telegram.Bot.Example.Example
         [Command(nameof(Test1), CommandInfo = "传递一个参数，询问并捕获一个参数")]
         public async Task Test1([Param("请输入要说的话：")] string Message)
         {
-            await SendTextMessage($"你好，你要说的话是：{Message}");
-            await SendTextMessage($"这个测试例是方法中有一个参数并获取一个参数的值");
+            await Context.SendTextMessage($"你好，你要说的话是：{Message}");
+            await Context.SendTextMessage($"这个测试例是方法中有一个参数并获取一个参数的值");
         }
 
         [Command(nameof(Test2), CommandInfo = "传递两个参数，询问并捕获两个参数")]
         public async Task Test2([Param("请输入第一句话：")] string FirstMessage, [Param("请输入第二句话：")] string TwoMessage)
         {
-            await SendTextMessage($"你说的第一句是：{FirstMessage}，第二句话是：{TwoMessage}");
-            await SendTextMessage($"这个测试例是方法中有两个参数并获取两个参数的值");
+            await Context.SendTextMessage($"你说的第一句是：{FirstMessage}，第二句话是：{TwoMessage}");
+            await Context.SendTextMessage($"这个测试例是方法中有两个参数并获取两个参数的值");
         }
 
         [Command(nameof(NowTime), CommandInfo = "输出现在的时间")]
         public async Task NowTime()
         {
-            await SendTextMessage(DateTime.Now.ToString("现在的时间是 yyyy 年 MM 月 dd 日 HH 点 mm 分 ss 秒"));
-            await SendTextMessage($"这个测试例是用来测试方法中没有参数的情况");
+            await Context.SendTextMessage(DateTime.Now.ToString("现在的时间是 yyyy 年 MM 月 dd 日 HH 点 mm 分 ss 秒"));
+            await Context.SendTextMessage($"这个测试例是用来测试方法中没有参数的情况");
         }
 
         [Command("HelloAway", CommandInfo = "自定义的Message类型和参数获取类型，始终输出Hello")]
@@ -60,8 +60,8 @@ namespace Telegram.Bot.Example.Example
             string str
             )
         {
-            await SendTextMessage($"这是一个演示，始终输出Hello：{str}");
-            await SendTextMessage("这个演示方法有一个参数，参数使用了自定义的捕获方法，无论输入什么，始终入参：“Hello”");
+            await Context.SendTextMessage($"这是一个演示，始终输出Hello：{str}");
+            await Context.SendTextMessage("这个演示方法有一个参数，参数使用了自定义的捕获方法，无论输入什么，始终入参：“Hello”");
         }
     }
 }

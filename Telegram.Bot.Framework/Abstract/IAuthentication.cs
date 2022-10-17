@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 权限认证
     /// </summary>
     public interface IAuthentication
     {
