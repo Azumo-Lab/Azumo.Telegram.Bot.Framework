@@ -47,5 +47,17 @@ namespace Telegram.Bot.Framework.Abstract
         /// </summary>
         /// <param name="commandName"></param>
         void RestoreCommand(string commandName);
+
+        /// <summary>
+        /// 获取全部的Command的字符串
+        /// </summary>
+        /// <returns></returns>
+        string GetCommandInfoString();
+
+        /// <summary>
+        /// 获取全部的Command的字典类型
+        /// </summary>
+        /// <returns></returns>
+        Dictionary<string, string> GetCommandInfos();
     }
 }

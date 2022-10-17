@@ -56,7 +56,7 @@ namespace Telegram.Bot.Framework
             List<IConfig> configs = serviceProvider.GetServices<IConfig>().ToList();
             configs.ForEach(x => 
             {
-                x.Config(telegramServiceCollection);
+                x.ConfigureServices(telegramServiceCollection);
             });
 
             telegramServiceCollection.AddSingleton(this);

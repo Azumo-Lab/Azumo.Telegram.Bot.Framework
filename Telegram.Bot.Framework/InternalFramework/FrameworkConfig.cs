@@ -51,7 +51,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// 框架相关的一些设置
         /// </summary>
         /// <param name="telegramServices"></param>
-        public void Config(IServiceCollection telegramServices)
+        public void ConfigureServices(IServiceCollection telegramServices)
         {
             BotInfos botInfos = serviceProvider.GetService<BotInfos>();
             HttpClient httpClient = serviceProvider.GetService<HttpClient>();

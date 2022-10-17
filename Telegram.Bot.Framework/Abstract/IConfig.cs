@@ -30,6 +30,6 @@ namespace Telegram.Bot.Framework.Abstract
         /// 执行配置
         /// </summary>
         /// <param name="telegramServices"></param>
-        public void Config(IServiceCollection telegramServices);
+        public void ConfigureServices(IServiceCollection services);
     }
 }

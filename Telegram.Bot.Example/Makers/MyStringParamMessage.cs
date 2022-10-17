@@ -31,7 +31,7 @@ namespace Telegram.Bot.Example.Makers
     /// </summary>
     public class MyStringParamMessage : IParamMessage
     {
-        IServiceProvider serviceProvider;
+        private readonly IServiceProvider serviceProvider;
         public MyStringParamMessage(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;

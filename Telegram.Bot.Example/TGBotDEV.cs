@@ -55,7 +55,6 @@ namespace Telegram.Bot.Net
         {
             // TODO Something...
             telegramServices.AddUserAuthentication();
-            
         }
     }
 }

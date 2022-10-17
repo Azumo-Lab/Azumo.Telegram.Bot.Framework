@@ -38,7 +38,7 @@ namespace Telegram.Bot.Framework
         {
             if (File.Exists("PASSWORD"))
             {
-                if (File.ReadAllText("PASSWORD") == HashPassword(Password))
+                if (await File.ReadAllTextAsync("PASSWORD") == HashPassword(Password))
                 {
                     IAuthManager authManager = Context.UserScope.GetService<IAuthManager>();
                     authManager.SetAuth(AuthenticationRole.ADMIN);
@@ -46,13 +46,13 @@ namespace Telegram.Bot.Framework
             }
             else
             {
-                File.WriteAllText("PASSWORD", HashPassword(Password));
+                await File.WriteAllTextAsync("PASSWORD", HashPassword(Password));
                 IAuthManager authManager = Context.UserScope.GetService<IAuthManager>();
                 authManager.SetAuth(AuthenticationRole.ADMIN);
             }
         }
 
-        protected string HashPassword(string Password)
+        protected static string HashPassword(string Password)
         {
             SHA256 hA256 = SHA256.Create();
             byte[] hash = Encoding.UTF8.GetBytes(Password);

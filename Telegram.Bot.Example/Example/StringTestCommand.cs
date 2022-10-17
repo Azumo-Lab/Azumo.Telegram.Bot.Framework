@@ -117,6 +117,7 @@ namespace Telegram.Bot.Example.Example
                 TelegramBot bot = serviceProvider.GetService<TelegramBot>();
                 bot.Stop();
             }
+            await Task.Delay(1);
         }
 
         [Authentication(AuthenticationRole.ADMIN)]
