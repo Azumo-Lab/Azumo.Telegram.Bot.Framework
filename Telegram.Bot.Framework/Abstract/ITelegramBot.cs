@@ -38,6 +38,6 @@ namespace Telegram.Bot.Framework.Abstract
         /// 停止当前机器人
         /// </summary>
         /// <returns></returns>
-        Task BotStop();
+        void BotStop();
     }
 }

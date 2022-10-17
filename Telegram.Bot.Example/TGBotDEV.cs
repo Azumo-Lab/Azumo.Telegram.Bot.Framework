@@ -46,12 +46,12 @@ namespace Telegram.Bot.Net
                 .SetBotName("DEV1")
                 .Build();
 
-            Task botTask = bot.Start();
+            Task botTask = bot.BotStart();
 
             botTask.Wait();
         }
 
-        public void Config(IServiceCollection telegramServices)
+        public void ConfigureServices(IServiceCollection telegramServices)
         {
             // TODO Something...
             telegramServices.AddUserAuthentication();

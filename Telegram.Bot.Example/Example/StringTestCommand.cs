@@ -35,7 +35,7 @@ namespace Telegram.Bot.Example.Example
     /// </summary>
     public class StringTestCommand : TelegramController
     {
-        private IServiceProvider serviceProvider;
+        private readonly IServiceProvider serviceProvider;
         public StringTestCommand(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -110,12 +110,12 @@ namespace Telegram.Bot.Example.Example
         [Command("Stop", CommandInfo = "停止这个机器人")]
         public async Task ExitExe([Param("密码：")]string password)
         {
-            var Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
+            IConfigurationRoot Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
             string Password = Secrets.GetSection("PASSWORD").Value;
             if (password == Password)
             {
                 TelegramBot bot = serviceProvider.GetService<TelegramBot>();
-                bot.Stop();
+                bot.BotStop();
             }
             await Task.Delay(1);
         }

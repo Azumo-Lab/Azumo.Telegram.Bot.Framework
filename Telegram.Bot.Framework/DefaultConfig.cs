@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework
     {
         internal Action<IServiceCollection> action;
 
-        public void Config(IServiceCollection telegramServices)
+        public void ConfigureServices(IServiceCollection telegramServices)
         {
             action?.Invoke(telegramServices);
         }

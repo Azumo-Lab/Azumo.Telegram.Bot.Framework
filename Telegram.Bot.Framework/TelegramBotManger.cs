@@ -144,7 +144,7 @@ namespace Telegram.Bot.Framework
         /// 创建一个Bot对象
         /// </summary>
         /// <returns></returns>
-        public TelegramBot Build()
+        public ITelegramBot Build()
         {
             ThrowHelper.ThrowIfNullOrEmpty(Token);
 
@@ -153,7 +153,7 @@ namespace Telegram.Bot.Framework
             Tokens.Add(Token);
 
             services.AddScoped<IConfig, FrameworkConfig>();
-            services.AddScoped(x => new TelegramBot(x));
+            services.AddScoped<ITelegramBot>(x => new TelegramBot(x));
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
@@ -161,7 +161,7 @@ namespace Telegram.Bot.Framework
                 info.BotName = BotName;
                 info.Token = Token;
 
-                return serviceProvider.GetService<TelegramBot>();
+                return serviceProvider.GetService<ITelegramBot>();
             }
         }
     }

@@ -32,10 +32,12 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
-    public sealed class TelegramBot
+    public sealed class TelegramBot : ITelegramBot
     {
         private readonly IServiceCollection telegramServiceCollection;
         private readonly IServiceProvider serviceProvider;
+        private readonly static object _lockObj = new object();
+
 
         private bool Running = false;           //多次启动的Flag
         private bool StopFlag = false;          //停止Flag
@@ -59,7 +61,7 @@ namespace Telegram.Bot.Framework
                 x.ConfigureServices(telegramServiceCollection);
             });
 
-            telegramServiceCollection.AddSingleton(this);
+            telegramServiceCollection.AddSingleton<ITelegramBot>(this);
 
             this.serviceProvider = telegramServiceCollection.BuildServiceProvider();
         }
@@ -68,9 +70,9 @@ namespace Telegram.Bot.Framework
         /// 启动Bot
         /// </summary>
         /// <param name="Wait">等待</param>
-        public Task Start()
+        public Task BotStart()
         {
-            lock (this)
+            lock (_lockObj)
                 if (Running)
                     throw new TooManyExecutionsException("Too Many Executions");
             Running = true;
@@ -110,7 +112,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 停止执行Bot
         /// </summary>
-        public void Stop()
+        public void BotStop()
         {
             StopFlag = true;
         }
