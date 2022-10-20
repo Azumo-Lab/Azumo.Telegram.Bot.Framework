@@ -65,10 +65,5 @@ namespace Telegram.Bot.Framework.LogImpl
         {
             throw new NotImplementedException();
         }
-
-        public void Log(string message, Exception exception)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

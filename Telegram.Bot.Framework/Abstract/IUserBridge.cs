@@ -14,40 +14,39 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 默认实现
+    /// 用户桥接口
+    /// 帮助用户间互通互动的接口，
+    /// 可以使用该接口来做到实时通信
     /// </summary>
-    public class DefaultConfig : IConfig
+    public interface IUserBridge : IDisposable
     {
-        internal Action<IServiceCollection> action;
+        /// <summary>
+        /// 是否已关闭
+        /// </summary>
+        bool IsDiscard { get; }
 
         /// <summary>
-        /// 配置
+        /// 添加联络用户
         /// </summary>
-        /// <param name="telegramServices"></param>
-        public void ConfigureServices(IServiceCollection telegramServices)
-        {
-            action?.Invoke(telegramServices);
-        }
+        /// <param name="context"></param>
+        /// <param name="telegramUser"></param>
+        void AddContact(TelegramUser userA, TelegramUser userB);
 
         /// <summary>
-        /// 设置配置委托
+        /// 清除联络用户的所有联络
         /// </summary>
-        /// <param name="action"></param>
-        public void SetAction(Action<IServiceCollection> action)
-        {
-            this.action = action;
-        }
+        /// <param name="context"></param>
+        /// <param name="telegramUser"></param>
+        void RemoveContact(TelegramUser user);
     }
 }

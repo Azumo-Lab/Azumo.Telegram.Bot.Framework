@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,31 +22,16 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.LogImpl
 {
     /// <summary>
-    /// 默认实现
+    /// 
     /// </summary>
-    public class DefaultConfig : IConfig
+    public static class LogExtension
     {
-        internal Action<IServiceCollection> action;
-
-        /// <summary>
-        /// 配置
-        /// </summary>
-        /// <param name="telegramServices"></param>
-        public void ConfigureServices(IServiceCollection telegramServices)
+        public static void Log(this ILog log, string Message, object ClassObj)
         {
-            action?.Invoke(telegramServices);
-        }
-
-        /// <summary>
-        /// 设置配置委托
-        /// </summary>
-        /// <param name="action"></param>
-        public void SetAction(Action<IServiceCollection> action)
-        {
-            this.action = action;
+            log.Log(Message);
         }
     }
 }

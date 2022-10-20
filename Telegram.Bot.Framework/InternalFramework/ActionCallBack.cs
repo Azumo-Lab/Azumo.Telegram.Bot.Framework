@@ -41,10 +41,9 @@ namespace Telegram.Bot.Framework.InternalFramework
                 Action<TelegramContext> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
 
                 if (action != null)
-                {
                     action.Invoke(context);
-                    return;
-                }
+
+                return;
             }
 
             await NextHandle(context);

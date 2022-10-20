@@ -29,7 +29,5 @@ namespace Telegram.Bot.Framework.Abstract
     public interface ILog
     {
         void Log(string message);
-
-        void Log(string message, Exception exception);
     }
 }

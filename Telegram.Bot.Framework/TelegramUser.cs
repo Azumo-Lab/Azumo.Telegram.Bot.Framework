@@ -50,6 +50,8 @@ namespace Telegram.Bot.Framework
 
         }
 
+        public Dictionary<string, string> UserData { get; } = new Dictionary<string, string>();
+
         /// <summary>
         /// 用户ID
         /// </summary>

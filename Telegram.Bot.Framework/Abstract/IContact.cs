@@ -14,40 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 默认实现
+    /// 
     /// </summary>
-    public class DefaultConfig : IConfig
+    public interface IContact
     {
-        internal Action<IServiceCollection> action;
+        void AddContact(TelegramContext context, TelegramUser telegramUser);
 
-        /// <summary>
-        /// 配置
-        /// </summary>
-        /// <param name="telegramServices"></param>
-        public void ConfigureServices(IServiceCollection telegramServices)
-        {
-            action?.Invoke(telegramServices);
-        }
-
-        /// <summary>
-        /// 设置配置委托
-        /// </summary>
-        /// <param name="action"></param>
-        public void SetAction(Action<IServiceCollection> action)
-        {
-            this.action = action;
-        }
+        TelegramUser GetContact(TelegramContext context);
     }
 }

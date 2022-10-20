@@ -48,6 +48,17 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static async Task SendTextMessage(this TelegramContext context, TelegramUser telegramUser, string message)
+        {
+            await context.BotClient.SendTextMessageAsync(telegramUser.ChatID, message);
+        }
+
+        /// <summary>
         /// 发送消息，带按钮
         /// </summary>
         /// <param name="context"></param>
@@ -56,7 +67,20 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static async Task SendTextMessage(this TelegramContext context, string message, IEnumerable<InlineButtons> inlineButtons)
         {
-            await context.BotClient.SendTextMessageAsync(context.ChatID, message, 
+            await context.BotClient.SendTextMessageAsync(context.ChatID, message,
+                replyMarkup: new InlineKeyboardMarkup(context.CreateInlineKeyboardButton(inlineButtons)));
+        }
+
+        /// <summary>
+        /// 发送消息，带按钮
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="message"></param>
+        /// <param name="inlineButtons"></param>
+        /// <returns></returns>
+        public static async Task SendTextMessage(this TelegramContext context, TelegramUser telegramUser, string message, IEnumerable<InlineButtons> inlineButtons)
+        {
+            await context.BotClient.SendTextMessageAsync(telegramUser.ChatID, message,
                 replyMarkup: new InlineKeyboardMarkup(context.CreateInlineKeyboardButton(inlineButtons)));
         }
 
@@ -157,6 +181,29 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
+        /// 创建按钮
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="keyboardButton"></param>
+        /// <returns></returns>
+        public static IEnumerable<InlineKeyboardButton> CreateInlineKeyboardButton(this TelegramContext context, TelegramUser telegramUser, IEnumerable<InlineButtons> keyboardButton)
+        {
+            IEnumerable<InlineKeyboardButton> inlineKeyboardButtons = keyboardButton.Select(x => new InlineKeyboardButton(x.Text)
+            {
+                CallbackData = context.CreateCallBack(telegramUser, x.Callback),
+                CallbackGame = x.CallbackGame,
+                Url = x.Url,
+                LoginUrl = x.LoginUrl,
+                Pay = x.Pay,
+                SwitchInlineQuery = x.SwitchInlineQuery,
+                SwitchInlineQueryCurrentChat = x.SwitchInlineQueryCurrentChat,
+                WebApp = x.WebApp,
+            }).ToList();
+
+            return inlineKeyboardButtons;
+        }
+
+        /// <summary>
         /// 创建CallBack
         /// </summary>
         /// <param name="context"></param>
@@ -165,6 +212,21 @@ namespace Telegram.Bot.Framework
         public static string CreateCallBack(this TelegramContext context, Action<TelegramContext> callback)
         {
             ICallBackManager callBackManager = context.UserScope.GetService<ICallBackManager>();
+            return callBackManager.CreateCallBack(callback);
+        }
+
+        /// <summary>
+        /// 创建CallBack
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public static string CreateCallBack(this TelegramContext context, TelegramUser telegramUser, Action<TelegramContext> callback)
+        {
+            ITelegramUserScopeManager telegramUserScopeManager = context.UserScope.GetService<ITelegramUserScopeManager>();
+            IServiceScope serviceScope = telegramUserScopeManager.GetUserScope(telegramUser.ChatID);
+
+            ICallBackManager callBackManager = serviceScope.ServiceProvider.GetService<ICallBackManager>();
             return callBackManager.CreateCallBack(callback);
         }
         #endregion
