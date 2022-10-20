@@ -1,5 +1,20 @@
 # Telegram.Bot.Framework
 
+```mermaid
+gantt
+    title Telegram.Bot.Framework 计划图
+    dateFormat  YYYY-MM-DD
+    section Beta-2.3
+    开发  :2022-11-15, 30d
+    测试  :14d
+    正式发布:milestone, 0d
+    section Release-1.0
+    开发  :2022-12-25, 22d
+    测试  :2023-01-15, 7d
+    正式发布:milestone, 2023-01-22, 0d
+```
+
+
 ### 简单介绍
 
 [更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
