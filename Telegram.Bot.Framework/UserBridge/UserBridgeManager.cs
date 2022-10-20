@@ -20,24 +20,28 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.UserBridge
 {
     /// <summary>
-    /// 用户桥接口
-    /// 帮助用户间互通互动的接口，
-    /// 可以使用该接口来做到实时通信
+    /// 
     /// </summary>
-    public interface IUserBridge : IDisposable
+    internal class UserBridgeManager : IUserBridgeManager
     {
-        /// <summary>
-        /// 是否已关闭
-        /// </summary>
-        bool IsDiscard { get; }
+        private readonly Dictionary<long, IUserBridge> UserBridges;
+        private readonly ICallBackManager callBackManager;
 
-        /// <summary>
-        /// 目标用户
-        /// </summary>
-        TelegramUser TargetUser { get; }
+        public UserBridgeManager(ICallBackManager callBackManager)
+        {
+            UserBridges = new();
+            this.callBackManager = callBackManager;
+        }
+
+        public IUserBridge CreateUserBridge(TelegramUser telegramUser)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

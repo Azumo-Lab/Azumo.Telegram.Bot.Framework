@@ -24,20 +24,15 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 用户桥接口
-    /// 帮助用户间互通互动的接口，
-    /// 可以使用该接口来做到实时通信
+    /// 桥管理器
     /// </summary>
-    public interface IUserBridge : IDisposable
+    public interface IUserBridgeManager
     {
         /// <summary>
-        /// 是否已关闭
+        /// 向目标用户建立通信桥
         /// </summary>
-        bool IsDiscard { get; }
-
-        /// <summary>
-        /// 目标用户
-        /// </summary>
-        TelegramUser TargetUser { get; }
+        /// <param name="telegramUser"></param>
+        /// <returns></returns>
+        IUserBridge CreateUserBridge(TelegramUser telegramUser);
     }
 }

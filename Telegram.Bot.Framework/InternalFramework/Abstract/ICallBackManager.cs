@@ -37,10 +37,23 @@ namespace Telegram.Bot.Framework.InternalFramework.Abstract
         string CreateCallBack(Action<TelegramContext> CallBackAction);
 
         /// <summary>
+        /// 创建一个CallBack
+        /// </summary>
+        /// <param name="CallBackAction"></param>
+        /// <returns></returns>
+        string CreateCallBack(string CallBackName, Action<TelegramContext> CallBackAction);
+
+        /// <summary>
         /// 获取CallBack
         /// </summary>
         /// <param name="CallBackKey"></param>
         /// <returns></returns>
         Action<TelegramContext> GetCallBack(string CallBackKey);
+
+        /// <summary>
+        /// 清除指定的Callback
+        /// </summary>
+        /// <param name="CallbackName"></param>
+        void Dispose(string CallbackName);
     }
 }

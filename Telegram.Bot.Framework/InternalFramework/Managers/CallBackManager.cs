@@ -38,6 +38,19 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             return key;
         }
 
+        public string CreateCallBack(string CallBackName, Action<TelegramContext> CallBackAction)
+        {
+            if (CallBacks.TryAdd(CallBackName, CallBackAction))
+                return CallBackName;
+            return null;
+        }
+
+        public void Dispose(string CallbackName)
+        {
+            if (CallBacks.ContainsKey(CallbackName))
+                CallBacks.Remove(CallbackName);
+        }
+
         public Action<TelegramContext> GetCallBack(string CallBackKey)
         {
             if (CallBackKey != null && CallBacks.ContainsKey(CallBackKey))
