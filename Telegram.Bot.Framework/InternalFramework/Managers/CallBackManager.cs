@@ -26,7 +26,7 @@ using Telegram.Bot.Framework.InternalFramework.Abstract;
 namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     /// <summary>
-    /// 
+    /// 回调管理
     /// </summary>
     internal class CallBackManager : ICallBackManager
     {

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,31 +23,35 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UserBridge
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserBridgeManager : IUserBridgeManager
+    public class ActionCallbackQuery : AbstractActionInvoker
     {
-        private readonly Dictionary<long, IUserBridge> UserBridges;
-        private readonly ICallBackManager callBackManager;
-
-        public UserBridgeManager(ICallBackManager callBackManager)
+        public ActionCallbackQuery(IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            UserBridges = new();
-            this.callBackManager = callBackManager;
+
         }
 
-        public IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser)
+        public override UpdateType InvokeType => UpdateType.CallbackQuery;
+
+        public override async Task Invoke(TelegramContext context)
         {
-            throw new NotImplementedException();
+            ICallBackManager callBackManager = context.UserScope.GetService<ICallBackManager>();
+            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(context.Update.CallbackQuery.Data);
+            await context.BotClient.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id);
+            callbackAction.Invoke(context);
+
+            await ActionHandle.Invoke(context);
         }
 
-        public IUserBridge GetUserBridge()
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            return default;
+            AddHandle(null);
         }
     }
 }

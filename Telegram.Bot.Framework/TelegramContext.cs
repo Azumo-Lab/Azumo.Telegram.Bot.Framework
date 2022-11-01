@@ -78,14 +78,24 @@ namespace Telegram.Bot.Framework
         /// 获取ChatID(相当于用户ID)
         /// </summary>
         /// <returns></returns>
-        public static long GetChatID(Update Update)
+        public static long GetChatID(Update Update) => Update.Type switch
         {
-            return Update.Type switch
-            {
-                UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
-                _ => Update.Message.Chat.Id,
-            };
-        }
+            UpdateType.CallbackQuery => Update.CallbackQuery.Message.Chat.Id,
+            UpdateType.MyChatMember => Update.MyChatMember.Chat.Id,
+            UpdateType.Message => Update.Message.Chat.Id,
+            UpdateType.InlineQuery => throw new NotImplementedException(),
+            UpdateType.ChosenInlineResult => throw new NotImplementedException(),
+            UpdateType.EditedMessage => Update.EditedMessage.Chat.Id,
+            UpdateType.ChannelPost => Update.ChannelPost.Chat.Id,
+            UpdateType.EditedChannelPost => Update.EditedChannelPost.Chat.Id,
+            UpdateType.ShippingQuery => throw new NotImplementedException(),
+            UpdateType.PreCheckoutQuery => throw new NotImplementedException(),
+            UpdateType.Poll => throw new NotImplementedException(),
+            UpdateType.PollAnswer => throw new NotImplementedException(),
+            UpdateType.ChatMember => Update.ChatMember.Chat.Id,
+            UpdateType.ChatJoinRequest => Update.ChatJoinRequest.Chat.Id,
+            _ => throw new NotImplementedException(),
+        };
 
         /// <summary>
         /// 获取指令

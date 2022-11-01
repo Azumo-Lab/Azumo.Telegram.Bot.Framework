@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Example.Makers;
+using Telegram.Bot.Example.Proc;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types;
@@ -44,7 +45,7 @@ namespace Telegram.Bot.Example.Example
 
             var files = Directory.GetFiles(Secrets.GetSection("iCloudPhotoPath").Value);
             await Context.SendTextMessage("请稍后...正在发送...");
-            await Context.SendPhoto(files[Random(0, files.Length)], "这是一张随机的照片");
+            await Context.SendPhoto(files[RandomMethod.RandomInt(0, files.Length)], "这是一张随机的照片");
         }
 
         [Command(nameof(SendMyPhoto), CommandInfo = "向机器人发送一张图片")]
@@ -63,7 +64,7 @@ namespace Telegram.Bot.Example.Example
         {
             var photos = Directory.GetFiles("TESTPIC");
 
-            var file = photos[Random(0, photos.Length)];
+            var file = photos[RandomMethod.RandomInt(0, photos.Length)];
 
             PhotoSize onephoto = JsonConvert.DeserializeObject<PhotoSize>(System.IO.File.ReadAllText(file));
             

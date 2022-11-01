@@ -33,6 +33,6 @@ namespace Telegram.Bot.Framework.Abstract
         /// </summary>
         /// <param name="telegramUser"></param>
         /// <returns></returns>
-        IUserBridge CreateUserBridge(TelegramUser telegramUser);
+        IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser);
     }
 }

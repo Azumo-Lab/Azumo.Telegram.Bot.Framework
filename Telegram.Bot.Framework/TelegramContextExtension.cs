@@ -106,6 +106,20 @@ namespace Telegram.Bot.Framework
         /// 发送图片
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="PhotoPath"></param>
+        /// <returns></returns>
+        public static async Task SendPhoto(this TelegramContext context, string PhotoPath, string message)
+        {
+            string PhotoName = Path.GetFileName(PhotoPath);
+
+            await context.BotClient.SendPhotoAsync(context.ChatID,
+                new InputOnlineFile(new FileStream(PhotoPath, FileMode.Open), PhotoName), message);
+        }
+
+        /// <summary>
+        /// 发送图片
+        /// </summary>
+        /// <param name="context"></param>
         /// <param name="Photo"></param>
         /// <returns></returns>
         public static async Task SendPhoto(this TelegramContext context, PhotoSize Photo, string Message)

@@ -20,33 +20,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UserBridge
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserBridgeManager : IUserBridgeManager
+    public interface IChannelManager
     {
-        private readonly Dictionary<long, IUserBridge> UserBridges;
-        private readonly ICallBackManager callBackManager;
-
-        public UserBridgeManager(ICallBackManager callBackManager)
-        {
-            UserBridges = new();
-            this.callBackManager = callBackManager;
-        }
-
-        public IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUserBridge GetUserBridge()
-        {
-            return default;
-        }
+        /// <summary>
+        /// 添加一个频道
+        /// </summary>
+        void AddChannel();
     }
 }

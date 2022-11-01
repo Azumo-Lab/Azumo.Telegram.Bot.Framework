@@ -38,6 +38,9 @@ namespace Telegram.Bot.Framework.UserBridge
             TargetUser = telegramUser;
         }
 
+        public event IUserBridge.OnCreateHandle OnCreate;
+        public event IUserBridge.OnCloseHandle OnClose;
+
         public void Dispose()
         {
             IsDiscard = true;

@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bots", "Bots", "{7E91FAE0-7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Upgrader", "Telegram.Bot.Upgrader\Telegram.Bot.Upgrader.csproj", "{0D92EFF3-88F6-4604-BF53-B349A78E86F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "代码规范", "代码规范", "{ED1CEE58-456A-40CD-A49B-191BD0573682}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "代码规范", "代码规范", "{90D50F69-23C6-4322-BC9E-DD3B7E6C9CFC}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection

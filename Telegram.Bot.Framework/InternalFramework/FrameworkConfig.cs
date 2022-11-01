@@ -32,6 +32,7 @@ using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Framework.TelegramException;
+using Telegram.Bot.Framework.UpdateTypeActions;
 using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Framework.InternalFramework
@@ -84,6 +85,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             });
 
             telegramServices.AddControllers();
+            telegramServices.AddServiceTypes<AbstractActionInvoker>(ServiceLifetime.Singleton);
         }
     }
 

@@ -25,8 +25,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.UpdateTypeActions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalFramework
 {
@@ -36,10 +38,12 @@ namespace Telegram.Bot.Framework.InternalFramework
     internal class UpdateHandler : IUpdateHandler
     {
         public readonly IServiceProvider serviceProvider;
-
+        private readonly Dictionary<UpdateType, AbstractActionInvoker> AbstractActionInvokersDic;
         public UpdateHandler(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+            List<AbstractActionInvoker> abstractActionInvokers = this.serviceProvider.GetServices<AbstractActionInvoker>().ToList();
+            AbstractActionInvokersDic = abstractActionInvokers.GroupBy(x => x.InvokeType).ToDictionary(x => x.Key, x => x.FirstOrDefault());
         }
 
         /// <summary>
@@ -78,19 +82,29 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
+            try
             {
-                //获取 | 创建 一个TelegramUserScope
-                ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();
-                ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(TelegramContext.GetChatID(update));
+                using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
+                {
+                    //获取 | 创建 一个 TelegramUserScope
+                    ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();
+                    ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(TelegramContext.GetChatID(update));
 
-                TelegramContext telegramContext = telegramUserScope.CreateTelegramContext();
-                telegramContext.Update = update;
-                telegramContext.CancellationToken = cancellationToken;
-                telegramContext.BotClient = botClient;
-                telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
+                    //根据不同的用户创建 TelegramContext
+                    TelegramContext telegramContext = telegramUserScope.CreateTelegramContext();
+                    telegramContext.Update = update;
+                    telegramContext.CancellationToken = cancellationToken;
+                    telegramContext.BotClient = botClient;
+                    telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
 
-                await telegramUserScope.Invoke(OneTimeScope);
+                    //根据消息类型获取 AbstractActionInvoker
+                    if (AbstractActionInvokersDic.TryGetValue(update.Type, out AbstractActionInvoker abstractActionInvoker))
+                        await abstractActionInvoker.Invoke(telegramContext);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

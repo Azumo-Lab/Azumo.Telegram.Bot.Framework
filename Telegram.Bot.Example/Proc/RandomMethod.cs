@@ -20,33 +20,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UserBridge
+namespace Telegram.Bot.Example.Proc
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserBridgeManager : IUserBridgeManager
+    public static class RandomMethod
     {
-        private readonly Dictionary<long, IUserBridge> UserBridges;
-        private readonly ICallBackManager callBackManager;
-
-        public UserBridgeManager(ICallBackManager callBackManager)
+        private static Random Random = new Random(Guid.NewGuid().GetHashCode());
+        public static int RandomInt(int start, int end)
         {
-            UserBridges = new();
-            this.callBackManager = callBackManager;
-        }
-
-        public IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUserBridge GetUserBridge()
-        {
-            return default;
+            return Random.Next(start, end);
         }
     }
 }

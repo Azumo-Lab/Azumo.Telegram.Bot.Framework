@@ -20,33 +20,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UserBridge
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserBridgeManager : IUserBridgeManager
+    public interface IActionInvoker
     {
-        private readonly Dictionary<long, IUserBridge> UserBridges;
-        private readonly ICallBackManager callBackManager;
+        public UpdateType InvokeType { get; }
 
-        public UserBridgeManager(ICallBackManager callBackManager)
-        {
-            UserBridges = new();
-            this.callBackManager = callBackManager;
-        }
-
-        public IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUserBridge GetUserBridge()
-        {
-            return default;
-        }
+        public Task Invoke(TelegramContext context);
     }
 }
