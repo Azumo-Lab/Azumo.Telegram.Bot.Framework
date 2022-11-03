@@ -31,11 +31,10 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// </summary>
     public abstract class AbstractActionInvoker : IActionInvoker
     {
-        protected IServiceProvider ServiceProvider { get; }
         /// <summary>
         /// ActionHandle
         /// </summary>
-        protected readonly ActionHandle ActionHandle;
+        private readonly ActionHandle ActionHandle;
         private readonly List<Func<ActionHandle, ActionHandle>> ActionHandles;
 
         /// <summary>
@@ -49,10 +48,9 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <param name="serviceProvider"></param>
         public AbstractActionInvoker(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
             ActionHandles = new List<Func<ActionHandle, ActionHandle>>();
 
-            AddActionHandles(ServiceProvider);
+            AddActionHandles(serviceProvider);
 
             ActionHandle = contexct => Task.CompletedTask;
             foreach (Func<ActionHandle, ActionHandle> item in ActionHandles.Reverse<Func<ActionHandle, ActionHandle>>())
@@ -73,6 +71,12 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                     context => action.Invoke(context, handle));
         }
 
-        public abstract Task Invoke(TelegramContext context);
+        public async Task Invoke(TelegramContext context)
+        {
+            await InvokeAction(context);
+            await ActionHandle.Invoke(context);
+        }
+
+        protected abstract Task InvokeAction(TelegramContext context); 
     }
 }

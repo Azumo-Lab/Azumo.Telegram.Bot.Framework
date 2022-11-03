@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         public override UpdateType InvokeType => UpdateType.MyChatMember;
 
-        public override async Task Invoke(TelegramContext context)
+        protected override async Task InvokeAction(TelegramContext context)
         {
             switch (context.Update.MyChatMember.NewChatMember.Status)
             {
@@ -69,12 +69,11 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                 default:
                     break;
             }
-            await ActionHandle.Invoke(context);
         }
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            AddHandle(null);
+            
         }
     }
 }

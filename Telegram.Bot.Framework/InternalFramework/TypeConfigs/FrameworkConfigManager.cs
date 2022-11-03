@@ -21,35 +21,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ActionCallbackQuery : AbstractActionInvoker
+    internal abstract class AbsFrameworkConfigManager
     {
-        public ActionCallbackQuery(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
+        private readonly IServiceProvider serviceProvider;
 
+        internal AbsFrameworkConfigManager()
+        {
+            IServiceCollection services = new ServiceCollection();
+
+            Config(services);
+
+            serviceProvider = services.BuildServiceProvider();
         }
 
-        public override UpdateType InvokeType => UpdateType.CallbackQuery;
-
-        protected override async Task InvokeAction(TelegramContext context)
-        {
-            ICallBackManager callBackManager = context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(context.Update.CallbackQuery.Data);
-            await context.BotClient.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id);
-            callbackAction.Invoke(context);
-        }
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
-        {
-            
-        }
+        protected abstract void Config(IServiceCollection services);
     }
 }
