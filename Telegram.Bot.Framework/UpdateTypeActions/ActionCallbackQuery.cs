@@ -28,7 +28,7 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 
+    /// CallBack部分的获取与执行
     /// </summary>
     public class ActionCallbackQuery : AbstractActionInvoker
     {
