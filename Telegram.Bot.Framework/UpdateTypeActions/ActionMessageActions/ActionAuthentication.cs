@@ -21,20 +21,27 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
 {
     /// <summary>
-    /// 
+    /// 认证相关的类
     /// </summary>
-    internal class ActionFilterBefore : IAction
+    internal class ActionAuthentication : IAction
     {
-        public int Sort => 100;
-
-        public async Task Invoke(TelegramContext context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            await NextHandle(context);
+            IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
+
+            foreach (IAuthentication auth in authentications)
+                if (!auth.Auth(Context))
+                {
+                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
+                    return;
+                }
+
+            await NextHandle(Context);
         }
     }
 }

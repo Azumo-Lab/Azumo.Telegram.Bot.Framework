@@ -14,37 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework;
+using Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ActionCallBack : IAction
+    public class ActionMessage : AbstractActionInvoker
     {
-        public Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public override UpdateType InvokeType => UpdateType.Message;
+
+        public ActionMessage(IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            if (context.Update.Type == Types.Enums.UpdateType.CallbackQuery)
-            {
-                ICallBackManager callBackManger = context.UserScope.GetService<ICallBackManager>();
 
-                Action<TelegramContext> action = callBackManger.GetCallBack(context.Update.CallbackQuery.Data);
+        }
 
-                if (action != null)
-                    action.Invoke(context);
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        {
+            AddHandle(new ActionAuthentication());
+            AddHandle(new ActionParamCatch());
+            AddHandle(new ActionControllerInvoke());
+        }
 
-                return;
-            }
-
-            await NextHandle(context);
+        protected override Task InvokeAction(TelegramContext context)
+        {
+            return Task.CompletedTask;
         }
     }
 }

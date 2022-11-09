@@ -21,26 +21,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
 {
     /// <summary>
-    /// 
+    /// 流程中参数的获取
     /// </summary>
     internal class ActionParamCatch : IAction
     {
-        public int Sort => 200;
-
-        public async Task Invoke(TelegramContext context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
             // 获取参数管理
-            IParamManager paramManger = context.UserScope.GetService<IParamManager>();
+            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
 
-            if (!await paramManger.ReadParam(context, context.UserScope))
+            if (!await paramManger.ReadParam(Context, Context.UserScope))
                 return;
 
-            await NextHandle(context);
+            await NextHandle(Context);
         }
     }
 }

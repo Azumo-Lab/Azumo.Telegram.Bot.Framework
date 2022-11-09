@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="InternalFramework\ParamMakerMessage\" />
+    <Folder Include="UpdateTypeActions\CommActions\" />
   </ItemGroup>
 
 </Project>

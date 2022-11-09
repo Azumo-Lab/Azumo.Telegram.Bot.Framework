@@ -24,27 +24,22 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
 {
     /// <summary>
-    /// 认证相关的类
+    /// 控制器的执行
     /// </summary>
-    internal class ActionAuthentication : IAction
+    internal class ActionControllerInvoke : IAction
     {
-        public int Sort => 000;
-
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
+            IControllersManager controllersManger = Context.UserScope.GetService<IControllersManager>();
+            // 获取参数管理
+            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
 
-            foreach (IAuthentication auth in authentications)
-                if (!auth.Auth(Context))
-                {
-                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
-                    return;
-                }
+            TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
 
-            await NextHandle(Context);
+            await controller?.Invoke(Context, paramManger.GetCommand());
         }
     }
 }
