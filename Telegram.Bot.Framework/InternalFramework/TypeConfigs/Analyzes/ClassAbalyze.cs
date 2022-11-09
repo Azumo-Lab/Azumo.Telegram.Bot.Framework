@@ -21,39 +21,43 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
-using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Analyzes
 {
     /// <summary>
-    /// 
+    /// 类的解析
     /// </summary>
-    internal class ClassConfig
+    internal class ClassAbalyze : AbsAttributeAnalyze
     {
-        private IServiceProvider serviceProvider = null;
-        public ClassConfig(IServiceProvider serviceProvider)
+        private Type Type { get; }
+        public ClassAbalyze(Type Type)
         {
-            this.serviceProvider = serviceProvider;
+            this.Type = Type;
         }
 
-        public List<CommandInfos> ConfigClass(Type Class)
+        public override CommandInfos Analyze(CommandInfos commandInfos)
         {
-            List<CommandInfos> commandInfos = new();
-
-            IEnumerable<Attribute> ClassAttributes = Attribute.GetCustomAttributes(Class);
-            MethodInfo[] MethodInfos = Class.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-            IMethodConfig methodConfig = serviceProvider.GetService<IMethodConfig>();
-
-            foreach (MethodInfo Method in MethodInfos)
+            Attributes.AddRange(Attribute.GetCustomAttributes(Type));
+            Analyze(commandInfos, this);
+            foreach (MethodInfo item in Type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                CommandInfos result = methodConfig.ConfigMethod(Method, ClassAttributes);
-                if (result != null)
-                    commandInfos.Add(result);
+                MethodAnalyze methodAnalyze = new MethodAnalyze(item);
+                methodAnalyze.ServiceProvider = ServiceProvider;
+                methodAnalyze.Analyze(commandInfos);
             }
-
+            if (commandInfos.CommandMethod == null)
+                return default;
             return commandInfos;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override ICustomAttributeProvider GetMember()
+        {
+            return Type;
         }
     }
 }

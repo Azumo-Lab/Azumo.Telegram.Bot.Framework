@@ -14,23 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AbsAttributeAnalyze : IAnalyze
+    internal abstract class AbsAttributeAnalyze : IAnalyze
     {
-        public void Analyze()
+        public IServiceProvider ServiceProvider { set; protected get; }
+
+        protected List<Attribute> Attributes { get; } = new List<Attribute>();
+
+        public CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze)
         {
-            throw new NotImplementedException();
+            List<IAttributeAnalyze> attributeAnalyzes = ServiceProvider.GetServices<IAttributeAnalyze>().ToList();
+            foreach (Attribute attr in Attributes)
+            {
+                IAttributeAnalyze attributeAnalyze = attributeAnalyzes.Where(x => x.AttributeType.FullName == attr.GetType().FullName).FirstOrDefault();
+                if (attributeAnalyze != null)
+                {
+                    attributeAnalyze.Attribute = attr;
+                    attributeAnalyze.Analyze(commandInfos, analyze);
+                }
+            }
+            return commandInfos;
         }
+        public virtual CommandInfos Analyze(CommandInfos commandInfos)
+        {
+            throw new NotImplementedException("请在子类中继承并重写本方法");
+        }
+
+        public abstract ICustomAttributeProvider GetMember();
     }
 }

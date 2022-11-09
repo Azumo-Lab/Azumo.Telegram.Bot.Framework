@@ -21,14 +21,29 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IParamConfig
+    internal class AuthenticationAttributeAnalyzes : IAttributeAnalyze
     {
-        void ParamConfig(MethodInfo methodInfo, ref CommandInfos commandInfos);
+        public Type AttributeType => typeof(AuthenticationAttribute);
+
+        public Attribute Attribute { set; private get; }
+
+        public CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze)
+        {
+            commandInfos.AuthenticationAttribute = (AuthenticationAttribute)Attribute;
+            return commandInfos;
+        }
+
+        public ICustomAttributeProvider GetMember()
+        {
+            return default;
+        }
     }
 }

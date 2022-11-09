@@ -51,11 +51,9 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             TypesHelper.GetTypes<IParamMessage>().ForEach(x => { services.AddScoped(x); });
             TypesHelper.GetTypes<TelegramController>().ForEach(x => { services.AddScoped(x); });
 
-            ConfigManager configManager = new ConfigManager();
-
-            CommandInfos = configManager.GetCommandInfos().Where(x => x.CommandName != null)
+            CommandInfos = FrameworkAnalyze.Analyze().Where(x => x.CommandName != null)
                 .ToDictionary(k => k.CommandName, v => v);
-            MessageInfos = configManager.GetMessageTypeInfos().GroupBy(x => x.MessageType).ToDictionary(k => k.Key, v => v.ToList());
+            MessageInfos = FrameworkAnalyze.GetMessageTypeInfos().GroupBy(x => x.MessageType).ToDictionary(k => k.Key, v => v.ToList());
         }
 
         public string BotName { get; set; }

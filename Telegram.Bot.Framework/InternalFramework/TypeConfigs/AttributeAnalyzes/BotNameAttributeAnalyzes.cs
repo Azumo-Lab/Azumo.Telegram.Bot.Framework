@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,34 +21,34 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.ParamConf
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class MethodParamConfig : IParamConfig
+    internal class BotNameAttributeAnalyzes : IAttributeAnalyze
     {
-        private IServiceProvider serviceProvider;
-        public MethodParamConfig(IServiceProvider serviceProvider)
+        public Type AttributeType => typeof(BotNameAttribute);
+
+        public Attribute Attribute { set; private get; }
+
+        public CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze)
         {
-            this.serviceProvider = serviceProvider;
+            BotNameAttribute botNameAttribute = (BotNameAttribute)Attribute;
+            if (commandInfos.BotNames != null || botNameAttribute.OverWrite)
+                commandInfos.BotNames = new HashSet<string>(botNameAttribute.BotName);
+            else
+                botNameAttribute.BotName.ToList().ForEach(x => commandInfos.BotNames.Add(x));
+
+            return commandInfos;
         }
-        public void ParamConfig(MethodInfo methodInfo, ref CommandInfos commandInfos)
+
+        public ICustomAttributeProvider GetMember()
         {
-            IEnumerable<IParamAttrConf> paramAttrConfs = serviceProvider.GetServices<IParamAttrConf>();
-            List<ParamInfos> paramInfos = new();
-            foreach (ParameterInfo item in methodInfo.GetParameters())
-            {
-                ParamInfos paramInfo = new();
-                foreach (IParamAttrConf conf in paramAttrConfs)
-                {
-                    conf.AttributeConfig(item, ref paramInfo);
-                }
-                paramInfos.Add(paramInfo);
-            }
-            commandInfos.ParamInfos = paramInfos;
+            throw new NotImplementedException();
         }
     }
 }

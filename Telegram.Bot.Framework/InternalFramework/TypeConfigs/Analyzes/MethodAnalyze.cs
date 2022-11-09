@@ -21,28 +21,38 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttrConfig
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Analyzes
 {
     /// <summary>
-    /// 
+    /// 方法的解析
     /// </summary>
-    internal class MessageTypeConf : IAttributeConfig
+    internal class MethodAnalyze : AbsAttributeAnalyze
     {
-        public void AttributeConfig(MethodInfo methodInfo, IEnumerable<Attribute> ClassAttrs, ref CommandInfos commandInfos)
-        {
-            DefaultMessageTypeAttribute defaultMessageTypeAttribute = (DefaultMessageTypeAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(DefaultMessageTypeAttribute));
-            if (defaultMessageTypeAttribute == null)
-                return;
+        private MethodInfo MethodInfo { get; }
 
-            commandInfos.MessageType = defaultMessageTypeAttribute.MessageType;
-            if (commandInfos.CommandAttribute == null)
+        public MethodAnalyze(MethodInfo MethodInfo)
+        {
+            this.MethodInfo = MethodInfo;
+        }
+        public override CommandInfos Analyze(CommandInfos commandInfos)
+        {
+            Attributes.AddRange(Attribute.GetCustomAttributes(MethodInfo));
+            Analyze(commandInfos, this);
+            List<ParameterInfo> parameterInfos = MethodInfo.GetParameters().ToList();
+            foreach (ParameterInfo item in parameterInfos)
             {
-                commandInfos.Controller = methodInfo.DeclaringType;
-                commandInfos.CommandMethod = methodInfo;
+                ParamAnalyze paramAnalyze = new ParamAnalyze(item);
+                paramAnalyze.ServiceProvider = ServiceProvider;
+                paramAnalyze.Analyze(commandInfos);
             }
+            return commandInfos;
+        }
+
+        public override ICustomAttributeProvider GetMember()
+        {
+            return MethodInfo;
         }
     }
 }

@@ -20,17 +20,32 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Analyzes
 {
     /// <summary>
-    /// 
+    /// 方法参数的解析
     /// </summary>
-    internal abstract class AbsMethodAnalyze : IAnalyze
+    internal class ParamAnalyze : AbsAttributeAnalyze
     {
-        public void Analyze()
+        private ParameterInfo ParameterInfo { get; }
+        public ParamAnalyze(ParameterInfo ParameterInfo)
         {
-            throw new NotImplementedException();
+            this.ParameterInfo = ParameterInfo;
+        }
+
+        public override CommandInfos Analyze(CommandInfos commandInfos)
+        {
+            Attributes.AddRange(Attribute.GetCustomAttributes(ParameterInfo));
+            Analyze(commandInfos, this);
+            return commandInfos;
+        }
+
+        public override ICustomAttributeProvider GetMember()
+        {
+            return ParameterInfo;
         }
     }
 }

@@ -20,17 +20,27 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract
 {
     /// <summary>
-    /// 
+    /// 解析接口
     /// </summary>
     internal interface IAnalyze
     {
         /// <summary>
-        /// 解析
+        /// 解析信息
         /// </summary>
-        void Analyze();
+        /// <param name="commandInfos">信息</param>
+        /// <param name="analyze">上一个解析类</param>
+        /// <returns></returns>
+        CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze);
+
+        /// <summary>
+        /// 获取当前的解析对象
+        /// </summary>
+        /// <returns></returns>
+        ICustomAttributeProvider GetMember();
     }
 }

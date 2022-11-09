@@ -21,34 +21,35 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Interface;
+using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttrConfig
+namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class CommandConf : IAttributeConfig
+    internal class CommandAttributeAnalyzes : IAttributeAnalyze
     {
-        public void AttributeConfig(MethodInfo methodInfo, IEnumerable<Attribute> ClassAttrs, ref CommandInfos commandInfos)
+        public Type AttributeType => typeof(CommandAttribute);
+
+        public Attribute Attribute { set; private get; }
+
+        public CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze)
         {
-            CommandAttribute commandAttribute = (CommandAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(CommandAttribute));
-            if (commandAttribute == null)
-                return;
+            CommandAttribute commandAttribute = (CommandAttribute)Attribute;
 
             commandInfos.CommandAttribute = commandAttribute;
-            commandInfos.CommandMethod = methodInfo;
-            commandInfos.CommandName = commandAttribute.CommandName.ToLower();
-            if (commandAttribute.BotName != null)
-                commandInfos.BotNames = new HashSet<string>(commandAttribute.BotName);
-            else
-            {
-                string[] botname = ClassAttrs.Where(x => (x as BotNameAttribute) != null).Select(x => x as BotNameAttribute).FirstOrDefault()?.BotName;
-                if (botname != null)
-                    commandInfos.BotNames = new HashSet<string>(botname);
-            }
-            commandInfos.Controller = methodInfo.DeclaringType;
+            commandInfos.CommandName = commandAttribute.CommandName;
+            commandInfos.CommandMethod = (MethodInfo)analyze.GetMember();
+            commandInfos.Controller = commandInfos.CommandMethod.DeclaringType;
+
+            return commandInfos;
+        }
+
+        public ICustomAttributeProvider GetMember()
+        {
+            return default;
         }
     }
 }

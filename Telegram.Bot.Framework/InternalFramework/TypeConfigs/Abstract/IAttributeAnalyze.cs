@@ -26,8 +26,10 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract
     /// <summary>
     /// 
     /// </summary>
-    internal interface IMethodAnalyze
+    internal interface IAttributeAnalyze : IAnalyze
     {
+        Type AttributeType { get; }
 
+        Attribute Attribute { set; }
     }
 }
