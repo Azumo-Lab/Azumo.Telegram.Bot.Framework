@@ -14,39 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
+namespace Telegram.Bot.Framework.UpdateTypeActions.ActionCallbackQueryActions
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class BotNameAttributeAnalyzes : IAttributeAnalyze
+    public class ActionCallback : IAction
     {
-        public Type AttributeType => typeof(BotNameAttribute);
-
-        public Attribute Attribute { set; private get; }
-
-        public CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze)
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            BotNameAttribute botNameAttribute = (BotNameAttribute)Attribute;
-            if (botNameAttribute.OverWrite)
-                commandInfos.BotNames.Clear();
-            botNameAttribute.BotName.ToList().ForEach(x => commandInfos.BotNames.Add(x));
-            return commandInfos;
-        }
-
-        public ICustomAttributeProvider GetMember()
-        {
-            throw new NotImplementedException();
+            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
+            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
+            await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
+            callbackAction.Invoke(Context);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
             CommandAttribute commandAttribute = (CommandAttribute)Attribute;
 
             commandInfos.CommandAttribute = commandAttribute;
-            commandInfos.CommandName = commandAttribute.CommandName;
+            commandInfos.CommandName = commandAttribute.CommandName.ToLower();
             commandInfos.CommandMethod = (MethodInfo)analyze.GetMember();
             commandInfos.Controller = commandInfos.CommandMethod.DeclaringType;
 

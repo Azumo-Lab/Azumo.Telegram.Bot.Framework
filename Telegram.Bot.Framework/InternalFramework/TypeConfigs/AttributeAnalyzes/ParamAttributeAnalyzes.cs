@@ -20,7 +20,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 
@@ -29,24 +32,37 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
     /// <summary>
     /// 
     /// </summary>
-    internal class BotNameAttributeAnalyzes : IAttributeAnalyze
+    internal class ParamAttributeAnalyzes : IAttributeAnalyze
     {
-        public Type AttributeType => typeof(BotNameAttribute);
+        public Type AttributeType => typeof(ParamAttribute);
 
         public Attribute Attribute { set; private get; }
 
         public CommandInfos Analyze(CommandInfos commandInfos, IAnalyze analyze)
         {
-            BotNameAttribute botNameAttribute = (BotNameAttribute)Attribute;
-            if (botNameAttribute.OverWrite)
-                commandInfos.BotNames.Clear();
-            botNameAttribute.BotName.ToList().ForEach(x => commandInfos.BotNames.Add(x));
+            ParameterInfo parameterInfo = (ParameterInfo)analyze.GetMember();
+            ParamAttribute paramAttribute = (ParamAttribute)Attribute;
+
+            commandInfos.ParamInfos.Add(new ParamInfos
+            {
+                ParamType = parameterInfo.ParameterType,
+                CustomMessageType = paramAttribute.CustomMessageType ?? typeof(StringParamMessage),
+                CustomParamMaker = paramAttribute.CustomParamMaker ?? GetParamMaker(parameterInfo.ParameterType),
+                MessageInfo = paramAttribute.CustomInfos,
+            });
             return commandInfos;
         }
 
         public ICustomAttributeProvider GetMember()
         {
-            throw new NotImplementedException();
+            return default;
+        }
+
+        private static Type GetParamMaker(Type type)
+        {
+            return TypesHelper.GetTypes<IParamMaker>().Where(x =>
+                ((ParamTypeForAttribute)Attribute.GetCustomAttribute(x, typeof(ParamTypeForAttribute)))?.MakerType?.FullName == type.FullName
+                ).FirstOrDefault();
         }
     }
 }

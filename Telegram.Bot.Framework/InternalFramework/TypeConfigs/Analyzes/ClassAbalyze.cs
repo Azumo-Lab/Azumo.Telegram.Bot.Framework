@@ -36,19 +36,29 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.Analyzes
             this.Type = Type;
         }
 
-        public override CommandInfos Analyze(CommandInfos commandInfos)
+        List<CommandInfos> commands = new List<CommandInfos>();
+
+        public List<CommandInfos> Analyze()
+        {
+            Analyze(null);
+            return commands;
+        }
+
+        public override CommandInfos Analyze(CommandInfos command)
         {
             Attributes.AddRange(Attribute.GetCustomAttributes(Type));
-            Analyze(commandInfos, this);
             foreach (MethodInfo item in Type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
+                CommandInfos commandInfos = new CommandInfos();
+                Analyze(commandInfos, this);
                 MethodAnalyze methodAnalyze = new MethodAnalyze(item);
                 methodAnalyze.ServiceProvider = ServiceProvider;
                 methodAnalyze.Analyze(commandInfos);
+                if (commandInfos.CommandMethod == null)
+                    continue;
+                commands.Add(commandInfos);
             }
-            if (commandInfos.CommandMethod == null)
-                return default;
-            return commandInfos;
+            return default;
         }
 
         /// <summary>

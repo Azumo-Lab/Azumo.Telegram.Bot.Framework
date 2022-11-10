@@ -76,11 +76,11 @@ namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs
                         List<Type> controllers = TypesHelper.GetTypes<TelegramController>();
                         foreach (Type controllerType in controllers)
                         {
-                            CommandInfos command;
+                            List<CommandInfos> command;
                             ClassAbalyze classAbalyze = new(controllerType);
                             classAbalyze.ServiceProvider = serviceProvider;
-                            if ((command = classAbalyze.Analyze(new CommandInfos())) != null)
-                                commandInfos.Add(command);
+                            if ((command = classAbalyze.Analyze()) != null)
+                                commandInfos.AddRange(command);
                         }
                         CommandInfos = new List<CommandInfos>(commandInfos);
                         return commandInfos;

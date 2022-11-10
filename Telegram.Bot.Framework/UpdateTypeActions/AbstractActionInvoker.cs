@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,10 +61,13 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <summary>
         /// 添加ActionHandle
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <returns></returns>
+        /// <param name="serviceProvider">DI服务</param>
         protected abstract void AddActionHandles(IServiceProvider serviceProvider);
 
+        /// <summary>
+        /// 添加Action
+        /// </summary>
+        /// <param name="action">Action</param>
         protected virtual void AddHandle(IAction action)
         {
             ActionHandles.Add(
@@ -71,12 +75,33 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                     context => action.Invoke(context, handle));
         }
 
+        /// <summary>
+        /// 执行
+        /// </summary>
+        /// <param name="context">Context信息</param>
+        /// <returns>无</returns>
         public async Task Invoke(TelegramContext context)
         {
             await InvokeAction(context);
             await ActionHandle.Invoke(context);
         }
 
-        protected abstract Task InvokeAction(TelegramContext context); 
+        /// <summary>
+        /// 执行ActionHandles之前执行
+        /// </summary>
+        /// <param name="context">Context信息</param>
+        /// <returns>无</returns>
+        protected abstract Task InvokeAction(TelegramContext context);
+
+        /// <summary>
+        /// 创建指定的一个对象
+        /// </summary>
+        /// <typeparam name="T">指定对象的类型</typeparam>
+        /// <param name="serviceProvider">DI服务</param>
+        /// <returns>指定的对象</returns>
+        protected virtual T CreateObj<T>(IServiceProvider serviceProvider)
+        {
+            return ActivatorUtilities.CreateInstance<T>(serviceProvider, Array.Empty<object>());
+        }
     }
 }

@@ -82,7 +82,7 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
         public static void AddServiceTypes<T>(this IServiceCollection serviceDescriptors, ServiceLifetime serviceLifetime) where T : class
         {
             Type baseType = typeof(T);
-            if ((baseType.IsAbstract is not true) || (baseType.IsInterface is not true))
+            if (!baseType.IsAbstract && !baseType.IsInterface)
                 throw new ArgumentException($"类型 {baseType.FullName} 不是抽象类或接口");
 
             Action<IServiceCollection, Type> action = serviceLifetime switch

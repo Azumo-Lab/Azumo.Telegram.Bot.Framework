@@ -86,6 +86,7 @@ namespace Telegram.Bot.Framework.InternalFramework
 
             telegramServices.AddControllers();
             telegramServices.AddServiceTypes<AbstractActionInvoker>(ServiceLifetime.Singleton);
+            telegramServices.AddServiceTypes<ICommandManager>(ServiceLifetime.Scoped);
         }
     }
 

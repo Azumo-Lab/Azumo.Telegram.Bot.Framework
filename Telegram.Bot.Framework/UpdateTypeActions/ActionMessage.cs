@@ -27,22 +27,30 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 
+    /// 用于处理Message类型
     /// </summary>
     public class ActionMessage : AbstractActionInvoker
     {
         public override UpdateType InvokeType => UpdateType.Message;
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="serviceProvider">DI服务</param>
         public ActionMessage(IServiceProvider serviceProvider) : base(serviceProvider)
         {
 
         }
 
+        /// <summary>
+        /// 添加要执行的Action
+        /// </summary>
+        /// <param name="serviceProvider"></param>
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            AddHandle(new ActionAuthentication());
-            AddHandle(new ActionParamCatch());
-            AddHandle(new ActionControllerInvoke());
+            AddHandle(CreateObj<ActionAuthentication>(serviceProvider));
+            AddHandle(CreateObj<ActionParamCatch>(serviceProvider));
+            AddHandle(CreateObj<ActionControllerInvoke>(serviceProvider));
         }
 
         protected override Task InvokeAction(TelegramContext context)

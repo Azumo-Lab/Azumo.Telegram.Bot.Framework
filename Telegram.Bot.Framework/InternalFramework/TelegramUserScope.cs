@@ -63,7 +63,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task Invoke(IServiceScope OneTimeScope)
         {
-            TelegramContext context = UserScope.ServiceProvider.GetService<TelegramContext>();
+            await Task.CompletedTask;
         }
 
         /// <summary>

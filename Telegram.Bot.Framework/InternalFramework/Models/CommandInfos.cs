@@ -53,12 +53,12 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         /// <summary>
         /// 能够使用的Bot名称
         /// </summary>
-        public HashSet<string> BotNames { get; set; }
+        public HashSet<string> BotNames { get; } = new HashSet<string>();
 
         /// <summary>
         /// 方法参数信息
         /// </summary>
-        public List<ParamInfos> ParamInfos { get; set; }
+        public List<ParamInfos> ParamInfos { get; } = new List<ParamInfos>();
 
         /// <summary>
         /// 标记信息

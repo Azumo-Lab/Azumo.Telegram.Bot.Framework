@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.UpdateTypeActions.ActionCallbackQueryActions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
@@ -41,15 +42,12 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         protected override async Task InvokeAction(TelegramContext context)
         {
-            ICallBackManager callBackManager = context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(context.Update.CallbackQuery.Data);
-            await context.BotClient.AnswerCallbackQueryAsync(context.Update.CallbackQuery.Id);
-            callbackAction.Invoke(context);
+            await Task.CompletedTask;
         }
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            
+            AddHandle(CreateObj<ActionCallback>(serviceProvider));
         }
     }
 }
