@@ -30,6 +30,12 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
     /// </summary>
     internal class ActionAuthentication : IAction
     {
+        /// <summary>
+        /// 执行认证
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <param name="NextHandle"></param>
+        /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
             IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();

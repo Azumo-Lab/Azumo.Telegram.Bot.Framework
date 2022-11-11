@@ -14,12 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
@@ -29,19 +31,15 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// </summary>
     public class ActionMyChatMemberChange : AbstractActionInvoker
     {
-        public delegate Task TelegramInvoke(TelegramContext telegramContext);
-
-        public event TelegramInvoke OnInvited;  //被邀请
-        public event TelegramInvoke OnKicked;   //被踢
-        public event TelegramInvoke OnLeft;     //离开群组
-        public event TelegramInvoke OnCreator;  //创建聊天
-        public event TelegramInvoke OnBeAdmin;  //成为管理员
-
+        private readonly IBotTelegramEvent telegramEvent;
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="serviceProvider"></param>
-        public ActionMyChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public ActionMyChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider) 
+        {
+             telegramEvent = serviceProvider.GetService<IBotTelegramEvent>();
+        }
 
         public override UpdateType InvokeType => UpdateType.MyChatMember;
 
@@ -49,20 +47,20 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         {
             switch (context.Update.MyChatMember.NewChatMember.Status)
             {
-                case ChatMemberStatus.Creator:
-                    await OnCreator?.Invoke(context);
+                case ChatMemberStatus.Creator://创建聊天
+                    await telegramEvent?.OnCreator(context);
                     break;
-                case ChatMemberStatus.Administrator:
-                    await OnBeAdmin?.Invoke(context);
+                case ChatMemberStatus.Administrator://成为管理员
+                    await telegramEvent?.OnBeAdmin(context);
                     break;
-                case ChatMemberStatus.Member:
-                    await OnInvited?.Invoke(context);
+                case ChatMemberStatus.Member://被邀请
+                    await telegramEvent?.OnInvited(context);
                     break;
-                case ChatMemberStatus.Left:
-                    await OnLeft?.Invoke(context);
+                case ChatMemberStatus.Left://离开
+                    await telegramEvent?.OnLeft(context);
                     break;
-                case ChatMemberStatus.Kicked:
-                    await OnKicked?.Invoke(context);
+                case ChatMemberStatus.Kicked://被踢
+                    await telegramEvent?.OnKicked(context);
                     break;
                 case ChatMemberStatus.Restricted:
                     break;

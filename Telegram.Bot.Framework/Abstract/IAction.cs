@@ -25,12 +25,12 @@ using Telegram.Bot.Framework.InternalFramework.Abstract;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// Action接口
     /// </summary>
     public interface IAction
     {
         /// <summary>
-        /// 执行
+        /// 开始执行Action
         /// </summary>
         /// <param name="Context"></param>
         /// <param name="NextHandle"></param>

@@ -31,6 +31,12 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
     /// </summary>
     internal class ActionControllerInvoke : IAction
     {
+        /// <summary>
+        /// 执行控制器
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <param name="NextHandle"></param>
+        /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
             IControllersManager controllersManger = Context.UserScope.GetService<IControllersManager>();

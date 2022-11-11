@@ -14,38 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 流程中参数的获取
+    /// 
     /// </summary>
-    internal class ActionParamCatch : IAction
+    public class ActionChatMemberChange : AbstractActionInvoker
     {
-        /// <summary>
-        /// 参数获取
-        /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public override UpdateType InvokeType => UpdateType.ChatMember;
+
+        public ActionChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider) { }
+
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            // 获取参数管理
-            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
+            
+        }
 
-            if (!await paramManger.ReadParam(Context, Context.UserScope))
-                return;
-
-            await NextHandle(Context);
+        protected override async Task InvokeAction(TelegramContext context)
+        {
+            //TODO:还没有开始
+            await Task.CompletedTask;
         }
     }
 }
