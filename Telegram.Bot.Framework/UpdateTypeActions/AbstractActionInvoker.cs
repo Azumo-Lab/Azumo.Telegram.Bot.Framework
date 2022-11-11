@@ -28,7 +28,7 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 
+    /// Action执行
     /// </summary>
     public abstract class AbstractActionInvoker : IActionInvoker
     {

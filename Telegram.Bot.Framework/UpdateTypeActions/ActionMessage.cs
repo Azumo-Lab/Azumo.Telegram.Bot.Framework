@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions

@@ -47,7 +47,8 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
 
             if (controller == null)
                 return;
-            await controller.Invoke(Context, paramManger.GetCommand());
+            else
+                await controller.Invoke(Context, paramManger.GetCommand());
         }
     }
 }

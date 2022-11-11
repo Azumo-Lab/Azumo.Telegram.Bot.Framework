@@ -29,17 +29,20 @@ using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Net
 {
+    /// <summary>
+    /// 开发测试机器人
+    /// </summary>
     public class TGBotDEV : IConfig
     {
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
-            var Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
+            IConfigurationRoot Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
 
             string Token = Secrets.GetSection("Token").Value;
             string Proxy = Secrets.GetSection("Proxy").Value;
             int Port = int.Parse(Secrets.GetSection("Port").Value);
 
-            var bot = TelegramBotManger.Create()
+            ITelegramBot bot = TelegramBotManger.Create()
                 .SetToken(Token)
                 .SetProxy(Proxy, Port)
                 .AddConfig<TGBotDEV>()
@@ -53,7 +56,6 @@ namespace Telegram.Bot.Net
 
         public void ConfigureServices(IServiceCollection telegramServices)
         {
-            // TODO Something...
             telegramServices.AddUserAuthentication();
         }
     }

@@ -94,7 +94,7 @@ namespace Telegram.Bot.Example.Example
         [DefaultMessageType(Types.Enums.MessageType.Photo)]
         public async Task PhotoCatch()
         {
-            var photoSize = Context.Update.Message.Photo.ToList().OrderBy(x => x.FileSize).LastOrDefault();
+            PhotoSize photoSize = Context.Update.Message.Photo.ToList().OrderBy(x => x.FileSize).LastOrDefault();
             Directory.CreateDirectory("TESTPIC");
             using (StreamWriter sw = new StreamWriter(new FileStream($"TESTPIC/{photoSize.FileId}", FileMode.OpenOrCreate)))
             {
