@@ -4,8 +4,10 @@
 gantt
     title Telegram.Bot.Framework 计划图
     dateFormat  YYYY-MM-DD
+    section Beta-2.2
+    开发  :2022-10-15, 30d
     section Beta-2.3
-    开发  :2022-11-15, 30d
+    开发  :2022-11-10, 35d
     测试  :14d
     正式发布:milestone, 0d
     section Release-1.0
