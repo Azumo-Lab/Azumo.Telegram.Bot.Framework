@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Example\BotCommands\" />
-  </ItemGroup>
-
 </Project>

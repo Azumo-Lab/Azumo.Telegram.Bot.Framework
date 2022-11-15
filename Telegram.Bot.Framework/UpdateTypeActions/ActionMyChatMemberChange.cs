@@ -40,6 +40,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         private event TelegramEventDelegate OnInvited;
         private event TelegramEventDelegate OnLeft;
         private event TelegramEventDelegate OnKicked;
+        private event TelegramEventDelegate OnRestricted;
 
         /// <summary>
         /// 初始化
@@ -55,6 +56,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                 OnInvited += telegramEvent.OnInvited;
                 OnLeft += telegramEvent.OnLeft;
                 OnKicked += telegramEvent.OnKicked;
+                OnRestricted += telegramEvent.OnRestricted;
             }
         }
 
@@ -81,8 +83,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                     task = OnKicked?.Invoke(context);
                     break;
                 case ChatMemberStatus.Restricted:
-                    break;
-                default:
+                    task = OnRestricted?.Invoke(context);
                     break;
             }
             if (task != null)

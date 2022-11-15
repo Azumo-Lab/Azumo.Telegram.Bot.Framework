@@ -56,9 +56,9 @@ namespace Telegram.Bot.Framework.InternalFramework.Authentications
                 if (role == null)
                     return true;
 
-                if (role.Contains(AuthenticationRole.ADMIN))
+                if (role.Contains(AuthenticationRole.BotAdmin))
                 {
-                    return context.AuthenticationRole == AuthenticationRole.ADMIN;
+                    return context.AuthenticationRole == AuthenticationRole.BotAdmin;
                 }
             }
             return true;

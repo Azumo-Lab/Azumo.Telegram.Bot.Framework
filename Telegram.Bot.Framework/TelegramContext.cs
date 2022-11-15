@@ -61,6 +61,30 @@ namespace Telegram.Bot.Framework
         /// </summary>
         public AuthenticationRole AuthenticationRole => GetAuthenticationRole();
 
+        public TelegramUser TelegramUser => GetTelegramUser(Update);
+
+        public static TelegramUser GetTelegramUser(Update update)
+        {
+            return update.Type switch
+            {
+                UpdateType.Message => new TelegramUser(update.Message.From, GetChatID(update)),
+                UpdateType.InlineQuery => new TelegramUser(update.InlineQuery.From),
+                UpdateType.ChosenInlineResult => new TelegramUser(update.ChosenInlineResult.From),
+                UpdateType.CallbackQuery => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.EditedMessage => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.ChannelPost => new TelegramUser(update.ChannelPost.From, GetChatID(update)),
+                UpdateType.EditedChannelPost => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.ShippingQuery => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.PreCheckoutQuery => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.Poll => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.PollAnswer => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.MyChatMember => new TelegramUser(update.MyChatMember.From, GetChatID(update)),
+                UpdateType.ChatMember => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.ChatJoinRequest => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                _ => throw new NotImplementedException(),
+            };
+        }
+
         /// <summary>
         /// 获取权限
         /// </summary>

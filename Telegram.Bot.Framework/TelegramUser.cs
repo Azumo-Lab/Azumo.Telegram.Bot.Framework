@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework
     /// </summary>
     public sealed class TelegramUser
     {
-        internal TelegramUser(User user, long chatID)
+        internal TelegramUser(User user, long? chatID)
         {
             Id = user.Id;
             IsBot = user.IsBot;
@@ -43,6 +43,11 @@ namespace Telegram.Bot.Framework
             CanReadAllGroupMessages = user.CanReadAllGroupMessages;
             SupportsInlineQueries = user.SupportsInlineQueries;
             ChatID = chatID;
+        }
+
+        internal TelegramUser(User user) : this(user, null)
+        {
+            
         }
 
         internal TelegramUser()
@@ -94,7 +99,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 用户ChatID
         /// </summary>
-        public long ChatID { get; set; }
+        public long? ChatID { get; set; }
 
         /// <summary>
         /// 用户是否被Bot屏蔽

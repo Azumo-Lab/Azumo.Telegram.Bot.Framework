@@ -20,48 +20,27 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework;
-using Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 用于处理Message类型
+    /// 处理Channel的内容
     /// </summary>
-    public class ActionMessage : AbstractActionInvoker
+    public class ActionChannelPost : AbstractActionInvoker
     {
-        public override UpdateType InvokeType => UpdateType.Message;
+        public ActionChannelPost(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="serviceProvider">DI服务</param>
-        public ActionMessage(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
+        public override UpdateType InvokeType => UpdateType.ChannelPost;
 
-        }
-
-        /// <summary>
-        /// 添加要执行的Action
-        /// </summary>
-        /// <param name="serviceProvider"></param>
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            AddHandle(CreateObj<ActionAuthentication>(serviceProvider));
-            AddHandle(CreateObj<ActionParamCatch>(serviceProvider));
-            AddHandle(CreateObj<ActionControllerInvoke>(serviceProvider));
+            
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        protected override Task InvokeAction(TelegramContext context)
+        protected override async Task InvokeAction(TelegramContext context)
         {
-            return Task.CompletedTask;
+            await context.SendTextMessage($"来自 Bot 的留言：我已收到信息 [{context.Update.ChannelPost.Text}]");
         }
     }
 }

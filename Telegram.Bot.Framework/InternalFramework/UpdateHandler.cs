@@ -55,7 +55,7 @@ namespace Telegram.Bot.Framework.InternalFramework
         /// <returns></returns>
         public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            var ErrorMessage = exception switch
+            string ErrorMessage = exception switch
             {
                 ApiRequestException apiRequestException => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
 
@@ -88,7 +88,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 {
                     //获取 | 创建 一个 TelegramUserScope
                     ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();
-                    ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(TelegramContext.GetChatID(update));
+                    ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(TelegramContext.GetTelegramUser(update));
 
                     //根据不同的用户创建 TelegramContext
                     TelegramContext telegramContext = telegramUserScope.CreateTelegramContext();

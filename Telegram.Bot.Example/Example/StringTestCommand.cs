@@ -120,7 +120,7 @@ namespace Telegram.Bot.Example.Example
             await Task.Delay(1);
         }
 
-        [Authentication(AuthenticationRole.ADMIN)]
+        [Authentication(AuthenticationRole.BotAdmin)]
         [Command("AdminTest", CommandInfo = "测试管理员权限认证")]
         public async Task AdminTest()
         {

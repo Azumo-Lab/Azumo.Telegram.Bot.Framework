@@ -28,8 +28,8 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
     internal class TelegramUserScopeManager : ITelegramUserScopeManager
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly Dictionary<long, ITelegramUserScope> User_Controller = new Dictionary<long, ITelegramUserScope>();
-        private readonly Dictionary<long, (int Count, DateTime LastUseTime)> User_Time = new Dictionary<long, (int Count, DateTime LastUseTime)>();
+        private readonly Dictionary<long, ITelegramUserScope> User_Controller = new();
+        private readonly Dictionary<long, (int Count, DateTime LastUseTime)> User_Time = new();
 
         public TelegramUserScopeManager(IServiceProvider serviceProvider)
         {
@@ -82,6 +82,16 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
                 return User_Controller[ChatID].GetUserScope();
             }
             return null;
+        }
+
+        public ITelegramUserScope GetTelegramUserScope(TelegramUser telegramUser)
+        {
+            return GetTelegramUserScope(telegramUser.Id);
+        }
+
+        public IServiceScope GetUserScope(TelegramUser telegramUser)
+        {
+            return GetUserScope(telegramUser.Id);
         }
     }
 }

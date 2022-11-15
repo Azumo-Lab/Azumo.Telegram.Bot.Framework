@@ -84,6 +84,12 @@ namespace Telegram.Bot.Framework
                 replyMarkup: new InlineKeyboardMarkup(context.CreateInlineKeyboardButton(inlineButtons)));
         }
 
+        public static async Task ReplyMessage(this TelegramContext context, string message)
+        {
+            await context.BotClient.SendTextMessageAsync(context.ChatID, message, 
+                replyToMessageId: context.Update.Message.MessageId);
+        }
+
         #endregion
 
         #region 发送图片
@@ -238,7 +244,7 @@ namespace Telegram.Bot.Framework
         public static string CreateCallBack(this TelegramContext context, TelegramUser telegramUser, Action<TelegramContext> callback)
         {
             ITelegramUserScopeManager telegramUserScopeManager = context.UserScope.GetService<ITelegramUserScopeManager>();
-            IServiceScope serviceScope = telegramUserScopeManager.GetUserScope(telegramUser.ChatID);
+            IServiceScope serviceScope = telegramUserScopeManager.GetUserScope(telegramUser.Id);
 
             ICallBackManager callBackManager = serviceScope.ServiceProvider.GetService<ICallBackManager>();
             return callBackManager.CreateCallBack(callback);

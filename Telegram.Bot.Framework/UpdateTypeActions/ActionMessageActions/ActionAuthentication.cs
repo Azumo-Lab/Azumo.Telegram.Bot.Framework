@@ -38,6 +38,22 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
         /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
+            switch (Context.Update.Message.Chat.Type)
+            {
+                case Types.Enums.ChatType.Private:
+                    break;
+                case Types.Enums.ChatType.Group:
+                    break;
+                case Types.Enums.ChatType.Channel:
+                    break;
+                case Types.Enums.ChatType.Supergroup:
+                    await Context.ReplyMessage("你搁这儿说你马呢？");
+                    break;
+                case Types.Enums.ChatType.Sender:
+                    break;
+                default:
+                    break;
+            }
             IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
 
             foreach (IAuthentication auth in authentications)

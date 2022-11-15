@@ -20,48 +20,38 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework;
-using Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
     /// <summary>
-    /// 用于处理Message类型
+    /// 
     /// </summary>
-    public class ActionMessage : AbstractActionInvoker
+    public class ChannelManager : IChannelManager
     {
-        public override UpdateType InvokeType => UpdateType.Message;
-
+        private readonly Dictionary<long, ChatId[]> _channels = new Dictionary<long, ChatId[]>();
         /// <summary>
-        /// 初始化
+        /// 
         /// </summary>
-        /// <param name="serviceProvider">DI服务</param>
-        public ActionMessage(IServiceProvider serviceProvider) : base(serviceProvider)
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ChatId[] GetActiveChannel(TelegramUser user)
         {
-
-        }
-
-        /// <summary>
-        /// 添加要执行的Action
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
-        {
-            AddHandle(CreateObj<ActionAuthentication>(serviceProvider));
-            AddHandle(CreateObj<ActionParamCatch>(serviceProvider));
-            AddHandle(CreateObj<ActionControllerInvoke>(serviceProvider));
+            _channels.TryGetValue(user.Id, out ChatId[] channels);
+            return channels;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        protected override Task InvokeAction(TelegramContext context)
+        /// <param name="user"></param>
+        /// <param name="channelId"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void RegisterChannel(TelegramUser user, params ChatId[] channelId)
         {
-            return Task.CompletedTask;
+            _channels.TryAdd(user.Id, channelId);
         }
     }
 }

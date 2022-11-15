@@ -36,10 +36,23 @@ namespace Telegram.Bot.Framework.InternalFramework.Abstract
         ITelegramUserScope GetTelegramUserScope(long ChatID);
 
         /// <summary>
+        /// 获取控制器
+        /// </summary>
+        /// <returns></returns>
+        ITelegramUserScope GetTelegramUserScope(TelegramUser telegramUser);
+
+        /// <summary>
         /// 获取指定用户的UserScope
         /// </summary>
         /// <param name="ChatID"></param>
         /// <returns></returns>
         IServiceScope GetUserScope(long ChatID);
+
+        /// <summary>
+        /// 获取指定用户的UserScope
+        /// </summary>
+        /// <param name="ChatID"></param>
+        /// <returns></returns>
+        IServiceScope GetUserScope(TelegramUser telegramUser);
     }
 }

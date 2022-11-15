@@ -49,16 +49,18 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     public enum AuthenticationRole
     {
         /// <summary>
-        /// 管理员
+        /// 管理员，Bot的管理者
         /// </summary>
-        ADMIN,
+        BotAdmin,
+
         /// <summary>
-        /// 普通用户
+        /// 注册用户，Bot的服务对象，频道管理员群组管理员这一类
         /// </summary>
-        USER,
+        RegisteredUser,
+
         /// <summary>
-        /// 未登录用户
+        /// 一般用户，呼叫Bot的用户
         /// </summary>
-        NONE,
+        GeneralUser,
     }
 }

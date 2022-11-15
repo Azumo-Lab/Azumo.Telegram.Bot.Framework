@@ -28,6 +28,9 @@ using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
 {
+    /// <summary>
+    /// 参数读取获取
+    /// </summary>
     internal class ParamManager : IParamManager
     {
         private readonly Dictionary<string, CommandInfos> CommandCommandInfoMap;
@@ -37,7 +40,7 @@ namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
         private string CommandName;
         private List<ParamInfos> ParamInfo;
         private List<object> ParamList;
-        private bool Reading = false;
+        private bool Reading;
 
         public ParamManager(IServiceProvider UserServiceProvider)
         {

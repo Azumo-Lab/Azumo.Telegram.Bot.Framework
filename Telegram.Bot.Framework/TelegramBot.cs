@@ -36,11 +36,10 @@ namespace Telegram.Bot.Framework
     {
         private readonly IServiceCollection telegramServiceCollection;
         private readonly IServiceProvider serviceProvider;
-        private readonly static object _lockObj = new object();
+        private readonly static object _lockObj = new();
 
-
-        private bool Running = false;           //多次启动的Flag
-        private bool StopFlag = false;          //停止Flag
+        private bool Running;           //多次启动的Flag
+        private bool StopFlag;          //停止Flag
         private CancellationTokenSource cts;    //CancellationTokenSource
 
         /// <summary>

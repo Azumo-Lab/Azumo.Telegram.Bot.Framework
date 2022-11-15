@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
+using Telegram.Bot.Example.Example;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework;
@@ -57,6 +58,8 @@ namespace Telegram.Bot.Net
         public void ConfigureServices(IServiceCollection telegramServices)
         {
             telegramServices.AddUserAuthentication();
+
+            telegramServices.AddScoped<IBotTelegramEvent, BotTelegramEvent>();
         }
     }
 }

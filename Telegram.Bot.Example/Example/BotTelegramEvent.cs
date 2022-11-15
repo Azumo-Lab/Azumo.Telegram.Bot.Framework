@@ -21,31 +21,49 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.InternalFramework.Managers
+namespace Telegram.Bot.Example.Example
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AuthManager : IAuthManager
+    public class BotTelegramEvent : IBotTelegramEvent
     {
-        private AuthenticationRole AuthenticationRole = AuthenticationRole.GeneralUser;
-
-        public AuthenticationRole GetAuthenticationRole()
+        public async Task OnBeAdmin(TelegramContext context)
         {
-            return AuthenticationRole;
+            if (context.Update.MyChatMember.Chat.Type == Types.Enums.ChatType.Channel)
+            {
+                IChannelManager channelManager = context.UserScope.GetService<IChannelManager>();
+                channelManager.RegisterChannel(context.TelegramUser, context.ChatID);
+            }
+            await Task.CompletedTask;
         }
 
-        public bool IsAuth(AuthenticationRole authenticationRole)
+        public async Task OnCreator(TelegramContext context)
         {
-            return authenticationRole == AuthenticationRole;
+            await Task.CompletedTask;
         }
 
-        public void SetAuth(AuthenticationRole authenticationRole)
+        public async Task OnInvited(TelegramContext context)
         {
-            AuthenticationRole = authenticationRole;
+            await Task.CompletedTask;
+        }
+
+        public async Task OnKicked(TelegramContext context)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task OnLeft(TelegramContext context)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task OnRestricted(TelegramContext context)
+        {
+            await Task.CompletedTask;
         }
     }
 }

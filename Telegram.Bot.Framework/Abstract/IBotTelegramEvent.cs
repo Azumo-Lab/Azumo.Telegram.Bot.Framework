@@ -62,5 +62,7 @@ namespace Telegram.Bot.Framework.Abstract
         /// <param name="context"></param>
         /// <returns></returns>
         Task OnBeAdmin(TelegramContext context);
+
+        Task OnRestricted(TelegramContext context);
     }
 }

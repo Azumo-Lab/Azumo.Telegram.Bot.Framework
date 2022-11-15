@@ -14,32 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Example.Example.Channel
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IChannelManager
+    public class ChannelCommentFilter
     {
-        /// <summary>
-        /// 获取一个频道
-        /// </summary>
-        ChatId[] GetActiveChannel(TelegramUser user);
 
-        /// <summary>
-        /// 用户注册一个或几个频道
-        /// </summary>
-        /// <param name="user">用户</param>
-        /// <param name="channelId">频道的ChatID</param>
-        void RegisterChannel(TelegramUser user, params ChatId[] channelId);
     }
 }
