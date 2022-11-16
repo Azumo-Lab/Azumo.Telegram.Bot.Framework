@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// Bot的事件，被邀请，被踢出群组等事件
     /// </summary>
     public interface IBotTelegramEvent
     {
@@ -63,6 +63,11 @@ namespace Telegram.Bot.Framework.Abstract
         /// <returns></returns>
         Task OnBeAdmin(TelegramContext context);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         Task OnRestricted(TelegramContext context);
     }
 }
