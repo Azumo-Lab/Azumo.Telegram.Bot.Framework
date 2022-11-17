@@ -14,42 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
+using Telegram.Bot.Example.DataBase;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Example.BotConfig
 {
     /// <summary>
     /// 
     /// </summary>
-    public class StartCommand : TelegramController
+    public class StartDBCreate : IStartExec
     {
-        [Command(nameof(Start), CommandInfo = "本条指令")]
-        public async Task Start()
+        private readonly TelegramBotContext telegramBotContext;
+        public StartDBCreate(TelegramBotContext telegramBotContext)
         {
-            ICommandManager commandManager = Context.UserScope.GetService<ICommandManager>();
-
-            string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
-
-            message += Environment.NewLine;
-            message += Environment.NewLine;
-            
-            message += commandManager.GetCommandInfoString();
-
-            message += Environment.NewLine;
-            message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
-
-            await Context.SendTextMessage(message);
+            this.telegramBotContext = telegramBotContext;
+        }
+        public void Exec()
+        {
+            telegramBotContext.Database.EnsureCreated();
         }
     }
 }

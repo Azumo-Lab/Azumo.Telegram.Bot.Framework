@@ -14,39 +14,42 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Win32;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Channels;
+using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Example.Commands
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IChannelManager
+    public class StartCommand : TelegramController
     {
-        public delegate void SaveChannelDelegate(long ID, ChatId[] chatID);
-        public delegate ChatId[] GetChannelDelegate(long ID);
+        [Command(nameof(Start), CommandInfo = "本条指令")]
+        public async Task Start()
+        {
+            ICommandManager commandManager = Context.UserScope.GetService<ICommandManager>();
 
-        public event SaveChannelDelegate SaveChannelEvent;
-        public event GetChannelDelegate GetChannelEvent;
+            string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
 
-        /// <summary>
-        /// 获取一个频道
-        /// </summary>
-        ChatId[] GetActiveChannel(TelegramUser user);
+            message += Environment.NewLine;
+            message += Environment.NewLine;
 
-        /// <summary>
-        /// 用户注册一个或几个频道
-        /// </summary>
-        /// <param name="user">用户</param>
-        /// <param name="channelId">频道的ChatID</param>
-        void RegisterChannel(TelegramUser user, params ChatId[] channelId);
+            message += commandManager.GetCommandInfoString();
+
+            message += Environment.NewLine;
+            message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
+
+            await Context.SendTextMessage(message);
+        }
     }
 }

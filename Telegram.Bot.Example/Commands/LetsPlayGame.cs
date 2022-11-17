@@ -26,7 +26,7 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Components;
 using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Example.Commands
 {
     /// <summary>
     /// 
@@ -54,8 +54,8 @@ namespace Telegram.Bot.Example.Example
                     IContact contact = context.UserScope.GetService<IContact>();
                     while (contact.GetContact(context).UserData.TryGetValue("JanKen", out string item))
                     {
-                        
-	                }
+
+                    }
                     goto START;
                 }),
                 InlineButtons.WithCallback("剪子", context =>
@@ -67,11 +67,11 @@ namespace Telegram.Bot.Example.Example
 
                 }),
             });
-            await Context.SendTextMessage(userManager.Admin, "请玩游戏，选择你的选项：", new List<InlineButtons> 
+            await Context.SendTextMessage(userManager.Admin, "请玩游戏，选择你的选项：", new List<InlineButtons>
             {
                 InlineButtons.WithCallback("石头", context =>
                 {
-                    
+
                 }),
                 InlineButtons.WithCallback("剪子", context =>
                 {
@@ -86,7 +86,7 @@ namespace Telegram.Bot.Example.Example
 
         public static async Task JanKen(string item, string tekiItem, TelegramContext context)
         {
-            
+
         }
     }
 }

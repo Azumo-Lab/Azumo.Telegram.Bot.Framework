@@ -76,6 +76,14 @@ namespace Telegram.Bot.Framework
                     throw new TooManyExecutionsException("Too Many Executions");
             Running = true;
 
+            try
+            {
+                List<IStartExec> startExecs = serviceProvider.GetServices<IStartExec>().ToList();
+                foreach (IStartExec item in startExecs)
+                    item.Exec();
+            }
+            catch (Exception){/* 无视一切错误 */ }
+
             cts = serviceProvider.GetService<CancellationTokenSource>();
             ITelegramBotClient botClient = serviceProvider.GetService<ITelegramBotClient>();
             

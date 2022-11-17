@@ -16,18 +16,39 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Example.Example.Channel
+namespace Telegram.Bot.Example.DataBase.Datas
 {
     /// <summary>
-    /// 
+    /// 用户注册频道
     /// </summary>
-    public class ChannelCommentFilter
+    public class UserChannels : EncryptDecodeBase<UserChannels>
     {
+        /// <summary>
+        /// 数据ID
+        /// </summary>
+        [Key]
+        public int ID { get; set; }
 
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public long UserID { get; set; }
+
+        /// <summary>
+        /// 频道ID
+        /// </summary>
+        public long ChannelChatID { get; set; }
+
+        /// <summary>
+        /// 创建日期
+        /// </summary>
+        public DateTime CreateTime { get; set; } = DateTime.Now;
     }
 }

@@ -24,7 +24,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Components;
 using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Example.Commands
 {
     /// <summary>
     /// 

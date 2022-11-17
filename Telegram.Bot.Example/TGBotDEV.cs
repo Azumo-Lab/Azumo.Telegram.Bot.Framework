@@ -14,15 +14,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
-using Telegram.Bot.Example.Example;
+using Telegram.Bot.Example.BotConfig;
+using Telegram.Bot.Example.DataBase;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework;
@@ -60,6 +63,11 @@ namespace Telegram.Bot.Net
             telegramServices.AddUserAuthentication();
 
             telegramServices.AddScoped<IBotTelegramEvent, BotTelegramEvent>();
+            telegramServices.AddDbContext<TelegramBotContext>(option =>
+            {
+                option.UseSqlite($"Data Source={Path.Combine(AppContext.BaseDirectory, "Telegram.Bot.Example.db")}");
+            });
+            telegramServices.AddSingleton<IStartExec, StartDBCreate>();
         }
     }
 }

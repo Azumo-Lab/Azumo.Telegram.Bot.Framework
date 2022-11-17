@@ -29,7 +29,7 @@ using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types;
 using static System.Net.WebRequestMethods;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Example.Commands
 {
     /// <summary>
     /// 
@@ -49,13 +49,11 @@ namespace Telegram.Bot.Example.Example
         }
 
         [Command(nameof(SendMyPhoto), CommandInfo = "向机器人发送一张图片")]
-        public async Task SendMyPhoto([Param("请发送你珍藏的图片：", CustomParamMaker = typeof(MyPhotoParamMaker))]PhotoSize photoSize)
+        public async Task SendMyPhoto([Param("请发送你珍藏的图片：", CustomParamMaker = typeof(MyPhotoParamMaker))] PhotoSize photoSize)
         {
             Directory.CreateDirectory("TESTPIC");
             using (StreamWriter sw = new StreamWriter(new FileStream($"TESTPIC/{photoSize.FileId}", FileMode.OpenOrCreate)))
-            {
                 sw.Write(JsonConvert.SerializeObject(photoSize));
-            }
             await Context.SendTextMessage("已经接收");
         }
 
@@ -67,13 +65,13 @@ namespace Telegram.Bot.Example.Example
             var file = photos[RandomMethod.RandomInt(0, photos.Length)];
 
             PhotoSize onephoto = JsonConvert.DeserializeObject<PhotoSize>(System.IO.File.ReadAllText(file));
-            
+
             await Context.SendPhoto(onephoto, $"这是一张其他人传给Bot的图片，接收时间是：{new FileInfo(file).LastWriteTime}");
         }
 
         [Authentication(AuthenticationRole.BotAdmin)]
         [Command(nameof(GetAllSendPhoto), CommandInfo = "获取全部接收到的图片，这会发送大量图片")]
-        public async Task GetAllSendPhoto([Param("此操作可能会发送大量图片，是否确定？(确定/取消)", CustomParamMaker = typeof(MyBoolParamMaker))]bool Yes)
+        public async Task GetAllSendPhoto([Param("此操作可能会发送大量图片，是否确定？(确定/取消)", CustomParamMaker = typeof(MyBoolParamMaker))] bool Yes)
         {
             if (Yes)
             {

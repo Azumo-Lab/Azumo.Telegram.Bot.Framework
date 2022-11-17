@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Types;
+using static Telegram.Bot.Framework.Abstract.IChannelManager;
 
 namespace Telegram.Bot.Framework.InternalFramework.Managers
 {
@@ -31,6 +32,10 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
     public class ChannelManager : IChannelManager
     {
         private readonly Dictionary<long, ChatId[]> _channels = new Dictionary<long, ChatId[]>();
+
+        public event SaveChannelDelegate SaveChannelEvent;
+        public event GetChannelDelegate GetChannelEvent;
+
         /// <summary>
         /// 
         /// </summary>
@@ -39,7 +44,11 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
         /// <exception cref="NotImplementedException"></exception>
         public ChatId[] GetActiveChannel(TelegramUser user)
         {
-            _channels.TryGetValue(user.Id, out ChatId[] channels);
+            if (_channels.TryGetValue(user.Id, out ChatId[] channels))
+                return channels;
+            channels = GetChannelEvent?.Invoke(user.Id);
+            if (channels != null)
+                _channels.TryAdd(user.Id, channels);
             return channels;
         }
 
@@ -52,6 +61,7 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
         public void RegisterChannel(TelegramUser user, params ChatId[] channelId)
         {
             _channels.TryAdd(user.Id, channelId);
+            SaveChannelEvent?.Invoke(user.Id, channelId);
         }
     }
 }

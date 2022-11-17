@@ -28,7 +28,7 @@ using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Example.Example
+namespace Telegram.Bot.Example.Commands
 {
     /// <summary>
     /// 
@@ -82,12 +82,8 @@ namespace Telegram.Bot.Example.Example
         private bool ISCHAR(string c)
         {
             foreach (var item in c)
-            {
                 if (item is >= 'A' and <= 'Z' or >= 'a' and <= 'z')
-                {
                     return true;
-                }
-            }
             return false;
         }
 
@@ -97,9 +93,7 @@ namespace Telegram.Bot.Example.Example
             PhotoSize photoSize = Context.Update.Message.Photo.ToList().OrderBy(x => x.FileSize).LastOrDefault();
             Directory.CreateDirectory("TESTPIC");
             using (StreamWriter sw = new StreamWriter(new FileStream($"TESTPIC/{photoSize.FileId}", FileMode.OpenOrCreate)))
-            {
                 sw.Write(JsonConvert.SerializeObject(photoSize));
-            }
             await Context.SendTextMessage("已保存");
             await Context.SendTextMessage(
 @"
@@ -108,7 +102,7 @@ namespace Telegram.Bot.Example.Example
         }
 
         [Command("Stop", CommandInfo = "停止这个机器人")]
-        public async Task ExitExe([Param("密码：")]string password)
+        public async Task ExitExe([Param("密码：")] string password)
         {
             IConfigurationRoot Secrets = new ConfigurationBuilder().AddUserSecrets("98def42c-77dc-41cb-abf6-2c402535f4cb").Build();
             string Password = Secrets.GetSection("PASSWORD").Value;

@@ -14,37 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
-using Telegram.Bot.Types;
+using Telegram.Bot.Example.DataBase.Datas;
 
-namespace Telegram.Bot.Example.Example.Channel
+namespace Telegram.Bot.Example.DataBase
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ChannelPost : TelegramController
+    public class TelegramBotContext : DbContext
     {
-        [Command("Channel_Post_Test", CommandInfo = "测试一下用机器人向测试频道发送消息")]
-        public async Task SendChannel([Param("请输入你想发送的信息：")]string message)
+        public DbSet<UserChannels> UserChannels { get; set; }
+
+        public TelegramBotContext(DbContextOptions<TelegramBotContext> options) : base(options)
         {
-            IChannelManager channelManager = Context.UserScope.GetService<IChannelManager>();
-            ChatId[] chatId = channelManager.GetActiveChannel(Context.TelegramUser);
-            if (chatId == null || !chatId.Any())
-            {
-                await Context.SendTextMessage("你似乎没有没有在本Bot注册过频道");
-                return;
-            }
-            await Context.BotClient.SendTextMessageAsync(chatId.First(), message);
-            await Context.SendTextMessage("发送成功");
+
         }
     }
 }
