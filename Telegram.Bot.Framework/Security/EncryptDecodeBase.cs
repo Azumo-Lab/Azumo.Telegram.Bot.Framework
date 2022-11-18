@@ -14,41 +14,51 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Example.DataBase.Datas
+namespace Telegram.Bot.Framework.Security
 {
     /// <summary>
-    /// 用户注册频道
+    /// 加密与解密的基类
     /// </summary>
-    public class UserChannels
+    public abstract class EncryptDecodeBase<T>
     {
-        /// <summary>
-        /// 数据ID
-        /// </summary>
-        [Key]
-        public int ID { get; set; }
+        private static byte[] KEY;
+        private static byte[] IV;
+
+        public static void SetPassword(string Password)
+        {
+            AESHelper.SetPassword(Password, out KEY, out IV);
+        }
 
         /// <summary>
-        /// 用户ID
+        /// 解密
         /// </summary>
-        public long UserID { get; set; }
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public T Decode(string json)
+        {
+            string newJson = AESHelper.DecryptStringFromBytes_Aes(Convert.FromBase64String(json), KEY, IV);
+            return JsonConvert.DeserializeObject<T>(newJson);
+        }
 
         /// <summary>
-        /// 频道ID
+        /// 加密
         /// </summary>
-        public long ChannelChatID { get; set; }
-
-        /// <summary>
-        /// 创建日期
-        /// </summary>
-        public DateTime CreateTime { get; set; } = DateTime.Now;
+        /// <returns></returns>
+        public string Encrypt()
+        {
+            string json = JsonConvert.SerializeObject(this);
+            return Convert.ToBase64String(AESHelper.EncryptStringToBytes_Aes(json, KEY, IV));
+        }
     }
 }

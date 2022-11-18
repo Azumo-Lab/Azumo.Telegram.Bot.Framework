@@ -14,69 +14,42 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Example.DataBase.Datas
+namespace Telegram.Bot.Framework.Security
 {
     /// <summary>
-    /// 加密解密的基类模块
+    /// 
     /// </summary>
-    public class EncryptDecodeBase<T>
+    public class AESHelper
     {
-        private static readonly byte[] KEY;
-        private static readonly byte[] IV;
-
-        static EncryptDecodeBase()
+        public static void SetPassword(string Password, out byte[] KEY, out byte[] IV)
         {
-            if (File.Exists(nameof(KEY)))
+            MD5 MD5 = MD5.Create();
+            SHA256 SHA256 = SHA256.Create();
+
+            byte[] PasswordArray = Encoding.UTF8.GetBytes(Password);
+            byte[] IVArray = MD5.ComputeHash(PasswordArray);
+            byte[] KeyArray = SHA256.ComputeHash(PasswordArray);
+
+            for (int i = 0; i < 765; i++)
             {
-                KEY = File.ReadAllBytes(nameof(KEY));
+                IVArray = MD5.ComputeHash(IVArray);
+                KeyArray = SHA256.ComputeHash(KeyArray);
             }
-            if (File.Exists(nameof(IV)))
-            {
-                IV = File.ReadAllBytes(nameof(IV));
-            }
-            if (KEY == null || IV == null)
-            {
-                using (Aes aes = Aes.Create())
-                {
-                    KEY = aes.Key;
-                    IV = aes.IV;
-                    File.WriteAllBytes(nameof(KEY), KEY);
-                    File.WriteAllBytes(nameof(IV), IV);
-                }
-            }
+
+            IV = IVArray;
+            KEY = KeyArray;
         }
 
-        /// <summary>
-        /// 解密
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        public T Decode(string json)
-        {
-            string newJson = DecryptStringFromBytes_Aes(Convert.FromBase64String(json), KEY, IV);
-            return JsonConvert.DeserializeObject<T>(newJson);
-        }
-
-        /// <summary>
-        /// 加密
-        /// </summary>
-        /// <returns></returns>
-        public string Encrypt()
-        {
-            string json = JsonConvert.SerializeObject(this);
-            return Convert.ToBase64String(EncryptStringToBytes_Aes(json, KEY, IV));
-        }
-
-        private static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
+        public static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
         {
             // Check arguments.
             if (plainText == null || plainText.Length <= 0)
@@ -116,7 +89,7 @@ namespace Telegram.Bot.Example.DataBase.Datas
             return encrypted;
         }
 
-        private static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        public static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Check arguments.
             if (cipherText == null || cipherText.Length <= 0)

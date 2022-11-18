@@ -44,6 +44,7 @@ namespace Telegram.Bot.Example.BotConfig
             if (context.Update.MyChatMember.Chat.Type == Types.Enums.ChatType.Channel)
             {
                 IChannelManager channelManager = context.UserScope.GetService<IChannelManager>();
+                //TODO:这里会执行多次导致BUG，需要后面修复一下
                 channelManager.SaveChannelEvent += ChannelManager_SaveChannelEvent;
                 channelManager.GetChannelEvent += ChannelManager_GetChannelEvent;
                 channelManager.RegisterChannel(context.TelegramUser, context.ChatID);
@@ -51,12 +52,22 @@ namespace Telegram.Bot.Example.BotConfig
             await Task.CompletedTask;
         }
 
+        /// <summary>
+        /// 内存中找不到数据就从数据库中寻找
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         private ChatId[] ChannelManager_GetChannelEvent(long ID)
         {
             List<ChatId> list = telegramBotContext.UserChannels.Where(x => x.UserID == ID).ToList().Select(x => new ChatId(x.ChannelChatID)).ToList();
             return list.ToArray();
         }
 
+        /// <summary>
+        /// 保存到内存的同时，保存到数据库中
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="chatID"></param>
         private void ChannelManager_SaveChannelEvent(long ID, Types.ChatId[] chatID)
         {
             foreach (Types.ChatId item in chatID)
