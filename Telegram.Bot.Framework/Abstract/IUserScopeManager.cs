@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// UserScope管理器
     /// </summary>
     public interface IUserScopeManager
     {

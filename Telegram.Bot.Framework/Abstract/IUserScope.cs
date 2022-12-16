@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// UserScope
     /// </summary>
     public interface IUserScope : IDisposable
     {

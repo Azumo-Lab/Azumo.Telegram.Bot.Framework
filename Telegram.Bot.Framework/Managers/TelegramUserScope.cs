@@ -26,28 +26,38 @@ using Telegram.Bot.Framework.Abstract;
 namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
-    /// 
+    /// 用户态的UserScope
     /// </summary>
     internal class TelegramUserScope : IUserScope
     {
+        private bool _disposed;
         private readonly IServiceScope UserServiceScope;
         public TelegramUserScope(IServiceProvider serviceProvider)
         {
             UserServiceScope ??= serviceProvider.CreateScope();
         }
 
+        private void IfDisposeThenThrow()
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(UserServiceScope), $"错误：试图调用被销毁对象：{nameof(UserServiceScope)}");
+        }
+
         public TelegramContext CreateTelegramContext()
         {
+            IfDisposeThenThrow();
             return UserServiceScope.ServiceProvider.GetTelegramContext();
         }
 
         public void Dispose()
         {
+            _disposed = true;
             UserServiceScope.Dispose();
         }
 
         public IServiceScope GetUserServiceScope()
         {
+            IfDisposeThenThrow();
             return UserServiceScope;
         }
     }
