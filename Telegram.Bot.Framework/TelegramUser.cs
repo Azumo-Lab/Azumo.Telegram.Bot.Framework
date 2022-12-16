@@ -31,6 +31,7 @@ namespace Telegram.Bot.Framework
     /// </summary>
     public sealed class TelegramUser
     {
+        #region 初始化
         internal TelegramUser(User user, long? chatID)
         {
             Id = user.Id;
@@ -47,13 +48,14 @@ namespace Telegram.Bot.Framework
 
         internal TelegramUser(User user) : this(user, null)
         {
-            
+
         }
 
         internal TelegramUser()
         {
 
         }
+        #endregion
 
         public Dictionary<string, string> UserData { get; } = new Dictionary<string, string>();
 

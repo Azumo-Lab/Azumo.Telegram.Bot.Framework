@@ -14,26 +14,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
-    /// 桥管理器
+    /// 
     /// </summary>
-    public interface IUserBridgeManager
+    internal class TelegramUserScope : IUserScope
     {
-        /// <summary>
-        /// 向目标用户建立通信桥
-        /// </summary>
-        /// <param name="telegramUser">用户1</param>
-        /// <param name="targetTelegramUser">用户2</param>
-        /// <returns></returns>
-        IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser);
+        private readonly IServiceScope UserServiceScope;
+        public TelegramUserScope(IServiceProvider serviceProvider)
+        {
+            UserServiceScope ??= serviceProvider.CreateScope();
+        }
+
+        public TelegramContext CreateTelegramContext()
+        {
+            return UserServiceScope.ServiceProvider.GetTelegramContext();
+        }
+
+        public void Dispose()
+        {
+            UserServiceScope.Dispose();
+        }
+
+        public IServiceScope GetUserServiceScope()
+        {
+            return UserServiceScope;
+        }
     }
 }

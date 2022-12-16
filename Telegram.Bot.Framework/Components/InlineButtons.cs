@@ -28,7 +28,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 namespace Telegram.Bot.Framework.Components
 {
     /// <summary>
-    /// 
+    /// 返回消息的按钮
     /// </summary>
     public class InlineButtons
     {

@@ -28,25 +28,37 @@ namespace Telegram.Bot.Framework.Abstract
     /// </summary>
     public interface ICommandManager
     {
+        #region 增
+        /// <summary>
+        /// 注册指令，将指令注册到Telegram
+        /// </summary>
+        void RegisterCommand(string commandName, string commandInfo);
+        #endregion
+
+        #region 删
+        /// <summary>
+        /// 删除一个Command
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        void RemoveCommand(string commandName);
+        #endregion
+
+        #region 改
+        /// <summary>
+        /// 从删除的当中恢复一个Command
+        /// </summary>
+        /// <param name="commandName"></param>
+        void RestoreCommand(string commandName);
+        #endregion
+
+        #region 查
         /// <summary>
         /// 系统中是否具有此Command
         /// </summary>
         /// <param name="commandName"></param>
         /// <returns></returns>
         bool ContainsCommand(string commandName);
-
-        /// <summary>
-        /// 清除一个Command
-        /// </summary>
-        /// <param name="commandName"></param>
-        /// <returns></returns>
-        void RemoveCommand(string commandName);
-
-        /// <summary>
-        /// 恢复一个Command
-        /// </summary>
-        /// <param name="commandName"></param>
-        void RestoreCommand(string commandName);
 
         /// <summary>
         /// 获取全部的Command的字符串
@@ -59,5 +71,6 @@ namespace Telegram.Bot.Framework.Abstract
         /// </summary>
         /// <returns></returns>
         Dictionary<string, string> GetCommandInfos();
+        #endregion
     }
 }

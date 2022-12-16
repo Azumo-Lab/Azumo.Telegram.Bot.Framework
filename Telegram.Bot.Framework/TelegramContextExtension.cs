@@ -84,6 +84,12 @@ namespace Telegram.Bot.Framework
                 replyMarkup: new InlineKeyboardMarkup(context.CreateInlineKeyboardButton(inlineButtons)));
         }
 
+        /// <summary>
+        /// 回复用户发送的信息
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static async Task ReplyMessage(this TelegramContext context, string message)
         {
             await context.BotClient.SendTextMessageAsync(context.ChatID, message, 

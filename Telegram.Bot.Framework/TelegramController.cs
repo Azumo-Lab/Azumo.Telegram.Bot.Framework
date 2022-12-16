@@ -49,7 +49,7 @@ namespace Telegram.Bot.Framework
 
             Action commandAction = null;
 
-            if (Params == null || Params.Length == 0)
+            if (Params.IsEmpty())
                 commandAction = () => action.DynamicInvoke();
             else
                 commandAction = () => action.DynamicInvoke(Params);

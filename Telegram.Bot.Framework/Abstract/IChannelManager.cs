@@ -34,7 +34,14 @@ namespace Telegram.Bot.Framework.Abstract
         public delegate void SaveChannelDelegate(long ID, ChatId[] chatID);
         public delegate ChatId[] GetChannelDelegate(long ID);
 
+        /// <summary>
+        /// 用户注册频道时候的事件
+        /// </summary>
         public event SaveChannelDelegate SaveChannelEvent;
+
+        /// <summary>
+        /// 获取频道时候的事件
+        /// </summary>
         public event GetChannelDelegate GetChannelEvent;
 
         /// <summary>

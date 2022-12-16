@@ -29,9 +29,9 @@ namespace Telegram.Bot.Framework.Abstract
     public interface IAuthentication
     {
         /// <summary>
-        /// 
+        /// 权限认证
         /// </summary>
-        /// <returns></returns>
+        /// <returns>成功True/失败False</returns>
         bool Auth(TelegramContext context);
     }
 }

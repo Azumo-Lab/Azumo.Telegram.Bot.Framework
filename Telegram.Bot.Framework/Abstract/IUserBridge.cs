@@ -41,8 +41,8 @@ namespace Telegram.Bot.Framework.Abstract
         TelegramUser TargetUser { get; }
 
         #region 各类事件
-        public delegate void OnCreateHandle(string id);
-        public delegate void OnCloseHandle(string id);
+        public delegate void OnCreateHandle();
+        public delegate void OnCloseHandle();
 
         /// <summary>
         /// 建立时的事件
@@ -54,5 +54,9 @@ namespace Telegram.Bot.Framework.Abstract
         public event OnCloseHandle OnClose;
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Connect();
     }
 }

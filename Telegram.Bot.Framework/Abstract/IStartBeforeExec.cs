@@ -24,16 +24,10 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 桥管理器
+    /// 启动前执行
     /// </summary>
-    public interface IUserBridgeManager
+    public interface IStartBeforeExec
     {
-        /// <summary>
-        /// 向目标用户建立通信桥
-        /// </summary>
-        /// <param name="telegramUser">用户1</param>
-        /// <param name="targetTelegramUser">用户2</param>
-        /// <returns></returns>
-        IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser);
+        void Exec();
     }
 }

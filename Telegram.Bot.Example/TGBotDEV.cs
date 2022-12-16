@@ -67,7 +67,7 @@ namespace Telegram.Bot.Net
             {
                 option.UseSqlite($"Data Source={Path.Combine(AppContext.BaseDirectory, "Telegram.Bot.Example.db")}");
             });
-            telegramServices.AddSingleton<IStartExec, StartDBCreate>();
+            telegramServices.AddSingleton<IStartBeforeExec, StartDBCreate>();
         }
     }
 }

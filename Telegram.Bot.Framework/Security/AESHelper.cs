@@ -30,6 +30,12 @@ namespace Telegram.Bot.Framework.Security
     /// </summary>
     public class AESHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Password"></param>
+        /// <param name="KEY"></param>
+        /// <param name="IV"></param>
         public static void SetPassword(string Password, out byte[] KEY, out byte[] IV)
         {
             MD5 MD5 = MD5.Create();
@@ -49,6 +55,14 @@ namespace Telegram.Bot.Framework.Security
             KEY = KeyArray;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <param name="Key"></param>
+        /// <param name="IV"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
         {
             // Check arguments.
@@ -89,6 +103,14 @@ namespace Telegram.Bot.Framework.Security
             return encrypted;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cipherText"></param>
+        /// <param name="Key"></param>
+        /// <param name="IV"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Check arguments.

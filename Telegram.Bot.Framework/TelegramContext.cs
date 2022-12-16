@@ -128,7 +128,7 @@ namespace Telegram.Bot.Framework
         public string GetCommand()
         {
             MessageEntity[] entities = Update.Message?.Entities;
-            if (entities != null 
+            if (!entities.IsEmpty()
                 && entities.FirstOrDefault().Type == MessageEntityType.BotCommand)
             {
                 return Update.Message.EntityValues.FirstOrDefault()?.ToLower();

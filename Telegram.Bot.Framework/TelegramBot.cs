@@ -78,8 +78,8 @@ namespace Telegram.Bot.Framework
 
             try
             {
-                List<IStartExec> startExecs = serviceProvider.GetServices<IStartExec>().ToList();
-                foreach (IStartExec item in startExecs)
+                List<IStartBeforeExec> startExecs = serviceProvider.GetServices<IStartBeforeExec>().ToList();
+                foreach (IStartBeforeExec item in startExecs)
                     item.Exec();
             }
             catch (Exception){/* 无视一切错误 */ }

@@ -28,7 +28,7 @@ namespace Telegram.Bot.Example.BotConfig
     /// <summary>
     /// 
     /// </summary>
-    public class StartDBCreate : IStartExec
+    public class StartDBCreate : IStartBeforeExec
     {
         private readonly TelegramBotContext telegramBotContext;
         public StartDBCreate(TelegramBotContext telegramBotContext)

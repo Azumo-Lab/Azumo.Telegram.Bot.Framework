@@ -22,39 +22,39 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UserBridge
+namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UserBridgeManager : IUserBridgeManager
+    internal class TelegramUserScopeManager : IUserScopeManager
     {
-        private readonly Dictionary<long, IUserBridge> UserBridges;
-        private readonly ICallBackManager callBackManager;
         private readonly IServiceProvider serviceProvider;
-
-        public UserBridgeManager(IServiceProvider serviceProvider, ICallBackManager callBackManager)
+        private Dictionary<long, IUserScope> _UserID_UserScope = new();
+        public TelegramUserScopeManager(IServiceProvider serviceProvider)
         {
-            UserBridges = new();
-            this.callBackManager = callBackManager;
             this.serviceProvider = serviceProvider;
         }
 
-        public IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser)
+        public IUserScope CreateUserScope(TelegramUser telegramUser)
         {
-            long DicID = telegramUser.Id + targetTelegramUser.Id;
-            if (UserBridges.ContainsKey(DicID))
-                return UserBridges[DicID];
-
-            IUserBridge userBridge = new MyUserBridge(targetTelegramUser, serviceProvider.GetService<TelegramContext>());
-            return userBridge;
+            return GetUserScope(telegramUser);
         }
 
-        public IUserBridge GetUserBridge()
+        public IUserScope GetUserScope(TelegramUser telegramUser)
         {
-            return default;
+            if (_UserID_UserScope.TryGetValue(telegramUser.Id, out IUserScope userScope))
+                return userScope;
+
+            userScope = new TelegramUserScope(serviceProvider);
+            if (_UserID_UserScope.TryAdd(telegramUser.Id, userScope))
+                return userScope;
+
+            if (_UserID_UserScope.TryGetValue(telegramUser.Id, out userScope))
+                return userScope;
+
+            throw new Exception("无法获取UserScope");
         }
     }
 }

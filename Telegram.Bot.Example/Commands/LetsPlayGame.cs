@@ -33,7 +33,7 @@ namespace Telegram.Bot.Example.Commands
     /// </summary>
     public class LetsPlayGame : TelegramController
     {
-        [Command(nameof(PlayOnline), CommandInfo = "一起在线玩游戏")]
+        //[Command(nameof(PlayOnline), CommandInfo = "一起在线玩游戏")]
         public async Task PlayOnline()
         {
             await Context.SendTextMessage("正在与管理员连线中...");

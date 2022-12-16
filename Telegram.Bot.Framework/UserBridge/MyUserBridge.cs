@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.UserBridge
 {
@@ -31,11 +33,21 @@ namespace Telegram.Bot.Framework.UserBridge
     {
         public bool IsDiscard { get; private set; }
 
+        /// <summary>
+        /// 目标用户
+        /// </summary>
         public TelegramUser TargetUser { get; private set; }
+        public TelegramContext Context { get; private set; }
 
-        public MyUserBridge(TelegramUser telegramUser)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramUser"></param>
+        /// <param name="telegramContext"></param>
+        public MyUserBridge(TelegramUser telegramUser, TelegramContext telegramContext)
         {
             TargetUser = telegramUser;
+            Context = telegramContext;
         }
 
         public event IUserBridge.OnCreateHandle OnCreate;
@@ -43,8 +55,25 @@ namespace Telegram.Bot.Framework.UserBridge
 
         public void Dispose()
         {
+            OnClose?.Invoke();
             IsDiscard = true;
             TargetUser = null;
+        }
+
+        public virtual async void Connect()
+        {
+            OnCreate?.Invoke();
+
+            IServiceProvider MyScope = Context.UserScope;
+            IServiceProvider TargetScope = MyScope.GetService<IUserManager>().GetUserScope(TargetUser).ServiceProvider;
+
+            ICallBackManager MyCallBack = MyScope.GetService<ICallBackManager>();
+            ICallBackManager TargetCallBack = TargetScope.GetService<ICallBackManager>();
+
+            MyCallBack.CreateCallBack(context =>
+            {
+
+            });
         }
     }
 }

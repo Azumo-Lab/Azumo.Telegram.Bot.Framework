@@ -24,10 +24,18 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 启动后间隔执行
     /// </summary>
-    public interface IStartExec
+    public interface IStartIntervalExec
     {
+        /// <summary>
+        /// 间隔执行时间
+        /// </summary>
+        public TimeSpan Interval { get; }
+
+        /// <summary>
+        /// 执行
+        /// </summary>
         void Exec();
     }
 }
