@@ -14,51 +14,67 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Security
 {
     /// <summary>
-    /// 加密与解密的基类
+    /// 仅仅加密字段的值例如：
+    /// 加密后：
+    /// class XXClash
+    /// {
+    ///     "AA": "ad0g7908r7g"
+    /// }
+    /// 加密前：
+    /// class XXClash
+    /// {
+    ///     "AA": "123"
+    /// }
     /// </summary>
-    public abstract class EncryptDecodeBase<T>
+    public abstract class EncryptDecodeValueBase<T> : EncryptDecodeBase<T>
     {
-        private static byte[] KEY;
-        private static byte[] IV;
-
-        public static void SetPassword(string Password)
-        {
-            AESHelper.SetPassword(Password, out KEY, out IV);
-        }
+        private List<PropertyInfo> PropertyInfos;
 
         /// <summary>
         /// 解密
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public virtual T Decode(string json)
+        public override T Decode(string json)
         {
-            string newJson = AESHelper.DecryptStringFromBytes_Aes(Convert.FromBase64String(json), KEY, IV);
-            return JsonConvert.DeserializeObject<T>(newJson);
+            GetPropertyInfos();
+            return base.Decode(json);
         }
-
+        
         /// <summary>
         /// 加密
         /// </summary>
         /// <returns></returns>
-        public virtual string Encrypt()
+        public override string Encrypt()
         {
-            string json = JsonConvert.SerializeObject(this);
-            return Convert.ToBase64String(AESHelper.EncryptStringToBytes_Aes(json, KEY, IV));
+            GetPropertyInfos();
+            foreach (PropertyInfo item in PropertyInfos)
+            {
+                object val = item.GetValue(this);
+                if (val == null)
+                    continue;
+
+
+            }
+            return base.Encrypt();
+        }
+
+        /// <summary>
+        /// 获取对象的字段
+        /// </summary>
+        private void GetPropertyInfos()
+        {
+            PropertyInfos ??= GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
         }
     }
 }

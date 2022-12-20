@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.Managers
         private void IfDisposeThenThrow()
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(UserServiceScope), $"错误：试图调用被销毁对象：{nameof(UserServiceScope)}");
+                throw new ObjectDisposedException(nameof(TelegramUserScope), $"错误：试图调用被销毁对象：{nameof(TelegramUserScope)}");
         }
 
         public TelegramContext CreateTelegramContext()
