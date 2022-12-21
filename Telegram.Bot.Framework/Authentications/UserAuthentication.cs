@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,42 +22,25 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.Managers
+namespace Telegram.Bot.Framework.Authentications
 {
     /// <summary>
-    /// 用户态的UserScope
+    /// 
     /// </summary>
-    internal class TelegramUserScope : IUserScope
+    public class UserAuthentication : IAuthentication
     {
-        private bool _disposed;
-        private readonly IServiceScope UserServiceScope;
-        public TelegramUserScope(IServiceProvider serviceProvider)
+        private readonly IServiceProvider serviceProvider;
+        public UserAuthentication(IServiceProvider serviceProvider)
         {
-            UserServiceScope ??= serviceProvider.CreateScope();
+            this.serviceProvider = serviceProvider;
         }
-
-        private void IfDisposeThenThrow()
+        public bool Auth(TelegramContext context)
         {
-            if (_disposed)
-                throw new ObjectDisposedException(nameof(TelegramUserScope), $"错误：试图调用被销毁对象：{nameof(TelegramUserScope)}");
-        }
+            string command = context.GetCommand();
+            if (command.IsEmpty())
+                return true;
 
-        public TelegramContext GetTelegramContext()
-        {
-            IfDisposeThenThrow();
-            return UserServiceScope.ServiceProvider.GetTelegramContext();
-        }
 
-        public void Dispose()
-        {
-            _disposed = true;
-            UserServiceScope.Dispose();
-        }
-
-        public IServiceScope GetUserServiceScope()
-        {
-            IfDisposeThenThrow();
-            return UserServiceScope;
         }
     }
 }

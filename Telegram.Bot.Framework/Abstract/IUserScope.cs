@@ -36,9 +36,9 @@ namespace Telegram.Bot.Framework.Abstract
         IServiceScope GetUserServiceScope();
 
         /// <summary>
-        /// 创建TelegramContext
+        /// 创建或获取TelegramContext
         /// </summary>
         /// <returns></returns>
-        TelegramContext CreateTelegramContext();
+        TelegramContext GetTelegramContext();
     }
 }

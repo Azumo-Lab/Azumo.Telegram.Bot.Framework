@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -85,15 +86,12 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                 using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
                 {
                     //获取 | 创建 一个 TelegramUserScope
-                    ITelegramUserScopeManager telegramUserScopeManager = serviceProvider.GetService<ITelegramUserScopeManager>();
-                    ITelegramUserScope telegramUserScope = telegramUserScopeManager.GetTelegramUserScope(TelegramContext.GetTelegramUser(update));
+                    TelegramUser telegramUser;
+                    IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
+                    IUserScope userScope = userScopeManager.GetUserScope(telegramUser = TelegramContext.GetTelegramUser(update));
 
                     //根据不同的用户创建 TelegramContext
-                    TelegramContext telegramContext = telegramUserScope.CreateTelegramContext();
-                    telegramContext.Update = update;
-                    telegramContext.CancellationToken = cancellationToken;
-                    telegramContext.BotClient = botClient;
-                    telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
+                    TelegramContext telegramContext = TelegramContextSetting(userScope, OneTimeScope, telegramUser, botClient, update, cancellationToken);
 
                     //根据消息类型获取 AbstractActionInvoker
                     if (AbstractActionInvokersDic.TryGetValue(update.Type, out AbstractActionInvoker abstractActionInvoker))
@@ -104,6 +102,37 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// 构造TelegramContext
+        /// </summary>
+        /// <param name="userScope"></param>
+        /// <param name="OneTimeScope"></param>
+        /// <param name="telegramUser"></param>
+        /// <param name="botClient"></param>
+        /// <param name="update"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private static TelegramContext TelegramContextSetting
+            (
+                IUserScope userScope,
+                IServiceScope OneTimeScope,
+                TelegramUser telegramUser,
+                ITelegramBotClient botClient,
+                Update update,
+                CancellationToken cancellationToken
+            )
+        {
+            TelegramContext telegramContext = userScope.GetTelegramContext();
+
+            telegramContext.Update = update;
+            telegramContext.CancellationToken = cancellationToken;
+            telegramContext.BotClient = botClient;
+            telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
+            telegramContext.UserScope = userScope.GetUserServiceScope().ServiceProvider;
+
+            return telegramContext;
         }
     }
 }

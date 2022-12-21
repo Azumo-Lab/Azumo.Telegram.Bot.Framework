@@ -24,38 +24,10 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 帮助创建参数
+    /// 
     /// </summary>
-    internal interface IParamManager
+    public interface IAuthenticationManager
     {
-        /// <summary>
-        /// 读取参数
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task<bool> ReadParam(TelegramContext context);
 
-        /// <summary>
-        /// 取消读取参数
-        /// </summary>
-        void Cancel();
-
-        /// <summary>
-        /// 获取Command的名称
-        /// </summary>
-        /// <returns></returns>
-        string GetCommand();
-
-        /// <summary>
-        /// 获取读取过后的参数
-        /// </summary>
-        /// <returns></returns>
-        object[] GetParam();
-
-        /// <summary>
-        /// 是否处于读取参数的模式
-        /// </summary>
-        /// <returns></returns>
-        bool IsReadParam();
     }
 }

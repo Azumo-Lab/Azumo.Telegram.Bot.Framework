@@ -30,8 +30,6 @@ using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.UpdateTypeActions;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Framework.InternalFramework.Authentications;
-using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.Managers;
 
