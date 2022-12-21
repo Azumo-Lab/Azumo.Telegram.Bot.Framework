@@ -22,48 +22,33 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// 认证相关的类
+    /// 控制器的执行
     /// </summary>
-    internal class ActionAuthentication : IAction
+    internal class ActionControllerInvoke : IAction
     {
         /// <summary>
-        /// 执行认证
+        /// 执行控制器
         /// </summary>
         /// <param name="Context"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            switch (Context.Update.Message.Chat.Type)
-            {
-                case Types.Enums.ChatType.Private:
-                    break;
-                case Types.Enums.ChatType.Group:
-                    break;
-                case Types.Enums.ChatType.Channel:
-                    break;
-                case Types.Enums.ChatType.Supergroup:
-                    await Context.ReplyMessage("你搁这儿说你马呢？");
-                    break;
-                case Types.Enums.ChatType.Sender:
-                    break;
-                default:
-                    break;
-            }
-            IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
+            IControllersManager controllersManger = Context.UserScope.GetService<IControllersManager>();
+            // 获取参数管理
+            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
 
-            foreach (IAuthentication auth in authentications)
-                if (!auth.Auth(Context))
-                {
-                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
-                    return;
-                }
+            TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
 
-            await NextHandle(Context);
+            if (controller == null)
+                return;
+            else
+                await controller.Invoke(Context, paramManger.GetCommand());
         }
     }
 }

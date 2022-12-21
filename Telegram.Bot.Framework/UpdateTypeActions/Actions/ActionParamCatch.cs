@@ -24,25 +24,26 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.ActionCallbackQueryActions
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// 回调函数
+    /// 流程中参数的获取
     /// </summary>
-    public class ActionCallback : IAction
+    internal class ActionParamCatch : IAction
     {
         /// <summary>
-        /// 执行回调函数
+        /// 参数获取
         /// </summary>
         /// <param name="Context">Context</param>
         /// <param name="NextHandle">下一个处理流程</param>
         /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-            callbackAction.Invoke(Context);
+            // 获取参数管理
+            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
+
+            if (!await paramManger.ReadParam(Context, Context.UserScope))
+                return;
 
             await NextHandle(Context);
         }

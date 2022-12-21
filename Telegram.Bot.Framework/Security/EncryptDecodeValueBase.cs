@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,8 +37,13 @@ namespace Telegram.Bot.Framework.Security
     ///     "AA": "123"
     /// }
     /// </summary>
-    public abstract class EncryptDecodeValueBase<T> : EncryptDecodeBase<T>
+    public abstract class EncryptDecodeValueBase<T> : IEncryptDecode<T> where T : EncryptDecodeValueBase<T>
     {
+        static EncryptDecodeValueBase()
+        {
+            AESEncrypt.SetPassword("2ux!Z@f!yJ_UKBzF-8TMeWQZG3yKYwTRFCNa_L4uKX4b7W2X.7LcVs2Pazvj_Wcy4tRCsJ@en7DYDJbHfM2JYJ-p!Fc6WW_wKVo7");
+        }
+
         private List<PropertyInfo> PropertyInfos;
 
         /// <summary>
@@ -45,28 +51,40 @@ namespace Telegram.Bot.Framework.Security
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public override T Decode(string json)
+        public virtual T Decode(string json)
         {
             GetPropertyInfos();
-            return base.Decode(json);
+            Dictionary<string, string> Obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            foreach (PropertyInfo item in PropertyInfos)
+            {
+                if (!Obj.TryGetValue(item.Name, out string PassWordStrings))
+                    continue;
+
+                string Val = AESEncrypt.StaticDecrypt(Convert.FromBase64String(PassWordStrings));
+                object objVal = Convert.ChangeType(Val, item.PropertyType);
+                item.SetValue(this, objVal);
+            }
+
+            return (T)this;
         }
         
         /// <summary>
         /// 加密
         /// </summary>
         /// <returns></returns>
-        public override string Encrypt()
+        public virtual string Encrypt()
         {
             GetPropertyInfos();
+            Dictionary<string, string> Obj = new();
             foreach (PropertyInfo item in PropertyInfos)
             {
                 object val = item.GetValue(this);
                 if (val == null)
                     continue;
 
-
+                Obj.Add(item.Name, Convert.ToBase64String(AESEncrypt.StaticEncrypt(val.ToString())));
             }
-            return base.Encrypt();
+            return JsonConvert.SerializeObject(Obj);
         }
 
         /// <summary>

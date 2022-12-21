@@ -64,6 +64,11 @@ namespace Telegram.Bot.Framework.Managers
             return sb.ToString();
         }
 
+        public void RegisterCommand(string commandName, string commandInfo)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RemoveCommand(string commandName)
         {
             throw new NotImplementedException();

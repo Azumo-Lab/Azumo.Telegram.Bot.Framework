@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.InternalFramework;
-using Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions;
+using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -49,9 +49,10 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <param name="serviceProvider"></param>
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            AddHandle(CreateObj<ActionAuthentication>(serviceProvider));
-            AddHandle(CreateObj<ActionParamCatch>(serviceProvider));
-            AddHandle(CreateObj<ActionControllerInvoke>(serviceProvider));
+            AddHandle<ActionAuthentication>();
+            AddHandle<ActionMessageTypeProc>();
+            AddHandle<ActionParamCatch>();
+            AddHandle<ActionControllerInvoke>();
         }
 
         /// <summary>

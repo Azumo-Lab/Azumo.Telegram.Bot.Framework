@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,32 +21,32 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Framework.UpdateTypeActions.Actions;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// CallBack部分的获取与执行
+    /// 
     /// </summary>
-    public class ActionCallbackQuery : AbstractActionInvoker
+    public class ActionMessageTypeProc : IAction
     {
-        public ActionCallbackQuery(IServiceProvider serviceProvider) : base(serviceProvider)
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
+            switch (Context.Update.Message.Chat.Type)
+            {
+                case Types.Enums.ChatType.Private:
+                    break;
+                case Types.Enums.ChatType.Group:
+                    break;
+                case Types.Enums.ChatType.Channel:
+                    break;
+                case Types.Enums.ChatType.Supergroup:
+                    await Context.ReplyMessage("你搁这儿说你马呢？");
+                    return;
+                case Types.Enums.ChatType.Sender:
+                    break;
+            }
 
-        }
-
-        public override UpdateType InvokeType => UpdateType.CallbackQuery;
-
-        protected override async Task InvokeAction(TelegramContext context)
-        {
-            await Task.CompletedTask;
-        }
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
-        {
-            AddHandle<ActionCallback>();
+            await NextHandle(Context);
         }
     }
 }

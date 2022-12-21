@@ -38,6 +38,8 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         private readonly ActionHandle ActionHandle;
         private readonly List<Func<ActionHandle, ActionHandle>> ActionHandles;
 
+        private readonly IServiceProvider serviceProvider;
+
         /// <summary>
         /// 执行的类型
         /// </summary>
@@ -49,6 +51,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <param name="serviceProvider"></param>
         public AbstractActionInvoker(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
             ActionHandles = new List<Func<ActionHandle, ActionHandle>>();
 
             AddActionHandles(serviceProvider);
@@ -68,8 +71,9 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// 添加Action
         /// </summary>
         /// <param name="action">Action</param>
-        protected virtual void AddHandle(IAction action)
+        protected virtual void AddHandle<T>() where T : IAction
         {
+            IAction action = CreateObj<T>();
             ActionHandles.Add(
                     handle =>
                     context => action.Invoke(context, handle));
@@ -99,7 +103,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <typeparam name="T">指定对象的类型</typeparam>
         /// <param name="serviceProvider">DI服务</param>
         /// <returns>指定的对象</returns>
-        protected virtual T CreateObj<T>(IServiceProvider serviceProvider)
+        protected virtual T CreateObj<T>()
         {
             return ActivatorUtilities.CreateInstance<T>(serviceProvider, Array.Empty<object>());
         }

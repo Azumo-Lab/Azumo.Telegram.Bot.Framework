@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.Security
     /// <summary>
     /// 加密与解密的基类
     /// </summary>
-    public abstract class EncryptDecodeBase<T>
+    public abstract class EncryptDecodeBase<T> : IEncryptDecode<T> where T : EncryptDecodeBase<T>
     {
         private static byte[] KEY;
         private static byte[] IV;

@@ -14,38 +14,31 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
+namespace Telegram.Bot.Framework.Security
 {
     /// <summary>
-    /// 流程中参数的获取
+    /// 
     /// </summary>
-    internal class ActionParamCatch : IAction
+    public interface IEncryptDecode<T>
     {
         /// <summary>
-        /// 参数获取
+        /// 解密数据
         /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
+        /// <param name="json"></param>
         /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
-        {
-            // 获取参数管理
-            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
+        T Decode(string json);
 
-            if (!await paramManger.ReadParam(Context, Context.UserScope))
-                return;
-
-            await NextHandle(Context);
-        }
+        /// <summary>
+        /// 加密数据
+        /// </summary>
+        /// <returns></returns>
+        string Encrypt();
     }
 }

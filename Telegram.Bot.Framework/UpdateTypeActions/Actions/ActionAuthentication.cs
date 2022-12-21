@@ -22,32 +22,32 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Framework.UpdateTypeActions.Actions;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// CallBack部分的获取与执行
+    /// 认证相关的类
     /// </summary>
-    public class ActionCallbackQuery : AbstractActionInvoker
+    internal class ActionAuthentication : IAction
     {
-        public ActionCallbackQuery(IServiceProvider serviceProvider) : base(serviceProvider)
+        /// <summary>
+        /// 执行认证
+        /// </summary>
+        /// <param name="Context"></param>
+        /// <param name="NextHandle"></param>
+        /// <returns></returns>
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
+            IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
 
-        }
+            foreach (IAuthentication auth in authentications)
+                if (!auth.Auth(Context))
+                {
+                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
+                    return;
+                }
 
-        public override UpdateType InvokeType => UpdateType.CallbackQuery;
-
-        protected override async Task InvokeAction(TelegramContext context)
-        {
-            await Task.CompletedTask;
-        }
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
-        {
-            AddHandle<ActionCallback>();
+            await NextHandle(Context);
         }
     }
 }

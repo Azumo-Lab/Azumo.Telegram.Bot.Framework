@@ -24,31 +24,27 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.ActionMessageActions
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// 控制器的执行
+    /// 回调函数
     /// </summary>
-    internal class ActionControllerInvoke : IAction
+    public class ActionCallback : IAction
     {
         /// <summary>
-        /// 执行控制器
+        /// 执行回调函数
         /// </summary>
-        /// <param name="Context"></param>
-        /// <param name="NextHandle"></param>
+        /// <param name="Context">Context</param>
+        /// <param name="NextHandle">下一个处理流程</param>
         /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            IControllersManager controllersManger = Context.UserScope.GetService<IControllersManager>();
-            // 获取参数管理
-            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
+            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
+            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
+            await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
+            callbackAction.Invoke(Context);
 
-            TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
-
-            if (controller == null)
-                return;
-            else
-                await controller.Invoke(Context, paramManger.GetCommand());
+            await NextHandle(Context);
         }
     }
 }

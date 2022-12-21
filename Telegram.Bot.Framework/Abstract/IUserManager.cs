@@ -19,7 +19,7 @@ namespace Telegram.Bot.Framework.Abstract
         TelegramUser Me { get; }
 
         /// <summary>
-        /// 获取管理员用户(管理员可以指定多名)
+        /// 获取管理员用户(Bot管理员)
         /// </summary>
         List<TelegramUser> Admin { get; }
 
