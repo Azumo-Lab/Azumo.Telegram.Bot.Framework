@@ -28,7 +28,6 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types.Enums;

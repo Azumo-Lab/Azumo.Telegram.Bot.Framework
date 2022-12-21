@@ -22,36 +22,33 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Authentications;
-using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Managers;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.ParameterManager;
-using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
-using Telegram.Bot.Framework.TelegramAttributes;
-using Telegram.Bot.Framework.TelegramException;
+using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.UpdateTypeActions;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Framework.InternalFramework.Authentications;
+using Telegram.Bot.Framework.InternalFramework.ParameterManager;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
+using Telegram.Bot.Framework.Managers;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 整个框架的一些相关配置
+    /// 
     /// </summary>
-    internal class FrameworkConfig : IConfig
+    public class TelegramFrameworkConfig : IConfig
     {
+
         private readonly IServiceProvider serviceProvider;
-        public FrameworkConfig(IServiceProvider serviceProvider)
+        public TelegramFrameworkConfig(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
-        /// <summary>
-        /// 框架相关的一些设置
-        /// </summary>
-        /// <param name="telegramServices"></param>
         public void ConfigureServices(IServiceCollection telegramServices)
         {
             BotInfos botInfos = serviceProvider.GetService<BotInfos>();
@@ -72,7 +69,7 @@ namespace Telegram.Bot.Framework.InternalFramework
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();
             telegramServices.AddSingleton<ITypeManager>(new TypeManager(telegramServices));
-            telegramServices.AddSingleton<IBotNameManager>(x => 
+            telegramServices.AddSingleton<IBotNameManager>(x =>
             {
                 BotNameManager botNameManger = new(x)
                 {
@@ -80,7 +77,7 @@ namespace Telegram.Bot.Framework.InternalFramework
                 };
                 return botNameManger;
             });
-            telegramServices.AddSingleton<ITelegramBotClient>(x => 
+            telegramServices.AddSingleton<ITelegramBotClient>(x =>
             {
                 return httpClient == null ? new TelegramBotClient(botInfos.Token) : new TelegramBotClient(botInfos.Token, httpClient);
             });

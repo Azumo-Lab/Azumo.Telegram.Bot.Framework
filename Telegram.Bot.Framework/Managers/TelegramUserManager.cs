@@ -156,7 +156,9 @@ namespace Telegram.Bot.Framework.Managers
 
         public List<TelegramUser> FindUserByName(string FristName, string LastName)
         {
-            throw new NotImplementedException();
+            return _AllUser.Where(x => x.TelegramUser.FirstName.Contains(FristName) && x.TelegramUser.LastName.Contains(LastName))
+                .Select(x => x.TelegramUser)
+                .ToList();
         }
 
         public TelegramUser FindUserByUserName(string UserName)

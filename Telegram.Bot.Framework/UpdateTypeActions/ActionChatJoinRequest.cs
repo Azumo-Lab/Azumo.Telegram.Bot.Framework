@@ -19,19 +19,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Abstract
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 判断一个Command是否存在
+    /// 
     /// </summary>
-    internal interface ICommandIsExist
+    public class ActionChatJoinRequest : AbstractActionInvoker
     {
-        /// <summary>
-        /// 判断一个Command是否存在
-        /// </summary>
-        /// <param name="CommandName">Command名称</param>
-        /// <returns></returns>
-        bool HasCommand(string CommandName);
+        public ActionChatJoinRequest(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override UpdateType InvokeType => UpdateType.ChatJoinRequest;
+
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Task InvokeAction(TelegramContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

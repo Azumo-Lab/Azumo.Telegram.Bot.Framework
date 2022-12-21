@@ -22,6 +22,9 @@ using System.Reflection;
 
 namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
+    /// <summary>
+    /// 抛出异常
+    /// </summary>
     internal static class ThrowHelper
     {
         /// <summary>

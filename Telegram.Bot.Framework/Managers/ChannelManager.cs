@@ -24,7 +24,7 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Types;
 using static Telegram.Bot.Framework.Abstract.IChannelManager;
 
-namespace Telegram.Bot.Framework.InternalFramework.Managers
+namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
     /// 频道管理

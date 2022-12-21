@@ -20,22 +20,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
-    [ParamTypeFor(typeof(string))]
-    internal class StringParamMaker : IParamMaker
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ActionEditedMessage : AbstractActionInvoker
     {
-        public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
+        public ActionEditedMessage(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override UpdateType InvokeType => UpdateType.EditedMessage;
+
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            return await Task.FromResult(context.Update.Message?.Text);
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        protected override Task InvokeAction(TelegramContext context)
         {
-            return await Task.FromResult(true);
+            throw new NotImplementedException();
         }
     }
 }

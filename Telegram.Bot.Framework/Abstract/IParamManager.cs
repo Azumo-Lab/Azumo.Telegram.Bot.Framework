@@ -14,72 +14,48 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalFramework
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 帮助创建参数
     /// </summary>
-    internal class TelegramUserScope : IDisposable, ITelegramUserScope
+    internal interface IParamManager
     {
         /// <summary>
-        /// 
+        /// 读取参数
         /// </summary>
-        private IServiceScope UserScope { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="service"></param>
-        public TelegramUserScope(IServiceProvider service)
-        {
-            UserScope ??= service.CreateScope();
-        }
-
-        /// <summary>
-        /// 销毁对象
-        /// </summary>
-        public void Dispose()
-        {
-            UserScope.Dispose();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="OneTimeScope"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        public async Task Invoke(IServiceScope OneTimeScope)
-        {
-            await Task.CompletedTask;
-        }
+        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
 
         /// <summary>
-        /// 
+        /// 取消读取参数
+        /// </summary>
+        void Cancel();
+
+        /// <summary>
+        /// 获取Command的名称
         /// </summary>
         /// <returns></returns>
-        public IServiceScope GetUserScope()
-        {
-            return UserScope;
-        }
+        string GetCommand();
 
-        public TelegramContext CreateTelegramContext()
-        {
-            TelegramContext telegramContext = UserScope.ServiceProvider.GetService<TelegramContext>();
-            telegramContext.UserScope = UserScope.ServiceProvider;
-            return telegramContext;
-        }
+        /// <summary>
+        /// 获取读取过后的参数
+        /// </summary>
+        /// <returns></returns>
+        object[] GetParam();
+
+        /// <summary>
+        /// 是否处于读取参数的模式
+        /// </summary>
+        /// <returns></returns>
+        bool IsReadParam();
     }
 }

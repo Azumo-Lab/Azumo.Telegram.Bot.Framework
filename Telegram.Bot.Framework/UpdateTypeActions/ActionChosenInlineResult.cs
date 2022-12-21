@@ -14,38 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Managers
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AuthManager : IAuthManager
+    public class ActionChosenInlineResult : AbstractActionInvoker
     {
-        private AuthenticationRole AuthenticationRole = AuthenticationRole.GeneralUser;
+        public ActionChosenInlineResult(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override UpdateType InvokeType => UpdateType.ChosenInlineResult;
 
-        public AuthenticationRole GetAuthenticationRole()
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            return AuthenticationRole;
+            throw new NotImplementedException();
         }
 
-        public bool IsAuth(AuthenticationRole authenticationRole)
+        protected override Task InvokeAction(TelegramContext context)
         {
-            return authenticationRole == AuthenticationRole;
-        }
-
-        public void SetAuth(AuthenticationRole authenticationRole)
-        {
-            AuthenticationRole = authenticationRole;
+            throw new NotImplementedException();
         }
     }
 }

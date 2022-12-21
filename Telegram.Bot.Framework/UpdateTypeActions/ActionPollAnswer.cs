@@ -20,42 +20,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Abstract
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 帮助创建参数
+    /// 
     /// </summary>
-    internal interface IParamManager
+    public class ActionPollAnswer : AbstractActionInvoker
     {
-        /// <summary>
-        /// 读取参数
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task<bool> ReadParam(TelegramContext context, IServiceProvider OneTimeServiceProvider);
+        public ActionPollAnswer(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override UpdateType InvokeType => UpdateType.PollAnswer;
 
-        /// <summary>
-        /// 取消读取参数
-        /// </summary>
-        void Cancel();
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        {
+            throw new NotImplementedException();
+        }
 
-        /// <summary>
-        /// 获取Command的名称
-        /// </summary>
-        /// <returns></returns>
-        string GetCommand();
-
-        /// <summary>
-        /// 获取读取过后的参数
-        /// </summary>
-        /// <returns></returns>
-        object[] GetParam();
-
-        /// <summary>
-        /// 是否处于读取参数的模式
-        /// </summary>
-        /// <returns></returns>
-        bool IsReadParam();
+        protected override Task InvokeAction(TelegramContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

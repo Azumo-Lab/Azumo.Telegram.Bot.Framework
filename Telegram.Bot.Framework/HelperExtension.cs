@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework
         #region IsEmpty()
 
         /// <summary>
-        /// 
+        /// 判断List是否是NULL或者有任何数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 
+        /// 判断字符串是否是NULL或者是“”
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -55,7 +55,7 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 
+        /// 去掉空格后判断时候是NULL或“”
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -65,7 +65,7 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 
+        /// 判断文件大小是否是0
         /// </summary>
         /// <param name="fileInfo"></param>
         /// <returns></returns>
@@ -77,7 +77,7 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 
+        /// 判断文件夹中是否有子文件夹或文件
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>

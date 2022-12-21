@@ -20,34 +20,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.TelegramAttributes;
-using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
     /// 
     /// </summary>
-    [ParamTypeFor(typeof(PhotoSize))]
-    public class PhotoParamMaker : IParamMaker
+    public class ActionPoll : AbstractActionInvoker
     {
-        public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
-        {
-            PhotoSize[] photos = context.Update.Message?.Photo;
-            if (photos == null)
-                return null;
+        public ActionPoll(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override UpdateType InvokeType => UpdateType.Poll;
 
-            return await Task.FromResult(photos.ToList().OrderBy(x => x.FileSize).LastOrDefault());
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        {
+            throw new NotImplementedException();
         }
 
-        public Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        protected override Task InvokeAction(TelegramContext context)
         {
-            if (string.IsNullOrEmpty(context.Update.Message?.MediaGroupId))
-            {
-                return Task.FromResult(true);
-            }
-            return Task.FromResult(false);
+            throw new NotImplementedException();
         }
     }
 }

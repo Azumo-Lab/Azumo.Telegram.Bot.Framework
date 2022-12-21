@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,30 +22,38 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalFramework.Abstract
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 回调管理
     /// </summary>
-    internal interface IBotNameManager
+    internal interface ICallBackManager
     {
         /// <summary>
-        /// 当前使用的Bot名称
+        /// 创建一个CallBack
         /// </summary>
-        string BotName { get; }
+        /// <param name="CallBackAction"></param>
+        /// <returns></returns>
+        string CreateCallBack(Action<TelegramContext> CallBackAction);
 
         /// <summary>
-        /// 获取Bot名称列表
+        /// 创建一个CallBack
         /// </summary>
-        /// <param name="CommandName">指令名称</param>
+        /// <param name="CallBackAction"></param>
         /// <returns></returns>
-        HashSet<string> GetBotNames(string CommandName);
+        string CreateCallBack(string CallBackName, Action<TelegramContext> CallBackAction);
 
         /// <summary>
-        /// 判断
+        /// 获取CallBack
         /// </summary>
-        /// <param name="CommandName"></param>
+        /// <param name="CallBackKey"></param>
         /// <returns></returns>
-        bool Contains(string CommandName);
+        Action<TelegramContext> GetCallBack(string CallBackKey);
+
+        /// <summary>
+        /// 清除指定的Callback
+        /// </summary>
+        /// <param name="CallbackName"></param>
+        void Dispose(string CallbackName);
     }
 }

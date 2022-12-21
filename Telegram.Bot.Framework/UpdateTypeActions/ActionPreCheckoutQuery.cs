@@ -14,34 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.Abstract
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramUserScope
+    public class ActionPreCheckoutQuery : AbstractActionInvoker
     {
-        /// <summary>
-        /// 执行
-        /// </summary>
-        /// <param name="OneTimeScope"></param>
-        /// <returns></returns>
-        Task Invoke(IServiceScope OneTimeScope);
+        public ActionPreCheckoutQuery(IServiceProvider serviceProvider) : base(serviceProvider)
+        {
 
-        /// <summary>
-        /// 获取用户Scope
-        /// </summary>
-        /// <returns></returns>
-        IServiceScope GetUserScope();
+        }
+        public override UpdateType InvokeType => UpdateType.PreCheckoutQuery;
 
-        TelegramContext CreateTelegramContext();
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Task InvokeAction(TelegramContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

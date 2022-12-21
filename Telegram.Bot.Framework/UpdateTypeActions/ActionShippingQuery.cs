@@ -20,31 +20,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalFramework.ParameterManager
+namespace Telegram.Bot.Framework.UpdateTypeActions
 {
     /// <summary>
-    /// 用于处理文字类参数信息
+    /// 
     /// </summary>
-    internal class StringParamMessage : IParamMessage
+    public class ActionShippingQuery : AbstractActionInvoker
     {
-        private readonly IServiceProvider service;
-        public StringParamMessage(IServiceProvider serviceProvider)
+        public ActionShippingQuery(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override UpdateType InvokeType => UpdateType.ShippingQuery;
+
+        protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            service = serviceProvider;
+            throw new NotImplementedException();
         }
-        /// <summary>
-        /// 发送消息
-        /// </summary>
-        /// <param name="Message">消息</param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public async Task SendMessage(string Message)
+
+        protected override Task InvokeAction(TelegramContext context)
         {
-            TelegramContext context = service.GetService<TelegramContext>();
-            await context.BotClient.SendTextMessageAsync(context.ChatID, Message);
+            throw new NotImplementedException();
         }
     }
 }

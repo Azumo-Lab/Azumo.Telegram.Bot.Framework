@@ -152,7 +152,7 @@ namespace Telegram.Bot.Framework
                 throw new Exception($"重复的Token : {Token}");
             Tokens.Add(Token);
 
-            services.AddScoped<IConfig, FrameworkConfig>();
+            services.AddScoped<IConfig, TelegramFrameworkConfig>();
             services.AddScoped<ITelegramBot>(x => new TelegramBot(x));
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())

@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.Abstract;
 
 namespace Telegram.Bot.Framework
 {
