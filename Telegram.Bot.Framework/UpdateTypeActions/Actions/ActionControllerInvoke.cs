@@ -39,16 +39,14 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <returns></returns>
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            IControllersManager controllersManger = Context.UserScope.GetService<IControllersManager>();
-            // 获取参数管理
+            IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
             IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
 
-            TelegramController controller = (TelegramController)controllersManger.GetController(paramManger.GetCommand());
+            TelegramController controller = controllerManager.CreateController(paramManger.GetCommand());
+            controller ??= controllerManager.CreateController(Context.Update.Message.Type);
+            await controller.Invoke(Context, paramManger.GetCommand());
 
-            if (controller == null)
-                return;
-            else
-                await controller.Invoke(Context, paramManger.GetCommand());
+            await NextHandle(Context);
         }
     }
 }

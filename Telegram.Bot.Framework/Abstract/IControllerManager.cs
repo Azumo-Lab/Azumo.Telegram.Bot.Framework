@@ -20,18 +20,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Authentications
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
     /// 
     /// </summary>
-    public class BotNameAuthentication : IAuthentication
+    public interface IControllerManager
     {
-        public async Task<bool> Auth(TelegramContext context)
-        {
-            return await Task.FromResult(true);
-        }
+        public TelegramController CreateController(string CommandName);
+
+        public TelegramController CreateController(MessageType messageType);
     }
 }

@@ -34,13 +34,10 @@ namespace Telegram.Bot.Framework.Authentications
         {
             this.serviceProvider = serviceProvider;
         }
-        public bool Auth(TelegramContext context)
+
+        public virtual async Task<bool> Auth(TelegramContext context)
         {
-            string command = context.GetCommand();
-            if (command.IsEmpty())
-                return true;
-
-
+            throw new NotImplementedException();
         }
     }
 }

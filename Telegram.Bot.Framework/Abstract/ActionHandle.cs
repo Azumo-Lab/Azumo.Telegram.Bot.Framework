@@ -26,9 +26,7 @@ namespace Telegram.Bot.Framework.Abstract
     /// <summary>
     /// 委托
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="UserScope"></param>
-    /// <param name="OneTimeScope"></param>
+    /// <param name="Context"></param>
     /// <returns></returns>
-    public delegate Task ActionHandle(TelegramContext context);
+    public delegate Task ActionHandle(TelegramContext Context);
 }

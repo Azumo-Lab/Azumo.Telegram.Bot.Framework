@@ -30,8 +30,19 @@ namespace Telegram.Bot.Framework.Managers
     /// </summary>
     internal class ParamCatchManager : IParamManager
     {
-
         private bool _IsRead;
+        private List<object> _Params = new List<object>();
+        #region Private方法群
+        private void SetIsRead(bool flag)
+        {
+            _IsRead = flag;
+        }
+        private void SetParam(object obj)
+        {
+            _Params.Add(obj);
+        }
+        #endregion
+
 
         public void Cancel()
         {
@@ -45,7 +56,7 @@ namespace Telegram.Bot.Framework.Managers
 
         public object[] GetParam()
         {
-            throw new NotImplementedException();
+            return _Params.ToArray();
         }
 
         public bool IsReadParam()
@@ -76,20 +87,27 @@ namespace Telegram.Bot.Framework.Managers
 
         private bool ReadParamIFOnlyOneCommand(MessageEntity[] MessageEnityList, TelegramContext context)
         {
-            MessageEntity messageEntity = MessageEnityList.FirstOrDefault();
-            if (messageEntity != null)
+            if (IsReadParam())
             {
-
+                SetIsRead(false);
             }
-            return false;
+            else
+            {
+                SetIsRead(true);
+                MessageEntity messageEntity = MessageEnityList.FirstOrDefault();
+                if (messageEntity != null)
+                {
+
+                }
+                return false;
+            }
         }
 
         private bool ReadParamIFMultiCommand(MessageEntity[] MessageEnityList, TelegramContext context)
         {
-            
             foreach (MessageEntity item in MessageEnityList)
             {
-                item.Type == 
+                
             }
             return false;
         }

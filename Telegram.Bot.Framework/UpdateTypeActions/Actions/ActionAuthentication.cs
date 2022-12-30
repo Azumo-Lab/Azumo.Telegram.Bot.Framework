@@ -41,11 +41,8 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
             IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
 
             foreach (IAuthentication auth in authentications)
-                if (!auth.Auth(Context))
-                {
-                    await Context.BotClient.SendTextMessageAsync(Context.ChatID, "403 forbidden type /Admin to login");
+                if (!await auth.Auth(Context))
                     return;
-                }
 
             await NextHandle(Context);
         }

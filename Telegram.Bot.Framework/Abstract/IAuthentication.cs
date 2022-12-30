@@ -32,6 +32,6 @@ namespace Telegram.Bot.Framework.Abstract
         /// 权限认证
         /// </summary>
         /// <returns>成功True/失败False</returns>
-        bool Auth(TelegramContext context);
+        Task<bool> Auth(TelegramContext context);
     }
 }
