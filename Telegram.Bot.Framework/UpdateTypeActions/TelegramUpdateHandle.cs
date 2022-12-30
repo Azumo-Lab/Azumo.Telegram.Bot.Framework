@@ -131,6 +131,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
             telegramContext.BotClient = botClient;
             telegramContext.OneTimeScope = OneTimeScope.ServiceProvider;
             telegramContext.UserScope = userScope.GetUserServiceScope().ServiceProvider;
+            telegramContext.TelegramUser = telegramUser;
 
             return telegramContext;
         }
