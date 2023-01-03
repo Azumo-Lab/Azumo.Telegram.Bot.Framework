@@ -35,6 +35,11 @@ namespace Telegram.Bot.Framework.Security
         private static byte[] KEY;
         private static byte[] IV;
 
+        static EncryptDecodeBase()
+        {
+            AESHelper.SetPassword("fdGX*QVvGvbtCdQBW@wrVw3BCBPDCJFDC*rzKFH@raP@hPo6JGy!pN-PMCd2RzsK@PAwho@.ZgqRRzX@_PcyxpskzKWy.4RY3ijb", out KEY, out IV);
+        }
+
         public static void SetPassword(string Password)
         {
             AESHelper.SetPassword(Password, out KEY, out IV);

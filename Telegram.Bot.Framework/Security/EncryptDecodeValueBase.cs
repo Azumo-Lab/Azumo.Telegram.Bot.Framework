@@ -44,6 +44,11 @@ namespace Telegram.Bot.Framework.Security
             AESEncrypt.SetPassword("2ux!Z@f!yJ_UKBzF-8TMeWQZG3yKYwTRFCNa_L4uKX4b7W2X.7LcVs2Pazvj_Wcy4tRCsJ@en7DYDJbHfM2JYJ-p!Fc6WW_wKVo7");
         }
 
+        public static void SetPassword(string Password)
+        {
+            AESEncrypt.SetPassword(Password);
+        }
+
         private List<PropertyInfo> PropertyInfos;
 
         /// <summary>
