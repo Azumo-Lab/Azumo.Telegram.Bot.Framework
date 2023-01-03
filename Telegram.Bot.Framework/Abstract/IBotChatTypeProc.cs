@@ -20,28 +20,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 默认的消息处理类型
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DefaultMessageTypeAttribute : Attribute
+    public interface IBotChatTypeProc
     {
         /// <summary>
-        /// 消息类型
+        /// 处理来自群组的消息
         /// </summary>
-        public MessageType MessageType { get; }
+        /// <param name="Context"></param>
+        void Group(TelegramContext Context);
 
         /// <summary>
-        /// 
+        /// 用于处理来自频道的消息
         /// </summary>
-        /// <param name="messageType"></param>
-        public DefaultMessageTypeAttribute(MessageType messageType)
-        {
-            MessageType = messageType;
-        }
+        /// <param name="Context"></param>
+        void Channel(TelegramContext Context);
     }
 }

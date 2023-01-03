@@ -50,9 +50,11 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
             AddHandle<ActionAuthentication>();
-            AddHandle<ActionMessageTypeProc>();
+            AddHandle<ActionGroupChannel>();
+            AddHandle<ActionFilterBefore>();
             AddHandle<ActionParamCatch>();
             AddHandle<ActionControllerInvoke>();
+            AddHandle<ActionFilterAfter>();
         }
 
         /// <summary>

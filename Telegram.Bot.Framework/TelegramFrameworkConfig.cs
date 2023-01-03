@@ -32,6 +32,7 @@ using Telegram.Bot.Framework.UpdateTypeActions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.Managers;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Telegram.Bot.Framework
 {
@@ -113,6 +114,13 @@ namespace Telegram.Bot.Framework
         {
             services.AddScoped<IAuthentication, UserAuthentication>();
             services.AddScoped<IAuthManager, AuthManager>();
+        }
+
+        public static void ConfigBot(this IServiceCollection services, Action<BotConfig> ConfigAction)
+        {
+            BotConfig botConfig = new BotConfig();
+            ConfigAction.Invoke(botConfig);
+            services.TryAddSingleton(botConfig);
         }
     }
 }

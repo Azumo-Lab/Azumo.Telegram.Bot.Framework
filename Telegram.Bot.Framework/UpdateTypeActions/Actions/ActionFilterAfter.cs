@@ -14,34 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// 默认的消息处理类型
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DefaultMessageTypeAttribute : Attribute
+    public class ActionFilterAfter : IAction
     {
-        /// <summary>
-        /// 消息类型
-        /// </summary>
-        public MessageType MessageType { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="messageType"></param>
-        public DefaultMessageTypeAttribute(MessageType messageType)
+        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
-            MessageType = messageType;
+            List<IFilter> filters = Context.UserScope.GetServices<IFilter>().ToList();
+            foreach (IFilter item in filters)
+                if (await item.FilterAfter(Context))
+                    return;
+
+            await NextHandle(Context);
         }
     }
 }

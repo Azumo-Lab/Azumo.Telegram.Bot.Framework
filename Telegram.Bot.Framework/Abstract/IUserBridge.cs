@@ -55,8 +55,19 @@ namespace Telegram.Bot.Framework.Abstract
         #endregion
 
         /// <summary>
-        /// 
+        /// 连接建立
         /// </summary>
         public void Connect();
+
+        /// <summary>
+        /// 连接关闭
+        /// </summary>
+        public void Disconnect();
+
+        /// <summary>
+        /// 向目标用户发送一条文本消息
+        /// </summary>
+        /// <param name="Message"></param>
+        public void Send(string Message);
     }
 }

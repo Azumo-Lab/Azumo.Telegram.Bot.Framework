@@ -20,28 +20,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.TelegramAttributes
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 默认的消息处理类型
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DefaultMessageTypeAttribute : Attribute
+    public class BotConfig
     {
         /// <summary>
-        /// 消息类型
+        /// 在群组中使用指令
         /// </summary>
-        public MessageType MessageType { get; }
+        public bool UseCommandInGroup { get; set; }
 
         /// <summary>
-        /// 
+        /// 在频道中使用指令
         /// </summary>
-        /// <param name="messageType"></param>
-        public DefaultMessageTypeAttribute(MessageType messageType)
-        {
-            MessageType = messageType;
-        }
+        public bool UseCommandInChannel { get; set; }
     }
 }

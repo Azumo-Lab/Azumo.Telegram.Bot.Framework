@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework.UserBridge
             if (UserBridges.ContainsKey(DicID))
                 return UserBridges[DicID];
 
-            IUserBridge userBridge = new MyUserBridge(targetTelegramUser, serviceProvider.GetService<TelegramContext>());
+            IUserBridge userBridge = new MyUserBridge(telegramUser, targetTelegramUser, serviceProvider);
             return userBridge;
         }
 

@@ -82,7 +82,7 @@ namespace Telegram.Bot.Framework
                 foreach (IStartBeforeExec item in startExecs)
                     item.Exec();
             }
-            catch (Exception){/* 无视一切错误 */ }
+            catch (Exception){/* 无视一切错误 */}
 
             cts = serviceProvider.GetService<CancellationTokenSource>();
             ITelegramBotClient botClient = serviceProvider.GetService<ITelegramBotClient>();

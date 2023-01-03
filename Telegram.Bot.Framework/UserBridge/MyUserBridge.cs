@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Components;
 
 namespace Telegram.Bot.Framework.UserBridge
 {
@@ -35,18 +36,21 @@ namespace Telegram.Bot.Framework.UserBridge
         /// <summary>
         /// 目标用户
         /// </summary>
+        public TelegramUser Me { get; private set; }
         public TelegramUser TargetUser { get; private set; }
-        public TelegramContext Context { get; private set; }
+
+        private IServiceProvider serviceProvider;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="telegramUser"></param>
         /// <param name="telegramContext"></param>
-        public MyUserBridge(TelegramUser telegramUser, TelegramContext telegramContext)
+        public MyUserBridge(TelegramUser Me, TelegramUser TargetUser, IServiceProvider serviceProvider)
         {
-            TargetUser = telegramUser;
-            Context = telegramContext;
+            this.Me = Me;
+            this.TargetUser = TargetUser;
+            this.serviceProvider = serviceProvider;
         }
 
         public event IUserBridge.OnCreateHandle OnCreate;
@@ -55,24 +59,53 @@ namespace Telegram.Bot.Framework.UserBridge
         public void Dispose()
         {
             OnClose?.Invoke();
+
             IsDiscard = true;
             TargetUser = null;
+            Me = null;
+            serviceProvider = null;
         }
 
         public virtual async void Connect()
         {
+            if (IsDiscard)
+                throw new Exception("已经销毁链接，无法继续连接");
+
             OnCreate?.Invoke();
 
-            IServiceProvider MyScope = Context.UserScope;
-            IServiceProvider TargetScope = MyScope.GetService<IUserManager>().GetUserScope(TargetUser).ServiceProvider;
+            IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
+            IUserScope MyUserScope = userScopeManager.GetUserScope(Me);
+            IUserScope TargetUserScope = userScopeManager.GetUserScope(TargetUser);
+            
+            TelegramContext MyContext = MyUserScope.GetTelegramContext();
+            TelegramContext TargetUserContext = TargetUserScope.GetTelegramContext();
 
-            ICallBackManager MyCallBack = MyScope.GetService<ICallBackManager>();
-            ICallBackManager TargetCallBack = TargetScope.GetService<ICallBackManager>();
-
-            MyCallBack.CreateCallBack(context =>
+            await MyContext.SendTextMessage("正在连接...");
+            await TargetUserContext.SendTextMessage("用户想与您联系...", new List<InlineButtons>
             {
-
+                InlineButtons.WithCallback("同意", async Context =>
+                {
+                    await MyContext.SendTextMessage("对方同意链接");
+                }),
+                InlineButtons.WithCallback("拒绝", async Context =>
+                {
+                    await MyContext.SendTextMessage("对方拒绝链接");
+                }),
             });
+        }
+
+        public void Disconnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async void Send(string Message)
+        {
+            IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
+            IUserScope TargetUserScope = userScopeManager.GetUserScope(TargetUser);
+            TelegramContext TargetUserContext = TargetUserScope.GetTelegramContext();
+
+            await TargetUserContext.SendTextMessage(Message);
         }
     }
 }

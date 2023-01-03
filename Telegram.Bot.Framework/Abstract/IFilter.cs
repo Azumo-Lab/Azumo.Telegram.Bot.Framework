@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -27,6 +28,8 @@ namespace Telegram.Bot.Framework.Abstract
     /// </summary>
     public interface IFilter
     {
+        Task<bool> FilterBefore(TelegramContext Context);
 
+        Task<bool> FilterAfter(TelegramContext Context);
     }
 }

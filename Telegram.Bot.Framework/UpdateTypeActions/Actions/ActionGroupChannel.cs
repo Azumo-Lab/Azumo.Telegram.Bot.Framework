@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,23 +26,33 @@ using Telegram.Bot.Framework.Abstract;
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
-    /// 
+    /// 用于处理频道群组消息的Action
     /// </summary>
-    public class ActionMessageTypeProc : IAction
+    public class ActionGroupChannel : IAction
     {
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
+            BotConfig botConfig;
+            IBotChatTypeProc botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
             switch (Context.Update.Message.Chat.Type)
             {
                 case Types.Enums.ChatType.Private:
                     break;
                 case Types.Enums.ChatType.Group:
-                    break;
+                    botChatTypeProc.Group(Context);
+                    return;
                 case Types.Enums.ChatType.Channel:
+                    botConfig = Context.UserScope.GetService<BotConfig>();
+                    botChatTypeProc.Channel(Context);
+                    if (!botConfig.UseCommandInChannel)
+                        return;
                     break;
                 case Types.Enums.ChatType.Supergroup:
-                    await Context.ReplyMessage("你搁这儿说你马呢？");
-                    return;
+                    botConfig = Context.UserScope.GetService<BotConfig>();
+                    botChatTypeProc.Group(Context);
+                    if (!botConfig.UseCommandInGroup)
+                        return;
+                    break;
                 case Types.Enums.ChatType.Sender:
                     break;
             }
