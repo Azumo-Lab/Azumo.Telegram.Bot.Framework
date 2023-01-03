@@ -33,22 +33,32 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
         {
             BotConfig botConfig;
-            IBotChatTypeProc botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
+            IBotChatTypeProc botChatTypeProc;
             switch (Context.Update.Message.Chat.Type)
             {
                 case Types.Enums.ChatType.Private:
+                    IUserBridgeManager userBridgeManager = Context.UserScope.GetService<IUserBridgeManager>();
+                    if (userBridgeManager.HasUserBrige(Context.TelegramUser))
+                    {
+                        IUserBridge userBridge = userBridgeManager.GetUserBridge(Context.TelegramUser);
+                        userBridge.Send(Context.Update.Message.Text);
+                        return;
+                    }
                     break;
                 case Types.Enums.ChatType.Group:
+                    botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
                     botChatTypeProc.Group(Context);
                     return;
                 case Types.Enums.ChatType.Channel:
                     botConfig = Context.UserScope.GetService<BotConfig>();
+                    botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
                     botChatTypeProc.Channel(Context);
                     if (!botConfig.UseCommandInChannel)
                         return;
                     break;
                 case Types.Enums.ChatType.Supergroup:
                     botConfig = Context.UserScope.GetService<BotConfig>();
+                    botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
                     botChatTypeProc.Group(Context);
                     if (!botConfig.UseCommandInGroup)
                         return;

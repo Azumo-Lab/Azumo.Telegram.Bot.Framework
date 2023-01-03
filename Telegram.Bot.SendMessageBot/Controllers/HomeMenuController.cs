@@ -14,40 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.SendMessageBot.Controllers
 {
     /// <summary>
-    /// 桥管理器
+    /// 
     /// </summary>
-    public interface IUserBridgeManager
+    public class HomeMenuController : TelegramController
     {
-        /// <summary>
-        /// 向目标用户建立通信桥
-        /// </summary>
-        /// <param name="telegramUser">用户1</param>
-        /// <param name="targetTelegramUser">用户2</param>
-        /// <returns></returns>
-        IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser);
+        [Command("SayHelloToAdmin", "用户桥应用演示，通过用户桥向管理员取得联系")]
+        public async void SayHelloToAdmin()
+        {
+            await Context.SendTextMessage("正在向管理员问好...");
+            await Context.SendTextMessage("正在与管理员取得联系...");
 
-        /// <summary>
-        /// 目标用户是否已经建立了通信桥
-        /// </summary>
-        /// <param name="telegramUser"></param>
-        /// <returns></returns>
-        bool HasUserBrige(TelegramUser telegramUser);
+            IUserBridgeManager userBridgeManager = Context.UserScope.GetRequiredService<IUserBridgeManager>();
+            IUserManager userManager = Context.UserScope.GetRequiredService<IUserManager>();
 
-        /// <summary>
-        /// 获取指定用户的桥
-        /// </summary>
-        /// <param name="telegramUser"></param>
-        /// <returns></returns>
-        IUserBridge GetUserBridge(TelegramUser telegramUser);
+            IUserBridge userBridge = userBridgeManager.CreateUserBridge(userManager.Me, userManager.Admin.First());
+            userBridge.Connect();
+        }
     }
 }

@@ -14,40 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.SendMessageBot
 {
     /// <summary>
-    /// 桥管理器
+    /// 
     /// </summary>
-    public interface IUserBridgeManager
+    public class BotConfig : IConfig
     {
-        /// <summary>
-        /// 向目标用户建立通信桥
-        /// </summary>
-        /// <param name="telegramUser">用户1</param>
-        /// <param name="targetTelegramUser">用户2</param>
-        /// <returns></returns>
-        IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser);
-
-        /// <summary>
-        /// 目标用户是否已经建立了通信桥
-        /// </summary>
-        /// <param name="telegramUser"></param>
-        /// <returns></returns>
-        bool HasUserBrige(TelegramUser telegramUser);
-
-        /// <summary>
-        /// 获取指定用户的桥
-        /// </summary>
-        /// <param name="telegramUser"></param>
-        /// <returns></returns>
-        IUserBridge GetUserBridge(TelegramUser telegramUser);
+        public void ConfigureServices(IServiceCollection services)
+        {
+            
+        }
     }
 }

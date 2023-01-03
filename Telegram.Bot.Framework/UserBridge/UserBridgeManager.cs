@@ -51,9 +51,14 @@ namespace Telegram.Bot.Framework.UserBridge
             return userBridge;
         }
 
-        public IUserBridge GetUserBridge()
+        public IUserBridge GetUserBridge(TelegramUser telegramUser)
         {
-            return default;
+            throw new NotImplementedException();
+        }
+
+        public bool HasUserBrige(TelegramUser telegramUser)
+        {
+            throw new NotImplementedException();
         }
     }
 }
