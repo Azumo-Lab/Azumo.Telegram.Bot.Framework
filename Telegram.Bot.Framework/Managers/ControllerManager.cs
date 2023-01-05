@@ -22,45 +22,28 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
-    /// 用户态的UserScope
+    /// 
     /// </summary>
-    internal class TelegramUserScope : IUserScope
+    public class ControllerManager : IControllerManager
     {
-        private readonly IServiceScope UserServiceScope;
-
-        public bool IsDisposed { get; private set; }
-
-        public TelegramUserScope(IServiceProvider serviceProvider)
+        public ControllerManager()
         {
-            UserServiceScope ??= serviceProvider.CreateScope();
+
         }
 
-        private void IfDisposeThenThrow()
+        public TelegramController CreateController(string CommandName)
         {
-            if (IsDisposed)
-                throw new ObjectDisposedException(nameof(TelegramUserScope), $"错误：试图调用被销毁对象：{nameof(TelegramUserScope)}");
+            throw new NotImplementedException();
         }
 
-        public TelegramContext GetTelegramContext()
+        public TelegramController CreateController(MessageType messageType)
         {
-            IfDisposeThenThrow();
-            return UserServiceScope.ServiceProvider.GetTelegramContext();
-        }
-
-        public void Dispose()
-        {
-            IsDisposed = true;
-            UserServiceScope.Dispose();
-        }
-
-        public IServiceScope GetUserServiceScope()
-        {
-            IfDisposeThenThrow();
-            return UserServiceScope;
+            throw new NotImplementedException();
         }
     }
 }

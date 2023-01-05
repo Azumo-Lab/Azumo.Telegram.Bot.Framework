@@ -29,6 +29,8 @@ namespace Telegram.Bot.Framework.Abstract
     /// </summary>
     public interface IUserScope : IDisposable
     {
+        bool IsDisposed { get; }
+
         /// <summary>
         /// 获取用户范围的IServiceScope
         /// </summary>

@@ -39,22 +39,28 @@ namespace Telegram.Bot.Framework.Managers
 
         public IUserScope CreateUserScope(TelegramUser telegramUser)
         {
-            return GetUserScope(telegramUser);
+            IUserScope userScope;
+            if (!_UserID_UserScope.ContainsKey(telegramUser.Id))
+            {
+                userScope = new TelegramUserScope(serviceProvider);
+                _UserID_UserScope.TryAdd(telegramUser.Id, userScope);
+                return userScope;
+            }
+            else
+            {
+                userScope = _UserID_UserScope[telegramUser.Id];
+            }
+
+            if (userScope.IsDisposed)
+                _UserID_UserScope[telegramUser.Id] = new TelegramUserScope(serviceProvider);
+            return userScope;
         }
 
         public IUserScope GetUserScope(TelegramUser telegramUser)
         {
             if (_UserID_UserScope.TryGetValue(telegramUser.Id, out IUserScope userScope))
                 return userScope;
-
-            userScope = new TelegramUserScope(serviceProvider);
-            if (_UserID_UserScope.TryAdd(telegramUser.Id, userScope))
-                return userScope;
-
-            if (_UserID_UserScope.TryGetValue(telegramUser.Id, out userScope))
-                return userScope;
-
-            throw new Exception("无法获取UserScope");
+            return default;
         }
     }
 }

@@ -53,12 +53,16 @@ namespace Telegram.Bot.Framework.UserBridge
 
         public IUserBridge GetUserBridge(TelegramUser telegramUser)
         {
-            throw new NotImplementedException();
+            long userID = telegramUser.Id;
+            if (UserBridges.TryGetValue(userID, out IUserBridge userBridge))
+                return userBridge;
+            return default;
         }
 
         public bool HasUserBrige(TelegramUser telegramUser)
         {
-            throw new NotImplementedException();
+            long userID = telegramUser.Id;
+            return UserBridges.ContainsKey(userID);
         }
     }
 }

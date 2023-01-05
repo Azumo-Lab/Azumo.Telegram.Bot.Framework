@@ -58,8 +58,6 @@ namespace Telegram.Bot.Framework.UserBridge
 
         public void Dispose()
         {
-            OnClose?.Invoke();
-
             IsDiscard = true;
             TargetUser = null;
             Me = null;
@@ -94,9 +92,19 @@ namespace Telegram.Bot.Framework.UserBridge
             });
         }
 
-        public void Disconnect()
+        public async void Disconnect()
         {
-            throw new NotImplementedException();
+            OnClose?.Invoke();
+
+            IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
+            IUserScope MyUserScope = userScopeManager.GetUserScope(Me);
+            IUserScope TargetUserScope = userScopeManager.GetUserScope(TargetUser);
+
+            TelegramContext MyContext = MyUserScope.GetTelegramContext();
+            TelegramContext TargetUserContext = TargetUserScope.GetTelegramContext();
+
+            await MyContext.SendTextMessage("关闭连接...");
+            await TargetUserContext.SendTextMessage("关闭连接...");
         }
 
         public async void Send(string Message)
