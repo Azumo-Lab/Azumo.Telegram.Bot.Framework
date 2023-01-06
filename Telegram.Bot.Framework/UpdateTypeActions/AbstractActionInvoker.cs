@@ -102,7 +102,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// </summary>
         /// <typeparam name="T">指定对象的类型</typeparam>
         /// <param name="serviceProvider">DI服务</param>
-        /// <returns>指定的对象</returns>
+        /// <returns>指定对象的实例</returns>
         protected virtual T CreateObj<T>()
         {
             return ActivatorUtilities.CreateInstance<T>(serviceProvider, Array.Empty<object>());

@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,39 +21,22 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
-    /// 控制器管理的实现类
+    /// 
     /// </summary>
-    internal class ControllerManager : IControllerManager
+    internal class BotNameManager : IBotNameManager
     {
+        public string BotName { get; internal set; }
+
         private readonly IServiceProvider serviceProvider;
-        private readonly ITypeManager typeManager;
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public ControllerManager(IServiceProvider serviceProvider, ITypeManager typeManager)
-        {
-            this.serviceProvider = serviceProvider;
-            this.typeManager = typeManager;
-        }
 
-        public TelegramController CreateController(string CommandName)
+        public BotNameManager(IServiceProvider serviceProvider)
         {
-            // 获取控制器类型
-            Type controllerType = typeManager.GetControllerType(CommandName);
-            
-            // 创建控制器实例
-            return ActivatorUtilities.CreateInstance<TelegramController>(serviceProvider, controllerType, Array.Empty<object>());
-        }
 
-        public TelegramController CreateController(MessageType messageType)
-        {
-            throw new NotImplementedException();
         }
     }
 }

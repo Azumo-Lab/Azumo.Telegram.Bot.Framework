@@ -34,6 +34,7 @@ using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.Managers;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Authentications;
+using Telegram.Bot.Framework.Params;
 
 namespace Telegram.Bot.Framework
 {
@@ -97,9 +98,8 @@ namespace Telegram.Bot.Framework
         internal static void AddControllers(this IServiceCollection services)
         {
             //添加进入services
-            services.AddScoped<IControllersManager, ControllersManager>();
-            services.AddScoped<IDelegateManager, ControllersManager>();
-            services.AddScoped<IParamManager, ParamManager>();
+            services.AddScoped<IControllerManager, ControllerManager>();
+            services.AddScoped<IParamManager, ParamCatchManager>();
         }
 
         /// <summary>

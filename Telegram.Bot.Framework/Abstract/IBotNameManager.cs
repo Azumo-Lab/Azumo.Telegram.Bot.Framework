@@ -20,27 +20,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 控制器管理
+    /// 
     /// </summary>
-    internal interface IControllerManager
+    public interface IBotNameManager
     {
-        /// <summary>
-        /// 通过指令名称 创建Controller
-        /// </summary>
-        /// <param name="CommandName">指令名称</param>
-        /// <returns>控制器</returns>
-        public TelegramController CreateController(string CommandName);
-
-        /// <summary>
-        /// 通过消息类型 创建Controller
-        /// </summary>
-        /// <param name="messageType">消息类型</param>
-        /// <returns>控制器</returns>
-        public TelegramController CreateController(MessageType messageType);
+        
     }
 }
