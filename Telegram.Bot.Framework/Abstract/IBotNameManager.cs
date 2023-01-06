@@ -25,10 +25,14 @@ using Telegram.Bot.Framework.InternalFramework.Models;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// Bot名称管理
     /// </summary>
     public interface IBotNameManager
     {
-        
+        /// <summary>
+        /// 获取Bot名称
+        /// </summary>
+        /// <returns>Bot名称</returns>
+        string GetBotName();
     }
 }

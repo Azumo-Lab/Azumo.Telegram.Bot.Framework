@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.Authentications
 {
@@ -29,9 +31,23 @@ namespace Telegram.Bot.Framework.Authentications
     /// </summary>
     public class BotNameAuthentication : IAuthentication
     {
-        public async Task<bool> Auth(TelegramContext context)
+        public async Task<bool> Auth(TelegramContext Context)
         {
-            return await Task.FromResult(true);
+            IBotNameManager botNameManager = Context.UserScope.GetService<IBotNameManager>();
+            IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
+
+            CommandInfos commandInfos = controllerManager.GetCommandInfo(Context.GetCommand());
+
+            //没有这个指令，直接通过
+            if (commandInfos == null)
+                return true;
+            //没有BotName的标签，所以允许所有的通过
+            if (commandInfos.BotNames.IsEmpty())
+                return true;
+
+            // 判断是否具有指定的名称
+            bool HasBotName = commandInfos.BotNames.Contains(botNameManager.GetBotName());
+            return await Task.FromResult(HasBotName);
         }
     }
 }

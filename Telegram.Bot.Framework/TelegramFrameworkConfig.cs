@@ -67,6 +67,7 @@ namespace Telegram.Bot.Framework
             telegramServices.AddSingleton<IUserScopeManager, TelegramUserScopeManager>();
             telegramServices.AddTransient<IUserScope, TelegramUserScope>();
 
+            telegramServices.AddSingleton<IUserManager, TelegramUserManager>();
             telegramServices.AddSingleton(new CancellationTokenSource());
             telegramServices.AddSingleton<IUpdateHandler, TelegramUpdateHandle>();
             telegramServices.AddSingleton<ITypeManager>(new TypeManager(telegramServices));

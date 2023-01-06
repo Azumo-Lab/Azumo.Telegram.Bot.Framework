@@ -32,11 +32,9 @@ namespace Telegram.Bot.Framework.Managers
     {
         public string BotName { get; internal set; }
 
-        private readonly IServiceProvider serviceProvider;
-
-        public BotNameManager(IServiceProvider serviceProvider)
+        public string GetBotName()
         {
-
+            return BotName;
         }
     }
 }
