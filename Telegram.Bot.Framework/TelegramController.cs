@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ using System.Linq;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 
 namespace Telegram.Bot.Framework
 {
@@ -33,47 +34,31 @@ namespace Telegram.Bot.Framework
     {
         public TelegramContext Context { get; internal set; }
 
+        public delegate void Test(params object[] args);
         /// <summary>
         /// 执行调用
         /// </summary>
-        internal async Task Invoke(TelegramContext context, string CommandName)
+        internal async Task Invoke(TelegramContext Context, CommandInfos CommandName)
         {
-            Context = context;
+            SetTelegramContext(Context);
 
-            IServiceProvider userService = context.UserScope;
-
-            IDelegateManager delegateManger = userService.GetService<IDelegateManager>();
-            IParamManager paramManger = userService.GetService<IParamManager>();
-
-            Delegate action = delegateManger.CreateDelegate(CommandName, this);
-            object[] Params = paramManger.GetParam();
-
+            IParamManager paramManager = Context.UserScope.GetService<IParamManager>();
+            Delegate action = DelegateHelper.CreateDelegate(CommandName.CommandMethod, this);
+            
             Action commandAction = null;
 
-            if (Params.IsEmpty())
+            object[] Objparams = paramManager.GetParam();
+            if (Objparams.IsEmpty())
                 commandAction = () => action.DynamicInvoke();
             else
-                commandAction = () => action.DynamicInvoke(Params);
+                commandAction = () => action.DynamicInvoke(Objparams);
 
             await Task.Run(commandAction);
         }
 
-        /// <summary>
-        /// 执行调用
-        /// </summary>
-        internal async Task Invoke(TelegramContext context, CommandInfos CommandName)
+        private void SetTelegramContext(TelegramContext Context)
         {
-            Context = context;
-
-            IDelegateManager delegateManger = context.UserScope.GetService<IDelegateManager>();
-
-            Delegate action = delegateManger.CreateDelegate(CommandName, this);
-
-            Action commandAction = null;
-
-            commandAction = () => action.DynamicInvoke();
-
-            await Task.Run(commandAction);
+            this.Context = Context;
         }
     }
 }
