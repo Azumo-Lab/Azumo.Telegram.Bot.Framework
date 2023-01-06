@@ -23,13 +23,14 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 权限认证的Controller
     /// </summary>
     public class AuthenticationController : TelegramController
     {
@@ -40,15 +41,15 @@ namespace Telegram.Bot.Framework
             {
                 if (await File.ReadAllTextAsync("PASSWORD") == HashPassword(Password))
                 {
-                    IAuthManager authManager = Context.UserScope.GetService<IAuthManager>();
-                    authManager.SetAuth(AuthenticationRole.BotAdmin);
+                    IAuthenticationManager authManager = Context.UserScope.GetService<IAuthenticationManager>();
+                    authManager.SetAuthenticationRole(AuthenticationRole.BotAdmin);
                 }
             }
             else
             {
                 await File.WriteAllTextAsync("PASSWORD", HashPassword(Password));
-                IAuthManager authManager = Context.UserScope.GetService<IAuthManager>();
-                authManager.SetAuth(AuthenticationRole.BotAdmin);
+                IAuthenticationManager authManager = Context.UserScope.GetService<IAuthenticationManager>();
+                authManager.SetAuthenticationRole(AuthenticationRole.BotAdmin);
             }
         }
 

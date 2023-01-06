@@ -31,37 +31,58 @@ namespace Telegram.Bot.Framework.UserBridge
     /// </summary>
     public class MyUserBridge : IUserBridge
     {
+        /// <summary>
+        /// 链接是否已经关闭
+        /// </summary>
         public bool IsDiscard { get; private set; }
 
         /// <summary>
-        /// 目标用户
+        /// 我自己
         /// </summary>
         public TelegramUser Me { get; private set; }
-        public TelegramUser TargetUser { get; private set; }
-
-        private IServiceProvider serviceProvider;
 
         /// <summary>
-        /// 
+        /// 链接的目标用户
         /// </summary>
-        /// <param name="telegramUser"></param>
-        /// <param name="telegramContext"></param>
-        public MyUserBridge(TelegramUser Me, TelegramUser TargetUser, IServiceProvider serviceProvider)
-        {
-            this.Me = Me;
-            this.TargetUser = TargetUser;
-            this.serviceProvider = serviceProvider;
-        }
+        public TelegramUser TargetUser { get; private set; }
+
+        private readonly IServiceProvider serviceProvider;
+
+        private readonly IUserScopeManager UserScopeManager;
 
         public event IUserBridge.OnCreateHandle OnCreate;
         public event IUserBridge.OnCloseHandle OnClose;
 
+        #region 私有方法
+        private TelegramContext GetTelegramContext(TelegramUser user)
+        {
+            IUserScope userScope = UserScopeManager.GetUserScope(user);
+            return userScope.GetTelegramContext();
+        }
+        #endregion
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="Me">链接源用户</param>
+        /// <param name="TargetUser">链接目标用户</param>
+        /// <param name="serviceProvider">服务</param>
+        public MyUserBridge(TelegramUser Me, TelegramUser TargetUser, IServiceProvider serviceProvider)
+        {
+            this.Me = Me;
+            this.TargetUser = TargetUser;
+
+            this.serviceProvider = serviceProvider;
+            UserScopeManager = this.serviceProvider.GetService<IUserScopeManager>();
+        }
+
         public void Dispose()
         {
+            //设定关闭
             IsDiscard = true;
+
+            //清除用户数据
             TargetUser = null;
             Me = null;
-            serviceProvider = null;
         }
 
         public virtual async void Connect()
@@ -71,12 +92,8 @@ namespace Telegram.Bot.Framework.UserBridge
 
             OnCreate?.Invoke();
 
-            IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
-            IUserScope MyUserScope = userScopeManager.GetUserScope(Me);
-            IUserScope TargetUserScope = userScopeManager.GetUserScope(TargetUser);
-            
-            TelegramContext MyContext = MyUserScope.GetTelegramContext();
-            TelegramContext TargetUserContext = TargetUserScope.GetTelegramContext();
+            TelegramContext MyContext = GetTelegramContext(Me);
+            TelegramContext TargetUserContext = GetTelegramContext(TargetUser);
 
             await MyContext.SendTextMessage("正在连接...");
             await TargetUserContext.SendTextMessage("用户想与您联系...", new List<InlineButtons>
@@ -96,12 +113,8 @@ namespace Telegram.Bot.Framework.UserBridge
         {
             OnClose?.Invoke();
 
-            IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
-            IUserScope MyUserScope = userScopeManager.GetUserScope(Me);
-            IUserScope TargetUserScope = userScopeManager.GetUserScope(TargetUser);
-
-            TelegramContext MyContext = MyUserScope.GetTelegramContext();
-            TelegramContext TargetUserContext = TargetUserScope.GetTelegramContext();
+            TelegramContext MyContext = GetTelegramContext(Me);
+            TelegramContext TargetUserContext = GetTelegramContext(TargetUser);
 
             await MyContext.SendTextMessage("关闭连接...");
             await TargetUserContext.SendTextMessage("关闭连接...");
@@ -109,9 +122,7 @@ namespace Telegram.Bot.Framework.UserBridge
 
         public async void Send(string Message)
         {
-            IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
-            IUserScope TargetUserScope = userScopeManager.GetUserScope(TargetUser);
-            TelegramContext TargetUserContext = TargetUserScope.GetTelegramContext();
+            TelegramContext TargetUserContext = GetTelegramContext(TargetUser);
 
             await TargetUserContext.SendTextMessage(Message);
         }

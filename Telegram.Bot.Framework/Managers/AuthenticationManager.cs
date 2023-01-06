@@ -14,34 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.TelegramAttributes;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
-    /// UserScope管理器
+    /// 用户权限管理的实现类
     /// </summary>
-    public interface IUserScopeManager
+    internal class AuthenticationManager : IAuthenticationManager
     {
-        /// <summary>
-        /// 获得一个用户Scope, 如果该UserScope不存在则返回NULL
-        /// </summary>
-        /// <param name="telegramUser">用户</param>
-        /// <returns></returns>
-        IUserScope GetUserScope(TelegramUser telegramUser);
+        private AuthenticationRole AuthenticationRole { get; set; } = AuthenticationRole.GeneralUser;
 
-        /// <summary>
-        /// 创建一个用户Scope
-        /// 如果要创建的Scope已经存在，则返回已存在的Scope
-        /// </summary>
-        /// <param name="telegramUser">用户</param>
-        /// <returns></returns>
-        IUserScope CreateUserScope(TelegramUser telegramUser);
+        public AuthenticationRole GetAuthenticationRole()
+        {
+            return AuthenticationRole;
+        }
+
+        public void SetAuthenticationRole(AuthenticationRole role)
+        {
+            AuthenticationRole = role;
+        }
     }
 }

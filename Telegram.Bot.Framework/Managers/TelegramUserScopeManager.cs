@@ -42,7 +42,7 @@ namespace Telegram.Bot.Framework.Managers
             IUserScope userScope;
             if (!_UserID_UserScope.ContainsKey(telegramUser.Id))
             {
-                userScope = new TelegramUserScope(serviceProvider);
+                userScope = serviceProvider.GetService<IUserScope>();
                 _UserID_UserScope.TryAdd(telegramUser.Id, userScope);
                 return userScope;
             }
@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.Managers
             }
 
             if (userScope.IsDisposed)
-                _UserID_UserScope[telegramUser.Id] = new TelegramUserScope(serviceProvider);
+                _UserID_UserScope[telegramUser.Id] = serviceProvider.GetService<IUserScope>();
             return userScope;
         }
 

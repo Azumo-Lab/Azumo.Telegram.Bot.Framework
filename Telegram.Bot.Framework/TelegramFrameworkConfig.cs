@@ -33,6 +33,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.Managers;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Telegram.Bot.Framework.Authentications;
 
 namespace Telegram.Bot.Framework
 {
@@ -62,11 +63,11 @@ namespace Telegram.Bot.Framework
                 return new TelegramContext();
             });
 
-            telegramServices.AddSingleton<ITelegramUserScopeManager, TelegramUserScopeManager>();
-            telegramServices.AddTransient<ITelegramUserScope, TelegramUserScope>();
+            telegramServices.AddSingleton<IUserScopeManager, TelegramUserScopeManager>();
+            telegramServices.AddTransient<IUserScope, TelegramUserScope>();
 
             telegramServices.AddSingleton(new CancellationTokenSource());
-            telegramServices.AddSingleton<IUpdateHandler, UpdateHandler>();
+            telegramServices.AddSingleton<IUpdateHandler, TelegramUpdateHandle>();
             telegramServices.AddSingleton<ITypeManager>(new TypeManager(telegramServices));
             telegramServices.AddSingleton<IBotNameManager>(x =>
             {
@@ -113,7 +114,7 @@ namespace Telegram.Bot.Framework
         public static void AddUserAuthentication(this IServiceCollection services)
         {
             services.AddScoped<IAuthentication, UserAuthentication>();
-            services.AddScoped<IAuthManager, AuthManager>();
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
         }
 
         public static void ConfigBot(this IServiceCollection services, Action<BotConfig> ConfigAction)

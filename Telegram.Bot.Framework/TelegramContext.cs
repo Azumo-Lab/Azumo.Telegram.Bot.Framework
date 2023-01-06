@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types;
@@ -80,7 +81,7 @@ namespace Telegram.Bot.Framework
         /// <exception cref="NotImplementedException"></exception>
         private AuthenticationRole GetAuthenticationRole()
         {
-            IAuthManager authManager = UserScope.GetService<IAuthManager>();
+            IAuthenticationManager authManager = UserScope.GetService<IAuthenticationManager>();
             return authManager.GetAuthenticationRole();
         }
 

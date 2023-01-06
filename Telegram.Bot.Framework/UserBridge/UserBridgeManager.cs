@@ -31,13 +31,11 @@ namespace Telegram.Bot.Framework.UserBridge
     internal class UserBridgeManager : IUserBridgeManager
     {
         private readonly Dictionary<long, IUserBridge> UserBridges;
-        private readonly ICallBackManager callBackManager;
         private readonly IServiceProvider serviceProvider;
 
         public UserBridgeManager(IServiceProvider serviceProvider, ICallBackManager callBackManager)
         {
             UserBridges = new();
-            this.callBackManager = callBackManager;
             this.serviceProvider = serviceProvider;
         }
 

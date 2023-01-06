@@ -20,14 +20,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 用户权限管理
     /// </summary>
     public interface IAuthenticationManager
     {
+        /// <summary>
+        /// 获取用户的权限
+        /// </summary>
+        /// <returns></returns>
+        AuthenticationRole GetAuthenticationRole();
 
+        /// <summary>
+        /// 设定用户的权限
+        /// </summary>
+        /// <param name="role"></param>
+        void SetAuthenticationRole(AuthenticationRole role);
     }
 }
