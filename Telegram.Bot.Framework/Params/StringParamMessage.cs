@@ -31,9 +31,15 @@ namespace Telegram.Bot.Framework.Params
     [ParamTypeFor(typeof(string))]
     public class StringParamMessage : IParamMessage
     {
-        public Task SendMessage(string Message)
+        private readonly IServiceProvider UserScope;
+        public StringParamMessage(IServiceProvider UserScope)
         {
-            throw new NotImplementedException();
+            this.UserScope = UserScope;
+        }
+        public async Task SendMessage(string Message)
+        {
+            TelegramContext telegramContext = UserScope.GetTelegramContext();
+            await telegramContext.SendTextMessage(Message);
         }
     }
 }

@@ -20,14 +20,23 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 
 namespace Telegram.Bot.Framework.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    public class StringParamMaker
+    public class StringParamMaker : IParamMaker
     {
+        public Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return Task.FromResult<object>(context.Update.Message?.Text);
+        }
 
+        public Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        {
+            return Task.FromResult(true);
+        }
     }
 }
