@@ -243,15 +243,15 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 创建CallBack
+        /// 创建指定用户的CallBack
         /// </summary>
         /// <param name="context"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
         public static string CreateCallBack(this TelegramContext context, TelegramUser telegramUser, Action<TelegramContext> callback)
         {
-            ITelegramUserScopeManager telegramUserScopeManager = context.UserScope.GetService<ITelegramUserScopeManager>();
-            IServiceScope serviceScope = telegramUserScopeManager.GetUserScope(telegramUser.Id);
+            IUserScopeManager telegramUserScopeManager = context.UserScope.GetService<IUserScopeManager>();
+            IServiceScope serviceScope = telegramUserScopeManager.GetUserScope(telegramUser).GetUserServiceScope();
 
             ICallBackManager callBackManager = serviceScope.ServiceProvider.GetService<ICallBackManager>();
             return callBackManager.CreateCallBack(callback);
