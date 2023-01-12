@@ -220,8 +220,18 @@ namespace Telegram.Bot.Framework.Managers
         /// <returns>True:读取结束/False:继续读取</returns>
         private bool ReadParamIFMultiCommand(MessageEntity[] MessageEnityList, TelegramContext Context)
         {
-            if (Context.GetCommand().IsEmpty())
+            string CommandName;
+            if ((CommandName = Context.GetCommand()).IsEmpty())
                 return true;
+
+            _CommandName = CommandName;
+
+            IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
+            CommandInfos commandInfos = controllerManager.GetCommandInfo(CommandName);
+            if (commandInfos.IsNull())
+                return true;
+
+            _ParamInfos.AddRange(commandInfos.ParamInfos);
 
             return true;
         }
