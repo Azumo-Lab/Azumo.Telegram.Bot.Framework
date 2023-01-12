@@ -73,7 +73,7 @@ namespace Telegram.Bot.Framework
             telegramServices.AddSingleton<ITypeManager>(new TypeManager(telegramServices));
             telegramServices.AddSingleton<IBotNameManager>(x =>
             {
-                BotNameManager botNameManger = new(x)
+                BotNameManager botNameManger = new()
                 {
                     BotName = botInfos.BotName
                 };

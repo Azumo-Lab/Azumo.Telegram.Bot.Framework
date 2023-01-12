@@ -41,7 +41,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
             // 获取参数管理
             IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
 
-            if (!await paramManger.ReadParam(Context, Context.UserScope))
+            if (!await paramManger.ReadParam(Context))
                 return;
 
             await NextHandle(Context);

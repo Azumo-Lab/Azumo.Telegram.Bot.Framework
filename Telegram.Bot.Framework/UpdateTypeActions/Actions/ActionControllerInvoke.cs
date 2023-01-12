@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 
             TelegramController controller = controllerManager.CreateController(paramManger.GetCommand());
             controller ??= controllerManager.CreateController(Context.Update.Message.Type);
-            await controller.Invoke(Context, paramManger.GetCommand());
+            await controller.Invoke(Context, controllerManager.GetCommandInfo(paramManger.GetCommand()));
 
             await NextHandle(Context);
         }

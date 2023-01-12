@@ -23,8 +23,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.InternalFramework.TypeConfigs.Abstract;
+using Telegram.Bot.Framework.Params;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.InternalFramework.TypeConfigs.AttributeAnalyzes
