@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,17 +22,21 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Managers
 {
     /// <summary>
-    /// 
+    /// 帮助获取创建参数
     /// </summary>
     internal class ParamCatchManager : IParamManager
     {
         private bool _IsRead;
+        private bool _WaitForInput;
+        private string _CommandName;
         private List<object> _Params = new List<object>();
+        private List<ParamInfos> _ParamInfos = new List<ParamInfos>();
         #region Private方法群
         private void SetIsRead(bool flag)
         {
@@ -43,32 +48,58 @@ namespace Telegram.Bot.Framework.Managers
         }
         #endregion
 
+        /// <summary>
+        /// 取消，重置全部状态
+        /// </summary>
         public void Cancel()
         {
-            throw new NotImplementedException();
+            _IsRead = false;
+            _WaitForInput = false;
+            _CommandName = null;
+
+            _Params.Clear();
+            _ParamInfos.Clear();
         }
 
+        /// <summary>
+        /// 获取当前参数列表的指令
+        /// </summary>
+        /// <returns>指令名称</returns>
         public string GetCommand()
         {
-            throw new NotImplementedException();
+            return _CommandName;
         }
 
+        /// <summary>
+        /// 获取读取后的参数列表
+        /// </summary>
+        /// <returns>参数列表</returns>
         public object[] GetParam()
         {
             return _Params.ToArray();
         }
 
+        /// <summary>
+        /// 是否处于读取状态
+        /// </summary>
+        /// <returns>True:读取状态/False:非读取状态</returns>
         public bool IsReadParam()
         {
             return _IsRead;
         }
 
-        public async Task<bool> ReadParam(TelegramContext context)
+        /// <summary>
+        /// 开始读取参数
+        /// </summary>
+        /// <param name="Context">Context</param>
+        /// <returns>True:读取完成/False:需要继续读取</returns>
+        public async Task<bool> ReadParam(TelegramContext Context)
         {
-            MessageEntity[] MessageEnityList = context.Update.Message?.Entities;
             // 如果已经开始读取参数了，那么就直接进入即可
             if (IsReadParam())
-                return ReadParamIFOnlyOneCommand(MessageEnityList, context);
+                return await ReadParamContinue(Context);
+
+            MessageEntity[] MessageEnityList = Context.Update.Message?.Entities;
 
             // 什么都没有
             if (MessageEnityList.IsEmpty())
@@ -76,40 +107,123 @@ namespace Telegram.Bot.Framework.Managers
 
             // 仅有指令
             if (MessageEnityList.Length == 1)
-                return ReadParamIFOnlyOneCommand(MessageEnityList, context);
+                return ReadParamIFOnlyOneCommand(Context);
 
             // 指令后面跟着参数
             if (MessageEnityList.Length > 1)
-                return ReadParamIFMultiCommand(MessageEnityList, context);
+                return ReadParamIFMultiCommand(MessageEnityList, Context);
             return true;
         }
 
-        private bool ReadParamIFOnlyOneCommand(MessageEntity[] MessageEnityList, TelegramContext context)
+        /// <summary>
+        /// 读取只有一个指令的参数，通过发送提示消息的形式来进行互动，指引用户填写参数
+        /// </summary>
+        /// <param name="MessageEnityList">内容列表</param>
+        /// <param name="Context">Context</param>
+        /// <returns></returns>
+        private bool ReadParamIFOnlyOneCommand(TelegramContext Context)
         {
-            if (IsReadParam())
+            string CommandName = Context.GetCommand();
+
+            // 发送的消息不是指令
+            if (CommandName.IsEmpty())
+                return true;
+
+            // 获取指令信息
+            IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
+            CommandInfos CommandInfo = controllerManager.GetCommandInfo(CommandName);
+
+            // 没有这个指令
+            if (CommandInfo.IsNull())
+                return true;
+            // 这条指令没有参数
+            if (CommandInfo.ParamInfos.IsEmpty())
+                return true;
+
+            _CommandName = CommandName;
+            SetIsRead(true);
+            _ParamInfos.AddRange(CommandInfo.ParamInfos);
+
+            // 有参数，需要接收参数
+            return false;
+        }
+
+        /// <summary>
+        /// 处于读取状态下，继续读取参数
+        /// </summary>
+        /// <param name="MessageEnityList">内容列表</param>
+        /// <param name="Context">Context</param>
+        /// <returns>True:读取完成/False:未完成继续读取</returns>
+        private async Task<bool> ReadParamContinue(TelegramContext Context)
+        {
+            ParamInfos Param = _ParamInfos.FirstOrDefault();
+            if (Param.IsNull())
             {
+                // 读取完成
                 SetIsRead(false);
+                return true;
+            }
+
+            if (_WaitForInput)
+            {
+                if (await GetParam(Context.UserScope, Param, Context))
+                {
+                    _ParamInfos.Remove(Param);
+                    _WaitForInput = false;
+                }
                 return false;
             }
             else
             {
-                SetIsRead(true);
-                MessageEntity messageEntity = MessageEnityList.FirstOrDefault();
-                if (messageEntity != null)
-                {
-
-                }
+                await SendMessage(Context.UserScope, Param);
+                _WaitForInput = true;
                 return false;
             }
         }
 
-        private bool ReadParamIFMultiCommand(MessageEntity[] MessageEnityList, TelegramContext context)
+        /// <summary>
+        /// 发送用户提示消息
+        /// </summary>
+        /// <param name="serviceProvider">IServiceProvider</param>
+        /// <param name="paramInfos">参数信息</param>
+        /// <returns>无</returns>
+        private async Task SendMessage(IServiceProvider serviceProvider, ParamInfos paramInfos)
         {
-            foreach (MessageEntity item in MessageEnityList)
+            IParamMessage paramMessage = (IParamMessage)ActivatorUtilities.CreateInstance(serviceProvider, paramInfos.CustomMessageType, Array.Empty<object>());
+            await paramMessage.SendMessage(paramInfos.MessageInfo);
+        }
+
+        /// <summary>
+        /// 获取参数
+        /// </summary>
+        /// <param name="serviceProvider">IServiceProvider</param>
+        /// <param name="paramInfos">参数信息</param>
+        /// <param name="context">TelegramContext</param>
+        /// <returns>True:参数获取成功/False:参数检查失败无法获取参数</returns>
+        private async Task<bool> GetParam(IServiceProvider serviceProvider, ParamInfos paramInfos, TelegramContext context)
+        {
+            bool result;
+            IParamMaker paramMaker = (IParamMaker)ActivatorUtilities.CreateInstance(serviceProvider, paramInfos.CustomParamMaker ?? paramInfos.ParamType, Array.Empty<object>());
+            if (result = await paramMaker.ParamCheck(context, serviceProvider))
             {
-                
+                object paramVal = await paramMaker.GetParam(context, serviceProvider);
+                SetParam(paramVal);
             }
-            return false;
+            return result;
+        }
+
+        /// <summary>
+        /// 读取（一个指令，后面带有参数）这种形式的指令
+        /// </summary>
+        /// <param name="MessageEnityList">内容列表</param>
+        /// <param name="Context">Context</param>
+        /// <returns>True:读取结束/False:继续读取</returns>
+        private bool ReadParamIFMultiCommand(MessageEntity[] MessageEnityList, TelegramContext Context)
+        {
+            if (Context.GetCommand().IsEmpty())
+                return true;
+
+            return true;
         }
     }
 }

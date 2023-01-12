@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 扩展方法
     /// </summary>
     public static class HelperExtension
     {
@@ -89,10 +89,29 @@ namespace Telegram.Bot.Framework
         }
         #endregion
 
-        #region IServiceProvider
-        public static TelegramContext GetTelegramContext(this IServiceProvider serviceProvider)
+        #region IsNull()
+
+        /// <summary>
+        /// 判断一个对象是否是Null
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>True：是NULL/False：不是NULL</returns>
+        public static bool IsNull(this object obj)
         {
-            return serviceProvider.GetService<TelegramContext>();
+            return obj == null;
+        }
+        #endregion
+
+        #region IServiceProvider
+        /// <summary>
+        /// 从指定IServiceProvider中获取TelegramContext
+        /// IServiceProvider需要是UserScope
+        /// </summary>
+        /// <param name="ServiceProvider"></param>
+        /// <returns></returns>
+        public static TelegramContext GetTelegramContext(this IServiceProvider ServiceProvider)
+        {
+            return ServiceProvider.GetService<TelegramContext>();
         }
         #endregion
     }
