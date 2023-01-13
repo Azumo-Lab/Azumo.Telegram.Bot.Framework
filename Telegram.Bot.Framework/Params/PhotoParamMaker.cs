@@ -22,23 +22,27 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Params
 {
     /// <summary>
-    /// 文字类型处理
+    /// 图片类型处理
     /// </summary>
-    [ParamTypeFor(typeof(string))]
-    internal class StringParamMaker : IParamMaker
+    [ParamTypeFor(typeof(PhotoSize))]
+    internal class PhotoParamMaker : IParamMaker
     {
         public Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
-            return Task.FromResult<object>(context.Update.Message?.Text);
+            return Task.FromResult<object>(context.Update.Message.Photo.OrderByDescending(photo => photo.FileSize).FirstOrDefault());
         }
 
-        public Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
+        public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
         {
-            return Task.FromResult(true);
+            bool result;
+            if (result = context.Update.Message.Photo.IsEmpty())
+                await context.SendTextMessage("这不是图片");
+            return !result;
         }
     }
 }
