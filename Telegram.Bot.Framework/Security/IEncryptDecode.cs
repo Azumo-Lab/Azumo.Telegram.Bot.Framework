@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Security
 {
     /// <summary>
-    /// 
+    /// 基础的加密接口，用于将类的属性数据加密保存
     /// </summary>
     public interface IEncryptDecode<T>
     {

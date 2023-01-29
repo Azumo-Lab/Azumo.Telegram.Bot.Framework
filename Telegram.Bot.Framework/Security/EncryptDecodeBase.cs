@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Security
 {
     /// <summary>
-    /// 加密与解密的基类
+    /// 一个加密实现类，继承后对象会转换成Json字符串后，加密全部数据
     /// </summary>
     public abstract class EncryptDecodeBase<T> : IEncryptDecode<T> where T : EncryptDecodeBase<T>
     {

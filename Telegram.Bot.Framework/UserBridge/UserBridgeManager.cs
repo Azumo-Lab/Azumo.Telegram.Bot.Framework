@@ -26,13 +26,18 @@ using Telegram.Bot.Framework.Abstract;
 namespace Telegram.Bot.Framework.UserBridge
 {
     /// <summary>
-    /// 
+    /// 桥管理器的一种实现
     /// </summary>
     internal class UserBridgeManager : IUserBridgeManager
     {
         private readonly Dictionary<long, IUserBridge> UserBridges;
         private readonly IServiceProvider serviceProvider;
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="callBackManager"></param>
         public UserBridgeManager(IServiceProvider serviceProvider, ICallBackManager callBackManager)
         {
             UserBridges = new();

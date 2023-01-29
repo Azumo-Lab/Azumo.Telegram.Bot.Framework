@@ -17,17 +17,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Components;
 
 namespace Telegram.Bot.Framework.UserBridge
 {
     /// <summary>
-    /// 
+    /// 用户桥的一个实现
     /// </summary>
     public class MyUserBridge : IUserBridge
     {
@@ -60,6 +56,7 @@ namespace Telegram.Bot.Framework.UserBridge
             return userScope.GetTelegramContext();
         }
         #endregion
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -75,6 +72,9 @@ namespace Telegram.Bot.Framework.UserBridge
             UserScopeManager = this.serviceProvider.GetService<IUserScopeManager>();
         }
 
+        /// <summary>
+        /// 销毁链接
+        /// </summary>
         public void Dispose()
         {
             //设定关闭
@@ -85,6 +85,10 @@ namespace Telegram.Bot.Framework.UserBridge
             Me = null;
         }
 
+        /// <summary>
+        /// 链接
+        /// </summary>
+        /// <exception cref="Exception"></exception>
         public virtual async void Connect()
         {
             if (IsDiscard)
@@ -109,6 +113,9 @@ namespace Telegram.Bot.Framework.UserBridge
             });
         }
 
+        /// <summary>
+        /// 关闭链接
+        /// </summary>
         public async void Disconnect()
         {
             OnClose?.Invoke();
@@ -120,6 +127,10 @@ namespace Telegram.Bot.Framework.UserBridge
             await TargetUserContext.SendTextMessage("关闭连接...");
         }
 
+        /// <summary>
+        /// 发送一条文本消息
+        /// </summary>
+        /// <param name="Message">文本消息</param>
         public async void Send(string Message)
         {
             TelegramContext TargetUserContext = GetTelegramContext(TargetUser);

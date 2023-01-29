@@ -15,14 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Telegram.Bot.Framework.Security
 {
@@ -34,8 +26,8 @@ namespace Telegram.Bot.Framework.Security
         private static byte[] _AesKey;
         private static byte[] _AesIV;
 
-        private byte[] _aesKey;
-        private byte[] _aesIV;
+        private readonly byte[] _aesKey;
+        private readonly byte[] _aesIV;
 
         public AESEncrypt(string Password)
         {
@@ -54,16 +46,16 @@ namespace Telegram.Bot.Framework.Security
 
         public static byte[] StaticEncrypt(string Text)
         {
-            if (_AesKey == null || _AesIV == null)
-                throw new ArgumentNullException($"{nameof(_AesKey)}, {nameof(_AesIV)}");
-            return AESHelper.EncryptStringToBytes_Aes(Text, _AesKey, _AesIV);
+            return _AesKey == null || _AesIV == null
+                ? throw new ArgumentNullException($"{nameof(_AesKey)}, {nameof(_AesIV)}")
+                : AESHelper.EncryptStringToBytes_Aes(Text, _AesKey, _AesIV);
         }
 
         public static string StaticDecrypt(byte[] array)
         {
-            if (_AesKey == null || _AesIV == null)
-                throw new ArgumentNullException($"{nameof(_AesKey)}, {nameof(_AesIV)}");
-            return AESHelper.DecryptStringFromBytes_Aes(array, _AesKey, _AesIV);
+            return _AesKey == null || _AesIV == null
+                ? throw new ArgumentNullException($"{nameof(_AesKey)}, {nameof(_AesIV)}")
+                : AESHelper.DecryptStringFromBytes_Aes(array, _AesKey, _AesIV);
         }
 
         public static void SetPassword(string Password)
