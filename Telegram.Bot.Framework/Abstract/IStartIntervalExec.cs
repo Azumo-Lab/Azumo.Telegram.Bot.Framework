@@ -15,11 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -34,7 +29,7 @@ namespace Telegram.Bot.Framework.Abstract
         public TimeSpan Interval { get; }
 
         /// <summary>
-        /// 执行
+        /// 执行处理
         /// </summary>
         void Exec();
     }

@@ -28,6 +28,9 @@ namespace Telegram.Bot.Framework.Abstract
     /// </summary>
     public interface IStartBeforeExec
     {
+        /// <summary>
+        /// 执行处理
+        /// </summary>
         void Exec();
     }
 }

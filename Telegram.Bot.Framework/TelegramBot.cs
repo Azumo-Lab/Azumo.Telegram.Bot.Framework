@@ -32,6 +32,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// Telegram Bot
+    /// </summary>
     public sealed class TelegramBot : ITelegramBot
     {
         private readonly IServiceCollection telegramServiceCollection;
@@ -78,6 +81,7 @@ namespace Telegram.Bot.Framework
 
             try
             {
+                // 执行 Bot启动前的处理
                 List<IStartBeforeExec> startExecs = serviceProvider.GetServices<IStartBeforeExec>().ToList();
                 foreach (IStartBeforeExec item in startExecs)
                     item.Exec();
