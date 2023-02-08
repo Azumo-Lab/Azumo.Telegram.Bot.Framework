@@ -147,12 +147,13 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 添加一个AES密码
+        /// 添加一个AES密码，全局覆盖
         /// </summary>
         /// <param name="password">密码</param>
         /// <returns></returns>
         public TelegramBotManger AddAESPassword(string password)
         {
+            AESEncrypt.SetPassword(password);
             return this;
         }
 

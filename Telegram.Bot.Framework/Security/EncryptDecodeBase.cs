@@ -32,17 +32,18 @@ namespace Telegram.Bot.Framework.Security
     /// </summary>
     public abstract class EncryptDecodeBase<T> : IEncryptDecode<T> where T : EncryptDecodeBase<T>
     {
-        private static byte[] KEY;
-        private static byte[] IV;
-
         static EncryptDecodeBase()
         {
-            AESHelper.SetPassword("fdGX*QVvGvbtCdQBW@wrVw3BCBPDCJFDC*rzKFH@raP@hPo6JGy!pN-PMCd2RzsK@PAwho@.ZgqRRzX@_PcyxpskzKWy.4RY3ijb", out KEY, out IV);
+            AESEncrypt.SetPassword("fdGX*QVvGvbtCdQBW@wrVw3BCBPDCJFDC*rzKFH@raP@hPo6JGy!pN-PMCd2RzsK@PAwho@.ZgqRRzX@_PcyxpskzKWy.4RY3ijb");
         }
 
+        /// <summary>
+        /// 设置密码，用于覆盖默认的密码，密码更改是全局的
+        /// </summary>
+        /// <param name="Password">密码</param>
         public static void SetPassword(string Password)
         {
-            AESHelper.SetPassword(Password, out KEY, out IV);
+            AESEncrypt.SetPassword(Password);
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace Telegram.Bot.Framework.Security
         /// <returns></returns>
         public virtual T Decode(string json)
         {
-            string newJson = AESHelper.DecryptStringFromBytes_Aes(Convert.FromBase64String(json), KEY, IV);
+            string newJson = AESEncrypt.StaticDecrypt(Convert.FromBase64String(json));
             return JsonConvert.DeserializeObject<T>(newJson);
         }
 
@@ -63,7 +64,7 @@ namespace Telegram.Bot.Framework.Security
         public virtual string Encrypt()
         {
             string json = JsonConvert.SerializeObject(this);
-            return Convert.ToBase64String(AESHelper.EncryptStringToBytes_Aes(json, KEY, IV));
+            return Convert.ToBase64String(AESEncrypt.StaticEncrypt(json));
         }
     }
 }
