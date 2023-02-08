@@ -25,6 +25,7 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.Security;
 
 namespace Telegram.Bot.Framework
 {
@@ -134,9 +135,24 @@ namespace Telegram.Bot.Framework
             return this;
         }
 
+        /// <summary>
+        /// 新建一个线程执行任务
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public TelegramBotManger AddBackgroundTask(Action action)
         {
             Task.Run(action);
+            return this;
+        }
+
+        /// <summary>
+        /// 添加一个AES密码
+        /// </summary>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public TelegramBotManger AddAESPassword(string password)
+        {
             return this;
         }
 
