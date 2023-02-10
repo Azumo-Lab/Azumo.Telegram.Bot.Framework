@@ -30,42 +30,33 @@ namespace Telegram.Bot.Framework.UserBridge
     /// </summary>
     internal class UserBridgeManager : IUserBridgeManager
     {
-        private readonly Dictionary<long, IUserBridge> UserBridges;
+        private readonly Dictionary<string, IUserBridge> _users = new Dictionary<string, IUserBridge>();
+
         private readonly IServiceProvider serviceProvider;
 
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="callBackManager"></param>
-        public UserBridgeManager(IServiceProvider serviceProvider, ICallBackManager callBackManager)
+        public UserBridgeManager(IServiceProvider serviceProvider)
         {
-            UserBridges = new();
             this.serviceProvider = serviceProvider;
         }
 
-        public IUserBridge CreateUserBridge(TelegramUser telegramUser, TelegramUser targetTelegramUser)
+        public IUserBridge CreateUserBridge(TelegramUser targetTelegramUser)
         {
-            long DicID = telegramUser.Id + targetTelegramUser.Id;
-            if (UserBridges.ContainsKey(DicID))
-                return UserBridges[DicID];
+            throw new NotImplementedException();
+        }
 
-            IUserBridge userBridge = new MyUserBridge(telegramUser, targetTelegramUser, serviceProvider);
-            return userBridge;
+        public void Dispose(IUserBridge userBridge)
+        {
+            throw new NotImplementedException();
         }
 
         public IUserBridge GetUserBridge(TelegramUser telegramUser)
         {
-            long userID = telegramUser.Id;
-            if (UserBridges.TryGetValue(userID, out IUserBridge userBridge))
-                return userBridge;
-            return default;
+            throw new NotImplementedException();
         }
 
         public bool HasUserBrige(TelegramUser telegramUser)
         {
-            long userID = telegramUser.Id;
-            return UserBridges.ContainsKey(userID);
+            throw new NotImplementedException();
         }
     }
 }

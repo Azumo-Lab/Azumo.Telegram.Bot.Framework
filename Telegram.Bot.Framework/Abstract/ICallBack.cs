@@ -24,36 +24,20 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 桥管理器
+    /// 
     /// </summary>
-    public interface IUserBridgeManager
+    public interface ICallBack
     {
         /// <summary>
-        /// 向目标用户建立通信桥
+        /// CallBackID
         /// </summary>
-        /// <param name="telegramUser">用户1</param>
-        /// <param name="targetTelegramUser">用户2</param>
-        /// <returns></returns>
-        IUserBridge CreateUserBridge(TelegramUser targetTelegramUser);
+        public string CallBackID { get; }
 
         /// <summary>
-        /// 销毁一个用户桥
+        /// 开始执行
         /// </summary>
-        /// <param name="userBridge"></param>
-        void Dispose(IUserBridge userBridge);
-
-        /// <summary>
-        /// 目标用户是否已经建立了通信桥
-        /// </summary>
-        /// <param name="telegramUser"></param>
+        /// <param name="Param">参数</param>
         /// <returns></returns>
-        bool HasUserBrige(TelegramUser telegramUser);
-
-        /// <summary>
-        /// 获取指定用户的桥
-        /// </summary>
-        /// <param name="telegramUser"></param>
-        /// <returns></returns>
-        IUserBridge GetUserBridge(TelegramUser telegramUser);
+        public Task Invoke(params object[] Param);
     }
 }

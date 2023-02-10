@@ -40,13 +40,13 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
                 //判断是否是关闭桥的指令
                 if (IsCloseCommand(Context))
                 {
-                    userBridge.Disconnect();
+                    await userBridge.Disconnect();
                     userBridge.Dispose();
                     return;
                 }
 
                 //桥处理（信息等处理程序）
-                userBridge.Send(Context.Update.Message.Text);
+                await userBridge.Send(Context.Update.Message.Text);
                 return;
             }
 

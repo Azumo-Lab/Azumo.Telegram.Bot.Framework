@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -31,14 +32,19 @@ namespace Telegram.Bot.Framework.Abstract
     public interface IUserBridge : IDisposable
     {
         /// <summary>
-        /// 是否已关闭
+        /// 用户桥ID
         /// </summary>
-        bool IsDiscard { get; }
+        public string BridgeID { get; }
 
         /// <summary>
-        /// 目标用户
+        /// 用户桥是否已关闭
         /// </summary>
-        TelegramUser TargetUser { get; }
+        public bool IsDiscard { get; }
+
+        /// <summary>
+        /// 用户桥链接的目标用户
+        /// </summary>
+        public TelegramUser TargetUser { get; }
 
         #region 各类事件
         public delegate void OnCreateHandle();
@@ -57,17 +63,24 @@ namespace Telegram.Bot.Framework.Abstract
         /// <summary>
         /// 连接建立
         /// </summary>
-        public void Connect();
+        public Task Connect();
 
         /// <summary>
         /// 连接关闭
         /// </summary>
-        public void Disconnect();
+        public Task Disconnect();
 
         /// <summary>
         /// 向目标用户发送一条文本消息
         /// </summary>
-        /// <param name="Message"></param>
-        public void Send(string Message);
+        /// <param name="Message">文本消息</param>
+        public Task Send(string Message);
+
+        /// <summary>
+        /// 向目标用户发送一张图片
+        /// </summary>
+        /// <param name="photo">图片</param>
+        /// <returns></returns>
+        public Task Send(PhotoSize photo);
     }
 }
