@@ -39,9 +39,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static bool IsEmpty<T>(this IEnumerable<T> list)
         {
-            if (list == null)
-                return true;
-            return !list.Any();
+            return list == null || !list.Any();
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static bool IsTrimEmpty(this string str)
         {
-            return !IsEmpty(str) && str.Trim().IsEmpty();
+            return IsEmpty(str) || str.Trim().IsEmpty();
         }
 
         /// <summary>
@@ -71,9 +69,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static bool IsEmpty(this FileInfo fileInfo)
         {
-            if (fileInfo == null)
-                return true;
-            return fileInfo.Length == 0;
+            return fileInfo == null || fileInfo.Length == 0;
         }
 
         /// <summary>
