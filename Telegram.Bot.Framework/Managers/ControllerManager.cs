@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.Managers
             Type controllerType = typeManager.GetControllerType(CommandName);
             
             // 创建控制器实例
-            return ActivatorUtilities.CreateInstance<TelegramController>(serviceProvider, controllerType, Array.Empty<object>());
+            return (TelegramController)ActivatorUtilities.CreateInstance(serviceProvider, controllerType, Array.Empty<object>());
         }
 
         public TelegramController CreateController(MessageType messageType)

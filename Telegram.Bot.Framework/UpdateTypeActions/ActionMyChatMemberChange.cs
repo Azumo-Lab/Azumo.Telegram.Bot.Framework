@@ -94,7 +94,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            
+            return;
         }
     }
 }

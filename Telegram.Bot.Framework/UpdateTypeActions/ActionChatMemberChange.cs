@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            
+            return;
         }
 
         protected override async Task InvokeAction(TelegramContext context)

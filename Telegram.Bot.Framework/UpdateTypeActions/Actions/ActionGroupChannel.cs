@@ -37,13 +37,6 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
             switch (Context.Update.Message.Chat.Type)
             {
                 case Types.Enums.ChatType.Private:
-                    IUserBridgeManager userBridgeManager = Context.UserScope.GetService<IUserBridgeManager>();
-                    if (userBridgeManager.HasUserBrige(Context.TelegramUser))
-                    {
-                        IUserBridge userBridge = userBridgeManager.GetUserBridge(Context.TelegramUser);
-                        userBridge.Send(Context.Update.Message.Text);
-                        return;
-                    }
                     break;
                 case Types.Enums.ChatType.Group:
                     botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();

@@ -136,11 +136,13 @@ namespace Telegram.Bot.Framework.Managers
             // 没有这个指令
             if (CommandInfo.IsNull())
                 return true;
+
+            _CommandName = CommandName;
+
             // 这条指令没有参数
             if (CommandInfo.ParamInfos.IsEmpty())
                 return true;
 
-            _CommandName = CommandName;
             SetIsRead(true);
             _ParamInfos.AddRange(CommandInfo.ParamInfos);
 

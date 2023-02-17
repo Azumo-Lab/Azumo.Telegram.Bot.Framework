@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework.Authentications
 
         public virtual async Task<bool> Auth(TelegramContext context)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(true);
         }
     }
 }

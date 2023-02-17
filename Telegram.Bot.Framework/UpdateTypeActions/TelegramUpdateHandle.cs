@@ -88,7 +88,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                     //获取 | 创建 一个 TelegramUserScope
                     TelegramUser telegramUser;
                     IUserScopeManager userScopeManager = serviceProvider.GetService<IUserScopeManager>();
-                    IUserScope userScope = userScopeManager.GetUserScope(telegramUser = TelegramContext.GetTelegramUser(update));
+                    IUserScope userScope = userScopeManager.GetUserScope(telegramUser = TelegramContext.GetTelegramUser(update)) ?? userScopeManager.CreateUserScope(telegramUser);
 
                     //根据不同的用户创建 TelegramContext
                     TelegramContext telegramContext = TelegramContextSetting(userScope, OneTimeScope, telegramUser, botClient, update, cancellationToken);

@@ -34,12 +34,11 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            throw new NotImplementedException();
+            return;
         }
-
         protected override Task InvokeAction(TelegramContext context)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
