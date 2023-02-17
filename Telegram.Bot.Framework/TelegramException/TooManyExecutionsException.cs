@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.TelegramException
 {
     /// <summary>
-    /// 
+    /// 执行过多次数异常
     /// </summary>
     public class TooManyExecutionsException : Exception
     {

@@ -18,12 +18,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.InternalFramework.Models;
 using Telegram.Bot.Framework.TelegramException;
 using Telegram.Bot.Polling;
@@ -39,7 +36,7 @@ namespace Telegram.Bot.Framework
     {
         private readonly IServiceCollection telegramServiceCollection;
         private readonly IServiceProvider serviceProvider;
-        private readonly static object _lockObj = new();
+        private static readonly object _lockObj = new();
 
         private bool Running;           //多次启动的Flag
         private bool StopFlag;          //停止Flag
@@ -58,12 +55,12 @@ namespace Telegram.Bot.Framework
             telegramServiceCollection = new ServiceCollection();
 
             List<IConfig> configs = serviceProvider.GetServices<IConfig>().ToList();
-            configs.ForEach(x => 
+            configs.ForEach(x =>
             {
                 x.ConfigureServices(telegramServiceCollection);
             });
 
-            telegramServiceCollection.AddSingleton<ITelegramBot>(this);
+            _ = telegramServiceCollection.AddSingleton<ITelegramBot>(this);
 
             this.serviceProvider = telegramServiceCollection.BuildServiceProvider();
         }
@@ -86,19 +83,19 @@ namespace Telegram.Bot.Framework
                 foreach (IStartBeforeExec item in startExecs)
                     item.Exec();
             }
-            catch (Exception){/* 无视一切错误 */}
+            catch (Exception) {/* 无视一切错误 */}
 
             cts = serviceProvider.GetService<CancellationTokenSource>();
             ITelegramBotClient botClient = serviceProvider.GetService<ITelegramBotClient>();
-            
-            ReceiverOptions receiverOptions = new ReceiverOptions
+
+            ReceiverOptions receiverOptions = new()
             {
                 AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
             };
             IUpdateHandler updateHandler = serviceProvider.GetService<IUpdateHandler>();
 
             // 开始执行
-            Task botTask = Task.Run(async () => 
+            Task botTask = Task.Run(async () =>
             {
                 botClient.StartReceiving(
                     updateHandler: updateHandler.HandleUpdateAsync,
