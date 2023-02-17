@@ -107,11 +107,11 @@ namespace Telegram.Bot.Framework.Managers
 
             // 仅有指令
             if (MessageEnityList.Length == 1)
-                return ReadParamIFOnlyOneCommand(Context);
+                return await ReadParamIFOnlyOneCommand(Context);
 
             // 指令后面跟着参数
             if (MessageEnityList.Length > 1)
-                return ReadParamIFMultiCommand(MessageEnityList, Context);
+                return await ReadParamIFMultiCommand(MessageEnityList, Context);
             return true;
         }
 
@@ -121,7 +121,7 @@ namespace Telegram.Bot.Framework.Managers
         /// <param name="MessageEnityList">内容列表</param>
         /// <param name="Context">Context</param>
         /// <returns></returns>
-        private bool ReadParamIFOnlyOneCommand(TelegramContext Context)
+        private async Task<bool> ReadParamIFOnlyOneCommand(TelegramContext Context)
         {
             string CommandName = Context.GetCommand();
 
@@ -137,6 +137,9 @@ namespace Telegram.Bot.Framework.Managers
             if (CommandInfo.IsNull())
                 return true;
 
+            // 取消掉先前的指令
+            Cancel();
+
             _CommandName = CommandName;
 
             // 这条指令没有参数
@@ -147,7 +150,7 @@ namespace Telegram.Bot.Framework.Managers
             _ParamInfos.AddRange(CommandInfo.ParamInfos);
 
             // 有参数，需要接收参数
-            return false;
+            return await ReadParamContinue(Context);
         }
 
         /// <summary>
@@ -159,9 +162,10 @@ namespace Telegram.Bot.Framework.Managers
         private async Task<bool> ReadParamContinue(TelegramContext Context)
         {
             ParamInfos Param = _ParamInfos.FirstOrDefault();
+            // 判断是否还有参数了
             if (Param.IsNull())
             {
-                // 读取完成
+                // 无参数，读取完成
                 SetIsRead(false);
                 return true;
             }
@@ -173,7 +177,8 @@ namespace Telegram.Bot.Framework.Managers
                     _ParamInfos.Remove(Param);
                     _WaitForInput = false;
                 }
-                return false;
+                // 需要继续读取
+                return await ReadParamContinue(Context);
             }
             else
             {
@@ -220,22 +225,22 @@ namespace Telegram.Bot.Framework.Managers
         /// <param name="MessageEnityList">内容列表</param>
         /// <param name="Context">Context</param>
         /// <returns>True:读取结束/False:继续读取</returns>
-        private bool ReadParamIFMultiCommand(MessageEntity[] MessageEnityList, TelegramContext Context)
+        private Task<bool> ReadParamIFMultiCommand(MessageEntity[] MessageEnityList, TelegramContext Context)
         {
             string CommandName;
             if ((CommandName = Context.GetCommand()).IsEmpty())
-                return true;
+                return Task.FromResult(true);
 
             _CommandName = CommandName;
 
             IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
             CommandInfos commandInfos = controllerManager.GetCommandInfo(CommandName);
             if (commandInfos.IsNull())
-                return true;
+                return Task.FromResult(true);
 
             _ParamInfos.AddRange(commandInfos.ParamInfos);
 
-            return true;
+            return Task.FromResult(true);
         }
     }
 }
