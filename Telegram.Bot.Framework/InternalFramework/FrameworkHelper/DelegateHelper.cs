@@ -28,8 +28,8 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
     internal static class DelegateHelper
     {
         #region 初始化
-        private static readonly Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
-        private static readonly Dictionary<int, Type> FuncTypes = new Dictionary<int, Type>();
+        private static readonly Dictionary<int, Type> ActionTypes = new();
+        private static readonly Dictionary<int, Type> FuncTypes = new();
         static DelegateHelper()
         {
             ActionTypes.Add(0, typeof(Action));
@@ -71,7 +71,7 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
         #endregion
 
         #region 缓存
-        private static Dictionary<string, Dictionary<string, Type>> _DelegateCache = new();
+        private static readonly Dictionary<string, Dictionary<string, Type>> _DelegateCache = new();
         #endregion
 
         /// <summary>
@@ -95,16 +95,16 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
                 }
                 else if (MethodInfos.Count > 1)
                 {
-                    StringBuilder stringBuilder = new StringBuilder();
+                    StringBuilder stringBuilder = new();
                     T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
                     foreach (Type item in T)
-                        stringBuilder.Append(item.FullName);
+                        _ = stringBuilder.Append(item.FullName);
 
                     if (MethodInfos.TryGetValue(stringBuilder.ToString(), out delegateType))
                         return CreateDelegate(delegateType, methodInfo, instance);
                 }
             }
-                
+
             Type returnType = methodInfo.ReturnType;
             if (T.IsEmpty())
                 T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
@@ -134,10 +134,9 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
         /// <returns>委托</returns>
         private static Delegate CreateDelegate(Type delegateType, MethodInfo methodInfo, object instance)
         {
-            if (instance == null)
-                return Delegate.CreateDelegate(delegateType, methodInfo);
-            else
-                return Delegate.CreateDelegate(delegateType, instance, methodInfo);
+            return instance == null
+                ? Delegate.CreateDelegate(delegateType, methodInfo)
+                : Delegate.CreateDelegate(delegateType, instance, methodInfo);
         }
 
         /// <summary>
