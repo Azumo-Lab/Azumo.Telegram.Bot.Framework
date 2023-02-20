@@ -7,7 +7,7 @@ gantt
     section Beta-2.2
     开发  :2022-10-15, 30d
     section Beta-2.3
-    开发  :2023-02-01, 15d
+    开发  :2023-01-01, 45d
     测试  :5d
     正式发布:milestone, 0d
     section Release-1.0
