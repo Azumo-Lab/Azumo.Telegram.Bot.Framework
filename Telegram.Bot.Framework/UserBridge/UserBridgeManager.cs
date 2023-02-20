@@ -27,11 +27,10 @@ namespace Telegram.Bot.Framework.UserBridge
 {
     /// <summary>
     /// 桥管理器的一种实现
+    /// TODO:暂时未实现功能
     /// </summary>
     internal class UserBridgeManager : IUserBridgeManager
     {
-        private readonly Dictionary<string, IUserBridge> _users = new Dictionary<string, IUserBridge>();
-
         private readonly IServiceProvider serviceProvider;
 
         public UserBridgeManager(IServiceProvider serviceProvider)

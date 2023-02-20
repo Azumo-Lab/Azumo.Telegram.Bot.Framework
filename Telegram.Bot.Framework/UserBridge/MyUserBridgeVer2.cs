@@ -28,7 +28,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.UserBridge
 {
     /// <summary>
-    /// 
+    /// TODO:用户桥功能暂时未实现
     /// </summary>
     internal class MyUserBridgeVer2 : IUserBridge
     {
