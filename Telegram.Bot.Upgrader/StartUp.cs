@@ -14,30 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Upgrader.Bot;
 using IConfig = Telegram.Bot.Framework.Abstract.IConfig;
 
 namespace Telegram.Bot.Upgrader
 {
     /// <summary>
-    /// 
+    /// 配置
     /// </summary>
     public class StartUp : IConfig
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IBotManager, BotManager>();
-            services.AddSingleton<IProcessManager, ProcessManager>();
+            _ = services.AddSingleton<IBotManager, BotManager>();
+            _ = services.AddSingleton<IProcessManager, ProcessManager>();
         }
     }
 }

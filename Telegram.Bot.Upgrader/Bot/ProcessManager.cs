@@ -14,33 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Telegram.Bot.Upgrader.Bot
 {
     /// <summary>
-    /// 
+    /// 执行管理
     /// </summary>
     internal class ProcessManager : IProcessManager, IDisposable
     {
-        private readonly Dictionary<string, Process> ProcessMap = new Dictionary<string, Process>();
+        private readonly Dictionary<string, Process> ProcessMap = new();
 
         public ProcessManager()
         {
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
         }
 
+        /// <summary>
+        /// 销毁时候的事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CurrentDomain_ProcessExit(object? sender, EventArgs e)
         {
             Dispose();
         }
 
+        /// <summary>
+        /// 销毁，结束所有程序
+        /// </summary>
         public void Dispose()
         {
             foreach (KeyValuePair<string, Process> item in ProcessMap)
@@ -53,29 +55,48 @@ namespace Telegram.Bot.Upgrader.Bot
                 process.Close();
                 process.Dispose();
             }
+            ProcessMap.Clear();
         }
 
+        /// <summary>
+        /// 判断是否正在执行
+        /// </summary>
+        /// <param name="ID">BotID</param>
+        /// <returns>True正在执行／False已停止</returns>
         public bool IsRunning(string ID)
         {
             return ProcessMap.ContainsKey(ID);
         }
 
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <param name="ID">BotID</param>
+        /// <param name="EXEPath">可执行文件的路径</param>
+        /// <returns></returns>
         public bool Start(string ID, string EXEPath)
         {
-            Process process = new Process();
-            process.StartInfo = new ProcessStartInfo
+            Process process = new()
             {
-                FileName = EXEPath,
-                WorkingDirectory = Path.GetDirectoryName(EXEPath),
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = EXEPath,
+                    WorkingDirectory = Path.GetDirectoryName(EXEPath),
+                }
             };
 
-            ProcessMap.TryAdd(ID, process);
+            _ = ProcessMap.TryAdd(ID, process);
 
-            ProcessMap[ID].Start();
+            _ = ProcessMap[ID].Start();
 
             return true;
         }
 
+        /// <summary>
+        /// 停止执行
+        /// </summary>
+        /// <param name="ID">BotID</param>
+        /// <returns>是否成功</returns>
         public bool Stop(string ID)
         {
             if (!ProcessMap.ContainsKey(ID))
@@ -86,7 +107,7 @@ namespace Telegram.Bot.Upgrader.Bot
                 process.Kill();
             process.Close();
             process.Dispose();
-            ProcessMap.Remove(ID);
+            _ = ProcessMap.Remove(ID);
 
             return true;
         }

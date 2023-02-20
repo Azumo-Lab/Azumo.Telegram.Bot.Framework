@@ -99,11 +99,14 @@ namespace Telegram.Bot.Framework.Managers
             if (IsReadParam())
                 return await ReadParamContinue(Context);
 
+            // 取消掉先前的指令
+            Cancel();
+
             MessageEntity[] MessageEnityList = Context.Update.Message?.Entities;
 
             // 什么都没有
             if (MessageEnityList.IsEmpty())
-                return true;
+                return false;
 
             // 仅有指令
             if (MessageEnityList.Length == 1)
@@ -127,7 +130,7 @@ namespace Telegram.Bot.Framework.Managers
 
             // 发送的消息不是指令
             if (CommandName.IsEmpty())
-                return true;
+                return false;
 
             // 获取指令信息
             IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
@@ -135,13 +138,7 @@ namespace Telegram.Bot.Framework.Managers
 
             // 没有这个指令
             if (CommandInfo.IsNull())
-            {
-                Cancel();
                 return false;
-            }
-
-            // 取消掉先前的指令
-            Cancel();
 
             _CommandName = CommandName;
 

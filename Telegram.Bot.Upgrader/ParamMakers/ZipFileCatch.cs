@@ -14,30 +14,36 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract;
 
 namespace Telegram.Bot.Upgrader.ParamMakers
 {
     /// <summary>
-    /// 
+    /// 自定义的获取压缩包参数
     /// </summary>
     internal class ZipFileCatch : IParamMaker
     {
         private ZipArchive ZipArchive = null!;
 
+        /// <summary>
+        /// 获取参数
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
         public async Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider)
         {
             return await Task.FromResult(ZipArchive);
         }
 
+        /// <summary>
+        /// 参数检查
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
         public async Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider)
         {
             async Task<bool> IsNotZipFile()
@@ -52,7 +58,7 @@ namespace Telegram.Bot.Upgrader.ParamMakers
                 return await IsNotZipFile();
 
             MemoryStream memoryStream = new();
-            await context.BotClient.GetInfoAndDownloadFileAsync(context.Update.Message.Document.FileId, memoryStream);
+            _ = await context.BotClient.GetInfoAndDownloadFileAsync(context.Update.Message.Document.FileId, memoryStream);
 
             try
             {
@@ -62,6 +68,10 @@ namespace Telegram.Bot.Upgrader.ParamMakers
             }
             catch (Exception)
             { }
+            finally
+            {
+
+            }
 
             return await IsNotZipFile();
         }

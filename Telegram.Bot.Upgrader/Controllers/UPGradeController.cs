@@ -15,15 +15,10 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Upgrader.Bot;
 using Telegram.Bot.Upgrader.ParamMakers;
@@ -44,17 +39,55 @@ namespace Telegram.Bot.Upgrader.Controllers
         }
 
         /// <summary>
+        /// 开始菜单
+        /// </summary>
+        /// <returns></returns>
+        [Command(nameof(Start))]
+        public async Task Start()
+        {
+            ICommandManager commandManager = Context.UserScope.GetRequiredService<ICommandManager>();
+
+            string message = "你好，这里是升级管理机器人：";
+
+            message += Environment.NewLine;
+            message += Environment.NewLine;
+
+            message += commandManager.GetCommandInfoString();
+
+            message += Environment.NewLine;
+            message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";
+
+            await Context.SendTextMessage(message);
+        }
+
+        /// <summary>
         /// 列出所有正在执行的Bot
         /// </summary>
         [Command(nameof(ListBots), CommandInfo = "列出所有的Bot")]
         public async Task ListBots()
         {
-            List<(string, string)> botInfos = botManager.ListBotInfos();
+            List<BotInfoModel> botInfos = botManager.ListBotInfos();
             StringBuilder sb = new();
-            sb.AppendLine("BotID  |  Bot信息  |   是否正在运行");
-            foreach ((string botID, string botInfo) in botInfos)
-                sb.AppendLine($"{botID} | {botInfo}  |  {""}");
+            _ = sb.AppendLine("BotID  |  Bot信息  |   是否正在运行");
+            foreach (BotInfoModel botInfo in botInfos)
+                _ = sb.AppendLine($"{botInfo.BotID} | {botInfo.BotInfo}  |  {(botInfo.IsRunning ? "运行中" : "停止")}");
+            if (!botInfos.Any())
+                _ = sb.AppendLine("未找到任何信息");
             await Context.SendTextMessage(sb.ToString());
+        }
+
+        /// <summary>
+        /// 启动指定Bot
+        /// </summary>
+        /// <param name="botID">Bot的ID</param>
+        [Command(nameof(StartBot), CommandInfo = "启动指定Bot")]
+        public async void StartBot(
+            [Param(ASK_BOT_ID_MESSAGE)] string botID)
+        {
+            if (botManager.StartBot(botID))
+                await Context.SendTextMessage($"已启动Bot {botID}");
+            else
+                await Context.SendTextMessage($"未找到ID： {botID}");
         }
 
         /// <summary>
@@ -88,13 +121,29 @@ namespace Telegram.Bot.Upgrader.Controllers
         }
 
         /// <summary>
+        /// 更新指定Bot的信息
+        /// </summary>
+        /// <param name="botID">Bot的ID</param>
+        /// <param name="botInfo">bot信息</param>
+        [Command(nameof(UpdateInfo), CommandInfo = "更新指定Bot的信息")]
+        public async void UpdateInfo(
+            [Param(ASK_BOT_ID_MESSAGE)] string botID,
+            [Param("请输入Bot信息")] string botInfo)
+        {
+            if (botManager.UpdateBotInfo(botID, botInfo))
+                await Context.SendTextMessage($"已更新Bot {botID}");
+            else
+                await Context.SendTextMessage($"未找到ID： {botID}");
+        }
+
+        /// <summary>
         /// 添加Bot
         /// </summary>
         /// <param name="botInfo">bot信息</param>
         /// <param name="zipArchive">Bot执行程序的压缩文件</param>
         [Command(nameof(AddBot), CommandInfo = "添加一个全新的Bot")]
         public async void AddBot(
-            [Param("请输入Bot信息")]string botInfo,
+            [Param("请输入Bot信息")] string botInfo,
             [Param("请上传Bot程序", CustomParamMaker = typeof(ZipFileCatch))] ZipArchive zipArchive)
         {
             try
@@ -114,26 +163,12 @@ namespace Telegram.Bot.Upgrader.Controllers
         }
 
         /// <summary>
-        /// 启动指定Bot
-        /// </summary>
-        /// <param name="botID">Bot的ID</param>
-        [Command(nameof(StartBot), CommandInfo = "启动指定Bot")]
-        public async void StartBot(
-            [Param(ASK_BOT_ID_MESSAGE)] string botID)
-        {
-            if (botManager.StartBot(botID))
-                await Context.SendTextMessage($"已启动Bot {botID}");
-            else
-                await Context.SendTextMessage($"未找到ID： {botID}");
-        }
-
-        /// <summary>
         /// 删除一个Bot
         /// </summary>
         /// <param name="botID">Bot的ID</param>
         [Command(nameof(RemoveBot), CommandInfo = "删除指定Bot")]
         public async void RemoveBot(
-            [Param(ASK_BOT_ID_MESSAGE)]string botID)
+            [Param(ASK_BOT_ID_MESSAGE)] string botID)
         {
             if (botManager.RemoveBot(botID))
                 await Context.SendTextMessage($"已删除Bot {botID}");

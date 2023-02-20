@@ -14,24 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
 namespace Telegram.Bot.Upgrader.Bot
 {
     /// <summary>
-    /// 
+    /// 执行管理
     /// </summary>
     internal interface IProcessManager
     {
+        /// <summary>
+        /// 是否正在运行
+        /// </summary>
+        /// <param name="ID">ID</param>
+        /// <returns>True是/False否</returns>
         bool IsRunning(string ID);
 
+        /// <summary>
+        /// 停止执行
+        /// </summary>
+        /// <param name="ID">ID</param>
+        /// <returns>是否成功</returns>
         bool Stop(string ID);
 
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <param name="ID">ID</param>
+        /// <param name="EXEPath">可执行文件路径</param>
+        /// <returns>是否成功</returns>
         bool Start(string ID, string EXEPath);
     }
 }

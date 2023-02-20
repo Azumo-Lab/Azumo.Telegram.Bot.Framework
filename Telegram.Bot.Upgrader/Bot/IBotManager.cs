@@ -14,13 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Telegram.Bot.Upgrader.Bot
 {
@@ -72,6 +66,6 @@ namespace Telegram.Bot.Upgrader.Bot
         /// 列出Bot的信息
         /// </summary>
         /// <returns></returns>
-        List<(string botID, string botInfo)> ListBotInfos();
+        List<BotInfoModel> ListBotInfos();
     }
 }

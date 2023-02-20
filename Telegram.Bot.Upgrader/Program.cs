@@ -3,8 +3,8 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Upgrader;
 
 ITelegramBot tgbot = TelegramBotManger.Create()
-    .SetToken("<your token>")
-    .SetProxy("http://127.0.0.1", 7890)
+    .SetToken("<Your Token>")
+    .SetProxy("127.0.0.1", 7890)
     .AddConfig<StartUp>()
     .Build();
 
