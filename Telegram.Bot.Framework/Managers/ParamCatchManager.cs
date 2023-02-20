@@ -135,7 +135,10 @@ namespace Telegram.Bot.Framework.Managers
 
             // 没有这个指令
             if (CommandInfo.IsNull())
-                return true;
+            {
+                Cancel();
+                return false;
+            }
 
             // 取消掉先前的指令
             Cancel();
