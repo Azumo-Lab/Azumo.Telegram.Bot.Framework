@@ -37,9 +37,9 @@ namespace Telegram.Bot.Example.Commands
             await Context.SendTextMessage("回调函数", new List<InlineButtons>
             {
                 InlineButtons.WithCallback("点击说你好",
-                (context)=>
+                async (context)=>
                 {
-                    context.BotClient.SendTextMessageAsync(context.ChatID, "你好！！");
+                    await context.SendTextMessage("你好！！");
                 })
             });
             await Context.SendTextMessage("这是测试回调函数的用例，点击“点击说你好”按钮后，会触发发送“你好！！”的方法");

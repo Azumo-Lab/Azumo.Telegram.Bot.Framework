@@ -40,8 +40,11 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         {
             ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
             Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-            callbackAction.Invoke(Context);
+            if (!callbackAction.IsNull())
+            {
+                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
+                callbackAction.Invoke(Context);
+            }
 
             await NextHandle(Context);
         }

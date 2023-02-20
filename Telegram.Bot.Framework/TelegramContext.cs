@@ -140,7 +140,7 @@ namespace Telegram.Bot.Framework
                 UpdateType.Message => new TelegramUser(update.Message.From, GetChatID(update)),
                 UpdateType.InlineQuery => new TelegramUser(update.InlineQuery.From),
                 UpdateType.ChosenInlineResult => new TelegramUser(update.ChosenInlineResult.From),
-                UpdateType.CallbackQuery => new TelegramUser(update.CallbackQuery.Message.From, GetChatID(update)),
+                UpdateType.CallbackQuery => new TelegramUser(update.CallbackQuery.From, GetChatID(update)),
                 UpdateType.EditedMessage => new TelegramUser(update.EditedMessage.From, GetChatID(update)),
                 UpdateType.ChannelPost => new TelegramUser(update.ChannelPost.From, GetChatID(update)),
                 UpdateType.EditedChannelPost => new TelegramUser(update.EditedChannelPost.From, GetChatID(update)),
