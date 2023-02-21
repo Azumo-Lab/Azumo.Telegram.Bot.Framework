@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
 {
@@ -27,8 +28,8 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
     internal static class DelegateHelper
     {
         #region 初始化
-        private static readonly Dictionary<int, Type> ActionTypes = new Dictionary<int, Type>();
-        private static readonly Dictionary<int, Type> FuncTypes = new Dictionary<int, Type>();
+        private static readonly Dictionary<int, Type> ActionTypes = new();
+        private static readonly Dictionary<int, Type> FuncTypes = new();
         static DelegateHelper()
         {
             ActionTypes.Add(0, typeof(Action));
@@ -69,20 +70,44 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
         }
         #endregion
 
+        #region 缓存
+        private static readonly Dictionary<string, Dictionary<string, Type>> _DelegateCache = new();
+        #endregion
+
         /// <summary>
         /// 创建一个委托
         /// </summary>
         /// <param name="methodInfo">方法</param>
         /// <param name="instance">新的实例</param>
-        /// <returns></returns>
+        /// <returns>委托</returns>
         public static Delegate CreateDelegate(MethodInfo methodInfo, object instance)
         {
             ThrowHelper.ThrowIfNull(methodInfo, nameof(methodInfo));
 
-            List<Type> T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
-            Type returnType = methodInfo.ReturnType;
-
             Type delegateType = null;
+            List<Type> T = null;
+            if (_DelegateCache.TryGetValue(methodInfo.Name, out Dictionary<string, Type> MethodInfos))
+            {
+                if (MethodInfos.Count == 1)
+                {
+                    delegateType = MethodInfos.FirstOrDefault().Value;
+                    return CreateDelegate(delegateType, methodInfo, instance);
+                }
+                else if (MethodInfos.Count > 1)
+                {
+                    StringBuilder stringBuilder = new();
+                    T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
+                    foreach (Type item in T)
+                        _ = stringBuilder.Append(item.FullName);
+
+                    if (MethodInfos.TryGetValue(stringBuilder.ToString(), out delegateType))
+                        return CreateDelegate(delegateType, methodInfo, instance);
+                }
+            }
+
+            Type returnType = methodInfo.ReturnType;
+            if (T.IsEmpty())
+                T = methodInfo.GetParameters().Select(x => x.ParameterType).ToList();
             if (returnType.FullName == typeof(void).FullName)
             {
                 delegateType = ActionTypes[T.Count];
@@ -95,10 +120,40 @@ namespace Telegram.Bot.Framework.InternalFramework.FrameworkHelper
                 delegateType = delegateType.MakeGenericType(T.ToArray());
             }
 
-            if (instance == null)
-                return Delegate.CreateDelegate(delegateType, methodInfo);
+            CacheDelegate(methodInfo.Name, string.Join(string.Empty, T.Select(x => x.Name)), delegateType);
+
+            return CreateDelegate(delegateType, methodInfo, instance);
+        }
+
+        /// <summary>
+        /// 创建委托
+        /// </summary>
+        /// <param name="delegateType">委托类型</param>
+        /// <param name="methodInfo">方法</param>
+        /// <param name="instance">实例</param>
+        /// <returns>委托</returns>
+        private static Delegate CreateDelegate(Type delegateType, MethodInfo methodInfo, object instance)
+        {
+            return instance == null
+                ? Delegate.CreateDelegate(delegateType, methodInfo)
+                : Delegate.CreateDelegate(delegateType, instance, methodInfo);
+        }
+
+        /// <summary>
+        /// 缓存委托
+        /// </summary>
+        /// <param name="MethodName">方法名臣</param>
+        /// <param name="ParamNames">参数名称</param>
+        /// <param name="Delegate">委托类型</param>
+        private static void CacheDelegate(string MethodName, string ParamNames, Type Delegate)
+        {
+            if (_DelegateCache.ContainsKey(MethodName))
+                if (_DelegateCache[MethodName].ContainsKey(ParamNames))
+                    _DelegateCache[MethodName][ParamNames] = Delegate;
+                else
+                    _DelegateCache[MethodName].Add(ParamNames, Delegate);
             else
-                return Delegate.CreateDelegate(delegateType, instance, methodInfo);
+                _DelegateCache.Add(MethodName, new Dictionary<string, Type> { { ParamNames, Delegate } });
         }
     }
 }

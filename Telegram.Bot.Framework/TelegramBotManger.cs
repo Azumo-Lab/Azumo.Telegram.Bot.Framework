@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,10 +25,11 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.Security;
 
 namespace Telegram.Bot.Framework
 {
-    public class TelegramBotManger
+    public sealed class TelegramBotManger
     {
         private static HashSet<string> Tokens = new HashSet<string>();  //判断重复Token
         private string Token;                                           //Token
@@ -134,6 +135,11 @@ namespace Telegram.Bot.Framework
             return this;
         }
 
+        /// <summary>
+        /// 新建一个线程执行任务
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public TelegramBotManger AddBackgroundTask(Action action)
         {
             Task.Run(action);
@@ -141,10 +147,21 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
+        /// 添加一个AES密码，全局覆盖
+        /// </summary>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public TelegramBotManger AddAESPassword(string password)
+        {
+            AESEncrypt.SetPassword(password);
+            return this;
+        }
+
+        /// <summary>
         /// 创建一个Bot对象
         /// </summary>
         /// <returns></returns>
-        public TelegramBot Build()
+        public ITelegramBot Build()
         {
             ThrowHelper.ThrowIfNullOrEmpty(Token);
 
@@ -152,8 +169,8 @@ namespace Telegram.Bot.Framework
                 throw new Exception($"重复的Token : {Token}");
             Tokens.Add(Token);
 
-            services.AddScoped<IConfig, FrameworkConfig>();
-            services.AddScoped(x => new TelegramBot(x));
+            services.AddScoped<IConfig, TelegramFrameworkConfig>();
+            services.AddScoped<ITelegramBot>(x => new TelegramBot(x));
 
             using (ServiceProvider serviceProvider = services.BuildServiceProvider())
             {
@@ -161,7 +178,7 @@ namespace Telegram.Bot.Framework
                 info.BotName = BotName;
                 info.Token = Token;
 
-                return serviceProvider.GetService<TelegramBot>();
+                return serviceProvider.GetService<ITelegramBot>();
             }
         }
     }

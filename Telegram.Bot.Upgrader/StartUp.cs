@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -14,28 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.InternalFramework;
+using Telegram.Bot.Upgrader.Bot;
 using IConfig = Telegram.Bot.Framework.Abstract.IConfig;
 
 namespace Telegram.Bot.Upgrader
 {
     /// <summary>
-    /// 
+    /// 配置
     /// </summary>
     public class StartUp : IConfig
     {
-        public void Config(IServiceCollection telegramServices)
+        public void ConfigureServices(IServiceCollection services)
         {
-            telegramServices.AddUserAuthentication();
+            services.AddUserAuthentication();
+            _ = services.AddSingleton<IBotManager, BotManager>();
+            _ = services.AddSingleton<IProcessManager, ProcessManager>();
         }
     }
 }

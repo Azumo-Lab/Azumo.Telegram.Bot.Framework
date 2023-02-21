@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -53,12 +53,12 @@ namespace Telegram.Bot.Framework.InternalFramework.Models
         /// <summary>
         /// 能够使用的Bot名称
         /// </summary>
-        public HashSet<string> BotNames { get; set; }
+        public HashSet<string> BotNames { get; } = new HashSet<string>();
 
         /// <summary>
         /// 方法参数信息
         /// </summary>
-        public List<ParamInfos> ParamInfos { get; set; }
+        public List<ParamInfos> ParamInfos { get; } = new List<ParamInfos>();
 
         /// <summary>
         /// 标记信息

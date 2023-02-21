@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,14 +24,14 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract
 {
     /// <summary>
-    /// 
+    /// 权限认证
     /// </summary>
     public interface IAuthentication
     {
         /// <summary>
-        /// 
+        /// 权限认证
         /// </summary>
-        /// <returns></returns>
-        bool Auth(TelegramContext context);
+        /// <returns>成功True/失败False</returns>
+        Task<bool> Auth(TelegramContext context);
     }
 }

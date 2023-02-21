@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@ using Telegram.Bot.Types.ReplyMarkups;
 namespace Telegram.Bot.Framework.Components
 {
     /// <summary>
-    /// 
+    /// 返回消息的按钮
     /// </summary>
     public class InlineButtons
     {
         public string Text { get; private set; }
 
-        public Action<TelegramContext, IServiceScope> Callback { get; private set; }
+        public Action<TelegramContext> Callback { get; private set; }
 
         public string Url { get; set; }
 
@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.Components
 
         public bool Pay { get; set; }
 
-        public static InlineButtons WithCallback(string text, Action<TelegramContext, IServiceScope> callback) =>
+        public static InlineButtons WithCallback(string text, Action<TelegramContext> callback) =>
             new() { Text = text, Callback = callback };
 
         public static InlineButtons WithUrl(string text, string url) =>

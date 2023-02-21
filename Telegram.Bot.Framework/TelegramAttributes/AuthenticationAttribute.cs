@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,10 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace Telegram.Bot.Framework.TelegramAttributes
 {
@@ -49,16 +45,18 @@ namespace Telegram.Bot.Framework.TelegramAttributes
     public enum AuthenticationRole
     {
         /// <summary>
-        /// 管理员
+        /// 管理员，Bot的管理者
         /// </summary>
-        ADMIN,
+        BotAdmin,
+
         /// <summary>
-        /// 普通用户
+        /// 注册用户，Bot的服务对象，频道管理员群组管理员这一类
         /// </summary>
-        USER,
+        RegisteredUser,
+
         /// <summary>
-        /// 未登录用户
+        /// 一般用户，呼叫Bot的用户
         /// </summary>
-        NONE,
+        GeneralUser,
     }
 }

@@ -1,5 +1,27 @@
 # Telegram.Bot.Framework
 
+```mermaid
+gantt
+    title Telegram.Bot.Framework 计划图
+    dateFormat  YYYY-MM-DD
+    section Beta-2.2
+    开发  :2022-10-15, 30d
+    section Beta-2.3
+    开发  :2023-01-01, 45d
+    测试  :5d
+    正式发布:milestone, 0d
+    section Release-1.0
+    开发  :2023-02-25, 15d
+    测试  :2023-03-09, 5d
+    正式发布:milestone, 2023-03-15, 0d
+```
+### Release-1.0实现的目标
+
+* 用户桥功能
+* 频道管理
+* 群组管理
+* 基础Bot功能
+
 ### 简单介绍
 
 [更多帮助和使用指南，请访问WIKI](https://github.com/sokushu/Telegram.Bot.Net/wiki)
@@ -54,3 +76,11 @@ public class TGBotDEV : IConfig
     }
 }
 ```
+
+### 目前开发中的已知问题
+
+* [BUG] `/Admin` 指令，如果不使用用户权限认证，直接使用会导致异常发生
+
+### 目前计划开发的内容
+
+* 暂无

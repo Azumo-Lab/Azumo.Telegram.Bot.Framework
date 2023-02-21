@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,44 +15,44 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 权限认证的Controller
     /// </summary>
     public class AuthenticationController : TelegramController
     {
         [Command("Admin", CommandInfo = "管理员认证")]
-        public virtual async Task AdminAuth([Param("输入或设定密码")]string Password)
+        public virtual async Task AdminAuth([Param("输入或设定密码")] string Password)
         {
             if (File.Exists("PASSWORD"))
             {
-                if (File.ReadAllText("PASSWORD") == HashPassword(Password))
+                if (await File.ReadAllTextAsync("PASSWORD") == HashPassword(Password))
                 {
-                    IAuthManager authManager = UserService.GetService<IAuthManager>();
-                    authManager.SetAuth(AuthenticationRole.ADMIN);
+                    IAuthenticationManager authManager = Context.UserScope.GetService<IAuthenticationManager>();
+                    if (authManager.IsNull())
+                        return;
+                    authManager.SetAuthenticationRole(AuthenticationRole.BotAdmin);
                 }
             }
             else
             {
-                File.WriteAllText("PASSWORD", HashPassword(Password));
-                IAuthManager authManager = UserService.GetService<IAuthManager>();
-                authManager.SetAuth(AuthenticationRole.ADMIN);
+                await File.WriteAllTextAsync("PASSWORD", HashPassword(Password));
+                IAuthenticationManager authManager = Context.UserScope.GetService<IAuthenticationManager>();
+                if (authManager.IsNull())
+                    return;
+                authManager.SetAuthenticationRole(AuthenticationRole.BotAdmin);
             }
         }
 
-        private string HashPassword(string Password)
+        protected static string HashPassword(string Password)
         {
             SHA256 hA256 = SHA256.Create();
             byte[] hash = Encoding.UTF8.GetBytes(Password);

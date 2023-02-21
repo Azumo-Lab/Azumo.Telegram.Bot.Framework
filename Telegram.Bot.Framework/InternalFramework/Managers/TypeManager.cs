@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Framework.InternalFramework.ParameterManager;
 using Telegram.Bot.Framework.InternalFramework.TypeConfigs;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Types.Enums;
@@ -51,11 +50,9 @@ namespace Telegram.Bot.Framework.InternalFramework.Managers
             TypesHelper.GetTypes<IParamMessage>().ForEach(x => { services.AddScoped(x); });
             TypesHelper.GetTypes<TelegramController>().ForEach(x => { services.AddScoped(x); });
 
-            ConfigManager configManager = new ConfigManager();
-
-            CommandInfos = configManager.GetCommandInfos().Where(x => x.CommandName != null)
+            CommandInfos = FrameworkAnalyze.Analyze().Where(x => x.CommandName != null)
                 .ToDictionary(k => k.CommandName, v => v);
-            MessageInfos = configManager.GetMessageTypeInfos().GroupBy(x => x.MessageType).ToDictionary(k => k.Key, v => v.ToList());
+            MessageInfos = FrameworkAnalyze.GetMessageTypeInfos().GroupBy(x => x.MessageType).ToDictionary(k => k.Key, v => v.ToList());
         }
 
         public string BotName { get; set; }

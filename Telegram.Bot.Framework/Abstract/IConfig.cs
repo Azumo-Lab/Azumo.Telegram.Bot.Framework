@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,15 @@ using System.Text;
 
 namespace Telegram.Bot.Framework.Abstract
 {
+    /// <summary>
+    /// 框架的设置与配置
+    /// </summary>
     public interface IConfig
     {
-        public void Config(IServiceCollection telegramServices);
+        /// <summary>
+        /// 执行配置
+        /// </summary>
+        /// <param name="telegramServices"></param>
+        public void ConfigureServices(IServiceCollection services);
     }
 }

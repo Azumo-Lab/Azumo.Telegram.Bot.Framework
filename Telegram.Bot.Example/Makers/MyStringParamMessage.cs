@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace Telegram.Bot.Example.Makers
     /// </summary>
     public class MyStringParamMessage : IParamMessage
     {
-        IServiceProvider serviceProvider;
+        private readonly IServiceProvider serviceProvider;
         public MyStringParamMessage(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;

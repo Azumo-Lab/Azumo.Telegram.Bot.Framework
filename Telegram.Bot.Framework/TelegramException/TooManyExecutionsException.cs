@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.TelegramException
 {
     /// <summary>
-    /// 
+    /// 执行过多次数异常
     /// </summary>
     public class TooManyExecutionsException : Exception
     {

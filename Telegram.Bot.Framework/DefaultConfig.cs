@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -26,18 +26,26 @@ using Telegram.Bot.Framework.Abstract;
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 默认
+    /// 默认实现
     /// </summary>
     public class DefaultConfig : IConfig
     {
         internal Action<IServiceCollection> action;
 
-        public void Config(IServiceCollection telegramServices)
+        /// <summary>
+        /// 配置
+        /// </summary>
+        /// <param name="telegramServices"></param>
+        public void ConfigureServices(IServiceCollection telegramServices)
         {
             action?.Invoke(telegramServices);
         }
 
-        internal void SetAction(Action<IServiceCollection> action)
+        /// <summary>
+        /// 设置配置委托
+        /// </summary>
+        /// <param name="action"></param>
+        public void SetAction(Action<IServiceCollection> action)
         {
             this.action = action;
         }
