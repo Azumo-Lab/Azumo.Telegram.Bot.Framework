@@ -48,6 +48,7 @@ namespace Telegram.Bot.Net
 
             ITelegramBot bot = TelegramBotManger.Create()
                 .SetToken(Token)
+                //.SetToken("<Token>")
                 .SetProxy(Proxy, Port)
                 .AddConfig<TGBotDEV>()
                 .SetBotName("DEV1")

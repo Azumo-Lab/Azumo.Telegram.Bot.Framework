@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Upgrader.Bot;
 using IConfig = Telegram.Bot.Framework.Abstract.IConfig;
 
@@ -27,6 +28,7 @@ namespace Telegram.Bot.Upgrader
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddUserAuthentication();
             _ = services.AddSingleton<IBotManager, BotManager>();
             _ = services.AddSingleton<IProcessManager, ProcessManager>();
         }

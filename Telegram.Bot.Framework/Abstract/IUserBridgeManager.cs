@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.Abstract
     /// <summary>
     /// 桥管理器
     /// </summary>
-    public interface IUserBridgeManager
+    internal interface IUserBridgeManager
     {
         /// <summary>
         /// 向目标用户建立通信桥

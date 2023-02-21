@@ -68,10 +68,6 @@ namespace Telegram.Bot.Upgrader.ParamMakers
             }
             catch (Exception)
             { }
-            finally
-            {
-
-            }
 
             return await IsNotZipFile();
         }

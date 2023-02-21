@@ -28,6 +28,7 @@ namespace Telegram.Bot.Upgrader.Controllers
     /// <summary>
     /// 管理本机Bot，管理升级启动停止的Controller
     /// </summary>
+    [Authentication(AuthenticationRole.BotAdmin)]
     internal class UPGradeController : TelegramController
     {
         private const string ASK_BOT_ID_MESSAGE = "请输入操作的BotID";

@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.Abstract
     /// 帮助用户间互通互动的接口，
     /// 可以使用该接口来做到实时通信
     /// </summary>
-    public interface IUserBridge : IDisposable
+    internal interface IUserBridge : IDisposable
     {
         /// <summary>
         /// 用户桥ID
