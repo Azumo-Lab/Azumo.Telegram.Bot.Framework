@@ -14,30 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.Authentications
 {
     /// <summary>
-    /// 
+    /// 用户的权限认证
     /// </summary>
     public class UserAuthentication : IAuthentication
     {
-        private readonly IServiceProvider serviceProvider;
-        public UserAuthentication(IServiceProvider serviceProvider)
+        public virtual Task<bool> Auth(TelegramContext context)
         {
-            this.serviceProvider = serviceProvider;
-        }
+            string Command = context.GetCommand();
+            if (Command.IsNull())
+                return Task.FromResult(true);
 
-        public virtual async Task<bool> Auth(TelegramContext context)
-        {
-            return await Task.FromResult(true);
+            IControllerManager controllerManager = context.UserScope.GetRequiredService<IControllerManager>();
+            CommandInfos commandInfo = controllerManager.GetCommandInfo(Command);
+            if (commandInfo.IsNull() || commandInfo.AuthenticationAttribute.IsNull())
+                return Task.FromResult(true);
+
+            HashSet<AuthenticationRole> roles = commandInfo.AuthenticationAttribute.AuthenticationRole.ToHashSet();
+            return Task.FromResult(roles.Contains(context.AuthenticationRole));
         }
     }
 }

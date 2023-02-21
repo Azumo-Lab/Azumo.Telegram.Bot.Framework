@@ -15,16 +15,11 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework
@@ -35,13 +30,15 @@ namespace Telegram.Bot.Framework
     public class AuthenticationController : TelegramController
     {
         [Command("Admin", CommandInfo = "管理员认证")]
-        public virtual async Task AdminAuth([Param("输入或设定密码")]string Password)
+        public virtual async Task AdminAuth([Param("输入或设定密码")] string Password)
         {
             if (File.Exists("PASSWORD"))
             {
                 if (await File.ReadAllTextAsync("PASSWORD") == HashPassword(Password))
                 {
                     IAuthenticationManager authManager = Context.UserScope.GetService<IAuthenticationManager>();
+                    if (authManager.IsNull())
+                        return;
                     authManager.SetAuthenticationRole(AuthenticationRole.BotAdmin);
                 }
             }
@@ -49,6 +46,8 @@ namespace Telegram.Bot.Framework
             {
                 await File.WriteAllTextAsync("PASSWORD", HashPassword(Password));
                 IAuthenticationManager authManager = Context.UserScope.GetService<IAuthenticationManager>();
+                if (authManager.IsNull())
+                    return;
                 authManager.SetAuthenticationRole(AuthenticationRole.BotAdmin);
             }
         }
