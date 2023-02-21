@@ -37,6 +37,8 @@ namespace Telegram.Bot.Framework.Managers
         private string _CommandName;
         private List<object> _Params = new List<object>();
         private List<ParamInfos> _ParamInfos = new List<ParamInfos>();
+        private int _ErrorCount;//重试次数
+        private const int _ErrorAllCount = 3;//重试机会
         #region Private方法群
         private void SetIsRead(bool flag)
         {
@@ -56,6 +58,7 @@ namespace Telegram.Bot.Framework.Managers
             _IsRead = false;
             _WaitForInput = false;
             _CommandName = null;
+            _ErrorCount = 0;
 
             _Params.Clear();
             _ParamInfos.Clear();
@@ -172,10 +175,14 @@ namespace Telegram.Bot.Framework.Managers
 
             if (_WaitForInput)
             {
-                if (await GetParam(Context.UserScope, Param, Context))
-                {
+                bool result;
+                if (result = await GetParam(Context.UserScope, Param, Context))
                     _ParamInfos.Remove(Param);
-                    _WaitForInput = false;
+                _WaitForInput = false;
+                if (!result && _ErrorCount++ >= _ErrorAllCount)
+                {
+                    Cancel();
+                    return false;
                 }
                 // 需要继续读取
                 return await ReadParamContinue(Context);
