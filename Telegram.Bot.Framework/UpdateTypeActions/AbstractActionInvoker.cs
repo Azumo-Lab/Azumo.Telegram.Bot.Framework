@@ -91,7 +91,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         }
 
         /// <summary>
-        /// 执行ActionHandles之前执行
+        /// 每次执行前的前置执行操作
         /// </summary>
         /// <param name="context">Context信息</param>
         /// <returns>无</returns>

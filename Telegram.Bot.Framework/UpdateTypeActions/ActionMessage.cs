@@ -38,10 +38,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// 初始化
         /// </summary>
         /// <param name="serviceProvider">DI服务</param>
-        public ActionMessage(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-
-        }
+        public ActionMessage(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
         /// <summary>
         /// 添加要执行的Action
@@ -49,16 +46,22 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <param name="serviceProvider"></param>
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
+            // 简单的认证
             AddHandle<ActionAuthentication>();
+            // 群组消息处理
             AddHandle<ActionGroupChannel>();
+            // 执行前过滤
             AddHandle<ActionFilterBefore>();
+            // 参数获取
             AddHandle<ActionParamCatch>();
+            // 执行命令控制器
             AddHandle<ActionControllerInvoke>();
+            // 执行后过滤
             AddHandle<ActionFilterAfter>();
         }
 
         /// <summary>
-        /// 
+        /// 每次执行前的前置执行操作
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

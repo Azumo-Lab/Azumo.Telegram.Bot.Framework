@@ -87,9 +87,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
                     break;
             }
             if (task != null)
-            {
                 await task;
-            }
         }
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
