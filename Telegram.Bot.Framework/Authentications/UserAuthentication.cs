@@ -31,15 +31,21 @@ namespace Telegram.Bot.Framework.Authentications
     {
         public virtual Task<bool> Auth(TelegramContext context)
         {
+            // 被Ban用户，直接禁止访问
+            if (context.AuthenticationRole == AuthenticationRole.Ban)
+                return Task.FromResult(false);
+            // 不是指令
             string Command = context.GetCommand();
             if (Command.IsNull())
                 return Task.FromResult(true);
 
+            // 获取目标上的权限标签
             IControllerManager controllerManager = context.UserScope.GetRequiredService<IControllerManager>();
             CommandInfos commandInfo = controllerManager.GetCommandInfo(Command);
             if (commandInfo.IsNull() || commandInfo.AuthenticationAttribute.IsNull())
                 return Task.FromResult(true);
 
+            // 验证
             HashSet<AuthenticationRole> roles = commandInfo.AuthenticationAttribute.AuthenticationRole.ToHashSet();
             return Task.FromResult(roles.Contains(context.AuthenticationRole));
         }

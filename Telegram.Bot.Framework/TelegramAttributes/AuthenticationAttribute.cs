@@ -58,5 +58,10 @@ namespace Telegram.Bot.Framework.TelegramAttributes
         /// 一般用户，呼叫Bot的用户
         /// </summary>
         GeneralUser,
+
+        /// <summary>
+        /// 被屏蔽用户
+        /// </summary>
+        Ban,
     }
 }
