@@ -176,5 +176,20 @@ namespace Telegram.Bot.Upgrader.Controllers
             else
                 await Context.SendTextMessage($"未找到ID： {botID}");
         }
+
+        /// <summary>
+        /// 重新启动Bot
+        /// </summary>
+        /// <param name="botID"></param>
+        [Command(nameof(ReStart), CommandInfo = "重新启动Bot")]
+        public async void ReStart(
+            [Param(ASK_BOT_ID_MESSAGE)] string botID)
+        {
+            bool result = botManager.StopBot(botID);
+            if (!result || !botManager.StartBot(botID))
+                await Context.SendTextMessage($"重启失败，BotID： {botID}"); 
+            else
+                await Context.SendTextMessage($"已重新启动Bot {botID}");
+        }
     }
 }
