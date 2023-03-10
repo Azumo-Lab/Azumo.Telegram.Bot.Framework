@@ -20,17 +20,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Helper
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IActionInvoker
+    public static class Object
     {
-        public UpdateType InvokeType { get; }
-
-        public Task Invoke(TelegramContext context);
+        public static bool IsNull(this object obj)
+        {
+            return obj == null;
+        }
     }
 }

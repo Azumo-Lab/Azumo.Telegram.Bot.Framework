@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Users
 {
     /// <summary>
     /// 用户管理

@@ -22,7 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Managers

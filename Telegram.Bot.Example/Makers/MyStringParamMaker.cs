@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Params;
 
 namespace Telegram.Bot.Example.Makers
 {

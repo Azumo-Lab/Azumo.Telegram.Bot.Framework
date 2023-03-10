@@ -14,39 +14,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.InternalFramework.Models;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Abstract.Controllers
 {
     /// <summary>
-    /// 回调函数
+    /// 控制器管理
     /// </summary>
-    public class ActionCallback : IAction
+    internal interface IControllerManager
     {
         /// <summary>
-        /// 执行回调函数
+        /// 通过指令名称 创建Controller
         /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
-        {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            if (!callbackAction.IsNull())
-            {
-                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-                callbackAction.Invoke(Context);
-            }
+        /// <param name="CommandName">指令名称</param>
+        /// <returns>控制器</returns>
+        public TelegramController CreateController(string CommandName);
 
-            await NextHandle(Context);
-        }
+        /// <summary>
+        /// 通过消息类型 创建Controller
+        /// </summary>
+        /// <param name="messageType">消息类型</param>
+        /// <returns>控制器</returns>
+        public TelegramController CreateController(MessageType messageType);
+
+        /// <summary>
+        /// 通过指令名称获取 CommandInfos
+        /// </summary>
+        /// <param name="CommandName">指令名称</param>
+        /// <returns>指令的信息</returns>
+        public CommandInfos GetCommandInfo(string CommandName);
     }
 }

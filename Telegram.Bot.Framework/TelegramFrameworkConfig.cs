@@ -35,6 +35,10 @@ using Telegram.Bot.Framework.Managers;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Authentications;
 using Telegram.Bot.Framework.Params;
+using Telegram.Bot.Framework.Abstract.Commands;
+using Telegram.Bot.Framework.Abstract.Channels;
+using Telegram.Bot.Framework.Abstract.Users;
+using Telegram.Bot.Framework.Abstract.Params;
 
 namespace Telegram.Bot.Framework
 {

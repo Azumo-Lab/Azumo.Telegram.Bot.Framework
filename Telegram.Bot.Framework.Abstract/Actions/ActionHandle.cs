@@ -21,16 +21,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Actions
 {
     /// <summary>
-    /// 语言
+    /// 委托
     /// </summary>
-    public interface ILanguage
-    {
-        /// <summary>
-        /// 语言名称
-        /// </summary>
-        public string LanguageName { get; }
-    }
+    /// <param name="Context"></param>
+    /// <returns></returns>
+    public delegate Task ActionHandle(TelegramContext Context);
 }

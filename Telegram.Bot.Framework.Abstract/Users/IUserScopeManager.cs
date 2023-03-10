@@ -21,32 +21,27 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Actions;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Abstract.Users
 {
     /// <summary>
-    /// 回调函数
+    /// UserScope管理器
     /// </summary>
-    public class ActionCallback : IAction
+    public interface IUserScopeManager
     {
         /// <summary>
-        /// 执行回调函数
+        /// 获得一个用户Scope, 如果该UserScope不存在则返回NULL
         /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
+        /// <param name="telegramUser">用户</param>
         /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
-        {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            if (!callbackAction.IsNull())
-            {
-                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-                callbackAction.Invoke(Context);
-            }
+        IUserScope GetUserScope(TelegramUser telegramUser);
 
-            await NextHandle(Context);
-        }
+        /// <summary>
+        /// 创建一个用户Scope
+        /// 如果要创建的Scope已经存在，则返回已存在的Scope
+        /// </summary>
+        /// <param name="telegramUser">用户</param>
+        /// <returns></returns>
+        IUserScope CreateUserScope(TelegramUser telegramUser);
     }
 }

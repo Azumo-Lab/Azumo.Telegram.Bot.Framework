@@ -14,39 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Bots;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
-    /// 回调函数
+    /// 
     /// </summary>
-    public class ActionCallback : IAction
+    internal class TelegramBot : ITelegramBot
     {
-        /// <summary>
-        /// 执行回调函数
-        /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public Task BotReStart()
         {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            if (!callbackAction.IsNull())
-            {
-                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-                callbackAction.Invoke(Context);
-            }
+            throw new NotImplementedException();
+        }
 
-            await NextHandle(Context);
+        public Task BotStart()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task BotStop()
+        {
+            throw new NotImplementedException();
         }
     }
 }

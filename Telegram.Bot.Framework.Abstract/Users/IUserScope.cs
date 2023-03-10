@@ -21,32 +21,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Actions;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Abstract.Users
 {
     /// <summary>
-    /// 回调函数
+    /// UserScope
     /// </summary>
-    public class ActionCallback : IAction
+    public interface IUserScope : IDisposable
     {
-        /// <summary>
-        /// 执行回调函数
-        /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
-        {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            if (!callbackAction.IsNull())
-            {
-                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-                callbackAction.Invoke(Context);
-            }
+        bool IsDisposed { get; }
 
-            await NextHandle(Context);
-        }
+        /// <summary>
+        /// 获取用户范围的IServiceScope
+        /// </summary>
+        /// <returns></returns>
+        IServiceScope GetUserServiceScope();
+
+        /// <summary>
+        /// 创建或获取TelegramContext
+        /// </summary>
+        /// <returns></returns>
+        TelegramContext GetTelegramContext();
     }
 }

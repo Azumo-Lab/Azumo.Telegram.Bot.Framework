@@ -14,39 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Actions;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Abstract.Bots
 {
     /// <summary>
-    /// 回调函数
+    /// 
     /// </summary>
-    public class ActionCallback : IAction
+    public interface IBuilder
     {
         /// <summary>
-        /// 执行回调函数
+        /// 
         /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
-        {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
-            if (!callbackAction.IsNull())
-            {
-                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
-                callbackAction.Invoke(Context);
-            }
+        public string Token { get; set; }
 
-            await NextHandle(Context);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public HttpClient Proxy { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<Type> Configs { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ITelegramBot Build();
     }
 }

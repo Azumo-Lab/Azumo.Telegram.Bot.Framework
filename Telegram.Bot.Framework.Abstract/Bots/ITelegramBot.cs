@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,25 +21,29 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Bots
 {
     /// <summary>
-    /// UserScope
+    /// 机器人接口
     /// </summary>
-    public interface IUserScope : IDisposable
+    public interface ITelegramBot
     {
-        bool IsDisposed { get; }
-
         /// <summary>
-        /// 获取用户范围的IServiceScope
+        /// 启动机器人
         /// </summary>
         /// <returns></returns>
-        IServiceScope GetUserServiceScope();
+        Task BotStart();
 
         /// <summary>
-        /// 创建或获取TelegramContext
+        /// 停止当前机器人
         /// </summary>
         /// <returns></returns>
-        TelegramContext GetTelegramContext();
+        Task BotStop();
+
+        /// <summary>
+        /// 重启当前机器人
+        /// </summary>
+        /// <returns></returns>
+        Task BotReStart();
     }
 }

@@ -16,7 +16,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Framework.Params

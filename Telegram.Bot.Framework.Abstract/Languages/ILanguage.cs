@@ -20,35 +20,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Models;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Languages
 {
     /// <summary>
-    /// 控制器管理
+    /// 语言
     /// </summary>
-    internal interface IControllerManager
+    public interface ILanguage
     {
         /// <summary>
-        /// 通过指令名称 创建Controller
+        /// 语言名称
         /// </summary>
-        /// <param name="CommandName">指令名称</param>
-        /// <returns>控制器</returns>
-        public TelegramController CreateController(string CommandName);
-
-        /// <summary>
-        /// 通过消息类型 创建Controller
-        /// </summary>
-        /// <param name="messageType">消息类型</param>
-        /// <returns>控制器</returns>
-        public TelegramController CreateController(MessageType messageType);
-
-        /// <summary>
-        /// 通过指令名称获取 CommandInfos
-        /// </summary>
-        /// <param name="CommandName">指令名称</param>
-        /// <returns>指令的信息</returns>
-        public CommandInfos GetCommandInfo(string CommandName);
+        public string LanguageName { get; }
     }
 }

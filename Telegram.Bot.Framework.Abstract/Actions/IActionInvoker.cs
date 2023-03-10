@@ -15,27 +15,22 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Params;
-using Telegram.Bot.Framework.TelegramAttributes;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Params
+namespace Telegram.Bot.Framework.Abstract.Actions
 {
     /// <summary>
-    /// String类型的消息
+    /// 
     /// </summary>
-    [ParamTypeFor(typeof(string))]
-    public class StringParamMessage : IParamMessage
+    public interface IActionInvoker
     {
-        private readonly IServiceProvider UserScope;
-        public StringParamMessage(IServiceProvider UserScope)
-        {
-            this.UserScope = UserScope;
-        }
-        public async Task SendMessage(string Message)
-        {
-            TelegramContext telegramContext = UserScope.GetTelegramContext();
-            await telegramContext.SendTextMessage(Message);
-        }
+        public UpdateType InvokeType { get; }
+
+        public Task Invoke(TelegramContext context);
     }
 }

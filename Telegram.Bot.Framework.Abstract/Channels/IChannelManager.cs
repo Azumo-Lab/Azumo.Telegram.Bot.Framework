@@ -14,48 +14,46 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Channels
 {
     /// <summary>
-    /// 帮助创建参数
+    /// 
     /// </summary>
-    internal interface IParamManager
+    public interface IChannelManager
     {
-        /// <summary>
-        /// 读取参数
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task<bool> ReadParam(TelegramContext context);
+        public delegate void SaveChannelDelegate(long ID, ChatId[] chatID);
+        public delegate ChatId[] GetChannelDelegate(long ID);
 
         /// <summary>
-        /// 取消读取参数
+        /// 用户注册频道时候的事件
         /// </summary>
-        void Cancel();
+        public event SaveChannelDelegate SaveChannelEvent;
 
         /// <summary>
-        /// 获取Command的名称
+        /// 获取频道时候的事件
         /// </summary>
-        /// <returns></returns>
-        string GetCommand();
+        public event GetChannelDelegate GetChannelEvent;
 
         /// <summary>
-        /// 获取读取过后的参数
+        /// 获取一个频道
         /// </summary>
-        /// <returns></returns>
-        object[] GetParam();
+        ChatId[] GetActiveChannel(TelegramUser user);
 
         /// <summary>
-        /// 是否处于读取参数的模式
+        /// 用户注册一个或几个频道
         /// </summary>
-        /// <returns></returns>
-        bool IsReadParam();
+        /// <param name="user">用户</param>
+        /// <param name="channelId">频道的ChatID</param>
+        void RegisterChannel(TelegramUser user, params ChatId[] channelId);
     }
 }

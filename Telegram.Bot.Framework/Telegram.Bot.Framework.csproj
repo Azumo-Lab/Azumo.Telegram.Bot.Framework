@@ -36,4 +36,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Telegram.Bot.Framework.Abstract\Telegram.Bot.Framework.Abstract.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -14,34 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Params
 {
     /// <summary>
-    /// UserScope管理器
+    /// 用于接收返回时的参数，并组合返回对应的数据
     /// </summary>
-    public interface IUserScopeManager
+    public interface IParamMaker
     {
         /// <summary>
-        /// 获得一个用户Scope, 如果该UserScope不存在则返回NULL
+        /// 获取参数
         /// </summary>
-        /// <param name="telegramUser">用户</param>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        IUserScope GetUserScope(TelegramUser telegramUser);
+        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
 
         /// <summary>
-        /// 创建一个用户Scope
-        /// 如果要创建的Scope已经存在，则返回已存在的Scope
+        /// 检查参数
         /// </summary>
-        /// <param name="telegramUser">用户</param>
+        /// <param name="context"></param>
+        /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        IUserScope CreateUserScope(TelegramUser telegramUser);
+        Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider);
     }
 }

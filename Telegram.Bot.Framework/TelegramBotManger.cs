@@ -22,6 +22,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.InternalFramework.FrameworkHelper;
 using Telegram.Bot.Framework.InternalFramework.Models;

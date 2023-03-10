@@ -24,7 +24,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.Example.Commands

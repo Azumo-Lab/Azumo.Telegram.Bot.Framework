@@ -16,28 +16,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Params
 {
     /// <summary>
-    /// 机器人接口
+    /// 用于返回参数接受时的提示消息
     /// </summary>
-    public interface ITelegramBot
+    public interface IParamMessage
     {
         /// <summary>
-        /// 启动机器人
+        /// 发送消息
         /// </summary>
+        /// <param name="Message">消息</param>
+        /// <param name="context"></param>
         /// <returns></returns>
-        Task BotStart();
-
-        /// <summary>
-        /// 停止当前机器人
-        /// </summary>
-        /// <returns></returns>
-        void BotStop();
+        Task SendMessage(string Message);
     }
 }

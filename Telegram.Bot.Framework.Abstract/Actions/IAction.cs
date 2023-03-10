@@ -20,18 +20,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalFramework.Abstract;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Abstract.Actions
 {
     /// <summary>
-    /// 多语言对应
+    /// Action接口
     /// </summary>
-    public interface IMultiLanguage
+    public interface IAction
     {
         /// <summary>
-        /// 切换语言
+        /// 开始执行Action
         /// </summary>
-        /// <param name="language"></param>
-        void ChangeLanguage(ILanguage language);
+        /// <param name="Context"></param>
+        /// <param name="NextHandle"></param>
+        /// <returns></returns>
+        Task Invoke(TelegramContext Context, ActionHandle NextHandle);
     }
 }

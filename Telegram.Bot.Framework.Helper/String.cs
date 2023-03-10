@@ -21,12 +21,26 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Helper
 {
     /// <summary>
-    /// 委托
+    /// 
     /// </summary>
-    /// <param name="Context"></param>
-    /// <returns></returns>
-    public delegate Task ActionHandle(TelegramContext Context);
+    public static class String
+    {
+        public static bool IsEmpty(this string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
+
+        public static bool IsTrimEmpty(this string str)
+        {
+            return IsEmpty(str) || IsEmpty(str.Trim());
+        }
+
+        public static string GetValue(this string str, string defVal)
+        {
+            return IsEmpty(str) ? defVal : str;
+        }
+    }
 }

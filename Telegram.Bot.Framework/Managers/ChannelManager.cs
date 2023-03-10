@@ -20,9 +20,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Channels;
 using Telegram.Bot.Types;
-using static Telegram.Bot.Framework.Abstract.IChannelManager;
+using static Telegram.Bot.Framework.Abstract.Channels.IChannelManager;
 
 namespace Telegram.Bot.Framework.Managers
 {

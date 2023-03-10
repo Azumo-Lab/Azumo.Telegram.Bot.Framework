@@ -25,6 +25,7 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Abstract.Channels;
 
 namespace Telegram.Bot.Example.BotConfig
 {
