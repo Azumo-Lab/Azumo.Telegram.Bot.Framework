@@ -23,7 +23,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Users;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;

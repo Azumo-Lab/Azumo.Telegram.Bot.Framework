@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Users;
 using Telegram.Bot.Framework.TelegramAttributes;
 
 namespace Telegram.Bot.SendMessageBot.Controllers

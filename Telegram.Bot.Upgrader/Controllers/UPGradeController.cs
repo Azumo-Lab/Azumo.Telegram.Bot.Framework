@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.IO.Compression;
 using System.Text;
 using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.TelegramAttributes;
 using Telegram.Bot.Upgrader.Bot;
 using Telegram.Bot.Upgrader.ParamMakers;

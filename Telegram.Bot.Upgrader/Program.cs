@@ -1,5 +1,5 @@
 ﻿using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Upgrader;
 
 ITelegramBot tgbot = TelegramBotManger.Create()
