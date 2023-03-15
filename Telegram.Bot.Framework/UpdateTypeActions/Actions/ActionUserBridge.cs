@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
@@ -30,7 +31,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     /// </summary>
     public class ActionUserBridge : IAction
     {
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
         {
             TelegramUser telegramUser = Context.TelegramUser;
             IUserBridgeManager userBridgeManager = Context.UserScope.GetService<IUserBridgeManager>();

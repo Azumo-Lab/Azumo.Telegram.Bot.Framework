@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
@@ -31,7 +32,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     /// </summary>
     public class ActionGroupChannel : IAction
     {
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
         {
             BotConfig botConfig;
             IBotChatTypeProc botChatTypeProc;

@@ -17,7 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Upgrader.Bot;
-using IConfig = Telegram.Bot.Framework.Abstract.IConfig;
+using IConfig = Telegram.Bot.Framework.Abstract.Config.IConfig;
 
 namespace Telegram.Bot.Upgrader
 {

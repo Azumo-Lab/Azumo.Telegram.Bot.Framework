@@ -14,22 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller.Models;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract
+namespace Telegram.Bot.Framework.Controller.Interface
 {
     /// <summary>
-    /// 框架的设置与配置
+    /// 
     /// </summary>
-    public interface IConfig
+    internal interface IControllerManager
     {
-        /// <summary>
-        /// 执行配置
-        /// </summary>
-        /// <param name="telegramServices"></param>
-        public void ConfigureServices(IServiceCollection services);
+
+        public TelegramController GetController(string command, out CommandInfo commandInfo);
+
+        public TelegramController GetController(UpdateType updateType, out CommandInfo commandInfo);
     }
 }

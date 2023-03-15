@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalFramework.Abstract;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
@@ -37,7 +38,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <param name="Context"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
         {
             IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
             IParamManager paramManger = Context.UserScope.GetService<IParamManager>();

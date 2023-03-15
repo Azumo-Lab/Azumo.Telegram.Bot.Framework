@@ -24,6 +24,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.Bots
@@ -57,7 +58,9 @@ namespace Telegram.Bot.Framework.Bots
             Token.ThrowIfNullOrEmpty();
             Configs.ThrowIfNullOrEmpty();
 
+            BuilderServices.AddSingleton<IConfig, FrameworkConfig>();
             BuilderServices.AddSingleton(RuntimeServices);
+            BuilderServices.AddSingleton<ITelegramBot, TelegramBot>();
 
             IServiceProvider serviceProvider = BuilderServices.BuildServiceProvider();
 

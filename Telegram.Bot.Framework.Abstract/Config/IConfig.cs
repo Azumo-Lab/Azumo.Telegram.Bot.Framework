@@ -17,28 +17,19 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.Abstract.Actions;
+using System.Text;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Abstract.Config
 {
     /// <summary>
-    /// 
+    /// 框架的设置与配置
     /// </summary>
-    public class ActionFilterBefore : IAction
+    public interface IConfig
     {
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
-        {
-            List<IFilter> filters = Context.UserScope.GetServices<IFilter>().ToList();
-            foreach (IFilter item in filters)
-                if (await item.FilterBefore(Context))
-                    return;
-
-            await NextHandle(Context);
-        }
+        /// <summary>
+        /// 执行配置
+        /// </summary>
+        /// <param name="telegramServices"></param>
+        public void ConfigureServices(IServiceCollection services);
     }
 }

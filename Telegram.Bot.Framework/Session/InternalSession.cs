@@ -14,32 +14,57 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.Abstract.Actions;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework.Session
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ActionFilterAfter : IAction
+    internal sealed class InternalSession : ISession, IDisposable
     {
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
-        {
-            List<IFilter> filters = Context.UserScope.GetServices<IFilter>().ToList();
-            foreach (IFilter item in filters)
-                if (await item.FilterAfter(Context))
-                    return;
+        public string SessionID { get; } = Guid.NewGuid().ToString();
 
-            await NextHandle(Context);
+        private readonly Dictionary<object, byte[]> __InternalSessionCache = new();
+        private bool __Disposed;
+
+        public void Dispose()
+        {
+            __Disposed = true;
+            __InternalSessionCache.Clear();
+        }
+
+        public byte[] Get(object sessionKey)
+        {
+            ThrowIfDispose();
+
+            return __InternalSessionCache.TryGetValue(sessionKey, out byte[] result) ? result : default;
+        }
+
+        public void Remove(object sessionKey)
+        {
+            ThrowIfDispose();
+
+            __InternalSessionCache.Remove(sessionKey);
+        }
+
+        public void Save(object sessionKey, byte[] data)
+        {
+            ThrowIfDispose();
+
+            __InternalSessionCache.TryAdd(sessionKey, data);
+        }
+
+        private void ThrowIfDispose()
+        {
+            if (__Disposed)
+                throw new Exception("Object is Disposed");
         }
     }
 }

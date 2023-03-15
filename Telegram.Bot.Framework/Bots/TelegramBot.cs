@@ -14,13 +14,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Abstract.Config;
+using Telegram.Bot.Framework.UpdateTypeActions;
+using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Bots
 {
@@ -29,19 +35,63 @@ namespace Telegram.Bot.Framework.Bots
     /// </summary>
     internal class TelegramBot : ITelegramBot
     {
-        public Task BotReStart()
+        private readonly IServiceProvider ServiceProvider;
+        private bool IsStop;
+        public TelegramBot(IServiceProvider ServiceProvider)
         {
-            throw new NotImplementedException();
+            // 获取IServiceCollection
+            IServiceCollection services = ServiceProvider.GetService<IServiceCollection>();
+
+            // 配置框架Service
+            List<IConfig> configs = ServiceProvider.GetServices<IConfig>()?.ToList() ?? new();
+            configs.ForEach(config => { config.ConfigureServices(services); });
+
+            // 配置一些基本的设置
+            services.AddSingleton<CancellationTokenSource>();
+            services.AddSingleton<ITelegramBot>(this);
+            services.AddSingleton<ITelegramBotClient, TelegramBotClient>();
+            services.AddSingleton<IUpdateHandler, TelegramUpdateHandle>();
+            
+            // 创建服务
+            this.ServiceProvider = services.BuildServiceProvider();
         }
 
-        public Task BotStart()
+        public async Task BotReStart()
         {
-            throw new NotImplementedException();
+            await BotStop();
+            await BotStart();
         }
 
-        public Task BotStop()
+        public async Task BotStart()
         {
-            throw new NotImplementedException();
+            ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
+            CancellationTokenSource cancellationTokenSource = ServiceProvider.GetService<CancellationTokenSource>();
+
+            if (!await botClient.TestApiAsync(cancellationTokenSource.Token))
+                throw new ArgumentException("API Error");
+
+            botClient.StartReceiving(
+                ServiceProvider.GetService<IUpdateHandler>(),
+                new ReceiverOptions { AllowedUpdates = { } },
+                cancellationTokenSource.Token
+                );
+
+            await Task.Run(async () => 
+            {
+                User user = await botClient.GetMeAsync(cancellationTokenSource.Token);
+                Console.WriteLine($"Start {user.Username}");
+                while (!IsStop)
+                    await Task.Delay(1000);
+
+                await botClient.CloseAsync();
+            });
+        }
+
+        public async Task BotStop()
+        {
+            IsStop = true;
+
+            await Task.CompletedTask;
         }
     }
 }

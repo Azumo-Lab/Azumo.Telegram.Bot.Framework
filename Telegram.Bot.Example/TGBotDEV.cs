@@ -29,6 +29,7 @@ using Telegram.Bot.Example.DataBase;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Bots;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.TelegramAttributes;

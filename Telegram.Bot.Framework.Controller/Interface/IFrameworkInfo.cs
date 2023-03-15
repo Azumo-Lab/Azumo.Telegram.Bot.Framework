@@ -9,12 +9,10 @@ namespace Telegram.Bot.Framework.Controller.Interface
 {
     public interface IFrameworkInfo
     {
-        public Task CommandInvoke(IServiceProvider serviceProvider, string command, params object[] param);
-
-        public Task CommandInvoke(IServiceProvider serviceProvider, UpdateType updateType, params object[] param);
-
-        public TelegramController GetController(IServiceProvider serviceProvider, string command);
-
         public List<CommandInfo> GetCommandInfos();
+
+        public CommandInfo GetCommandInfo(string command);
+
+        public CommandInfo GetCommandInfo(UpdateType updateType);
     }
 }

@@ -13,6 +13,6 @@ namespace Telegram.Bot.Framework.Abstract.Models
         /// <summary>
         /// 聊天窗口ID
         /// </summary>
-        public long ChatID { get; set; }
+        public long? ChatID { get; set; }
     }
 }

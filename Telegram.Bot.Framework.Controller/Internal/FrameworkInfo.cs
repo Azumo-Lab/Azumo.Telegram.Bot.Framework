@@ -39,43 +39,19 @@ namespace Telegram.Bot.Framework.Controller.Internal
             DicCommandInfos = CommandInfos.ToDictionary(x => x.CommandName, x => x)!;
         }
 
-        public async Task CommandInvoke(IServiceProvider serviceProvider, string command, params object[] param)
+        public List<CommandInfo> GetCommandInfos()
         {
-            TelegramController telegramController = GetController(serviceProvider, command);
-            if (telegramController == null)
-                return;
-            CommandInfo commandInfo = DicCommandInfos[command];
-            Delegate @delegate = Delegate.CreateDelegate(typeof(TelegramController), telegramController, commandInfo.CommandMethod);
-            Task? task;
-            if (param.IsEmpty())
-                task = @delegate.DynamicInvoke() as Task;
-            else
-                task = @delegate.DynamicInvoke(param) as Task;
-            if (task != null)
-                await task;
+            return CommandInfos;
         }
 
-        public async Task CommandInvoke(IServiceProvider serviceProvider, UpdateType updateType, params object[] param)
+        public CommandInfo GetCommandInfo(string command)
         {
-            if (!DicUpdateCommandInfos.TryGetValue(updateType, out CommandInfo commandInfo))
-                return;
-            Type controllerType = commandInfo.ControllerType!;
-            TelegramController telegramController = (TelegramController)ActivatorUtilities.CreateInstance(serviceProvider, controllerType, Array.Empty<object>());
-            Delegate @delegate = Delegate.CreateDelegate(typeof(TelegramController), telegramController, commandInfo.CommandMethod);
-            Task? task;
-            if (param.IsEmpty())
-                task = @delegate.DynamicInvoke() as Task;
-            else
-                task = @delegate.DynamicInvoke(param) as Task;
-            if (task != null)
-                await task;
+            return DicCommandInfos.TryGetValue(command, out CommandInfo commandInfo) ? commandInfo : default!;
         }
 
-        public TelegramController GetController(IServiceProvider serviceProvider, string command)
+        public CommandInfo GetCommandInfo(UpdateType updateType)
         {
-            if (DicCommandInfos.TryGetValue(command, out CommandInfo commandInfo))
-                return (TelegramController)ActivatorUtilities.CreateInstance(serviceProvider, commandInfo.ControllerType!, Array.Empty<object>());
-            return default!;
+            return DicUpdateCommandInfos.TryGetValue(updateType, out CommandInfo commandInfo) ? commandInfo : default!;
         }
     }
 }

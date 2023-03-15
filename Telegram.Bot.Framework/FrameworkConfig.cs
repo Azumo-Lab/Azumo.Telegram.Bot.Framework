@@ -21,24 +21,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Config;
+using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Session;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ActionFilterBefore : IAction
+    internal class FrameworkConfig : IConfig
     {
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
+        public void ConfigureServices(IServiceCollection services)
         {
-            List<IFilter> filters = Context.UserScope.GetServices<IFilter>().ToList();
-            foreach (IFilter item in filters)
-                if (await item.FilterBefore(Context))
-                    return;
-
-            await NextHandle(Context);
+            services.AddScoped<ISession, InternalSession>();
         }
     }
 }
