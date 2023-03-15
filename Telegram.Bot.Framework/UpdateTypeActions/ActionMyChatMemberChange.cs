@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
@@ -33,7 +34,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     {
         private readonly IBotTelegramEvent telegramEvent;
 
-        private delegate Task TelegramEventDelegate(TelegramContext context);
+        private delegate Task TelegramEventDelegate(TelegramSession session);
 
         private event TelegramEventDelegate OnCreator;
         private event TelegramEventDelegate OnBeAdmin;
@@ -62,28 +63,28 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         public override UpdateType InvokeType => UpdateType.MyChatMember;
 
-        protected override async Task InvokeAction(TelegramContext context)
+        protected override async Task InvokeAction(TelegramSession session)
         {
             Task task = null;
             switch (context.Update.MyChatMember.NewChatMember.Status)
             {
                 case ChatMemberStatus.Creator://创建聊天
-                    task = OnCreator?.Invoke(context);
+                    task = OnCreator?.Invoke(session);
                     break;
                 case ChatMemberStatus.Administrator://成为管理员
-                    task = OnBeAdmin?.Invoke(context);
+                    task = OnBeAdmin?.Invoke(session);
                     break;
                 case ChatMemberStatus.Member://被邀请
-                    task = OnInvited?.Invoke(context);
+                    task = OnInvited?.Invoke(session);
                     break;
                 case ChatMemberStatus.Left://离开
-                    task = OnLeft?.Invoke(context);
+                    task = OnLeft?.Invoke(session);
                     break;
                 case ChatMemberStatus.Kicked://被踢
-                    task = OnKicked?.Invoke(context);
+                    task = OnKicked?.Invoke(session);
                     break;
                 case ChatMemberStatus.Restricted:
-                    task = OnRestricted?.Invoke(context);
+                    task = OnRestricted?.Invoke(session);
                     break;
             }
             if (task != null)

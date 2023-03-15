@@ -14,21 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class TelegramBotBuilder : IBuilder
+    public class TelegramBotBuilder : IBuilder
     {
         public string Token { get; set; }
 
@@ -36,9 +39,68 @@ namespace Telegram.Bot.Framework.Bots
 
         public List<Type> Configs { get; set; }
 
+        public IServiceCollection BuilderServices { get; } = new ServiceCollection();
+        public IServiceCollection RuntimeServices { get; } = new ServiceCollection();
+
+        public static IBuilder Create()
+        {
+            return new TelegramBotBuilder();
+        }
+
+        private TelegramBotBuilder() 
+        {
+            
+        }
+
         public ITelegramBot Build()
         {
-            throw new NotImplementedException();
+            Token.ThrowIfNullOrEmpty();
+            Configs.ThrowIfNullOrEmpty();
+
+            BuilderServices.AddSingleton(RuntimeServices);
+
+            IServiceProvider serviceProvider = BuilderServices.BuildServiceProvider();
+
+            return serviceProvider.GetRequiredService<ITelegramBot>();
+        }
+    }
+
+    public static class Setup
+    {
+        public static IBuilder AddToken(this IBuilder builder, string token)
+        {
+            builder.ThrowIfNull();
+            token.ThrowIfNullOrEmpty();
+
+            builder.Token = token;
+            return builder;
+        }
+
+        public static IBuilder AddProxy(this IBuilder builder, string host, int? port = null, string username = null, string password = null)
+        {
+            builder.ThrowIfNull();
+            host.ThrowIfNullOrEmpty();
+
+            WebProxy webProxy;
+            if (port.IsNull())
+            {
+                Uri uri = new Uri(host);
+                webProxy = new(uri.Host, uri.Port);
+            }
+            else
+            {
+                webProxy = new(Host: host, Port: port.Value);
+            }
+            if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
+            {
+                webProxy.Credentials = new NetworkCredential(username, password);
+            }
+            builder.Proxy = new HttpClient(
+                new HttpClientHandler { Proxy = webProxy, UseProxy = true, }
+            );
+
+            return builder;
+
         }
     }
 }

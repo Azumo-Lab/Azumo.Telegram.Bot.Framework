@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
@@ -38,9 +39,9 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
             return;
         }
 
-        protected override async Task InvokeAction(TelegramContext context)
+        protected override async Task InvokeAction(TelegramSession session)
         {
-            await context.SendTextMessage($"来自 Bot 的留言：我已收到信息 [{context.Update.ChannelPost.Text}]");
+            await Task.CompletedTask;
         }
     }
 }

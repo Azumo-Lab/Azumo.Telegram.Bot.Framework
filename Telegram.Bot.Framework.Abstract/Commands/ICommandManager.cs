@@ -20,7 +20,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Models;
 
 namespace Telegram.Bot.Framework.Abstract.Commands
 {

@@ -22,7 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 using Telegram.Bot.Types.Enums;
 
@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         public override UpdateType InvokeType => UpdateType.CallbackQuery;
 
-        protected override async Task InvokeAction(TelegramContext context)
+        protected override async Task InvokeAction(TelegramSession session)
         {
             await Task.CompletedTask;
         }

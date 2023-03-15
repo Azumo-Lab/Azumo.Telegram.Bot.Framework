@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Actions
 {
@@ -35,6 +35,6 @@ namespace Telegram.Bot.Framework.Abstract.Actions
         /// <param name="Context"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        Task Invoke(TelegramContext Context, ActionHandle NextHandle);
+        Task Invoke(TelegramSession session, ActionHandle NextHandle);
     }
 }

@@ -28,19 +28,33 @@ namespace Telegram.Bot.Framework.Helper
     /// </summary>
     public static class String
     {
-        public static bool IsEmpty(this string str)
+        #region 抛出异常
+        public static void ThrowIfNull(this string str)
+        {
+            if (str.IsNull())
+                throw new ArgumentNullException(nameof(str));
+        }
+
+        public static void ThrowIfNullOrEmpty(this string str)
+        {
+            if (str.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(str));
+        }
+        #endregion
+
+        public static bool IsNullOrEmpty(this string str)
         {
             return string.IsNullOrEmpty(str);
         }
 
         public static bool IsTrimEmpty(this string str)
         {
-            return IsEmpty(str) || IsEmpty(str.Trim());
+            return IsNullOrEmpty(str) || IsNullOrEmpty(str.Trim());
         }
 
         public static string GetValue(this string str, string defVal)
         {
-            return IsEmpty(str) ? defVal : str;
+            return IsNullOrEmpty(str) ? defVal : str;
         }
     }
 }

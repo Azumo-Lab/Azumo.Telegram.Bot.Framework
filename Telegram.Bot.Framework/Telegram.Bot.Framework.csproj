@@ -19,12 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="InternalFramework\Filters\**" />
-    <EmbeddedResource Remove="InternalFramework\Filters\**" />
-    <None Remove="InternalFramework\Filters\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Telegram.Bot" Version="18.0.0" />
   </ItemGroup>
@@ -38,6 +32,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Telegram.Bot.Framework.Abstract\Telegram.Bot.Framework.Abstract.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Authentication\Telegram.Bot.Framework.Authentication.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Controller\Telegram.Bot.Framework.Controller.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Helper\Telegram.Bot.Framework.Helper.csproj" />
   </ItemGroup>
 
 </Project>

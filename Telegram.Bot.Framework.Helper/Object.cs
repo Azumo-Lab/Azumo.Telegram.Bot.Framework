@@ -28,6 +28,15 @@ namespace Telegram.Bot.Framework.Helper
     /// </summary>
     public static class Object
     {
+        #region 抛出异常
+        public static void ThrowIfNull(this object obj)
+        {
+            if (obj.IsNull())
+                throw new ArgumentNullException(nameof(obj));
+        }
+
+        #endregion
+
         public static bool IsNull(this object obj)
         {
             return obj == null;

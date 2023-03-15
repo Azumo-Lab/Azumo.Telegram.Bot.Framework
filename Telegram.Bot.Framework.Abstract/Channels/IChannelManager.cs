@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Models;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstract.Channels

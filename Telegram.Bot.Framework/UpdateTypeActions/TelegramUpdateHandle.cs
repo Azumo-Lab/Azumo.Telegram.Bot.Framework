@@ -23,8 +23,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Framework.Abstract.Models;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Abstract.Users;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -83,6 +84,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         {
             try
             {
+                TelegramSession telegramSession = TelegramSession.CreateSession(serviceProvider);
                 using (IServiceScope OneTimeScope = serviceProvider.CreateScope())
                 {
                     //获取 | 创建 一个 TelegramUserScope
@@ -100,7 +102,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
             }
             catch (Exception)
             {
-                throw;
+                
             }
         }
 

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Models;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstract.Users
@@ -129,6 +130,12 @@ namespace Telegram.Bot.Framework.Abstract.Users
         /// </summary>
         /// <param name="user"></param>
         void RegisterUser(User user, long ChatID);
+
+        /// <summary>
+        /// 注册一个用户
+        /// </summary>
+        /// <param name="update"></param>
+        void RegisterUser(Update update);
         #endregion
 
         #region 修改用户

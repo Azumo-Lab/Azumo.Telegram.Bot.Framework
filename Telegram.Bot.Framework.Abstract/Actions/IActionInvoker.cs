@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstract.Actions
@@ -31,6 +32,6 @@ namespace Telegram.Bot.Framework.Abstract.Actions
     {
         public UpdateType InvokeType { get; }
 
-        public Task Invoke(TelegramContext context);
+        public Task Invoke(TelegramSession session);
     }
 }

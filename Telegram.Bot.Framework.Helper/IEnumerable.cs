@@ -28,6 +28,15 @@ namespace Telegram.Bot.Framework.Helper
     /// </summary>
     public static class IEnumerable
     {
+        #region 抛出异常
+        public static void ThrowIfNullOrEmpty<T>(this IEnumerable<T> values)
+        {
+            if (values.IsEmpty())
+                throw new ArgumentNullException(nameof(values));
+        }
+
+        #endregion
+
         public static bool IsEmpty<T>(this IEnumerable<T> values)
         {
             return values.IsNull() || !values.Any();

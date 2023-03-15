@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
@@ -84,10 +85,10 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// </summary>
         /// <param name="context">Context信息</param>
         /// <returns>无</returns>
-        public async Task Invoke(TelegramContext context)
+        public async Task Invoke(TelegramSession session)
         {
-            await InvokeAction(context);
-            await ActionHandle.Invoke(context);
+            await InvokeAction(session);
+            await ActionHandle.Invoke(session);
         }
 
         /// <summary>
@@ -95,7 +96,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// </summary>
         /// <param name="context">Context信息</param>
         /// <returns>无</returns>
-        protected abstract Task InvokeAction(TelegramContext context);
+        protected abstract Task InvokeAction(TelegramSession session);
 
         /// <summary>
         /// 创建指定的一个对象

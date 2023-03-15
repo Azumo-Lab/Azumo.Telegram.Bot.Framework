@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
@@ -37,7 +38,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <param name="Context"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        public async Task Invoke(TelegramContext Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
             IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
 

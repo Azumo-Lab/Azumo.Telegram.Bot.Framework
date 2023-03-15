@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 using Telegram.Bot.Types;
@@ -65,7 +66,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override Task InvokeAction(TelegramContext context)
+        protected override Task InvokeAction(TelegramSession session)
         {
             return Task.CompletedTask;
         }
