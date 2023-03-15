@@ -13,6 +13,8 @@ namespace Telegram.Bot.Framework.Controller.Interface
 
         public CommandInfo GetCommandInfo(string command);
 
-        public CommandInfo GetCommandInfo(UpdateType updateType);
+        public CommandInfo GetCommandInfo(MessageType messageType);
+
+        public CommandInfo GetCommandInfo(UpdateType messageType);
     }
 }

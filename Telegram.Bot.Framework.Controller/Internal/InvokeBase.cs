@@ -20,28 +20,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.UpdateTypeActions.Actions;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Controller.Models;
+using Telegram.Bot.Framework.Helper;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.Controller.Internal
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ActionChosenInlineResult : AbstractActionInvoker
+    internal abstract class InvokeBase
     {
-        public ActionChosenInlineResult(IServiceProvider serviceProvider) : base(serviceProvider) { }
-        public override UpdateType InvokeType => UpdateType.ChosenInlineResult;
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        protected async Task CommandInvoke(CommandInfo commandInfo, TelegramController telegramController, params object[] param)
         {
-            AddHandle<ActionUpdateTypeInvoke>();
-        }
-
-        protected override Task InvokeAction(TelegramSession session)
-        {
-            return Task.CompletedTask;
+            Delegate @delegate = Delegate.CreateDelegate(commandInfo.ControllerType, telegramController, commandInfo.CommandMethod);
+            Task? task;
+            if (param.IsEmpty())
+                task = @delegate.DynamicInvoke() as Task;
+            else
+                task = @delegate.DynamicInvoke(param) as Task;
+            if (task != null)
+                await task;
         }
     }
 }

@@ -14,10 +14,10 @@ namespace Telegram.Bot.Framework.Controller.Attribute
         /// <summary>
         /// 消息类型
         /// </summary>
-        public UpdateType UpdateType { get; }
-        public DefaultMessageAttribute(UpdateType updateType)
+        public MessageType MessageType { get; }
+        public DefaultMessageAttribute(MessageType MessageType)
         {
-            UpdateType = updateType;
+            this.MessageType = MessageType;
         }
     }
 }

@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller.Attribute;
 using Telegram.Bot.Framework.Controller.Interface;
 using Telegram.Bot.Framework.Controller.Models;
 using Telegram.Bot.Framework.Helper;
@@ -19,6 +21,7 @@ namespace Telegram.Bot.Framework.Controller.Internal
         private readonly static List<CommandInfo> CommandInfos = new List<CommandInfo>();
 
         private readonly static Dictionary<string, CommandInfo> DicCommandInfos = new Dictionary<string, CommandInfo>();
+        private readonly static Dictionary<MessageType, CommandInfo> DicMessageCommandInfos = new Dictionary<MessageType, CommandInfo>();
         private readonly static Dictionary<UpdateType, CommandInfo> DicUpdateCommandInfos = new Dictionary<UpdateType, CommandInfo>();
 
         static FrameworkInfo()
@@ -37,6 +40,28 @@ namespace Telegram.Bot.Framework.Controller.Internal
             }
             CommandInfos = CommandInfos.Where(x => x.IsCommand).ToList();
             DicCommandInfos = CommandInfos.ToDictionary(x => x.CommandName, x => x)!;
+            DicMessageCommandInfos = CommandInfos.Where(x =>
+            {
+                DefaultMessageAttribute defaultMessageAttribute = x.GetAttributes<DefaultMessageAttribute>().FirstOrDefault();
+                return defaultMessageAttribute != null;
+            }).ToDictionary(x =>
+            {
+                return x.GetAttributes<DefaultMessageAttribute>().FirstOrDefault().MessageType;
+            }, y => y);
+            DicUpdateCommandInfos = CommandInfos.Where(x =>
+            {
+                DefaultTypeAttribute defaultTypeAttribute = x.GetAttributes<DefaultTypeAttribute>().FirstOrDefault();
+                if (defaultTypeAttribute == null)
+                    return false;
+
+                if (x.ParamInfos.Any())
+                    throw new Exception($"方法：{x?.CommandMethod?.Name} 控制器：{x?.ControllerType?.FullName} 参数个数：{x?.ParamInfos.Count} \n目前框架不支持带有参数的默认处理，请将参数删除后重试。");
+
+                return true;
+            }).ToDictionary(x =>
+            {
+                return x.GetAttributes<DefaultTypeAttribute>().FirstOrDefault().UpdateType;
+            }, y => y);
         }
 
         public List<CommandInfo> GetCommandInfos()
@@ -49,9 +74,14 @@ namespace Telegram.Bot.Framework.Controller.Internal
             return DicCommandInfos.TryGetValue(command, out CommandInfo commandInfo) ? commandInfo : default!;
         }
 
-        public CommandInfo GetCommandInfo(UpdateType updateType)
+        public CommandInfo GetCommandInfo(MessageType messageType)
         {
-            return DicUpdateCommandInfos.TryGetValue(updateType, out CommandInfo commandInfo) ? commandInfo : default!;
+            return DicMessageCommandInfos.TryGetValue(messageType, out CommandInfo commandInfo) ? commandInfo : default!;
+        }
+
+        public CommandInfo GetCommandInfo(UpdateType messageType)
+        {
+            return DicUpdateCommandInfos.TryGetValue(messageType, out CommandInfo commandInfo) ? commandInfo : default!;
         }
     }
 }

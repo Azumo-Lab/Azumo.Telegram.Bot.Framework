@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.Controller.Interface
     {
         public Task CommandInvoke(string command, params object[] param);
 
-        public Task CommandInvoke(UpdateType updateType, params object[] param);
+        public Task CommandInvoke(MessageType messageType, params object[] param);
 
     }
 }

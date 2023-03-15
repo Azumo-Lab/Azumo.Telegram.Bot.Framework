@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Controller.Interface;
+using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
 {
@@ -36,7 +39,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            return;
+            AddHandle<ActionUpdateTypeInvoke>();
         }
 
         protected override async Task InvokeAction(TelegramSession session)

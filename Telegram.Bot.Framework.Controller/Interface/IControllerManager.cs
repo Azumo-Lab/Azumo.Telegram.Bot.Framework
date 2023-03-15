@@ -33,6 +33,8 @@ namespace Telegram.Bot.Framework.Controller.Interface
 
         public TelegramController GetController(string command, out CommandInfo commandInfo);
 
-        public TelegramController GetController(UpdateType updateType, out CommandInfo commandInfo);
+        public TelegramController GetController(MessageType messageType, out CommandInfo commandInfo);
+
+        public TelegramController GetController(UpdateType messageType, out CommandInfo commandInfo);
     }
 }

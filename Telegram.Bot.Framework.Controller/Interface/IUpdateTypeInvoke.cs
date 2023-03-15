@@ -20,28 +20,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.Controller.Interface
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ActionChosenInlineResult : AbstractActionInvoker
+    public interface IUpdateTypeInvoke
     {
-        public ActionChosenInlineResult(IServiceProvider serviceProvider) : base(serviceProvider) { }
-        public override UpdateType InvokeType => UpdateType.ChosenInlineResult;
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
-        {
-            AddHandle<ActionUpdateTypeInvoke>();
-        }
-
-        protected override Task InvokeAction(TelegramSession session)
-        {
-            return Task.CompletedTask;
-        }
+        public Task CommandInvoke(UpdateType command, params object[] param);
     }
 }

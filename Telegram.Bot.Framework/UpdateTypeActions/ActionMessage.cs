@@ -59,6 +59,8 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
             AddHandle<ActionControllerInvoke>();
             // 执行后过滤
             AddHandle<ActionFilterAfter>();
+
+            AddHandle<ActionUpdateTypeInvoke>();
         }
 
         /// <summary>

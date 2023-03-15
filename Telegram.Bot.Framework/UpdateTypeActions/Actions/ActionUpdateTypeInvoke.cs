@@ -14,34 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Actions;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.UpdateTypeActions.Actions;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Controller.Interface;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ActionChosenInlineResult : AbstractActionInvoker
+    internal class ActionUpdateTypeInvoke : IAction
     {
-        public ActionChosenInlineResult(IServiceProvider serviceProvider) : base(serviceProvider) { }
-        public override UpdateType InvokeType => UpdateType.ChosenInlineResult;
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            AddHandle<ActionUpdateTypeInvoke>();
-        }
+            IUpdateTypeInvoke updateTypeInvoke = session.UserService.GetService<IUpdateTypeInvoke>();
+            await updateTypeInvoke.CommandInvoke(session.Update.Type);
 
-        protected override Task InvokeAction(TelegramSession session)
-        {
-            return Task.CompletedTask;
+            await NextHandle(session);
         }
     }
 }

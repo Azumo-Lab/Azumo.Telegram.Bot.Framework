@@ -48,6 +48,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
             AddHandle<ActionCallback>();
+            AddHandle<ActionUpdateTypeInvoke>();
         }
     }
 }

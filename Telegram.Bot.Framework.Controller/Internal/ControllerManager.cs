@@ -53,7 +53,7 @@ namespace Telegram.Bot.Framework.Controller.Internal
             return (TelegramController)ActivatorUtilities.CreateInstance(ServiceProvider, commandInfo.ControllerType!, Array.Empty<object>());
         }
 
-        public TelegramController GetController(UpdateType updateType, out CommandInfo commandInfo)
+        public TelegramController GetController(MessageType updateType, out CommandInfo commandInfo)
         {
             commandInfo = null!;
             IFrameworkInfo? frameworkInfo = ServiceProvider.GetService<IFrameworkInfo>();
@@ -61,6 +61,20 @@ namespace Telegram.Bot.Framework.Controller.Internal
                 return default!;
 
             commandInfo = frameworkInfo!.GetCommandInfo(updateType);
+            if (commandInfo.IsNull())
+                return default!;
+
+            return (TelegramController)ActivatorUtilities.CreateInstance(ServiceProvider, commandInfo.ControllerType!, Array.Empty<object>());
+        }
+
+        public TelegramController GetController(UpdateType messageType, out CommandInfo commandInfo)
+        {
+            commandInfo = null!;
+            IFrameworkInfo? frameworkInfo = ServiceProvider.GetService<IFrameworkInfo>();
+            if (frameworkInfo!.IsNull())
+                return default!;
+
+            commandInfo = frameworkInfo!.GetCommandInfo(messageType);
             if (commandInfo.IsNull())
                 return default!;
 

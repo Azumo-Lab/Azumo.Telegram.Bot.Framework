@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
@@ -38,7 +39,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
 
         protected override void AddActionHandles(IServiceProvider serviceProvider)
         {
-            return;
+            AddHandle<ActionUpdateTypeInvoke>();
         }
 
         protected override Task InvokeAction(TelegramSession session)
