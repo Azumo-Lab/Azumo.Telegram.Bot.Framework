@@ -40,13 +40,13 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <returns></returns>
         public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            IEnumerable<IAuthentication> authentications = Context.UserScope.GetServices<IAuthentication>();
+            IEnumerable<IAuthentication> authentications = session.UserService.GetServices<IAuthentication>();
 
             foreach (IAuthentication auth in authentications)
-                if (!await auth.Auth(Context))
+                if (!await auth.Auth(session))
                     return;
 
-            await NextHandle(Context);
+            await NextHandle(session);
         }
     }
 }

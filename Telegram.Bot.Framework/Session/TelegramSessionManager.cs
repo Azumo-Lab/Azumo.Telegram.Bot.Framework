@@ -27,36 +27,52 @@ using Telegram.Bot.Framework.Helper;
 namespace Telegram.Bot.Framework.Session
 {
     /// <summary>
-    /// 
+    /// TelegramSession管理
     /// </summary>
     internal class TelegramSessionManager
     {
+        /// <summary>
+        /// 唯一的实例
+        /// </summary>
         public static TelegramSessionManager Instance { get; } = new TelegramSessionManager();
 
         private readonly Dictionary<long, TelegramSession> UID_Session = new Dictionary<long, TelegramSession>();
         private readonly Dictionary<long, TelegramSession> ChatID_Session = new Dictionary<long, TelegramSession>();
+        
+        /// <summary>
+        /// 获取TelegramSession
+        /// </summary>
+        /// <param name="serviceProvider">服务提供</param>
+        /// <param name="update">Telegram请求</param>
+        /// <returns>返回Session，可以为NULL</returns>
         public TelegramSession GetTelegramSession(IServiceProvider serviceProvider, Update update)
         {
             try
             {
+                // 获取用户UID，使用UID来进行Session的存取
                 long? id = TelegramSession.GetUser(update).Id;
                 TelegramSession telegramSession = null!;
+                // 请求中存在UID
                 if (id != null)
                 {
+                    // 获取Session
                     if (!UID_Session.TryGetValue(id.Value, out telegramSession))
                     {
+                        // 没取到，是新用户
                         telegramSession = TelegramSession.CreateSession(serviceProvider, update);
+                        // 保存数据
                         UID_Session.TryAdd(id.Value, telegramSession);
                         ChatID_Session.TryAdd(telegramSession.User.ChatID.Value, telegramSession);
                     }
                 }
+                // 请求中不存在UID，但是存在ChatID
                 else if ((id = TelegramSession.GetChatID(update)) != null)
                 {
+                    // ChatID也无法获得
                     if (!ChatID_Session.TryGetValue(id.Value, out telegramSession))
-                    {
                         return default!;
-                    }
                 }
+                // 如果已经取得成功，更新Update（请求数据）
                 if (!telegramSession.IsNull())
                 {
                     telegramSession.Update = update;
@@ -65,6 +81,7 @@ namespace Telegram.Bot.Framework.Session
             }
             catch (Exception)
             {
+                // 途中抛出异常的话，返回空值
                 return default!;
             }
         }

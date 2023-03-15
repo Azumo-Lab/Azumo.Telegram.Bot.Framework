@@ -25,10 +25,13 @@ using Telegram.Bot.Framework.Abstract.Sessions;
 namespace Telegram.Bot.Framework.Session
 {
     /// <summary>
-    /// 
+    /// 内部Session实现
     /// </summary>
     internal sealed class InternalSession : ISession, IDisposable
     {
+        /// <summary>
+        /// 当前Session ID
+        /// </summary>
         public string SessionID { get; } = Guid.NewGuid().ToString();
 
         private readonly Dictionary<object, byte[]> __InternalSessionCache = new();
@@ -40,6 +43,11 @@ namespace Telegram.Bot.Framework.Session
             __InternalSessionCache.Clear();
         }
 
+        /// <summary>
+        /// 使用Key 获得相应的值
+        /// </summary>
+        /// <param name="sessionKey">要获取数据的Key</param>
+        /// <returns>返回对应的数据，可以为NULL</returns>
         public byte[] Get(object sessionKey)
         {
             ThrowIfDispose();
@@ -47,6 +55,10 @@ namespace Telegram.Bot.Framework.Session
             return __InternalSessionCache.TryGetValue(sessionKey, out byte[] result) ? result : default;
         }
 
+        /// <summary>
+        /// 删除指定Key的数据
+        /// </summary>
+        /// <param name="sessionKey">要删除数据的Key</param>
         public void Remove(object sessionKey)
         {
             ThrowIfDispose();
@@ -54,6 +66,11 @@ namespace Telegram.Bot.Framework.Session
             __InternalSessionCache.Remove(sessionKey);
         }
 
+        /// <summary>
+        /// 保存对应Key的数据
+        /// </summary>
+        /// <param name="sessionKey">要保存数据的Key</param>
+        /// <param name="data">要保存的数据</param>
         public void Save(object sessionKey, byte[] data)
         {
             ThrowIfDispose();
