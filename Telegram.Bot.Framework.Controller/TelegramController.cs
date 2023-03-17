@@ -25,7 +25,7 @@ namespace Telegram.Bot.Framework.Controller
 
         protected virtual async Task Redirect(string commandName, params object[] args)
         {
-            ICommandManager commandManager = TelegramSession.UserService.GetRequiredService<ICommandManager>();
+            ICommandInvoker commandManager = TelegramSession.UserService.GetRequiredService<ICommandInvoker>();
             await commandManager.CommandInvoke(commandName, args);
         }
 
@@ -36,7 +36,7 @@ namespace Telegram.Bot.Framework.Controller
 
         protected virtual async Task Redirect(UpdateType updateType, params object[] args)
         {
-            ICommandManager commandManager = TelegramSession.UserService.GetRequiredService<ICommandManager>();
+            ICommandInvoker commandManager = TelegramSession.UserService.GetRequiredService<ICommandInvoker>();
             await commandManager.CommandInvoke(updateType, args);
         }
     }

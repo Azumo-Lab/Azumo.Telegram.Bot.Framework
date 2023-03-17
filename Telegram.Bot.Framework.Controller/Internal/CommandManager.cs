@@ -1,25 +1,12 @@
-﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
-//
-//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller.Attribute;
 using Telegram.Bot.Framework.Controller.Interface;
 using Telegram.Bot.Framework.Controller.Models;
 using Telegram.Bot.Framework.Helper;
@@ -27,33 +14,74 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Controller.Internal
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    internal class CommandManager : InvokeBase, ICommandManager
+    internal class CommandManager : ICommandManager
     {
-        private readonly IControllerManager ControllerManager;
-        public CommandManager(IControllerManager controllerManager)
+        public CommandManager() { }
+
+        private readonly static List<CommandInfo> CommandInfos = new List<CommandInfo>();
+
+        private readonly static Dictionary<string, CommandInfo> DicCommandInfos = new Dictionary<string, CommandInfo>();
+        private readonly static Dictionary<MessageType, CommandInfo> DicMessageCommandInfos = new Dictionary<MessageType, CommandInfo>();
+        private readonly static Dictionary<UpdateType, CommandInfo> DicUpdateCommandInfos = new Dictionary<UpdateType, CommandInfo>();
+
+        static CommandManager()
         {
-            ControllerManager = controllerManager;
+            List<Type> controllerTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => typeof(TelegramController).IsAssignableFrom(x))
+                .ToList();
+            foreach (Type item in controllerTypes)
+            {
+                MethodInfo[] methodInfos = item.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static);
+                foreach (MethodInfo method in methodInfos)
+                {
+                    CommandInfos.Add(new CommandInfo(method));
+                }
+            }
+            CommandInfos = CommandInfos.Where(x => x.IsCommand).ToList();
+            DicCommandInfos = CommandInfos.ToDictionary(x => x.CommandName, x => x)!;
+            DicMessageCommandInfos = CommandInfos.Where(x =>
+            {
+                DefaultMessageAttribute defaultMessageAttribute = x.GetAttributes<DefaultMessageAttribute>().FirstOrDefault();
+                return defaultMessageAttribute != null;
+            }).ToDictionary(x =>
+            {
+                return x.GetAttributes<DefaultMessageAttribute>().FirstOrDefault().MessageType;
+            }, y => y);
+            DicUpdateCommandInfos = CommandInfos.Where(x =>
+            {
+                DefaultTypeAttribute defaultTypeAttribute = x.GetAttributes<DefaultTypeAttribute>().FirstOrDefault();
+                if (defaultTypeAttribute == null)
+                    return false;
+
+                if (x.ParamInfos.Any())
+                    throw new Exception($"方法：{x?.CommandMethod?.Name} 控制器：{x?.ControllerType?.FullName} 参数个数：{x?.ParamInfos.Count} \n目前框架不支持带有参数的默认处理，请将参数删除后重试。");
+
+                return true;
+            }).ToDictionary(x =>
+            {
+                return x.GetAttributes<DefaultTypeAttribute>().FirstOrDefault().UpdateType;
+            }, y => y);
         }
 
-        public async Task CommandInvoke(string command, params object[] param)
+        public List<CommandInfo> GetCommandInfos()
         {
-            TelegramController telegramController = ControllerManager.GetController(command, out CommandInfo commandInfo);
-            if (telegramController.IsNull() || commandInfo.IsNull())
-                return;
-
-            await CommandInvoke(commandInfo, telegramController, param);
+            return CommandInfos;
         }
 
-        public async Task CommandInvoke(MessageType updateType, params object[] param)
+        public CommandInfo GetCommandInfo(string command)
         {
-            TelegramController telegramController = ControllerManager.GetController(updateType, out CommandInfo commandInfo);
-            if (telegramController.IsNull() || commandInfo.IsNull())
-                return;
+            return DicCommandInfos.TryGetValue(command, out CommandInfo commandInfo) ? commandInfo : default!;
+        }
 
-            await CommandInvoke(commandInfo, telegramController, param);
+        public CommandInfo GetCommandInfo(MessageType messageType)
+        {
+            return DicMessageCommandInfos.TryGetValue(messageType, out CommandInfo commandInfo) ? commandInfo : default!;
+        }
+
+        public CommandInfo GetCommandInfo(UpdateType messageType)
+        {
+            return DicUpdateCommandInfos.TryGetValue(messageType, out CommandInfo commandInfo) ? commandInfo : default!;
         }
     }
 }

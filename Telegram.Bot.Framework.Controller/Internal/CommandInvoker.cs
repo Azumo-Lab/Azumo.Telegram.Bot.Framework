@@ -30,18 +30,27 @@ namespace Telegram.Bot.Framework.Controller.Internal
     /// <summary>
     /// 
     /// </summary>
-    internal class UpdateTypeInvoke : InvokeBase, IUpdateTypeInvoker
+    internal class CommandInvoker : InvokeBase, ICommandInvoker
     {
         private readonly IControllerManager ControllerManager;
-        public UpdateTypeInvoke(IControllerManager controllerManager)
+        public CommandInvoker(IControllerManager controllerManager)
         {
             ControllerManager = controllerManager;
         }
 
-        public async Task CommandInvoke(UpdateType command, params object[] param)
+        public async Task CommandInvoke(string command, params object[] param)
         {
             TelegramController telegramController = ControllerManager.GetController(command, out CommandInfo commandInfo);
-            if (telegramController.IsNull())
+            if (telegramController.IsNull() || commandInfo.IsNull())
+                return;
+
+            await CommandInvoke(commandInfo, telegramController, param);
+        }
+
+        public async Task CommandInvoke(MessageType updateType, params object[] param)
+        {
+            TelegramController telegramController = ControllerManager.GetController(updateType, out CommandInfo commandInfo);
+            if (telegramController.IsNull() || commandInfo.IsNull())
                 return;
 
             await CommandInvoke(commandInfo, telegramController, param);

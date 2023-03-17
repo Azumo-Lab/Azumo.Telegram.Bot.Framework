@@ -34,7 +34,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     {
         public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            IUpdateTypeInvoke updateTypeInvoke = session.UserService.GetService<IUpdateTypeInvoke>();
+            IUpdateTypeInvoker updateTypeInvoke = session.UserService.GetService<IUpdateTypeInvoker>();
             await updateTypeInvoke.CommandInvoke(session.Update.Type);
 
             await NextHandle(session);

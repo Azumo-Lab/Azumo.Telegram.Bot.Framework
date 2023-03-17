@@ -10,7 +10,7 @@ namespace Telegram.Bot.Framework.Controller
     {
         public static IBuilder UseController(this IBuilder services)
         {
-            services.RuntimeServices.AddScoped<IFrameworkInfo, FrameworkInfo>();
+            services.RuntimeServices.AddScoped<ICommandManager, CommandManager>();
             return services;
         }
     }

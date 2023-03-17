@@ -20,31 +20,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Controller.Interface;
-using Telegram.Bot.Framework.Controller.Models;
-using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Controller.Internal
+namespace Telegram.Bot.Framework.Controller.Interface
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UpdateTypeInvoke : InvokeBase, IUpdateTypeInvoker
+    public interface IUpdateTypeInvoker
     {
-        private readonly IControllerManager ControllerManager;
-        public UpdateTypeInvoke(IControllerManager controllerManager)
-        {
-            ControllerManager = controllerManager;
-        }
-
-        public async Task CommandInvoke(UpdateType command, params object[] param)
-        {
-            TelegramController telegramController = ControllerManager.GetController(command, out CommandInfo commandInfo);
-            if (telegramController.IsNull())
-                return;
-
-            await CommandInvoke(commandInfo, telegramController, param);
-        }
+        public Task CommandInvoke(UpdateType command, params object[] param);
     }
 }
