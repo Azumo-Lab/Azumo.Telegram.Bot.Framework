@@ -17,9 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Bots;
@@ -31,7 +29,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
-    /// 
+    /// 创建一个TelegramBot
     /// </summary>
     internal class TelegramBot : ITelegramBot
     {
@@ -51,17 +49,30 @@ namespace Telegram.Bot.Framework.Bots
             services.AddSingleton<ITelegramBot>(this);
             services.AddSingleton<ITelegramBotClient, TelegramBotClient>();
             services.AddSingleton<IUpdateHandler, TelegramUpdateHandle>();
-            
+
             // 创建服务
             this.ServiceProvider = services.BuildServiceProvider();
         }
 
+        /// <summary>
+        /// 对当前Bot进行重启
+        /// </summary>
+        /// <returns>可等待任务</returns>
         public async Task BotReStart()
         {
+            // 停止
             await BotStop();
+            // 等待一段时间，等待停止指令的执行
+            await Task.Delay(5000);
+            // 重启
             await BotStart();
         }
 
+        /// <summary>
+        /// 启动机器人
+        /// </summary>
+        /// <returns>可等待任务</returns>
+        /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
         public async Task BotStart()
         {
             ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
@@ -76,7 +87,7 @@ namespace Telegram.Bot.Framework.Bots
                 cancellationTokenSource.Token
                 );
 
-            await Task.Run(async () => 
+            await Task.Run(async () =>
             {
                 User user = await botClient.GetMeAsync(cancellationTokenSource.Token);
                 Console.WriteLine($"Start {user.Username}");
@@ -87,6 +98,10 @@ namespace Telegram.Bot.Framework.Bots
             });
         }
 
+        /// <summary>
+        /// 停止当前机器人的执行(非实时停止)
+        /// </summary>
+        /// <returns>可等待任务</returns>
         public async Task BotStop()
         {
             IsStop = true;

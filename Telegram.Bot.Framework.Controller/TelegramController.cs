@@ -9,14 +9,19 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Controller
 {
+    /// <summary>
+    /// 控制器
+    /// </summary>
     public abstract class TelegramController
     {
-        protected TelegramSession TelegramSession { get; private set; } = default!;
+        protected TelegramSession Session { get; private set; } = default!;
 
         public void Invoke(TelegramSession session)
         {
-            TelegramSession = session;
+            Session = session;
         }
+
+        #region (Redirect)跳转至其他的方法
 
         protected virtual async Task Redirect(string commandName)
         {
@@ -25,8 +30,19 @@ namespace Telegram.Bot.Framework.Controller
 
         protected virtual async Task Redirect(string commandName, params object[] args)
         {
-            ICommandInvoker commandManager = TelegramSession.UserService.GetRequiredService<ICommandInvoker>();
+            ICommandInvoker commandManager = Session.UserService.GetRequiredService<ICommandInvoker>();
             await commandManager.CommandInvoke(commandName, args);
+        }
+
+        protected virtual async Task Redirect(MessageType messageType)
+        {
+            await Redirect(messageType, null!);
+        }
+
+        protected virtual async Task Redirect(MessageType messageType, params object[] args)
+        {
+            ICommandInvoker commandInvoker = Session.UserService.GetRequiredService<ICommandInvoker>();
+            await commandInvoker.CommandInvoke(messageType, args);
         }
 
         protected virtual async Task Redirect(UpdateType updateType)
@@ -36,8 +52,11 @@ namespace Telegram.Bot.Framework.Controller
 
         protected virtual async Task Redirect(UpdateType updateType, params object[] args)
         {
-            ICommandInvoker commandManager = TelegramSession.UserService.GetRequiredService<ICommandInvoker>();
+            IUpdateTypeInvoker commandManager = Session.UserService.GetRequiredService<IUpdateTypeInvoker>();
             await commandManager.CommandInvoke(updateType, args);
         }
+
+        #endregion
+
     }
 }

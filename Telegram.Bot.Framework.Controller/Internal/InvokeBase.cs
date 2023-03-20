@@ -26,10 +26,17 @@ using Telegram.Bot.Framework.Helper;
 namespace Telegram.Bot.Framework.Controller.Internal
 {
     /// <summary>
-    /// 
+    /// 执行的基类
     /// </summary>
     internal abstract class InvokeBase
     {
+        /// <summary>
+        /// 执行一个指令
+        /// </summary>
+        /// <param name="commandInfo">指令信息</param>
+        /// <param name="telegramController">控制器</param>
+        /// <param name="param">参数</param>
+        /// <returns></returns>
         protected async Task CommandInvoke(CommandInfo commandInfo, TelegramController telegramController, params object[] param)
         {
             Delegate @delegate = Delegate.CreateDelegate(commandInfo.ControllerType, telegramController, commandInfo.CommandMethod);

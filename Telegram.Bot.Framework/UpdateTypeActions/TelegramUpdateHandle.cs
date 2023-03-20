@@ -19,13 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
-using Telegram.Bot.Framework.Abstract.Models;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Abstract.Users;
 using Telegram.Bot.Framework.Session;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -93,7 +90,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
             }
             catch (Exception)
             {
-                
+
             }
         }
     }

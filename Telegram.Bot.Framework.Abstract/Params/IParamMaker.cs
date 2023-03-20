@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Params
 {
@@ -32,7 +33,7 @@ namespace Telegram.Bot.Framework.Abstract.Params
         /// <param name="context"></param>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        Task<object> GetParam(TelegramContext context, IServiceProvider serviceProvider);
+        Task<object> GetParam(TelegramSession session);
 
         /// <summary>
         /// 检查参数
@@ -40,6 +41,6 @@ namespace Telegram.Bot.Framework.Abstract.Params
         /// <param name="context"></param>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        Task<bool> ParamCheck(TelegramContext context, IServiceProvider serviceProvider);
+        Task<bool> ParamCheck(TelegramSession session);
     }
 }

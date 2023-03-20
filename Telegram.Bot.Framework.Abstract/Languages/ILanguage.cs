@@ -32,5 +32,7 @@ namespace Telegram.Bot.Framework.Abstract.Languages
         /// 语言名称
         /// </summary>
         public string LanguageName { get; }
+
+        public Dictionary<string, string> GetLanguageKeyValue();
     }
 }

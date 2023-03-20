@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Abstract.Languages
@@ -32,6 +33,10 @@ namespace Telegram.Bot.Framework.Abstract.Languages
         /// 切换语言
         /// </summary>
         /// <param name="language"></param>
-        void ChangeLanguage(ILanguage language);
+        void ChangeLanguage(string name);
+
+        public string Name { get; }
+
+        public string this[string key] { get; }
     }
 }

@@ -34,25 +34,49 @@ namespace Telegram.Bot.Framework.Bots
     /// </summary>
     public class TelegramBotBuilder : IBuilder
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string Token { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public HttpClient Proxy { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<Type> Configs { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceCollection BuilderServices { get; } = new ServiceCollection();
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceCollection RuntimeServices { get; } = new ServiceCollection();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static IBuilder Create()
         {
             return new TelegramBotBuilder();
         }
 
-        private TelegramBotBuilder() 
-        {
-            
-        }
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        private TelegramBotBuilder() { }
 
+        /// <summary>
+        /// 开始创建TelegramBot
+        /// </summary>
+        /// <returns>返回<see cref="ITelegramBot"/>接口</returns>
         public ITelegramBot Build()
         {
             Token.ThrowIfNullOrEmpty();
@@ -68,8 +92,17 @@ namespace Telegram.Bot.Framework.Bots
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Setup
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static IBuilder AddToken(this IBuilder builder, string token)
         {
             builder.ThrowIfNull();
@@ -79,6 +112,15 @@ namespace Telegram.Bot.Framework.Bots
             return builder;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="host"></param>
+        /// <param name="port"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static IBuilder AddProxy(this IBuilder builder, string host, int? port = null, string username = null, string password = null)
         {
             builder.ThrowIfNull();
