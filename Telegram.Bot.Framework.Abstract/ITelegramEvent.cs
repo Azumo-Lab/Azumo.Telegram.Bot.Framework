@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.Abstract
     /// <summary>
     /// 
     /// </summary>
-    public class ITelegramEvent
+    public interface ITelegramEvent
     {
 
     }
