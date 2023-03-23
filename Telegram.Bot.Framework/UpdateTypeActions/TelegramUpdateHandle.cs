@@ -33,7 +33,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class TelegramUpdateHandle : IUpdateHandler
+    internal class TelegramUpdateHandle : IUpdateHandler
     {
         public readonly IServiceProvider serviceProvider;
         private readonly Dictionary<UpdateType, AbstractActionInvoker> AbstractActionInvokersDic;

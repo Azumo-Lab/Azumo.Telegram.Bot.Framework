@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Actions;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Helper;
@@ -40,12 +41,12 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <returns></returns>
         public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            ICallBackManager callBackManager = Context.UserScope.GetService<ICallBackManager>();
-            Action<TelegramContext> callbackAction = callBackManager.GetCallBack(Context.Update.CallbackQuery.Data);
+            ICallBackManager callBackManager = session.UserService.GetService<ICallBackManager>();
+            Action<TelegramSession> callbackAction = callBackManager.GetCallBack(session.Update.CallbackQuery.Data);
             if (!callbackAction.IsNull())
             {
-                await Context.BotClient.AnswerCallbackQueryAsync(Context.Update.CallbackQuery.Id);
                 callbackAction.Invoke(session);
+                await session.BotClient.AnswerCallbackQueryAsync(session.Update.CallbackQuery.Id);
             }
 
             await NextHandle(session);

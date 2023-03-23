@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionEditedChannelPost : AbstractActionInvoker
+    internal class ActionEditedChannelPost : AbstractActionInvoker
     {
         public ActionEditedChannelPost(IServiceProvider serviceProvider) : base(serviceProvider)
         {

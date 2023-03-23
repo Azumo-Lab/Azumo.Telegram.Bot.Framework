@@ -55,5 +55,10 @@ namespace Telegram.Bot.Framework.Controller.Internal
 
             await CommandInvoke(commandInfo, telegramController, param);
         }
+
+        public new async Task CommandInvoke(CommandInfo commandInfo, TelegramController controller, params object[] param)
+        {
+            await base.CommandInvoke(commandInfo, controller, param);
+        }
     }
 }

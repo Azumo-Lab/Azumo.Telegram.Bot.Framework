@@ -26,20 +26,11 @@ namespace Telegram.Bot.Framework.Helper
     /// <summary>
     /// 
     /// </summary>
-    public static class IEnumerable
+    public static class FileHelper
     {
-        #region 抛出异常
-        public static void ThrowIfNullOrEmpty<T>(this IEnumerable<T> values)
+        public static bool IsEmpty(this FileInfo fileInfo)
         {
-            if (values.IsEmpty())
-                throw new ArgumentNullException(nameof(values));
-        }
-
-        #endregion
-
-        public static bool IsEmpty<T>(this IEnumerable<T> values)
-        {
-            return values.IsNull() || !values.Any();
+            return fileInfo.IsNull() || !fileInfo.Exists || fileInfo.Length == 0;
         }
     }
 }

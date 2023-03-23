@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// Action执行
     /// </summary>
-    public abstract class AbstractActionInvoker : IActionInvoker
+    internal abstract class AbstractActionInvoker : IActionInvoker
     {
         /// <summary>
         /// ActionHandle

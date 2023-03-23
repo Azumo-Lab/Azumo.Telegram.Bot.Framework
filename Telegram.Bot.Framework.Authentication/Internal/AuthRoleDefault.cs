@@ -21,30 +21,33 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Framework.Controller.Interface;
-using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 
-namespace Telegram.Bot.Framework.UpdateTypeActions
+namespace Telegram.Bot.Framework.Authentication.Internal
 {
     /// <summary>
-    /// 处理Channel的内容
+    /// 
     /// </summary>
-    internal class ActionChannelPost : AbstractActionInvoker
+    internal class AuthRoleDefault : BaseAuthRole
     {
-        public ActionChannelPost(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        public override BotCommandScopeType Type => BotCommandScopeType.Default;
 
-        public override UpdateType InvokeType => UpdateType.ChannelPost;
-
-        protected override void AddActionHandles(IServiceProvider serviceProvider)
+        public override async Task ChangeRole(TelegramSession session)
         {
-            AddHandle<ActionUpdateTypeInvoke>();
-        }
+            ICommandManager commandManager = session.UserService.GetService<ICommandManager>()!;
+            if (commandManager.IsNull())
+                return;
 
-        protected override async Task InvokeAction(TelegramSession session)
-        {
-            await Task.CompletedTask;
+            BotCommandScope botCommandScope = GetBotCommandScope(session);
+            if (botCommandScope.IsNull())
+                return;
+
+            List<BotCommand> botCommands = commandManager.GetBotCommands(botCommandScope);
+            await session.BotClient.SetMyCommandsAsync(botCommands, botCommandScope);
         }
     }
 }

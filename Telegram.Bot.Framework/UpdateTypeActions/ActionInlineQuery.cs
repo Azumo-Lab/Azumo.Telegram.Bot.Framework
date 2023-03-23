@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionInlineQuery : AbstractActionInvoker
+    internal class ActionInlineQuery : AbstractActionInvoker
     {
         public ActionInlineQuery(IServiceProvider serviceProvider) : base(serviceProvider) { }
         public override UpdateType InvokeType => UpdateType.InlineQuery;

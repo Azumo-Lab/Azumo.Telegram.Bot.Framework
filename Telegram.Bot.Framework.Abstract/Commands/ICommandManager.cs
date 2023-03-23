@@ -20,6 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstract.Commands
 {
@@ -71,6 +73,11 @@ namespace Telegram.Bot.Framework.Abstract.Commands
         /// </summary>
         /// <returns></returns>
         Dictionary<string, string> GetCommandInfos();
+
+        List<BotCommand> GetBotCommands();
+
+        List<BotCommand> GetBotCommands(BotCommandScope botCommandScope);
+
         #endregion
     }
 }

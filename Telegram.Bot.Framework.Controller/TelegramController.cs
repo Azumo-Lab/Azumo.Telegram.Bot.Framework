@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Controller.Interface;
+using Telegram.Bot.Framework.Controller.Models;
+using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Controller
@@ -16,9 +18,13 @@ namespace Telegram.Bot.Framework.Controller
     {
         protected TelegramSession Session { get; private set; } = default!;
 
-        public void Invoke(TelegramSession session)
+        public async Task Invoke(TelegramSession session, CommandInfo commandInfo, params object[] param)
         {
             Session = session;
+            ICommandInvoker commandInvoker = Session.UserService.GetRequiredService<ICommandInvoker>();
+            if (commandInfo.IsNull())
+                return;
+            await commandInvoker.CommandInvoke(commandInfo, this, param);
         }
 
         #region (Redirect)跳转至其他的方法

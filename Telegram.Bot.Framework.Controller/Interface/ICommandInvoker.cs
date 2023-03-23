@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller.Models;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Controller.Interface
@@ -32,6 +33,8 @@ namespace Telegram.Bot.Framework.Controller.Interface
         public Task CommandInvoke(string command, params object[] param);
 
         public Task CommandInvoke(MessageType messageType, params object[] param);
+
+        public Task CommandInvoke(CommandInfo commandInfo, TelegramController controller, params object[] param);
 
     }
 }

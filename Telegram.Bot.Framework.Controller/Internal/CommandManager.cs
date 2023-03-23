@@ -71,16 +71,22 @@ namespace Telegram.Bot.Framework.Controller.Internal
 
         public CommandInfo GetCommandInfo(string command)
         {
+            if (command.IsNullOrEmpty())
+                return default!;
             return DicCommandInfos.TryGetValue(command, out CommandInfo commandInfo) ? commandInfo : default!;
         }
 
         public CommandInfo GetCommandInfo(MessageType messageType)
         {
+            if (messageType.IsNull())
+                return default!;
             return DicMessageCommandInfos.TryGetValue(messageType, out CommandInfo commandInfo) ? commandInfo : default!;
         }
 
         public CommandInfo GetCommandInfo(UpdateType messageType)
         {
+            if (messageType.IsNull())
+                return default!;
             return DicUpdateCommandInfos.TryGetValue(messageType, out CommandInfo commandInfo) ? commandInfo : default!;
         }
     }

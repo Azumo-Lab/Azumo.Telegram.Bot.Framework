@@ -20,46 +20,39 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.Helper
+namespace Telegram.Bot.Framework.CallBack
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class String
+    internal class CallBackManager : ICallBackManager
     {
-        #region 抛出异常
-        public static void ThrowIfNull(this string str)
+
+        private readonly Dictionary<string, Action<TelegramSession>> _CallBackDic = new Dictionary<string, Action<TelegramSession>>();
+
+        public string CreateCallBack(Action<TelegramSession> CallBackAction)
         {
-            if (str.IsNull())
-                throw new ArgumentNullException(nameof(str));
+            return CreateCallBack(Guid.NewGuid().ToString(), CallBackAction);
         }
 
-        public static void ThrowIfNullOrEmpty(this string str)
+        public string CreateCallBack(string CallBackName, Action<TelegramSession> CallBackAction)
         {
-            if (str.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(str));
-        }
-        #endregion
-
-        #region 对String类型进行扩展
-
-        public static bool IsNullOrEmpty(this string str)
-        {
-            return string.IsNullOrEmpty(str);
+            string callBackKey = Guid.NewGuid().ToString();
+            _CallBackDic.Add(callBackKey, CallBackAction);
+            return callBackKey;
         }
 
-        public static bool IsTrimEmpty(this string str)
+        public void Dispose(string CallbackName)
         {
-            return IsNullOrEmpty(str) || IsNullOrEmpty(str.Trim());
+            throw new NotImplementedException();
         }
 
-        public static string GetValue(this string str, string defVal)
+        public Action<TelegramSession> GetCallBack(string CallBackKey)
         {
-            return IsNullOrEmpty(str) ? defVal : str;
+            throw new NotImplementedException();
         }
-
-        #endregion
-
     }
 }

@@ -39,29 +39,25 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <summary>
         /// 执行控制器
         /// </summary>
-        /// <param name="Context"></param>
+        /// <param name="session"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            IControllerManager controllerManager = Context.UserService.GetService<IControllerManager>();
-            IParamManager paramManger = Context.UserService.GetService<IParamManager>();
+            IControllerManager controllerManager = session.UserService.GetService<IControllerManager>();
+            IParamManager paramManger = session.UserService.GetService<IParamManager>();
 
-            TelegramController controller = controllerManager.GetController(paramManger.GetCommand(), out CommandInfo commandInfo);
-            if (!controller.IsNull())
-            {
-                
-            }
-            controller ??= controllerManager.GetController(Context.Update.Message.Type, out commandInfo);
-            controller ??= controllerManager.GetController(Context.Update.Type, out commandInfo);
+            TelegramController controller;
+            controller = controllerManager.GetController(paramManger.GetCommand(), out CommandInfo commandInfo);
+            controller ??= controllerManager.GetController(session.Update.Message.Type, out commandInfo);
+            controller ??= controllerManager.GetController(session.Update.Type, out commandInfo);
 
             if (controller.IsNull())
-                await NextHandle(Context);
+                await NextHandle(session);
 
+            await controller.Invoke(session, commandInfo, paramManger.GetParam());
 
-            await controller.Invoke(Context, controllerManager.GetCommandInfo(paramManger.GetCommand()));
-
-            await NextHandle(Context);
+            await NextHandle(session);
         }
     }
 }

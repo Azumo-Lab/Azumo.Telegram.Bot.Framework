@@ -21,7 +21,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalFramework;
 using Telegram.Bot.Framework.UpdateTypeActions.Actions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -31,7 +30,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 用于处理Message类型
     /// </summary>
-    public class ActionMessage : AbstractActionInvoker
+    internal class ActionMessage : AbstractActionInvoker
     {
         public override UpdateType InvokeType => UpdateType.Message;
 

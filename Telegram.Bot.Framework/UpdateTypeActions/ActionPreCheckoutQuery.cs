@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionPreCheckoutQuery : AbstractActionInvoker
+    internal class ActionPreCheckoutQuery : AbstractActionInvoker
     {
         public ActionPreCheckoutQuery(IServiceProvider serviceProvider) : base(serviceProvider)
         {

@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Actions;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Authentication.Interface;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
@@ -42,9 +44,17 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         {
             IEnumerable<IAuthentication> authentications = session.UserService.GetServices<IAuthentication>();
 
-            foreach (IAuthentication auth in authentications)
-                if (!await auth.Auth(session))
+            if (authentications.IsEmpty())
+                await NextHandle(session);
+
+            foreach (IAuthentication authentication in authentications)
+            {
+                if (!await authentication.AuthUser(session))
+                {
+                    await authentication.ErrorMessage(session);
                     return;
+                }
+            }
 
             await NextHandle(session);
         }

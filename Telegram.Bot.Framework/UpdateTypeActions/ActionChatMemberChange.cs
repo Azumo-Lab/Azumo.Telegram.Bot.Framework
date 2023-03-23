@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionChatMemberChange : AbstractActionInvoker
+    internal class ActionChatMemberChange : AbstractActionInvoker
     {
         public override UpdateType InvokeType => UpdateType.ChatMember;
 

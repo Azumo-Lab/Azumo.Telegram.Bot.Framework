@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionChatJoinRequest : AbstractActionInvoker
+    internal class ActionChatJoinRequest : AbstractActionInvoker
     {
         public ActionChatJoinRequest(IServiceProvider serviceProvider) : base(serviceProvider) { }
         public override UpdateType InvokeType => UpdateType.ChatJoinRequest;

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Telegram.Bot.Framework.Helper
 {
-    public static class Bool
+    public static class BoolHelper
     {
         public static bool True(this ref bool value)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.Utils
 {
@@ -23,38 +24,9 @@ namespace Telegram.Bot.Framework.Utils
             {
                 string arg = args[i];
                 if (arg.ToLower() == name.ToLower() || arg.ToUpper() == name.ToUpper())
-                    return GetVal(args, i + 1, null);
+                    return args.GetValue(i + 1, string.Empty);
             }
-            return null;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="values"></param>
-        /// <param name="Index"></param>
-        /// <param name="defVal"></param>
-        /// <returns></returns>
-        public static T GetVal<T>(this IEnumerable<T> values, int Index, T defVal)
-        {
-            if (values == null)
-                return defVal;
-            if (Index >= values.Count())
-                return default;
-            return values.ToArray()[Index];
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="values"></param>
-        /// <param name="Index"></param>
-        /// <returns></returns>
-        public static T GetVal<T>(this IEnumerable<T> values, int Index)
-        {
-            return GetVal(values, Index, default);
+            return string.Empty;
         }
     }
 }

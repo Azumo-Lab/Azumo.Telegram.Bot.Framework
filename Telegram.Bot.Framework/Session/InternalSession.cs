@@ -43,6 +43,11 @@ namespace Telegram.Bot.Framework.Session
             __InternalSessionCache.Clear();
         }
 
+        ~InternalSession()
+        {
+            Dispose();
+        }
+
         /// <summary>
         /// 使用Key 获得相应的值
         /// </summary>
@@ -81,7 +86,7 @@ namespace Telegram.Bot.Framework.Session
         private void ThrowIfDispose()
         {
             if (__Disposed)
-                throw new Exception("ObjectHelper is Disposed");
+                throw new Exception($"{nameof(ISession)} is Disposed");
         }
     }
 }

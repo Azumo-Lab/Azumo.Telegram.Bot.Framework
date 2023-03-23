@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionPollAnswer : AbstractActionInvoker
+    internal class ActionPollAnswer : AbstractActionInvoker
     {
         public ActionPollAnswer(IServiceProvider serviceProvider) : base(serviceProvider) { }
         public override UpdateType InvokeType => UpdateType.PollAnswer;

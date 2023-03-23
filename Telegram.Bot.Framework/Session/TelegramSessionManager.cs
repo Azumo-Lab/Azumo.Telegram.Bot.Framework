@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.Session
     /// <summary>
     /// TelegramSession管理
     /// </summary>
-    internal class TelegramSessionManager
+    internal sealed class TelegramSessionManager
     {
         /// <summary>
         /// 唯一的实例

@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 
     /// </summary>
-    public class ActionEditedMessage : AbstractActionInvoker
+    internal class ActionEditedMessage : AbstractActionInvoker
     {
         public ActionEditedMessage(IServiceProvider serviceProvider) : base(serviceProvider) { }
         public override UpdateType InvokeType => UpdateType.EditedMessage;

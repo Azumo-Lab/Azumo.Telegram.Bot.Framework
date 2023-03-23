@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.Abstract
     /// <summary>
     /// 回调管理
     /// </summary>
-    internal interface ICallBackManager
+    public interface ICallBackManager
     {
         /// <summary>
         /// 创建一个CallBack

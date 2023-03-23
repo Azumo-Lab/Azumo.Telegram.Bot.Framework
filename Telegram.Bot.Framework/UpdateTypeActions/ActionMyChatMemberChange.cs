@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// <summary>
     /// 机器人被加入群组等事件发生时
     /// </summary>
-    public class ActionMyChatMemberChange : AbstractActionInvoker
+    internal class ActionMyChatMemberChange : AbstractActionInvoker
     {
         private readonly IBotTelegramEvent telegramEvent;
 

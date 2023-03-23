@@ -26,49 +26,27 @@ namespace Telegram.Bot.Framework.Helper
     /// <summary>
     /// 
     /// </summary>
-    public static class ObjectHelper
+    public static class IEnumerableHelper
     {
         #region 抛出异常
-        public static void ThrowIfNull(this object obj)
+        public static void ThrowIfNullOrEmpty<T>(this IEnumerable<T> values)
         {
-            if (obj.IsNull())
-                throw new ArgumentNullException(nameof(obj));
+            if (values.IsEmpty())
+                throw new ArgumentNullException(nameof(values));
         }
 
         #endregion
 
-        public static bool IsNull(this object obj)
+        public static bool IsEmpty<T>(this IEnumerable<T> values)
         {
-            return obj == null;
+            return values.IsNull() || !values.Any();
         }
 
-        public static bool HasAllNull(params object[] objs)
+        public static T GetValue<T>(this IEnumerable<T> values, int index, T defVal)
         {
-            return !objs.Where(o => !o.IsNull()).Any();
-        }
-
-        public static List<Type> GetSameType(this object obj)
-        {
-            Type? baseType = null;
-
-            if (obj.IsNull())
-                return Array.Empty<Type>().ToList();
-            if (obj is Type type)
-                baseType = type;
-            else
-                baseType = obj.GetType();
-
-            List<Type> allTypes = GetAllTypes();
-            allTypes = allTypes.Where(x =>
-            {
-                return baseType.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface;
-            }).ToList();
-            return allTypes;
-        }
-
-        public static List<Type> GetAllTypes()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
+            if (IsEmpty(values) || values.Count() <= index)
+                return defVal;
+            return values.Skip(index).FirstOrDefault();
         }
     }
 }

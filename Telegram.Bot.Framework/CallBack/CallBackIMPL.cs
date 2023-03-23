@@ -20,17 +20,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.Helper
+namespace Telegram.Bot.Framework.CallBack
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class File
+    internal class CallBackIMPL : ICallBack
     {
-        public static bool IsEmpty(FileInfo fileInfo)
+        public string CallBackID => throw new NotImplementedException();
+
+        public async Task Invoke(params object[] Param)
         {
-            return fileInfo.IsNull() || !fileInfo.Exists || fileInfo.Length == 0;
+            Action<TelegramSession> action = session => { };
+            await 
         }
     }
 }
