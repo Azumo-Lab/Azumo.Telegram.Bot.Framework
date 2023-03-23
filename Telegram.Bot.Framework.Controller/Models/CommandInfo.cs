@@ -21,6 +21,8 @@ namespace Telegram.Bot.Framework.Controller.Models
 
         public UpdateType? UpdateType { get; private set; } = default!;
 
+        public MessageType? MessageType { get; private set; } = default!;
+
         public Type? ControllerType 
         {
             get 
@@ -46,17 +48,19 @@ namespace Telegram.Bot.Framework.Controller.Models
                     attributes.Add(attribute);
                 }
                 Attributes = attributes;
+
                 BotCommandAttribute botCommandAttribute = GetAttributes<BotCommandAttribute>().FirstOrDefault();
                 DefaultMessageAttribute defaultMessageAttribute = GetAttributes<DefaultMessageAttribute>().FirstOrDefault();
-                if (botCommandAttribute.IsNull() && defaultMessageAttribute.IsNull())
-                {
+                DefaultTypeAttribute defaultTypeAttribute = GetAttributes<DefaultTypeAttribute>().FirstOrDefault();
+                if (ObjectHelper.HasAllNull(botCommandAttribute, defaultMessageAttribute, defaultTypeAttribute))
                     return;
-                }
+
                 IsCommand = true;
                 IsEnble = true;
                 CommandName = botCommandAttribute?.CommandName;
                 CommandDescription = botCommandAttribute?.CommandDescription;
-                UpdateType = defaultMessageAttribute?.UpdateType;
+                MessageType = defaultMessageAttribute?.MessageType;
+                UpdateType = defaultTypeAttribute?.UpdateType;
 
                 foreach (ParameterInfo? item in __MethodInfo!.GetParameters())
                 {

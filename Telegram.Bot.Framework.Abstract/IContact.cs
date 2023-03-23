@@ -20,6 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Models;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -28,8 +30,8 @@ namespace Telegram.Bot.Framework.Abstract
     /// </summary>
     public interface IContact
     {
-        void AddContact(TelegramContext context, TelegramUser telegramUser);
+        void AddContact(TelegramSession session, TelegramUser telegramUser);
 
-        TelegramUser GetContact(TelegramContext context);
+        TelegramUser GetContact(TelegramSession session);
     }
 }

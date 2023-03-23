@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Users
 {
@@ -41,6 +42,6 @@ namespace Telegram.Bot.Framework.Abstract.Users
         /// 创建或获取TelegramContext
         /// </summary>
         /// <returns></returns>
-        TelegramContext GetTelegramContext();
+        TelegramSession GetTelegramContext();
     }
 }

@@ -42,6 +42,8 @@ namespace Telegram.Bot.Framework.Helper
         }
         #endregion
 
+        #region 对String类型进行扩展
+
         public static bool IsNullOrEmpty(this string str)
         {
             return string.IsNullOrEmpty(str);
@@ -56,5 +58,8 @@ namespace Telegram.Bot.Framework.Helper
         {
             return IsNullOrEmpty(str) ? defVal : str;
         }
+
+        #endregion
+
     }
 }

@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -34,21 +35,21 @@ namespace Telegram.Bot.Framework.Abstract
         /// </summary>
         /// <param name="CallBackAction"></param>
         /// <returns></returns>
-        string CreateCallBack(Action<TelegramContext> CallBackAction);
+        string CreateCallBack(Action<TelegramSession> CallBackAction);
 
         /// <summary>
         /// 创建一个CallBack
         /// </summary>
         /// <param name="CallBackAction"></param>
         /// <returns></returns>
-        string CreateCallBack(string CallBackName, Action<TelegramContext> CallBackAction);
+        string CreateCallBack(string CallBackName, Action<TelegramSession> CallBackAction);
 
         /// <summary>
         /// 获取CallBack
         /// </summary>
         /// <param name="CallBackKey"></param>
         /// <returns></returns>
-        Action<TelegramContext> GetCallBack(string CallBackKey);
+        Action<TelegramSession> GetCallBack(string CallBackKey);
 
         /// <summary>
         /// 清除指定的Callback

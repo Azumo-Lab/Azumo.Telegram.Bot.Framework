@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Telegram.Bot.Framework.Abstract\Telegram.Bot.Framework.Abstract.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Helper\Telegram.Bot.Framework.Helper.csproj" />
   </ItemGroup>
 
 </Project>

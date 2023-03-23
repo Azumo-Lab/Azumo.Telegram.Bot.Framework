@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -33,41 +34,41 @@ namespace Telegram.Bot.Framework.Abstract
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnInvited(TelegramContext context);
+        Task OnInvited(TelegramSession session);
 
         /// <summary>
         /// 被踢
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnKicked(TelegramContext context);
+        Task OnKicked(TelegramSession session);
 
         /// <summary>
         /// 离开群组
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnLeft(TelegramContext context);
+        Task OnLeft(TelegramSession session);
 
         /// <summary>
         /// 创建聊天
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnCreator(TelegramContext context);
+        Task OnCreator(TelegramSession session);
 
         /// <summary>
         /// 成为管理员
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnBeAdmin(TelegramContext context);
+        Task OnBeAdmin(TelegramSession session);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnRestricted(TelegramContext context);
+        Task OnRestricted(TelegramSession session);
     }
 }

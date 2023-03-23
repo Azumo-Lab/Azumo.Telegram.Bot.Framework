@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.Controller.Interface
     /// <summary>
     /// 
     /// </summary>
-    internal interface IControllerManager
+    public interface IControllerManager
     {
 
         public TelegramController GetController(string command, out CommandInfo commandInfo);

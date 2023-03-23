@@ -22,8 +22,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalFramework.Abstract;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Controller.Interface;
+using Telegram.Bot.Framework.Controller.Models;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
@@ -40,11 +44,21 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <returns></returns>
         public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
         {
-            IControllerManager controllerManager = Context.UserScope.GetService<IControllerManager>();
-            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
+            IControllerManager controllerManager = Context.UserService.GetService<IControllerManager>();
+            IParamManager paramManger = Context.UserService.GetService<IParamManager>();
 
-            TelegramController controller = controllerManager.CreateController(paramManger.GetCommand());
-            controller ??= controllerManager.CreateController(Context.Update.Message.Type);
+            TelegramController controller = controllerManager.GetController(paramManger.GetCommand(), out CommandInfo commandInfo);
+            if (!controller.IsNull())
+            {
+                
+            }
+            controller ??= controllerManager.GetController(Context.Update.Message.Type, out commandInfo);
+            controller ??= controllerManager.GetController(Context.Update.Type, out commandInfo);
+
+            if (controller.IsNull())
+                await NextHandle(Context);
+
+
             await controller.Invoke(Context, controllerManager.GetCommandInfo(paramManger.GetCommand()));
 
             await NextHandle(Context);

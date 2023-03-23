@@ -81,7 +81,7 @@ namespace Telegram.Bot.Framework.Session
         private void ThrowIfDispose()
         {
             if (__Disposed)
-                throw new Exception("Object is Disposed");
+                throw new Exception("ObjectHelper is Disposed");
         }
     }
 }

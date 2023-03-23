@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.Helper
     /// <summary>
     /// 
     /// </summary>
-    public static class Object
+    public static class ObjectHelper
     {
         #region 抛出异常
         public static void ThrowIfNull(this object obj)
@@ -40,6 +40,35 @@ namespace Telegram.Bot.Framework.Helper
         public static bool IsNull(this object obj)
         {
             return obj == null;
+        }
+
+        public static bool HasAllNull(params object[] objs)
+        {
+            return !objs.Where(o => !o.IsNull()).Any();
+        }
+
+        public static List<Type> GetSameType(this object obj)
+        {
+            Type? baseType = null;
+
+            if (obj.IsNull())
+                return Array.Empty<Type>().ToList();
+            if (obj is Type type)
+                baseType = type;
+            else
+                baseType = obj.GetType();
+
+            List<Type> allTypes = GetAllTypes();
+            allTypes = allTypes.Where(x =>
+            {
+                return baseType.IsAssignableFrom(x) && !x.IsAbstract && !x.IsInterface;
+            }).ToList();
+            return allTypes;
+        }
+
+        public static List<Type> GetAllTypes()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
         }
     }
 }

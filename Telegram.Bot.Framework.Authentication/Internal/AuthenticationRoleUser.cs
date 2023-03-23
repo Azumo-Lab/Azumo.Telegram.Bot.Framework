@@ -15,7 +15,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
 
         public Task ChangeRole(TelegramSession session)
         {
-            
+            return Task.CompletedTask;   
         }
     }
 }

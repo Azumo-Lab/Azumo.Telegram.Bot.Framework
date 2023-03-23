@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -28,8 +29,8 @@ namespace Telegram.Bot.Framework.Abstract
     /// </summary>
     public interface IFilter
     {
-        Task<bool> FilterBefore(TelegramContext Context);
+        Task<bool> FilterBefore(TelegramSession session);
 
-        Task<bool> FilterAfter(TelegramContext Context);
+        Task<bool> FilterAfter(TelegramSession session);
     }
 }

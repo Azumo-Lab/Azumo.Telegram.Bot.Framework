@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract
 {
@@ -32,12 +33,12 @@ namespace Telegram.Bot.Framework.Abstract
         /// 处理来自群组的消息
         /// </summary>
         /// <param name="Context"></param>
-        void Group(TelegramContext Context);
+        void Group(TelegramSession session);
 
         /// <summary>
         /// 用于处理来自频道的消息
         /// </summary>
         /// <param name="Context"></param>
-        void Channel(TelegramContext Context);
+        void Channel(TelegramSession session);
     }
 }

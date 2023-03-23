@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.Abstract.Params
     /// <summary>
     /// 帮助创建参数
     /// </summary>
-    internal interface IParamManager
+    public interface IParamManager
     {
         /// <summary>
         /// 读取参数

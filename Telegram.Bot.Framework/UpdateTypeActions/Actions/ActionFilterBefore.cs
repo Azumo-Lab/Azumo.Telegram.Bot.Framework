@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
 {
@@ -31,14 +32,14 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     /// </summary>
     public class ActionFilterBefore : IAction
     {
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            List<IFilter> filters = Context.UserScope.GetServices<IFilter>().ToList();
+            List<IFilter> filters = session.UserService.GetServices<IFilter>().ToList();
             foreach (IFilter item in filters)
-                if (await item.FilterBefore(Context))
+                if (await item.FilterBefore(session))
                     return;
 
-            await NextHandle(Context);
+            await NextHandle(session);
         }
     }
 }

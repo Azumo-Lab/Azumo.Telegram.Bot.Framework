@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Models;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
@@ -31,32 +32,32 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     /// </summary>
     public class ActionUserBridge : IAction
     {
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
-            TelegramUser telegramUser = Context.TelegramUser;
-            IUserBridgeManager userBridgeManager = Context.UserScope.GetService<IUserBridgeManager>();
-            if (userBridgeManager.HasUserBrige(telegramUser))
-            {
-                IUserBridge userBridge = userBridgeManager.GetUserBridge(telegramUser);
-                //判断是否是关闭桥的指令
-                if (IsCloseCommand(Context))
-                {
-                    await userBridge.Disconnect();
-                    userBridge.Dispose();
-                    return;
-                }
+            //TelegramUser telegramUser = session.User;
+            //IUserBridgeManager userBridgeManager = session.UserService.GetService<IUserBridgeManager>();
+            //if (userBridgeManager.HasUserBrige(telegramUser))
+            //{
+            //    IUserBridge userBridge = userBridgeManager.GetUserBridge(telegramUser);
+            //    //判断是否是关闭桥的指令
+            //    if (IsCloseCommand(session))
+            //    {
+            //        await userBridge.Disconnect();
+            //        userBridge.Dispose();
+            //        return;
+            //    }
 
-                //桥处理（信息等处理程序）
-                await userBridge.Send(Context.Update.Message.Text);
-                return;
-            }
+            //    //桥处理（信息等处理程序）
+            //    await userBridge.Send(session.Update.Message.Text);
+            //    return;
+            //}
 
-            await NextHandle(Context);
+            await NextHandle(session);
         }
 
-        private static bool IsCloseCommand(TelegramContext Context)
-        {
-            return Context.GetCommand().ToLower() == "/bridgeclose";
-        }
+        //private static bool IsCloseCommand(TelegramSession Context)
+        //{
+        //    return Context.GetCommand().ToLower() == "/bridgeclose";
+        //}
     }
 }
