@@ -33,7 +33,7 @@ namespace Telegram.Bot.Framework.Payment.AliPay
     /// <summary>
     /// 
     /// </summary>
-    public class Class1
+    public class AliPayFaceToFace : IPaymentMethod
     {
         public void Test()
         {
@@ -133,6 +133,11 @@ namespace Telegram.Bot.Framework.Payment.AliPay
 
         }
 
+        public Task Pay()
+        {
+            Test();
+            return Task.CompletedTask;
+        }
     }
 
 }

@@ -41,7 +41,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Lang
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Logger", "Telegram.Bot.Framework.Logger\Telegram.Bot.Framework.Logger.csproj", "{3284707D-FCDB-4BC4-AD9E-A5F733863704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Payment", "Telegram.Bot.Framework.Payment\Telegram.Bot.Framework.Payment.csproj", "{FE2DA8C4-60BC-4118-9B42-69297AE990A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Payment", "Telegram.Bot.Framework.Payment\Telegram.Bot.Framework.Payment.csproj", "{FE2DA8C4-60BC-4118-9B42-69297AE990A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Channel", "Telegram.Bot.Framework.Channel\Telegram.Bot.Framework.Channel.csproj", "{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,10 @@ Global
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
 		{3284707D-FCDB-4BC4-AD9E-A5F733863704} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
+		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}
