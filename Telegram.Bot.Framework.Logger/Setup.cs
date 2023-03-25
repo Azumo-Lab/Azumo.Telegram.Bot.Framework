@@ -14,27 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Abstract.Bots;
 
-namespace Telegram.Bot.Framework.CallBack
+namespace Telegram.Bot.Framework.Logger
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class CallBackIMPL : ICallBack
+    public static class Setup
     {
-        public string CallBackID => throw new NotImplementedException();
-
-        public async Task Invoke(params object[] Param)
+        public static IServiceCollection AddLogger(this IServiceCollection serviceDescriptors, Action<LoggerSettingModel> settingAction)
         {
-            Action<TelegramSession> action = session => { };
+            LoggerSettingModel loggerSettingModel = new LoggerSettingModel();
+            settingAction.Invoke(loggerSettingModel);
+
+            serviceDescriptors.TryAddSingleton(loggerSettingModel);
+            serviceDescriptors.TryAddSingleton<ILogger, MyLogger>();
+
+            return serviceDescriptors;
         }
     }
 }

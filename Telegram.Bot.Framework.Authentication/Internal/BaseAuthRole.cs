@@ -33,12 +33,25 @@ namespace Telegram.Bot.Framework.Authentication.Internal
     /// <summary>
     /// 
     /// </summary>
-    internal abstract class BaseAuthRole : IAuthenticationRole
+    public abstract class BaseAuthRole : IAuthenticationRole
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public abstract BotCommandScopeType Type { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
         public abstract Task ChangeRole(TelegramSession session);
 
+        /// <summary>
+        /// 获取用户的BotCommandScope
+        /// </summary>
+        /// <param name="session">用户Session</param>
+        /// <returns><see cref="BotCommandScope"/>机器人指令作用范围</returns>
         public BotCommandScope GetBotCommandScope(TelegramSession session)
         {
             ChatId? chatID;
@@ -71,6 +84,23 @@ namespace Telegram.Bot.Framework.Authentication.Internal
                     break;
             }
             return default!;
+        }
+
+        /// <summary>
+        /// 改变机器人的指令
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public async Task ChangeBotCommand(TelegramSession session)
+        {
+            ICommandManager commandManager = session.UserService.GetService<ICommandManager>()!;
+            BotCommandScope botCommandScope = GetBotCommandScope(session);
+
+            if (ObjectHelper.HasAnyNull(commandManager, botCommandScope))
+                return;
+
+            List<BotCommand> botCommands = commandManager.GetBotCommands(botCommandScope);
+            await session.BotClient.SetMyCommandsAsync(botCommands, botCommandScope);
         }
     }
 }

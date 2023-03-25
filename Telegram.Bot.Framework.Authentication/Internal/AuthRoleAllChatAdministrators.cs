@@ -20,21 +20,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.CallBack
+namespace Telegram.Bot.Framework.Authentication.Internal
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class CallBackIMPL : ICallBack
+    internal class AuthRoleAllChatAdministrators : BaseAuthRole
     {
-        public string CallBackID => throw new NotImplementedException();
+        public override BotCommandScopeType Type => BotCommandScopeType.AllChatAdministrators;
 
-        public async Task Invoke(params object[] Param)
+        public override async Task ChangeRole(TelegramSession session)
         {
-            Action<TelegramSession> action = session => { };
+            await ChangeBotCommand(session);
         }
     }
 }

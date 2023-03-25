@@ -20,21 +20,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.CallBack
+namespace Telegram.Bot.Framework.Logger
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class CallBackIMPL : ICallBack
+    public class LoggerSettingModel
     {
-        public string CallBackID => throw new NotImplementedException();
+        public LogType LogLevel { get; set; } = LogType.Error;
 
-        public async Task Invoke(params object[] Param)
-        {
-            Action<TelegramSession> action = session => { };
-        }
+        public bool EnableConsoleLog { get; set; } = false;
+
+        public bool EnableFileLog { get; set; } = false;
+
+        public string LogFilePath { get; set; } = string.Empty;
     }
 }

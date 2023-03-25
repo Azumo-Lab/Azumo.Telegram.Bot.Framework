@@ -33,9 +33,11 @@ namespace Telegram.Bot.Framework.Abstract.Languages
         /// 切换语言
         /// </summary>
         /// <param name="language"></param>
-        void ChangeLanguage(string name);
+        public void ChangeLanguage(string name);
 
         public string Name { get; }
+
+        public List<string> GetAllLanguageNames();
 
         public string this[string key] { get; }
     }

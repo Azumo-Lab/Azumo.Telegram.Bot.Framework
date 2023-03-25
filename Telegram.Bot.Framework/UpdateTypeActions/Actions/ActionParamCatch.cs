@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Actions;
+using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
@@ -34,18 +35,18 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
         /// <summary>
         /// 参数获取
         /// </summary>
-        /// <param name="Context">Context</param>
+        /// <param name="session">Context</param>
         /// <param name="NextHandle">下一个处理流程</param>
         /// <returns></returns>
-        public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
+        public async Task Invoke(TelegramSession session, ActionHandle NextHandle)
         {
             // 获取参数管理
-            IParamManager paramManger = Context.UserScope.GetService<IParamManager>();
+            IParamManager paramManger = session.UserService.GetService<IParamManager>();
 
-            if (!await paramManger.ReadParam(Context))
+            if (!await paramManger.ReadParam(session))
                 return;
 
-            await NextHandle(Context);
+            await NextHandle(session);
         }
     }
 }

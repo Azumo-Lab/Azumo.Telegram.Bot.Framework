@@ -34,7 +34,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     {
         public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
         {
-            List<IFilter> filters = Context.UserScope.GetServices<IFilter>().ToList();
+            List<IFilter> filters = Context.UserService.GetServices<IFilter>().ToList();
             foreach (IFilter item in filters)
                 if (await item.FilterAfter(Context))
                     return;

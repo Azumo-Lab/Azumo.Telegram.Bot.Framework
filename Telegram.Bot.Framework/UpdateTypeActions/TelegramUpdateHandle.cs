@@ -27,6 +27,9 @@ using Telegram.Bot.Framework.Session;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.Logger;
+using Telegram.Bot.Framework.Abstract.Languages;
 
 namespace Telegram.Bot.Framework.UpdateTypeActions
 {
@@ -35,11 +38,13 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
     /// </summary>
     internal class TelegramUpdateHandle : IUpdateHandler
     {
-        public readonly IServiceProvider serviceProvider;
+        private readonly ILogger logger;
+        private readonly IServiceProvider serviceProvider;
         private readonly Dictionary<UpdateType, AbstractActionInvoker> AbstractActionInvokersDic;
         public TelegramUpdateHandle(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+            logger = this.serviceProvider.GetService<ILogger>();
             List<AbstractActionInvoker> abstractActionInvokers = this.serviceProvider.GetServices<AbstractActionInvoker>().ToList();
             AbstractActionInvokersDic = abstractActionInvokers.GroupBy(x => x.InvokeType).ToDictionary(x => x.Key, x => x.FirstOrDefault());
         }
@@ -53,22 +58,9 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         /// <returns></returns>
         public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            string ErrorMessage = exception switch
-            {
-                ApiRequestException apiRequestException => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+            logger.ErrorLog(exception.Message);
 
-                _ => exception.ToString()
-            };
-
-            string logFile = "TelegramErrorLog.log";
-            if (!System.IO.File.Exists(logFile))
-                System.IO.File.Create(logFile).Close();
-
-            using (StreamWriter sw = System.IO.File.AppendText(logFile))
-            {
-                await sw.WriteAsync(ErrorMessage);
-                await sw.FlushAsync();
-            }
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -82,15 +74,22 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         {
             try
             {
+                // 创造 TelegramSession
                 TelegramSession telegramSession = TelegramSessionManager.Instance.GetTelegramSession(serviceProvider, update);
+                if (telegramSession.IsNull())
+                    return;
 
-                //根据消息类型获取 AbstractActionInvoker
+                // 根据消息类型获取 AbstractActionInvoker
                 if (AbstractActionInvokersDic.TryGetValue(update.Type, out AbstractActionInvoker abstractActionInvoker))
                     await abstractActionInvoker.Invoke(telegramSession);
             }
-            catch (Exception)
+            catch (ApiRequestException ex)
             {
-
+                logger.ErrorLog($"{nameof(ApiRequestException)} : {Environment.NewLine}{ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                await HandlePollingErrorAsync(botClient, ex, cancellationToken);
             }
         }
     }

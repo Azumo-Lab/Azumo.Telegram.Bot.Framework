@@ -34,29 +34,22 @@ namespace Telegram.Bot.Framework.UpdateTypeActions.Actions
     {
         public async Task Invoke(TelegramSession Context, ActionHandle NextHandle)
         {
-            BotConfig botConfig;
             IBotChatTypeProc botChatTypeProc;
             switch (Context.Update.Message.Chat.Type)
             {
                 case Types.Enums.ChatType.Private:
                     break;
                 case Types.Enums.ChatType.Group:
-                    botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
+                    botChatTypeProc = Context.UserService.GetService<IBotChatTypeProc>();
                     botChatTypeProc.Group(Context);
                     return;
                 case Types.Enums.ChatType.Channel:
-                    botConfig = Context.UserScope.GetService<BotConfig>();
-                    botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
+                    botChatTypeProc = Context.UserService.GetService<IBotChatTypeProc>();
                     botChatTypeProc.Channel(Context);
-                    if (!botConfig.UseCommandInChannel)
-                        return;
                     break;
                 case Types.Enums.ChatType.Supergroup:
-                    botConfig = Context.UserScope.GetService<BotConfig>();
-                    botChatTypeProc = Context.UserScope.GetService<IBotChatTypeProc>();
+                    botChatTypeProc = Context.UserService.GetService<IBotChatTypeProc>();
                     botChatTypeProc.Group(Context);
-                    if (!botConfig.UseCommandInGroup)
-                        return;
                     break;
                 case Types.Enums.ChatType.Sender:
                     break;

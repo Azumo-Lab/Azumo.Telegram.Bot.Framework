@@ -18,8 +18,19 @@ namespace Telegram.Bot.Framework.Controller
     {
         protected TelegramSession Session { get; private set; } = default!;
 
+        /// <summary>
+        /// 控制器执行
+        /// </summary>
+        /// <param name="session">用户的Session</param>
+        /// <param name="commandInfo">指令信息</param>
+        /// <param name="param">执行的参数信息</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task Invoke(TelegramSession session, CommandInfo commandInfo, params object[] param)
         {
+            if (session.IsNull())
+                throw new ArgumentNullException(nameof(session));
+
             Session = session;
             ICommandInvoker commandInvoker = Session.UserService.GetRequiredService<ICommandInvoker>();
             if (commandInfo.IsNull())

@@ -38,16 +38,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
 
         public override async Task ChangeRole(TelegramSession session)
         {
-            ICommandManager commandManager = session.UserService.GetService<ICommandManager>()!;
-            if (commandManager.IsNull())
-                return;
-
-            BotCommandScope botCommandScope = GetBotCommandScope(session);
-            if (botCommandScope.IsNull())
-                return;
-
-            List<BotCommand> botCommands = commandManager.GetBotCommands(botCommandScope);
-            await session.BotClient.SetMyCommandsAsync(botCommands, botCommandScope);
+            await ChangeBotCommand(session);
         }
     }
 }

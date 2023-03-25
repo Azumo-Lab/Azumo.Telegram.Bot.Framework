@@ -58,5 +58,10 @@ namespace Telegram.Bot.Framework.Language
         {
             __NowLanguage = _languages.Where(x => x.LanguageName == name).FirstOrDefault();
         }
+
+        public List<string> GetAllLanguageNames()
+        {
+            return _languages.Select(x => x.LanguageName).ToList();
+        }
     }
 }

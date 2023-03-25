@@ -67,7 +67,7 @@ namespace Telegram.Bot.Framework.UpdateTypeActions
         protected override async Task InvokeAction(TelegramSession session)
         {
             Task task = null;
-            switch (context.Update.MyChatMember.NewChatMember.Status)
+            switch (session.Update.MyChatMember.NewChatMember.Status)
             {
                 case ChatMemberStatus.Creator://创建聊天
                     task = OnCreator?.Invoke(session);
