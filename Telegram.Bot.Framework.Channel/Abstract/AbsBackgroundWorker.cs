@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace Telegram.Bot.Framework.Channel.Abstract
 {
-    internal abstract class AbsBackgroundWorker : IBackgroundWorker, IDisposable
+    public abstract class AbsBackgroundWorker : IBackgroundWorker, IDisposable
     {
         private static BackgroundWorker BackgroundWorker { get; } = new BackgroundWorker();
 

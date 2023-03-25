@@ -9,7 +9,7 @@ using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.Channel.Abstract
 {
-    internal abstract class AbsChannelDelayedSending : AbsBackgroundWorker
+    public abstract class AbsChannelDelayedSending : AbsBackgroundWorker
     {
         private ITelegramBotClient _botClient = default!;
         private List<(long chatID, Photo photo, DateTime dateTime)> values = default!;
