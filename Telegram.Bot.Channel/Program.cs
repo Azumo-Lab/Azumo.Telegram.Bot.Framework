@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
-using Telegram.Bot.Framework.Payment.AliPay;
+using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Bots;
+using Telegram.Bot.Framework.Controller;
 
 namespace Telegram.Bot.Channel
 {
@@ -7,20 +9,17 @@ namespace Telegram.Bot.Channel
     {
         public static void Main(string[] args)
         {
-            BackgroundWorker worker = new BackgroundWorker();
-            worker.DoWork += Worker_DoWork;
-            worker.RunWorkerAsync();
+            ITelegramBot telegramBot = TelegramBotBuilder.Create()
+                .AddToken("hello")
+#if DEBUG
+                // 正式服务器上，不需要使用代理
+                .AddProxy("http://127.0.0.1:7890")
+#endif
+                .UseController()
+                .Build();
 
-            Console.WriteLine("Hello World");
-
-            Console.ReadLine();
-        }
-
-        private static void Worker_DoWork(object? sender, DoWorkEventArgs e)
-        {
-            Console.WriteLine("Start Work");
-            Thread.Sleep(5000);
-            Console.WriteLine("End Work");
+            Task botTask = telegramBot.BotStart();
+            botTask.Wait();
         }
     }
 }
