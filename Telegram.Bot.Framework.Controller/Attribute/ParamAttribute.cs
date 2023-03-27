@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Telegram.Bot.Framework.Controller.Attribute
 {
+    /// <summary>
+    /// 用于捕获参数数据
+    /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
     public class ParamAttribute : System.Attribute
     {
@@ -14,6 +17,9 @@ namespace Telegram.Bot.Framework.Controller.Attribute
         public Type ParamCatchClass { get; set; } = default!;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class ParamClassAttribute : System.Attribute
     {
@@ -23,6 +29,9 @@ namespace Telegram.Bot.Framework.Controller.Attribute
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class ParamPropertyAttribute : ParamAttribute
     {

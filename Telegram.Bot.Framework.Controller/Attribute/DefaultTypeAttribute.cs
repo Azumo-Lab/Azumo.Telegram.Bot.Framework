@@ -25,15 +25,23 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework.Controller.Attribute
 {
     /// <summary>
-    /// 
+    /// 默认处理的请求类型
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class DefaultTypeAttribute : System.Attribute
     {
+        /// <summary>
+        /// 请求类型
+        /// </summary>
         public UpdateType UpdateType { get; }
-        public DefaultTypeAttribute(UpdateType updateType)
+
+        /// <summary>
+        /// 默认处理的请求类型
+        /// </summary>
+        /// <param name="UpdateType">请求类型</param>
+        public DefaultTypeAttribute(UpdateType UpdateType)
         {
-            this.UpdateType = updateType;
+            this.UpdateType = UpdateType;
         }
     }
 }

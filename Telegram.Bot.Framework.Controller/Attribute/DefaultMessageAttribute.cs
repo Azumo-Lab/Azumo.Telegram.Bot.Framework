@@ -15,6 +15,11 @@ namespace Telegram.Bot.Framework.Controller.Attribute
         /// 消息类型
         /// </summary>
         public MessageType MessageType { get; }
+
+        /// <summary>
+        /// 默认的消息处理
+        /// </summary>
+        /// <param name="MessageType">将要处理的消息类型</param>
         public DefaultMessageAttribute(MessageType MessageType)
         {
             this.MessageType = MessageType;

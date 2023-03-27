@@ -20,7 +20,7 @@ namespace Telegram.Bot.Channel.Controllers
         /// (注册:把Bot拉进频道管理员)
         /// </summary>
         /// <returns></returns>
-        [BotCommand("ListChannel", CommandDescription = "展示所有注册的频道")]
+        [BotCommand("ListChannel", Description = "展示所有注册的频道")]
         public async Task ListChannel()
         {
             // 获取注册的所有频道

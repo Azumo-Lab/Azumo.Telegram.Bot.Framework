@@ -7,24 +7,28 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework.Controller.Attribute
 {
     /// <summary>
-    /// 机器人指令
+    /// 机器人指令标签
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class BotCommandAttribute : System.Attribute
     {
         /// <summary>
-        /// 名称
+        /// 指令，以 '/start' 形式发送的指令
         /// </summary>
-        public string CommandName { get; } = default!;
+        public string Command { get; } = default!;
 
         /// <summary>
-        /// 简单的描述
+        /// 指令的简单描述
         /// </summary>
-        public string CommandDescription { get; set; } = "没有描述";
+        public string Description { get; set; } = "没有描述";
 
-        public BotCommandAttribute(string commandName)
+        /// <summary>
+        /// 机器人指令标签
+        /// </summary>
+        /// <param name="Command">指令，以 '/start' 形式发送的指令</param>
+        public BotCommandAttribute(string Command)
         {
-            CommandName = commandName;
+            this.Command = Command;
         }
     }
 }

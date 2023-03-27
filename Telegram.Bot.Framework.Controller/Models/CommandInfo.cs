@@ -57,8 +57,8 @@ namespace Telegram.Bot.Framework.Controller.Models
 
                 IsCommand = true;
                 IsEnble = true;
-                CommandName = botCommandAttribute?.CommandName;
-                CommandDescription = botCommandAttribute?.CommandDescription;
+                CommandName = botCommandAttribute?.Command;
+                CommandDescription = botCommandAttribute?.Description;
                 MessageType = defaultMessageAttribute?.MessageType;
                 UpdateType = defaultTypeAttribute?.UpdateType;
 
