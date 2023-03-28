@@ -21,7 +21,6 @@ namespace Telegram.Bot.Channel
                 ITelegramBot telegramBot = TelegramBotBuilder.Create()
                     .AddToken("5226896598:AAFa9N1GiF_i7W0fV4aWgz22IGv8kzVZ13Q")
                     .AddDefaultClash()
-                    .UseController()
                     .Build();
 
                 Task botTask = telegramBot.BotStart();

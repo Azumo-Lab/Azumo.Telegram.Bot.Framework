@@ -45,7 +45,11 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
             IEnumerable<IAuthentication> authentications = session.UserService.GetServices<IAuthentication>();
 
             if (authentications.IsEmpty())
+            {
                 await NextHandle(session);
+                return;
+            }
+                
 
             foreach (IAuthentication authentication in authentications)
                 if (!await authentication.AuthUser(session))

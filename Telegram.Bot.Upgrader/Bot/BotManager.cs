@@ -16,7 +16,7 @@
 
 using System.IO.Compression;
 using System.Text;
-using Telegram.Bot.Framework.Security;
+using Telegram.Bot.Framework.Abstract.Security;
 
 namespace Telegram.Bot.Upgrader.Bot
 {

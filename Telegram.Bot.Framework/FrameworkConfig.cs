@@ -23,12 +23,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Session;
 using Telegram.Bot.Framework.Logger;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.MiddlewarePipelines;
 using Telegram.Bot.Framework.Abstract.Params;
-using Telegram.Bot.Framework.InternalManagers;
+using Telegram.Bot.Framework.InternalImplementation.Params;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework
 {
@@ -40,18 +40,6 @@ namespace Telegram.Bot.Framework
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ISession, InternalSession>();
-            // 设置Log
-            services.AddLogger(model => 
-            {
-#if DEBUG
-                model.LogLevel = LogType.Debug;
-#else
-                model.LogLevel = LogType.Warning;
-#endif
-                model.EnableConsoleLog = true;
-                model.EnableFileLog = true;
-                model.LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log", "Telegram.Bot.Framework.log");
-            });
 
             services.AddScoped<IParamManager, MyParamManager>();
 

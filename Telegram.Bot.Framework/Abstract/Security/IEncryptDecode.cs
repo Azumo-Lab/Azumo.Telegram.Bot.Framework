@@ -20,22 +20,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Attribute;
 
-namespace Telegram.Bot.Channel.Controllers
+namespace Telegram.Bot.Framework.Abstract.Security
 {
     /// <summary>
-    /// 
+    /// 基础的加密接口，用于将类的属性数据加密保存
     /// </summary>
-    public class HelloWorld : TelegramController
+    public interface IEncryptDecode<T>
     {
-        [BotCommand("Test")]
-        public async Task Test()
-        {
-            string command = Session.GetCommand();
-            await Session.SendTextMessageAsync($"你发送的是{command}");
-        }
+        /// <summary>
+        /// 解密数据
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        T Decode(string json);
+
+        /// <summary>
+        /// 加密数据
+        /// </summary>
+        /// <returns></returns>
+        string Encrypt();
     }
 }

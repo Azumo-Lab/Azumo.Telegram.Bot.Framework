@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Telegram.Bot.Framework.Controller\Telegram.Bot.Framework.Controller.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 

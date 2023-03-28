@@ -23,13 +23,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Session;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.Logger;
 using Telegram.Bot.Framework.Abstract.Languages;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {

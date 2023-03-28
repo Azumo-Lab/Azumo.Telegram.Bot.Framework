@@ -14,28 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Attribute;
-
-namespace Telegram.Bot.Channel.Controllers
+namespace Telegram.Bot.Framework.Abstract.Users
 {
     /// <summary>
-    /// 
+    /// UserScope管理器
     /// </summary>
-    public class HelloWorld : TelegramController
+    public interface IUserScopeManager
     {
-        [BotCommand("Test")]
-        public async Task Test()
-        {
-            string command = Session.GetCommand();
-            await Session.SendTextMessageAsync($"你发送的是{command}");
-        }
+        /// <summary>
+        /// 获得一个用户Scope, 如果该UserScope不存在则返回NULL
+        /// </summary>
+        /// <param name="telegramUser">用户</param>
+        /// <returns></returns>
+        IUserScope GetUserScope(TelegramUser telegramUser);
+
+        /// <summary>
+        /// 创建一个用户Scope
+        /// 如果要创建的Scope已经存在，则返回已存在的Scope
+        /// </summary>
+        /// <param name="telegramUser">用户</param>
+        /// <returns></returns>
+        IUserScope CreateUserScope(TelegramUser telegramUser);
     }
 }

@@ -20,22 +20,43 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Attribute;
 
-namespace Telegram.Bot.Channel.Controllers
+namespace Telegram.Bot.Framework.InternalImplementation.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    public class HelloWorld : TelegramController
+    internal class MyParamManager : IParamManager
     {
-        [BotCommand("Test")]
-        public async Task Test()
+
+        private string __Command;
+
+        public void Cancel()
         {
-            string command = Session.GetCommand();
-            await Session.SendTextMessageAsync($"你发送的是{command}");
+
+        }
+
+        public string GetCommand()
+        {
+            return __Command;
+        }
+
+        public object[] GetParam()
+        {
+            return default!;
+        }
+
+        public bool IsReadParam()
+        {
+            return false;
+        }
+
+        public Task<bool> ReadParam(TelegramSession session)
+        {
+            __Command = session.GetCommand();
+            return Task.FromResult(true);
         }
     }
 }

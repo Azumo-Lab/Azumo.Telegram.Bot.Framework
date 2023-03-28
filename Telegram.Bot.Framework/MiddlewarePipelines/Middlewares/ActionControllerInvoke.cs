@@ -16,13 +16,12 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Controller.Interface;
-using Telegram.Bot.Framework.Controller.Models;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.InternalImplementation.Controller;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {

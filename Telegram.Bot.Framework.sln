@@ -23,29 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "代码规范", "代码规�
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.SendMessageBot", "Telegram.Bot.SendMessageBot\Telegram.Bot.SendMessageBot.csproj", "{93B57085-2EA6-4220-A140-DA685C204EAC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram.Bot.Framework.Base", "Telegram.Bot.Framework.Base", "{95035DCA-F63D-4330-9201-223CE7EA0AC8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstract", "Telegram.Bot.Framework.Abstract\Telegram.Bot.Framework.Abstract.csproj", "{0687695D-0E78-4432-8B17-50D02F7A63B6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Helper", "Telegram.Bot.Framework.Helper\Telegram.Bot.Framework.Helper.csproj", "{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram.Bot.Framework.Modules", "Telegram.Bot.Framework.Modules", "{0F3F119C-DB52-4E30-A655-5AC7591083E6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Authentication", "Telegram.Bot.Framework.Authentication\Telegram.Bot.Framework.Authentication.csproj", "{80618702-A7D2-45B5-9C2A-2F001E8E0A11}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Controller", "Telegram.Bot.Framework.Controller\Telegram.Bot.Framework.Controller.csproj", "{5DE79B22-B6DD-4D86-91A8-D9B567770134}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Channel", "Telegram.Bot.Channel\Telegram.Bot.Channel.csproj", "{5D87E93D-64A8-4146-9999-10755B5748BA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Language", "Telegram.Bot.Framework.Language\Telegram.Bot.Framework.Language.csproj", "{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Logger", "Telegram.Bot.Framework.Logger\Telegram.Bot.Framework.Logger.csproj", "{3284707D-FCDB-4BC4-AD9E-A5F733863704}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Payment", "Telegram.Bot.Framework.Payment\Telegram.Bot.Framework.Payment.csproj", "{FE2DA8C4-60BC-4118-9B42-69297AE990A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Channel", "Telegram.Bot.Framework.Channel\Telegram.Bot.Framework.Channel.csproj", "{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Exceptions", "Telegram.Bot.Framework.Exceptions\Telegram.Bot.Framework.Exceptions.csproj", "{42898C53-2A44-42DB-ACAE-8CF38ED150DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram.Bot.Framework.NuGet", "Telegram.Bot.Framework.NuGet", "{4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}"
 EndProject
@@ -71,34 +55,14 @@ Global
 		{93B57085-2EA6-4220-A140-DA685C204EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93B57085-2EA6-4220-A140-DA685C204EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93B57085-2EA6-4220-A140-DA685C204EAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0687695D-0E78-4432-8B17-50D02F7A63B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0687695D-0E78-4432-8B17-50D02F7A63B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0687695D-0E78-4432-8B17-50D02F7A63B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0687695D-0E78-4432-8B17-50D02F7A63B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{80618702-A7D2-45B5-9C2A-2F001E8E0A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{80618702-A7D2-45B5-9C2A-2F001E8E0A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{80618702-A7D2-45B5-9C2A-2F001E8E0A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{80618702-A7D2-45B5-9C2A-2F001E8E0A11}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5DE79B22-B6DD-4D86-91A8-D9B567770134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5DE79B22-B6DD-4D86-91A8-D9B567770134}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5DE79B22-B6DD-4D86-91A8-D9B567770134}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5DE79B22-B6DD-4D86-91A8-D9B567770134}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3284707D-FCDB-4BC4-AD9E-A5F733863704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3284707D-FCDB-4BC4-AD9E-A5F733863704}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3284707D-FCDB-4BC4-AD9E-A5F733863704}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3284707D-FCDB-4BC4-AD9E-A5F733863704}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -107,10 +71,6 @@ Global
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42898C53-2A44-42DB-ACAE-8CF38ED150DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42898C53-2A44-42DB-ACAE-8CF38ED150DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42898C53-2A44-42DB-ACAE-8CF38ED150DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42898C53-2A44-42DB-ACAE-8CF38ED150DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,16 +79,9 @@ Global
 		{8C481667-BFA8-4A31-994A-54EDA2BF402A} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 		{0D92EFF3-88F6-4604-BF53-B349A78E86F1} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 		{93B57085-2EA6-4220-A140-DA685C204EAC} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
-		{0687695D-0E78-4432-8B17-50D02F7A63B6} = {95035DCA-F63D-4330-9201-223CE7EA0AC8}
-		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9} = {95035DCA-F63D-4330-9201-223CE7EA0AC8}
-		{80618702-A7D2-45B5-9C2A-2F001E8E0A11} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
-		{5DE79B22-B6DD-4D86-91A8-D9B567770134} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
 		{5D87E93D-64A8-4146-9999-10755B5748BA} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
-		{B2DA6629-CDE3-49E9-85B0-0BC6FB6B6608} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
-		{3284707D-FCDB-4BC4-AD9E-A5F733863704} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
-		{42898C53-2A44-42DB-ACAE-8CF38ED150DE} = {0F3F119C-DB52-4E30-A655-5AC7591083E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}
