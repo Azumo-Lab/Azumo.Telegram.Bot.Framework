@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract.Bots
 {
     /// <summary>
-    /// 
+    /// 机器人创建接口
     /// </summary>
     public interface IBuilder
     {

@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Example.DataBase;
-using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.BackgroundProcess;
 
 namespace Telegram.Bot.Example.BotConfig
 {

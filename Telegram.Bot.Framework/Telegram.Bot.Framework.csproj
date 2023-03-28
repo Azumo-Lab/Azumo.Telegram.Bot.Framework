@@ -34,6 +34,7 @@
     <ProjectReference Include="..\Telegram.Bot.Framework.Abstract\Telegram.Bot.Framework.Abstract.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Authentication\Telegram.Bot.Framework.Authentication.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Controller\Telegram.Bot.Framework.Controller.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Exceptions\Telegram.Bot.Framework.Exceptions.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Helper\Telegram.Bot.Framework.Helper.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Language\Telegram.Bot.Framework.Language.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Logger\Telegram.Bot.Framework.Logger.csproj" />

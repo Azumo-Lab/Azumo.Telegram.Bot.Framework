@@ -21,11 +21,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Example.DataBase;
-using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Types;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstract.Channels;
+using Telegram.Bot.Framework.Abstract.Event;
 
 namespace Telegram.Bot.Example.BotConfig
 {

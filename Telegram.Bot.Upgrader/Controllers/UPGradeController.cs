@@ -46,14 +46,14 @@ namespace Telegram.Bot.Upgrader.Controllers
         [Command(nameof(Start))]
         public async Task Start()
         {
-            ICommandManager commandManager = Context.UserScope.GetRequiredService<ICommandManager>();
+            ITelegramCommandsManager commandManager = Context.UserScope.GetRequiredService<ITelegramCommandsManager>();
 
             string message = "你好，这里是升级管理机器人：";
 
             message += Environment.NewLine;
             message += Environment.NewLine;
 
-            message += commandManager.GetCommandInfoString();
+            message += commandManager.GetBotCommandsString();
 
             message += Environment.NewLine;
             message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";

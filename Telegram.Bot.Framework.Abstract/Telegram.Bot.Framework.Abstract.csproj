@@ -13,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Groups\" />
     <Folder Include="PrivateChats\" />
+    <Folder Include="Controller\" />
   </ItemGroup>
 
 </Project>

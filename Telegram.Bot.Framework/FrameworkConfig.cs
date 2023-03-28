@@ -25,6 +25,10 @@ using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Session;
 using Telegram.Bot.Framework.Logger;
+using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.MiddlewarePipelines;
+using Telegram.Bot.Framework.Abstract.Params;
+using Telegram.Bot.Framework.InternalManagers;
 
 namespace Telegram.Bot.Framework
 {
@@ -48,6 +52,13 @@ namespace Telegram.Bot.Framework
                 model.EnableFileLog = true;
                 model.LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log", "Telegram.Bot.Framework.log");
             });
+
+            services.AddScoped<IParamManager, MyParamManager>();
+
+            foreach (Type item in ObjectHelper.GetSameType(typeof(AbstractMiddlewarePipeline)))
+            {
+                services.AddSingleton(typeof(AbstractMiddlewarePipeline), item);
+            };
         }
     }
 }

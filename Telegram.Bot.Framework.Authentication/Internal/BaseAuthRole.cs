@@ -93,7 +93,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
         /// <returns></returns>
         public async Task ChangeBotCommand(TelegramSession session)
         {
-            ICommandManager commandManager = session.UserService.GetService<ICommandManager>()!;
+            ITelegramCommandsManager commandManager = session.UserService.GetService<ITelegramCommandsManager>()!;
             BotCommandScope botCommandScope = GetBotCommandScope(session);
 
             if (ObjectHelper.HasAnyNull(commandManager, botCommandScope))

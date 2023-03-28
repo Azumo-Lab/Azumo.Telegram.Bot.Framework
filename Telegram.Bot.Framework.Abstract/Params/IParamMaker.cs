@@ -30,16 +30,14 @@ namespace Telegram.Bot.Framework.Abstract.Params
         /// <summary>
         /// 获取参数
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="serviceProvider"></param>
+        /// <param name="session">请求会话</param>
         /// <returns></returns>
         Task<object> GetParam(TelegramSession session);
 
         /// <summary>
         /// 检查参数
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="serviceProvider"></param>
+        /// <param name="session">请求会话</param>
         /// <returns></returns>
         Task<bool> ParamCheck(TelegramSession session);
     }

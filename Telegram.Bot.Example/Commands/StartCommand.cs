@@ -37,14 +37,14 @@ namespace Telegram.Bot.Example.Commands
         [Command(nameof(Start), CommandInfo = "本条指令")]
         public async Task Start()
         {
-            ICommandManager commandManager = Context.UserScope.GetService<ICommandManager>();
+            ITelegramCommandsManager commandManager = Context.UserScope.GetService<ITelegramCommandsManager>();
 
             string message = "你好，这里是演示机器人，你可以通过以下的几个命令来测试机器人：";
 
             message += Environment.NewLine;
             message += Environment.NewLine;
 
-            message += commandManager.GetCommandInfoString();
+            message += commandManager.GetBotCommandsString();
 
             message += Environment.NewLine;
             message += "项目地址：https://github.com/Azumo-Lab/Telegram.Bot.Framework/";

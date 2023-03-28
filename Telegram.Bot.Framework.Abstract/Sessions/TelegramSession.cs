@@ -10,7 +10,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
-    /// 访问的Session
+    /// 访问的请求会话
     /// </summary>
     public sealed class TelegramSession : IDisposable
     {
@@ -63,10 +63,11 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        private TelegramSession(IServiceProvider serviceProvider, Update update)
+        /// <param name="ServiceProvider">用于创建该Session的服务</param>
+        /// <param name="update">请求的信息</param>
+        private TelegramSession(IServiceProvider ServiceProvider, Update update)
         {
-            __ServiceScope = serviceProvider.CreateScope();
+            __ServiceScope = ServiceProvider.CreateScope();
 
             TelegramBot = UserService.GetRequiredService<ITelegramBot>();
             BotClient = UserService.GetRequiredService<ITelegramBotClient>();
@@ -79,6 +80,7 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         /// 创建一个Session
         /// </summary>
         /// <param name="serviceProvider">服务</param>
+        /// <param name="update">请求的信息</param>
         /// <returns>返回创建的Session</returns>
         public static TelegramSession CreateSession(IServiceProvider serviceProvider, Update update)
         {

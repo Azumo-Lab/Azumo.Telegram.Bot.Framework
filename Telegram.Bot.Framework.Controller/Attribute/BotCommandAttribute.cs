@@ -28,6 +28,10 @@ namespace Telegram.Bot.Framework.Controller.Attribute
         /// <param name="Command">指令，以 '/start' 形式发送的指令</param>
         public BotCommandAttribute(string Command)
         {
+            if (!Command.StartsWith("/"))
+            {
+                Command = $"/{Command}";
+            }
             this.Command = Command;
         }
     }

@@ -8,7 +8,7 @@ namespace Telegram.Bot.Framework.Abstract.Models
     /// <summary>
     /// 用户
     /// </summary>
-    public class TelegramUser : User
+    public sealed class TelegramUser : User
     {
         /// <summary>
         /// 聊天窗口ID

@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Telegram.Bot.Framework.Controller\Telegram.Bot.Framework.Controller.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 
