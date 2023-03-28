@@ -26,6 +26,7 @@ using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Authentication.Interface;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -40,7 +41,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="Context"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        public async Task Execute(TelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
         {
             IEnumerable<IAuthentication> authentications = session.UserService.GetServices<IAuthentication>();
 

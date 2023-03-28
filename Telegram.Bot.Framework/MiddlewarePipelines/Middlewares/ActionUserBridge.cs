@@ -17,6 +17,7 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -25,7 +26,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     public class ActionUserBridge : IMiddleware
     {
-        public async Task Execute(TelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
         {
             //TelegramUser telegramUser = session.User;
             //IUserBridgeManager userBridgeManager = session.UserService.GetService<IUserBridgeManager>();

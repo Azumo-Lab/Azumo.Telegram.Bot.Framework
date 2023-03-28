@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
@@ -95,7 +96,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         /// <param name="context">访问的请求对话</param>
         /// <returns>异步可等待的Task</returns>
-        public async Task Execute(TelegramSession Session)
+        public async Task Execute(ITelegramSession Session)
         {
             await InvokeAction(Session);
             await MiddlewareHandle.Invoke(Session);
@@ -106,7 +107,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         /// <param name="context">访问的请求对话</param>
         /// <returns>无</returns>
-        protected virtual async Task InvokeAction(TelegramSession Session)
+        protected virtual async Task InvokeAction(ITelegramSession Session)
         {
             await Task.CompletedTask;
         }

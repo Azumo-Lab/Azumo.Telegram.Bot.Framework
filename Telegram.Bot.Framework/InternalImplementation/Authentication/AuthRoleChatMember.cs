@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Authentication.Internal
@@ -32,7 +33,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
     {
         public override BotCommandScopeType Type => BotCommandScopeType.ChatMember;
 
-        public override async Task ChangeRole(TelegramSession session)
+        public override async Task ChangeRole(ITelegramSession session)
         {
             await ChangeBotCommand(session);
         }

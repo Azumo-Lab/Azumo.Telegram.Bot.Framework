@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -27,7 +28,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     public class ActionGroupChannel : IMiddleware
     {
-        public async Task Execute(TelegramSession Context, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Context, MiddlewareHandle NextHandle)
         {
             //IBotChatTypeProc botChatTypeProc;
             //switch (Context.Update.Message.Chat.Type)

@@ -22,6 +22,7 @@ using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.InternalImplementation.Controller;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -36,7 +37,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="session"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        public async Task Execute(TelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
         {
             IControllerManager controllerManager = session.UserService.GetService<IControllerManager>();
             IParamManager paramManger = session.UserService.GetService<IParamManager>();

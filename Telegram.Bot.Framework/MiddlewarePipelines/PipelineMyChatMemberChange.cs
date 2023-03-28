@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
 using Telegram.Bot.Types.Enums;
 
@@ -31,7 +32,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     {
         private readonly IBotTelegramEvent telegramEvent;
 
-        private delegate Task TelegramEventDelegate(TelegramSession session);
+        private delegate Task TelegramEventDelegate(ITelegramSession session);
 
         private event TelegramEventDelegate OnCreator;
         private event TelegramEventDelegate OnBeAdmin;
@@ -60,7 +61,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         public override UpdateType InvokeType => UpdateType.MyChatMember;
 
-        protected override async Task InvokeAction(TelegramSession session)
+        protected override async Task InvokeAction(ITelegramSession session)
         {
             Task task = null;
             switch (session.Update.MyChatMember.NewChatMember.Status)

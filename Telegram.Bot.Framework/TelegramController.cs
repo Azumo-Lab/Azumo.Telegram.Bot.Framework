@@ -6,6 +6,7 @@ using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Controller.Interface;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.InternalImplementation.Controller;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
@@ -15,7 +16,7 @@ namespace Telegram.Bot.Framework
     /// </summary>
     public abstract class TelegramController
     {
-        protected TelegramSession Session { get; private set; } = default!;
+        protected ITelegramSession Session { get; private set; } = default!;
 
         /// <summary>
         /// 控制器执行
@@ -25,7 +26,7 @@ namespace Telegram.Bot.Framework
         /// <param name="param">执行的参数信息</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task Invoke(TelegramSession session, CommandInfo commandInfo, params object[] param)
+        public async Task Invoke(ITelegramSession session, CommandInfo commandInfo, params object[] param)
         {
             if (session.IsNull())
                 throw new ArgumentNullException(nameof(session));

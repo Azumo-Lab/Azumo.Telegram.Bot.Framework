@@ -25,6 +25,7 @@ using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Authentication.Interface;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -45,14 +46,14 @@ namespace Telegram.Bot.Framework.Authentication.Internal
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        public abstract Task ChangeRole(TelegramSession session);
+        public abstract Task ChangeRole(ITelegramSession session);
 
         /// <summary>
         /// 获取用户的BotCommandScope
         /// </summary>
         /// <param name="session">用户Session</param>
         /// <returns><see cref="BotCommandScope"/>机器人指令作用范围</returns>
-        public BotCommandScope GetBotCommandScope(TelegramSession session)
+        public BotCommandScope GetBotCommandScope(ITelegramSession session)
         {
             ChatId? chatID;
             switch (Type)
@@ -91,7 +92,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        public async Task ChangeBotCommand(TelegramSession session)
+        public async Task ChangeBotCommand(ITelegramSession session)
         {
             ITelegramCommandsManager commandManager = session.UserService.GetService<ITelegramCommandsManager>()!;
             BotCommandScope botCommandScope = GetBotCommandScope(session);

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Controller.Interface;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -27,7 +28,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     internal class ActionUpdateTypeInvoke : IMiddleware
     {
-        public async Task Execute(TelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
         {
             IUpdateTypeInvoker updateTypeInvoke = session.UserService.GetService<IUpdateTypeInvoker>();
             await updateTypeInvoke.CommandInvoke(session.Update.Type);

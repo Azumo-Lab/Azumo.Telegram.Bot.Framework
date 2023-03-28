@@ -14,35 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Abstract.Users;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Users
+namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
-    /// UserScope
+    /// 
     /// </summary>
-    public interface IUserScope : IDisposable
+    public interface ITelegramSession
     {
-        bool IsDisposed { get; }
+        public bool IsDispose { get; }
 
-        /// <summary>
-        /// 获取用户范围的IServiceScope
-        /// </summary>
-        /// <returns></returns>
-        IServiceScope GetUserServiceScope();
+        public TelegramUser User { get; }
 
-        /// <summary>
-        /// 创建或获取TelegramContext
-        /// </summary>
-        /// <returns></returns>
-        ITelegramSession GetTelegramContext();
+        public ISession Session { get; }
+
+        public Update Update { get; }
+
+        public IServiceProvider UserService { get; }
+
+        public ITelegramBotClient BotClient { get; }
+
+        public ITelegramBot TelegramBot { get; }
     }
 }

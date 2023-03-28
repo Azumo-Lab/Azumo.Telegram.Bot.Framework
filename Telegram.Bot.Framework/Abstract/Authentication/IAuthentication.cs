@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.Authentication.Interface
 {
@@ -11,8 +12,8 @@ namespace Telegram.Bot.Framework.Authentication.Interface
     /// </summary>
     public interface IAuthentication
     {
-        public Task<bool> AuthUser(TelegramSession telegramSession);
+        public Task<bool> AuthUser(ITelegramSession telegramSession);
 
-        public Task ErrorMessage(TelegramSession telegramSession);
+        public Task ErrorMessage(ITelegramSession telegramSession);
     }
 }

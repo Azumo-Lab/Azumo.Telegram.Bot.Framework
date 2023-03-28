@@ -22,6 +22,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.ExtensionMethods;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Params
 {
@@ -53,7 +55,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Params
             return false;
         }
 
-        public Task<bool> ReadParam(TelegramSession session)
+        public Task<bool> ReadParam(ITelegramSession session)
         {
             __Command = session.GetCommand();
             return Task.FromResult(true);

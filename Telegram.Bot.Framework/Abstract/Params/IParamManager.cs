@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Params
 {
@@ -34,7 +35,7 @@ namespace Telegram.Bot.Framework.Abstract.Params
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<bool> ReadParam(TelegramSession session);
+        Task<bool> ReadParam(ITelegramSession session);
 
         /// <summary>
         /// 取消读取参数

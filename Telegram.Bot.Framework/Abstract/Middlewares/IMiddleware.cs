@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Middlewares
 {
@@ -35,6 +36,6 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// <param name="Context"></param>
         /// <param name="NextMiddleware"></param>
         /// <returns></returns>
-        public Task Execute(TelegramSession Session, MiddlewareHandle NextMiddleware);
+        public Task Execute(ITelegramSession Session, MiddlewareHandle NextMiddleware);
     }
 }

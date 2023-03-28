@@ -25,6 +25,7 @@ using Telegram.Bot.Framework.Abstract.CallBack;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -39,10 +40,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="Context">Context</param>
         /// <param name="NextHandle">下一个处理流程</param>
         /// <returns></returns>
-        public async Task Execute(TelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
         {
             ICallBackManager callBackManager = session.UserService.GetService<ICallBackManager>();
-            Action<TelegramSession> callbackAction = callBackManager.GetCallBack(session.Update.CallbackQuery.Data);
+            Action<ITelegramSession> callbackAction = callBackManager.GetCallBack(session.Update.CallbackQuery.Data);
             if (!callbackAction.IsNull())
             {
                 callbackAction.Invoke(session);

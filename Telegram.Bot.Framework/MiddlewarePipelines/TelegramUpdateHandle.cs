@@ -22,7 +22,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
-using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -30,6 +29,7 @@ using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.Logger;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -75,7 +75,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             try
             {
                 // 创造 TelegramSession
-                TelegramSession Session = TelegramSessionManager.Instance.GetTelegramSession(ServiceProvider, Update);
+                ITelegramSession Session = TelegramSessionManager.Instance.GetTelegramSession(ServiceProvider, Update);
                 if (Session.IsNull())
                     return;
 

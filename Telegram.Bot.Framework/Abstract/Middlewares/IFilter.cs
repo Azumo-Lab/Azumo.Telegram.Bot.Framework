@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Middlewares
 {
@@ -29,8 +30,8 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
     /// </summary>
     public interface IFilter
     {
-        Task<bool> FilterBefore(TelegramSession session);
+        Task<bool> FilterBefore(ITelegramSession session);
 
-        Task<bool> FilterAfter(TelegramSession session);
+        Task<bool> FilterAfter(ITelegramSession session);
     }
 }

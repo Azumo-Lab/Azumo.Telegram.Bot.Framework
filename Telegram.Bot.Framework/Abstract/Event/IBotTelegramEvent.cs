@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Event
 {
@@ -34,41 +35,41 @@ namespace Telegram.Bot.Framework.Abstract.Event
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnInvited(TelegramSession session);
+        Task OnInvited(ITelegramSession session);
 
         /// <summary>
         /// 被踢
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnKicked(TelegramSession session);
+        Task OnKicked(ITelegramSession session);
 
         /// <summary>
         /// 离开群组
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnLeft(TelegramSession session);
+        Task OnLeft(ITelegramSession session);
 
         /// <summary>
         /// 创建聊天
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnCreator(TelegramSession session);
+        Task OnCreator(ITelegramSession session);
 
         /// <summary>
         /// 成为管理员
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnBeAdmin(TelegramSession session);
+        Task OnBeAdmin(ITelegramSession session);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task OnRestricted(TelegramSession session);
+        Task OnRestricted(ITelegramSession session);
     }
 }

@@ -20,9 +20,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Sessions
+namespace Telegram.Bot.Framework.ExtensionMethods
 {
     /// <summary>
     /// 
@@ -31,12 +32,12 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
     {
         #region 获取Session中的值
  
-        public static long? GetChatID(this TelegramSession session)
+        public static long? GetChatID(this ITelegramSession session)
         {
             return session.User?.ChatID;
         }
 
-        public static bool GetChatID(this TelegramSession session, out long chatID)
+        public static bool GetChatID(this ITelegramSession session, out long chatID)
         {
             long? vlChatID = GetChatID(session);
             if (vlChatID.HasValue)
@@ -46,7 +47,7 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
             return vlChatID.HasValue;
         }
 
-        public static string GetCommand(this TelegramSession session)
+        public static string GetCommand(this ITelegramSession session)
         {
             if (session.Update.Type != Types.Enums.UpdateType.Message)
                 return default!;
@@ -70,7 +71,7 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         #endregion
 
         #region 文本消息的发送
-        public static async Task SendTextMessageAsync(this TelegramSession session, string message)
+        public static async Task SendTextMessageAsync(this ITelegramSession session, string message)
         {
             if(!session.GetChatID(out long chatID))
                 return;
@@ -80,12 +81,12 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         #endregion
 
         #region 图片的发送
-        public static async Task SendPhoto(this TelegramSession session, string PhotoPath)
+        public static async Task SendPhoto(this ITelegramSession session, string PhotoPath)
         {
             await SendPhoto(session, PhotoPath, null!);
         }
 
-        public static async Task SendPhoto(this TelegramSession session, string PhotoPath, string message)
+        public static async Task SendPhoto(this ITelegramSession session, string PhotoPath, string message)
         {
             if (!session.GetChatID(out long chatID))
                 return;
@@ -99,12 +100,12 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
                 Types.Enums.ParseMode.MarkdownV2);
         }
 
-        public static async Task SendPhoto(this TelegramSession session, PhotoSize photoSize)
+        public static async Task SendPhoto(this ITelegramSession session, PhotoSize photoSize)
         {
             await SendPhoto(session, photoSize, null!);
         }
 
-        public static async Task SendPhoto(this TelegramSession session, PhotoSize photoSize, string message)
+        public static async Task SendPhoto(this ITelegramSession session, PhotoSize photoSize, string message)
         {
             if (!session.GetChatID(out long chatID))
                 return;

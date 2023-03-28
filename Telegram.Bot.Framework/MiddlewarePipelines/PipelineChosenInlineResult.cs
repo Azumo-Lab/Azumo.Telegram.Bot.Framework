@@ -17,6 +17,7 @@
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
 using Telegram.Bot.Types.Enums;
 
@@ -35,7 +36,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             AddHandle<ActionUpdateTypeInvoke>();
         }
 
-        protected override Task InvokeAction(TelegramSession session)
+        protected override Task InvokeAction(ITelegramSession session)
         {
             return Task.CompletedTask;
         }

@@ -41,7 +41,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         /// <param name="serviceProvider">服务提供</param>
         /// <param name="update">Telegram请求</param>
         /// <returns>返回Session，可以为NULL</returns>
-        public TelegramSession GetTelegramSession(IServiceProvider serviceProvider, Update update)
+        public ITelegramSession GetTelegramSession(IServiceProvider serviceProvider, Update update)
         {
             try
             {

@@ -1,15 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Abstract.Bots;
+using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Abstract.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Sessions
+namespace Telegram.Bot.Framework.InternalImplementation.Sessions
 {
     /// <summary>
     /// 访问的请求会话
     /// </summary>
-    public sealed class TelegramSession : IDisposable
+    internal sealed class TelegramSession : ITelegramSession, IDisposable
     {
         /// <summary>
         /// 是否已经关闭
@@ -92,7 +93,7 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
 
         public static TelegramUser GetTelegramUser(Update update)
         {
-            User? user = GetUser(update);
+            User user = GetUser(update);
 
             return user == null
                 ? default
@@ -128,7 +129,7 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
             };
         }
 
-        public static User? GetUser(Update update)
+        public static User GetUser(Update update)
         {
             return update.Type switch
             {

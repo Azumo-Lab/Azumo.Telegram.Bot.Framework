@@ -17,6 +17,7 @@
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
 using Telegram.Bot.Types.Enums;
 
@@ -34,7 +35,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         public override UpdateType InvokeType => UpdateType.CallbackQuery;
 
-        protected override async Task InvokeAction(TelegramSession session)
+        protected override async Task InvokeAction(ITelegramSession session)
         {
             await Task.CompletedTask;
         }
