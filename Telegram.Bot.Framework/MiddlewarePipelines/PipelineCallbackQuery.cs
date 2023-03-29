@@ -35,15 +35,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         public override UpdateType InvokeType => UpdateType.CallbackQuery;
 
-        protected override async Task InvokeAction(ITelegramSession session)
-        {
-            await Task.CompletedTask;
-        }
-
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
-            AddHandle<ActionCallback>();
-            AddHandle<ActionUpdateTypeInvoke>();
+            AddMiddleware<ActionCallback>();
+            AddMiddleware<ActionUpdateTypeInvoke>();
         }
     }
 }

@@ -14,29 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Attribute;
-using Telegram.Bot.Framework.ExtensionMethods;
+using Telegram.Bot.Framework.Abstract.Middlewares;
 
-namespace Telegram.Bot.Channel.Controllers
+namespace Telegram.Bot.Framework.ExtensionMethods
 {
     /// <summary>
     /// 
     /// </summary>
-    public class HelloWorld : TelegramController
+    public static class IServiceCollection_ExtensionMethod
     {
-        [BotCommand("Test")]
-        public async Task Test()
-        {
-            string command = Session.GetCommand();
-            await Session.SendTextMessageAsync($"你发送的是{command}");
-        }
+
     }
 }

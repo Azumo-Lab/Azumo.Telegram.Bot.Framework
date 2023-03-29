@@ -27,22 +27,43 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
-    /// 
+    /// 访问的请求会话
     /// </summary>
     public interface ITelegramSession
     {
+        /// <summary>
+        /// 会话是否已经结束
+        /// </summary>
         public bool IsDispose { get; }
 
+        /// <summary>
+        /// 会话的用户
+        /// </summary>
         public TelegramUser User { get; }
 
+        /// <summary>
+        /// Session的存储
+        /// </summary>
         public ISession Session { get; }
 
+        /// <summary>
+        /// 请求信息
+        /// </summary>
         public Update Update { get; }
 
+        /// <summary>
+        /// 用户范围内的服务
+        /// </summary>
         public IServiceProvider UserService { get; }
 
+        /// <summary>
+        /// Bot客户端
+        /// </summary>
         public ITelegramBotClient BotClient { get; }
 
+        /// <summary>
+        /// Bot启动关闭的控制
+        /// </summary>
         public ITelegramBot TelegramBot { get; }
     }
 }

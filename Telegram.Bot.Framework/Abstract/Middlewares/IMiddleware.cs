@@ -33,8 +33,8 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// <summary>
         /// 开始执行Action
         /// </summary>
-        /// <param name="Context"></param>
-        /// <param name="NextMiddleware"></param>
+        /// <param name="Session"></param>
+        /// <param name="NextMiddleware">下一个中间件</param>
         /// <returns></returns>
         public Task Execute(ITelegramSession Session, MiddlewareHandle NextMiddleware);
     }

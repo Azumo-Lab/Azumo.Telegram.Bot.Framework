@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     /// <summary>
     /// 中间件流水线的抽象执行类
     /// </summary>
-    internal abstract class AbstractMiddlewarePipeline : IMiddlewarePipeline
+    public abstract class AbstractMiddlewarePipeline : IMiddlewarePipeline
     {
         /// <summary>
         /// 中间件Handle
@@ -83,12 +83,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <summary>
         /// 用于向流水线中添加中间件
         /// </summary>
-        protected virtual void AddHandle<T>() where T : IMiddleware
+        protected virtual void AddMiddleware<T>() where T : IMiddleware
         {
             IMiddleware Middleware = CreateInstance<T>();
-            MiddlewareHandles.Add(
-                    Handle =>
-                    Session => Middleware.Execute(Session, Handle));
+            MiddlewareHandles.Add(Handle => Session => Middleware.Execute(Session, Handle));
         }
 
         /// <summary>

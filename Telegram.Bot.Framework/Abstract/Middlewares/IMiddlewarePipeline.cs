@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
     public interface IMiddlewarePipeline
     {
         /// <summary>
-        /// 改流水线处理的请求类型
+        /// 该流水线处理的请求类型
         /// </summary>
         public UpdateType InvokeType { get; }
 
@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// 开始执行
         /// </summary>
         /// <param name="session">访问的请求对话</param>
-        /// <returns></returns>
+        /// <returns>异步方法</returns>
         public Task Execute(ITelegramSession session);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Http.Headers;
@@ -7,24 +8,55 @@ using System.Text;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Channel
 {
     public class Program
     {
+        public interface ITest
+        {
+            public UpdateType UpdateType { get; }
+        }
+
+        public class TestIMPL1 : ITest
+        {
+            public UpdateType UpdateType => UpdateType.ChannelPost;
+        }
+
+        public class TestIMPL2 : ITest
+        {
+            public UpdateType UpdateType => UpdateType.ChatMember;
+        }
+
+        public class TestIMPL3 : ITest
+        {
+            public UpdateType UpdateType => UpdateType.ChannelPost;
+        }
+
         public static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
             try
             {
 
-                ITelegramBot telegramBot = TelegramBotBuilder.Create()
-                    .AddToken("5226896598:AAFa9N1GiF_i7W0fV4aWgz22IGv8kzVZ13Q")
-                    .AddDefaultClash()
-                    .Build();
+                IServiceCollection services = new ServiceCollection();
 
-                Task botTask = telegramBot.BotStart();
-                botTask.Wait();
+                services.AddSingleton<ITest, TestIMPL3>();
+                services.AddSingleton<ITest, TestIMPL1>();
+                services.AddSingleton<ITest, TestIMPL2>();
+
+                IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+                var test = serviceProvider.GetServices<ITest>().GroupBy(x => x.UpdateType).ToDictionary(x => x.Key, x => x.ToList());
+
+                //ITelegramBot telegramBot = TelegramBotBuilder.Create()
+                //    .AddToken("5226896598:AAFa9N1GiF_i7W0fV4aWgz22IGv8kzVZ13Q")
+                //    .AddDefaultClash()
+                //    .Build();
+
+                //Task botTask = telegramBot.BotStart();
+                //botTask.Wait();
 
                 //Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 //IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Any, 8080);

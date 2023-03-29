@@ -30,23 +30,32 @@ using Telegram.Bot.Framework.Logger;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Abstract.Middlewares;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
     /// <summary>
-    /// 
+    /// 框架的Handle
     /// </summary>
     internal class TelegramUpdateHandle : IUpdateHandler
     {
         private readonly ILogger Logger;
         private readonly IServiceProvider ServiceProvider;
-        private readonly Dictionary<UpdateType, AbstractMiddlewarePipeline> MiddlewarePipelineDic;
+        private readonly Dictionary<UpdateType, IMiddlewarePipeline> MiddlewarePipelineDic;
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="ServiceProvider">服务提供</param>
         public TelegramUpdateHandle(IServiceProvider ServiceProvider)
         {
             this.ServiceProvider = ServiceProvider;
+
             Logger = this.ServiceProvider.GetService<ILogger>();
-            List<AbstractMiddlewarePipeline> AbstractMiddlewarePipelines = this.ServiceProvider.GetServices<AbstractMiddlewarePipeline>().ToList();
-            MiddlewarePipelineDic = AbstractMiddlewarePipelines.GroupBy(x => x.InvokeType).ToDictionary(x => x.Key, x => x.FirstOrDefault());
+            MiddlewarePipelineDic = this.ServiceProvider.GetServices<IMiddlewarePipeline>()
+                .GroupBy(x => x.InvokeType)
+                // 这里选取最后一个，也就是最新的，如果用户添加了一个新的流水线，那么就用用户新添加的
+                .ToDictionary(x => x.Key, x => x.LastOrDefault());
         }
 
         /// <summary>
@@ -80,7 +89,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
                     return;
 
                 // 根据消息类型获取 AbstractActionInvoker
-                if (MiddlewarePipelineDic.TryGetValue(Update.Type, out AbstractMiddlewarePipeline MiddlewarePipeline))
+                if (MiddlewarePipelineDic.TryGetValue(Update.Type, out IMiddlewarePipeline MiddlewarePipeline))
                     await MiddlewarePipeline.Execute(Session);
             }
             catch (ApiRequestException Ex)

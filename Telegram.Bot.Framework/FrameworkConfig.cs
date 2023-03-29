@@ -29,6 +29,8 @@ using Telegram.Bot.Framework.MiddlewarePipelines;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.InternalImplementation.Params;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Framework.Abstract.Middlewares;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Telegram.Bot.Framework
 {
@@ -40,13 +42,61 @@ namespace Telegram.Bot.Framework
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ISession, InternalSession>();
-
             services.AddScoped<IParamManager, MyParamManager>();
 
-            foreach (Type item in ObjectHelper.GetSameType(typeof(AbstractMiddlewarePipeline)))
-            {
-                services.AddSingleton(typeof(AbstractMiddlewarePipeline), item);
-            };
+            // 添加中间件流水线
+            services.AddMiddlewarePipeline();
+            services.AddMiddlewareTemplate();
         }
+    }
+
+    internal static class FrameworkConfig_ExtensionMethod
+    {
+        public static void AddMiddlewarePipeline(this IServiceCollection serviceDescriptors)
+        {
+            AddSingleton<IMiddlewarePipeline>(serviceDescriptors);
+        }
+
+        public static void AddMiddlewareTemplate(this IServiceCollection serviceDescriptors)
+        {
+            AddSingleton<IMiddlewareTemplate>(serviceDescriptors);
+        }
+
+        #region 将IServiceCollection 中的添加服务的方法扩展了
+
+        private static void AddSingleton<T>(IServiceCollection serviceDescriptors)
+        {
+            AddTemplate<T>(serviceDescriptors, (serviceDescriptors, baseType, implType) =>
+            {
+                serviceDescriptors.AddSingleton(baseType, implType);
+            });
+        }
+
+        private static void AddScoped<T>(IServiceCollection serviceDescriptors)
+        {
+            AddTemplate<T>(serviceDescriptors, (serviceDescriptors, baseType, implType) =>
+            {
+                serviceDescriptors.AddScoped(baseType, implType);
+            });
+        }
+
+        private static void AddTransient<T>(IServiceCollection serviceDescriptors)
+        {
+            AddTemplate<T>(serviceDescriptors, (serviceDescriptors, baseType, implType) =>
+            {
+                serviceDescriptors.AddTransient(baseType, implType);
+            });
+        }
+
+        private static void AddTemplate<T>(IServiceCollection serviceDescriptors, Action<IServiceCollection, Type, Type> action)
+        {
+            Type baseType = typeof(T);
+            foreach (Type item in ObjectHelper.GetSameType(baseType))
+            {
+                action.Invoke(serviceDescriptors, baseType, item);
+            }
+        }
+
+        #endregion
     }
 }

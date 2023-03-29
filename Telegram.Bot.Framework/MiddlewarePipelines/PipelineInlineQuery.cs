@@ -33,7 +33,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
-            AddHandle<ActionUpdateTypeInvoke>();
+            AddMiddleware<ActionUpdateTypeInvoke>();
         }
         protected override Task InvokeAction(ITelegramSession session)
         {

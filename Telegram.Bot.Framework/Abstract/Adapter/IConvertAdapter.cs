@@ -20,23 +20,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Attribute;
-using Telegram.Bot.Framework.ExtensionMethods;
 
-namespace Telegram.Bot.Channel.Controllers
+namespace Telegram.Bot.Framework.Abstract.Adapter
 {
     /// <summary>
-    /// 
+    /// 用于转换各种类型
     /// </summary>
-    public class HelloWorld : TelegramController
+    public interface IConvertAdapter
     {
-        [BotCommand("Test")]
-        public async Task Test()
-        {
-            string command = Session.GetCommand();
-            await Session.SendTextMessageAsync($"你发送的是{command}");
-        }
+        #region 一些基本的转换方法
+
+        #endregion
     }
 }

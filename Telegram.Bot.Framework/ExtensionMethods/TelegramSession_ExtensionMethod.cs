@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types;
@@ -30,8 +31,34 @@ namespace Telegram.Bot.Framework.ExtensionMethods
     /// </summary>
     public static class TelegramSession_ExtensionMethod
     {
+        #region ISession 的相关操作
+
+        /// <summary>
+        /// 将文本保存到Session中
+        /// </summary>
+        /// <param name="session">Session存储</param>
+        /// <param name="key">存储的Key</param>
+        /// <param name="value">要存储的文本</param>
+        public static void SaveString(this ISession session, string key, string value)
+        {
+            session.Save(key, Encoding.UTF8.GetBytes(value));
+        }
+
+        /// <summary>
+        /// 从Session中取得想要的值
+        /// </summary>
+        /// <param name="session">Session存储</param>
+        /// <param name="key">存储的Key</param>
+        /// <returns></returns>
+        public static string GetString(this ISession session, string key)
+        {
+            byte[] bytes = session.Get(key);
+            return Encoding.UTF8.GetString(bytes);
+        }
+        #endregion
+
         #region 获取Session中的值
- 
+
         public static long? GetChatID(this ITelegramSession session)
         {
             return session.User?.ChatID;

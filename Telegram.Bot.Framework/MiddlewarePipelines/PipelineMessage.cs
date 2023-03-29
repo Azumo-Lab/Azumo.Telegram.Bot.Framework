@@ -43,19 +43,19 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
             // 简单的认证
-            AddHandle<ActionAuthentication>();
+            AddMiddleware<ActionAuthentication>();
             // 群组消息处理
-            AddHandle<ActionGroupChannel>();
+            AddMiddleware<ActionGroupChannel>();
             // 执行前过滤
-            AddHandle<ActionFilterBefore>();
+            AddMiddleware<ActionFilterBefore>();
             // 参数获取
-            AddHandle<ActionParamCatch>();
+            AddMiddleware<ActionParamCatch>();
             // 执行命令控制器
-            AddHandle<ActionControllerInvoke>();
+            AddMiddleware<ActionControllerInvoke>();
             // 执行后过滤
-            AddHandle<ActionFilterAfter>();
+            AddMiddleware<ActionFilterAfter>();
 
-            AddHandle<ActionUpdateTypeInvoke>();
+            AddMiddleware<ActionUpdateTypeInvoke>();
         }
 
         /// <summary>
