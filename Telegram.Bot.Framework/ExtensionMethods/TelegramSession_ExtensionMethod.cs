@@ -83,8 +83,10 @@ namespace Telegram.Bot.Framework.ExtensionMethods
                 return default!;
 
             string text = session.Update.Message.Text ?? string.Empty;
-            List<MessageEntity> messageEntities = session.Update.Message.Entities?.ToList() ?? new List<MessageEntity>();
-            List<string> messageEntitiesVal = session.Update.Message.EntityValues?.ToList() ?? new List<string>();
+            if (string.IsNullOrEmpty(text)) return default!;
+
+            List<MessageEntity> messageEntities = session.Update.Message.Entities?.ToList() ?? new();
+            List<string> messageEntitiesVal = session.Update.Message.EntityValues?.ToList() ?? new();
             MessageEntity messageEntity;
             if ((messageEntity = messageEntities.FirstOrDefault()) == null)
                 return default!;
@@ -93,6 +95,33 @@ namespace Telegram.Bot.Framework.ExtensionMethods
                 return messageEntitiesVal.FirstOrDefault();
 
             return default!;
+        }
+
+        public static List<(MessageEntity msgEntity, string msgText)> GetAllMessageEntity(this ITelegramSession session)
+        {
+            List<(MessageEntity msgEntity, string msgText)> result = GetMessageEntity(session);
+            result.AddRange(GetCaptionMessageEntity(session));
+            return result;
+        }
+
+        public static List<(MessageEntity msgEntity, string msgText)> GetMessageEntity(this ITelegramSession session)
+        {
+            List<(MessageEntity msgEntity, string msgText)> result = new();
+            List<MessageEntity> messageEntities = session.Update.Message?.Entities?.ToList() ?? new();
+            List<string> messageEntityValues = session.Update.Message?.EntityValues?.ToList() ?? new();
+            foreach (MessageEntity item in messageEntities)
+                result.Add((item, messageEntityValues.GetAndRemove(defVal : string.Empty)));
+            return result;
+        }
+
+        public static List<(MessageEntity msgEntity, string msgText)> GetCaptionMessageEntity(this ITelegramSession session)
+        {
+            List<(MessageEntity msgEntity, string msgText)> result = new();
+            List<MessageEntity> messageEntities = session.Update.Message?.CaptionEntities?.ToList() ?? new();
+            List<string> messageEntityValues = session.Update.Message?.CaptionEntityValues?.ToList() ?? new();
+            foreach (MessageEntity item in messageEntities)
+                result.Add((item, messageEntityValues.GetAndRemove(defVal: string.Empty)));
+            return result;
         }
 
         #endregion
