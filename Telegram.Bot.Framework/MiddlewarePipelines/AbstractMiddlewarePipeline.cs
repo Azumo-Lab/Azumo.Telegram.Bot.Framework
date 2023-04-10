@@ -34,8 +34,8 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <summary>
         /// 中间件Handle
         /// </summary>
-        private readonly MiddlewareHandle MiddlewareHandle;
-        private readonly List<Func<MiddlewareHandle, MiddlewareHandle>> MiddlewareHandles;
+        private readonly MiddlewareHandle MiddlewareHandle = contexct => Task.CompletedTask;
+        private readonly List<Func<MiddlewareHandle, MiddlewareHandle>> MiddlewareHandles = new();
         private readonly IServiceProvider ServiceProvider;
 
         /// <summary>
@@ -50,11 +50,8 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         public AbstractMiddlewarePipeline(IServiceProvider ServiceProvider)
         {
             this.ServiceProvider = ServiceProvider;
-            MiddlewareHandles = new List<Func<MiddlewareHandle, MiddlewareHandle>>();
-
             AddMiddlewareHandleTemplate(ServiceProvider);
 
-            MiddlewareHandle = contexct => Task.CompletedTask;
             foreach (Func<MiddlewareHandle, MiddlewareHandle> Handle in MiddlewareHandles.Reverse<Func<MiddlewareHandle, MiddlewareHandle>>())
                 MiddlewareHandle = Handle(MiddlewareHandle);
         }
@@ -78,7 +75,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// 添加中间件，创建中间件流水线
         /// </summary>
         /// <param name="ServiceProvider">DI服务</param>
-        protected virtual void AddMiddlewareHandles(IServiceProvider ServiceProvider) { }
+        protected virtual void AddMiddlewareHandles(IServiceProvider ServiceProvider) 
+        { 
+            
+        }
 
         /// <summary>
         /// 用于向流水线中添加中间件
