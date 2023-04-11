@@ -32,6 +32,7 @@ using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Pipeline;
+using Telegram.Bot.Framework.Attributes;
 
 namespace Telegram.Bot.Framework
 {
@@ -68,6 +69,33 @@ namespace Telegram.Bot.Framework
         public static void AddMiddlewareTemplate(this IServiceCollection serviceDescriptors)
         {
             AddSingleton<IMiddlewareTemplate>(serviceDescriptors);
+        }
+
+        public static void AddDependencyInjection(this IServiceCollection serviceDescriptors)
+        {
+            Type diAttr = typeof(DependencyInjectionAttribute);
+            ObjectHelper.GetAllTypes()
+                .Where(x => Attribute.IsDefined(diAttr, x))
+                .ToList()
+                .ForEach(x =>
+                {
+                    if (Attribute.GetCustomAttribute(x, diAttr) is not DependencyInjectionAttribute dependencyInjectionAttribute)
+                        return;
+                    switch (dependencyInjectionAttribute.ServiceLifetime)
+                    {
+                        case ServiceLifetime.Singleton:
+                            serviceDescriptors.AddSingleton(dependencyInjectionAttribute.InterfaceType ?? x.BaseType, x);
+                            break;
+                        case ServiceLifetime.Scoped:
+                            serviceDescriptors.AddScoped(dependencyInjectionAttribute.InterfaceType ?? x.BaseType, x);
+                            break;
+                        case ServiceLifetime.Transient:
+                            serviceDescriptors.AddTransient(dependencyInjectionAttribute.InterfaceType ?? x.BaseType, x);
+                            break;
+                        default:
+                            break;
+                    }
+                });
         }
 
         #region 将IServiceCollection 中的添加服务的方法扩展了
