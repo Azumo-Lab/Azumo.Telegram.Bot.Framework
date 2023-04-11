@@ -14,28 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Middlewares
 {
     /// <summary>
-    /// Action接口
+    /// 中间件接口
     /// </summary>
     public interface IMiddleware
     {
         /// <summary>
-        /// 开始执行Action
+        /// 开始执行
         /// </summary>
-        /// <param name="Session"></param>
-        /// <param name="NextMiddleware">下一个中间件</param>
-        /// <returns></returns>
-        public Task Execute(ITelegramSession Session, MiddlewareHandle NextMiddleware);
+        /// <param name="Session">访问的请求对话</param>
+        /// <param name="PipelineController">流水线控制器</param>
+        /// <returns>异步方法</returns>;
+        public Task Execute(ITelegramSession Session, IPipelineController PipelineController);
     }
 }

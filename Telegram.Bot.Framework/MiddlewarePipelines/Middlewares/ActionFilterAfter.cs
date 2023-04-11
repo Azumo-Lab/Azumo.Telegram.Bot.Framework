@@ -29,14 +29,14 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     public class ActionFilterAfter : IMiddleware
     {
-        public async Task Execute(ITelegramSession Context, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
-            List<IFilter> filters = Context.UserService.GetServices<IFilter>().ToList();
+            List<IFilter> filters = Session.UserService.GetServices<IFilter>().ToList();
             foreach (IFilter item in filters)
-                if (await item.FilterAfter(Context))
+                if (await item.FilterAfter(Session))
                     return;
 
-            await NextHandle(Context);
+            await PipelineController.Next(Session);
         }
     }
 }

@@ -26,32 +26,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     public class ActionUserBridge : IMiddleware
     {
-        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
-            //TelegramUser telegramUser = session.User;
-            //IUserBridgeManager userBridgeManager = session.UserService.GetService<IUserBridgeManager>();
-            //if (userBridgeManager.HasUserBrige(telegramUser))
-            //{
-            //    IUserBridge userBridge = userBridgeManager.GetUserBridge(telegramUser);
-            //    //判断是否是关闭桥的指令
-            //    if (IsCloseCommand(session))
-            //    {
-            //        await userBridge.Disconnect();
-            //        userBridge.Dispose();
-            //        return;
-            //    }
-
-            //    //桥处理（信息等处理程序）
-            //    await userBridge.Send(session.Update.Message.Text);
-            //    return;
-            //}
-
-            await NextHandle(session);
+            await PipelineController.Next(Session);
         }
-
-        //private static bool IsCloseCommand(TelegramSession Context)
-        //{
-        //    return Context.GetCommand().ToLower() == "/bridgeclose";
-        //}
     }
 }

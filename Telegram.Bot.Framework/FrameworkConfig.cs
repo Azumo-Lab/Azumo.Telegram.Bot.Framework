@@ -31,11 +31,12 @@ using Telegram.Bot.Framework.InternalImplementation.Params;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Telegram.Bot.Framework.MiddlewarePipelines.Pipeline;
 
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 框架配置
     /// </summary>
     internal class FrameworkConfig : IConfig
     {
@@ -44,12 +45,19 @@ namespace Telegram.Bot.Framework
             services.AddScoped<ISession, InternalSession>();
             services.AddScoped<IParamManager, MyParamManager>();
 
+            #region 中间件流水线相关的处理
             // 添加中间件流水线
             services.AddMiddlewarePipeline();
             services.AddMiddlewareTemplate();
+            services.AddTransient<IPipelineBuilder, PipelineBuilder>();
+            services.AddTransient<IPipelineController, PipelineController>();
+            #endregion
         }
     }
 
+    /// <summary>
+    /// 框架配置的一些扩展方法
+    /// </summary>
     internal static class FrameworkConfig_ExtensionMethod
     {
         public static void AddMiddlewarePipeline(this IServiceCollection serviceDescriptors)

@@ -28,12 +28,12 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     internal class ActionUpdateTypeInvoke : IMiddleware
     {
-        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
-            IUpdateTypeInvoker updateTypeInvoke = session.UserService.GetService<IUpdateTypeInvoker>();
-            await updateTypeInvoke.CommandInvoke(session.Update.Type);
+            IUpdateTypeInvoker updateTypeInvoke = Session.UserService.GetService<IUpdateTypeInvoker>();
+            await updateTypeInvoke.CommandInvoke(Session.Update.Type);
 
-            await NextHandle(session);
+            await PipelineController.Next(Session);
         }
     }
 }

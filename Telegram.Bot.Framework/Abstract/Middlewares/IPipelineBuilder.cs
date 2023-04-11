@@ -14,23 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract;
-using Telegram.Bot.Framework.Abstract.Middlewares;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
+namespace Telegram.Bot.Framework.Abstract.Middlewares
 {
     /// <summary>
-    /// 用于处理频道群组消息的Action
+    /// 
     /// </summary>
-    public class ActionGroupChannel : IMiddleware
+    public interface IPipelineBuilder
     {
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
-        {
-            await PipelineController.Next(Session);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public IPipelineBuilder AddMiddleware<T>() where T : IMiddleware;
+
+        public MiddlewareDelegate Builder(IPipelineController PipelineController);
     }
 }

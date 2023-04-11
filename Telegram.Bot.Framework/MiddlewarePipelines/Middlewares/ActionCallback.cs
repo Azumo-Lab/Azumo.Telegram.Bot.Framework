@@ -26,6 +26,7 @@ using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -37,20 +38,20 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <summary>
         /// 执行回调函数
         /// </summary>
-        /// <param name="Context">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
+        /// <param name="Session">Context</param>
+        /// <param name="PipelineController">下一个处理流程</param>
         /// <returns></returns>
-        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
-            ICallBackManager callBackManager = session.UserService.GetService<ICallBackManager>();
-            Action<ITelegramSession> callbackAction = callBackManager.GetCallBack(session.Update.CallbackQuery.Data);
+            ICallBackManager callBackManager = Session.UserService.GetService<ICallBackManager>();
+            Action<ITelegramSession> callbackAction = callBackManager.GetCallBack(Session.Update.CallbackQuery.Data);
             if (!callbackAction.IsNull())
             {
-                callbackAction.Invoke(session);
-                await session.BotClient.AnswerCallbackQueryAsync(session.Update.CallbackQuery.Id);
+                callbackAction.Invoke(Session);
+                await Session.BotClient.AnswerCallbackQueryAsync(Session.Update.CallbackQuery.Id);
             }
 
-            await NextHandle(session);
+            await PipelineController.Next(Session);
         }
     }
 }

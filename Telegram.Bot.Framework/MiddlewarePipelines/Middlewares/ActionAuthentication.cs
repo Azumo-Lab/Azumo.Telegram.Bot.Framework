@@ -27,6 +27,7 @@ using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Authentication.Interface;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -38,28 +39,27 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <summary>
         /// 执行认证
         /// </summary>
-        /// <param name="Context"></param>
-        /// <param name="NextHandle"></param>
+        /// <param name="Session"></param>
+        /// <param name="PipelineController"></param>
         /// <returns></returns>
-        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
-            IEnumerable<IAuthentication> authentications = session.UserService.GetServices<IAuthentication>();
+            IEnumerable<IAuthentication> authentications = Session.UserService.GetServices<IAuthentication>();
 
             if (authentications.IsEmpty())
             {
-                await NextHandle(session);
+                await PipelineController.Next(Session);
                 return;
             }
-                
 
             foreach (IAuthentication authentication in authentications)
-                if (!await authentication.AuthUser(session))
+                if (!await authentication.AuthUser(Session))
                 {
-                    await authentication.ErrorMessage(session);
+                    await authentication.ErrorMessage(Session);
                     return;
                 }
 
-            await NextHandle(session);
+            await PipelineController.Next(Session);
         }
     }
 }

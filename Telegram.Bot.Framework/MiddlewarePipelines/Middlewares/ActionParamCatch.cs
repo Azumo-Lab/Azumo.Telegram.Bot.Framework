@@ -34,15 +34,15 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="session">Context</param>
         /// <param name="NextHandle">下一个处理流程</param>
         /// <returns></returns>
-        public async Task Execute(ITelegramSession session, MiddlewareHandle NextHandle)
+        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
             // 获取参数管理
-            IParamManager paramManger = session.UserService.GetService<IParamManager>();
+            IParamManager paramManger = Session.UserService.GetService<IParamManager>();
 
-            if (!await paramManger.ReadParam(session))
+            if (!await paramManger.ReadParam(Session))
                 return;
 
-            await NextHandle(session);
+            await PipelineController.Next(Session);
         }
     }
 }

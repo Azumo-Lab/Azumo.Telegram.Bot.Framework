@@ -23,6 +23,7 @@ using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -31,17 +32,24 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     /// </summary>
     public abstract class AbstractMiddlewarePipeline : IMiddlewarePipeline
     {
-        /// <summary>
-        /// 中间件Handle
-        /// </summary>
-        private readonly MiddlewareHandle MiddlewareHandle = contexct => Task.CompletedTask;
-        private readonly List<Func<MiddlewareHandle, MiddlewareHandle>> MiddlewareHandles = new();
-        private readonly IServiceProvider ServiceProvider;
+        private readonly IServiceProvider __ServiceProvider;
+        private readonly IPipelineController __PipelineController;
+        private IPipelineBuilder __PipelineBuilder;
 
         /// <summary>
         /// 执行的类型
         /// </summary>
         public abstract UpdateType InvokeType { get; }
+        private string _InvokeTypeString;
+        private string InvokeTypeStr
+        {
+            get
+            {
+                if (_InvokeTypeString.IsNullOrEmpty())
+                    _InvokeTypeString = InvokeType.ToString();
+                return _InvokeTypeString;
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -49,11 +57,12 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <param name="ServiceProvider">服务提供</param>
         public AbstractMiddlewarePipeline(IServiceProvider ServiceProvider)
         {
-            this.ServiceProvider = ServiceProvider;
-            AddMiddlewareHandleTemplate(ServiceProvider);
+            __ServiceProvider = ServiceProvider;
+            __PipelineController = __ServiceProvider.GetRequiredService<IPipelineController>();
+            __PipelineController.AddPipeline(InvokeTypeStr, __PipelineBuilder);
+            __PipelineBuilder = __ServiceProvider.GetService<IPipelineBuilder>();
 
-            foreach (Func<MiddlewareHandle, MiddlewareHandle> Handle in MiddlewareHandles.Reverse<Func<MiddlewareHandle, MiddlewareHandle>>())
-                MiddlewareHandle = Handle(MiddlewareHandle);
+            AddMiddlewareHandleTemplate(__ServiceProvider);
         }
 
         /// <summary>
@@ -85,8 +94,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         protected virtual void AddMiddleware<T>() where T : IMiddleware
         {
-            IMiddleware Middleware = CreateInstance<T>();
-            MiddlewareHandles.Add(Handle => Session => Middleware.Execute(Session, Handle));
+            __PipelineBuilder.AddMiddleware<T>();
         }
 
         /// <summary>
@@ -97,7 +105,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         public async Task Execute(ITelegramSession Session)
         {
             await InvokeAction(Session);
-            await MiddlewareHandle.Invoke(Session);
+
+            __PipelineController.ChangePipeline(InvokeTypeStr);
+            await __PipelineController.Next(Session);
         }
 
         /// <summary>
@@ -118,7 +128,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <returns>指定对象的实例</returns>
         protected virtual T CreateInstance<T>()
         {
-            return ActivatorUtilities.CreateInstance<T>(ServiceProvider, Array.Empty<object>());
+            return ActivatorUtilities.CreateInstance<T>(__ServiceProvider, Array.Empty<object>());
         }
     }
 }

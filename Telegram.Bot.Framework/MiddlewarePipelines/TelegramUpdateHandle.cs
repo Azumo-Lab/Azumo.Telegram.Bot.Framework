@@ -51,9 +51,12 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         {
             this.ServiceProvider = ServiceProvider;
 
+            UpdateType[] receiverOptions = (this.ServiceProvider.GetService<ReceiverOptions>() ?? new()).AllowedUpdates ?? Array.Empty<UpdateType>();
             Logger = this.ServiceProvider.GetService<ILogger>();
             MiddlewarePipelineDic = this.ServiceProvider.GetServices<IMiddlewarePipeline>()
                 .GroupBy(x => x.InvokeType)
+                // 只使用用户要使用的类型， 如果用户没有指定，那么就监听全部的类型
+                .Where(x => receiverOptions.IsEmpty() || receiverOptions.Contains(x.Key))
                 // 这里选取最后一个，也就是最新的，如果用户添加了一个新的流水线，那么就用用户新添加的
                 .ToDictionary(x => x.Key, x => x.LastOrDefault());
         }

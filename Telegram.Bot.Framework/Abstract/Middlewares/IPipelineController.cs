@@ -14,29 +14,42 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
+namespace Telegram.Bot.Framework.Abstract.Middlewares
 {
     /// <summary>
-    /// 
+    /// 流水线控制器
     /// </summary>
-    public class ActionFilterBefore : IMiddleware
+    public interface IPipelineController
     {
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
-        {
-            List<IFilter> filters = Session.UserService.GetServices<IFilter>().ToList();
-            foreach (IFilter item in filters)
-                if (await item.FilterBefore(Session))
-                    return;
+        #region 框架内部方法
+        internal void SetNextHandle(MiddlewareDelegate handle);
+        #endregion
 
-            await PipelineController.Next(Session);
-        }
+        /// <summary>
+        /// 执行下一条作业
+        /// </summary>
+        /// <returns></returns>
+        public Task Next(ITelegramSession Session);
+
+        /// <summary>
+        /// 切换一条流水线
+        /// </summary>
+        /// <param name="pipelineName">名称</param>
+        public void ChangePipeline(string pipelineName = default);
+
+        /// <summary>
+        /// 创建一条新的流水线
+        /// </summary>
+        /// <param name="pipelineName">名称</param>
+        /// <param name="piplineBuilder"></param>
+        public void AddPipeline(string pipelineName, IPipelineBuilder piplineBuilder);
     }
 }
