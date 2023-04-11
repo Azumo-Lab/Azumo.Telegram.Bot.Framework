@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
@@ -34,21 +38,60 @@ namespace Telegram.Bot.Channel
             public UpdateType UpdateType => UpdateType.ChannelPost;
         }
 
+        public static class ReflectionHelper
+        {
+            public static Action<object, object> CreateSetMethod(PropertyInfo propertyInfo)
+            {
+                var instance = Expression.Parameter(typeof(object), "instance");
+                var value = Expression.Parameter(typeof(object), "value");
+                var instanceCast = Expression.Convert(instance, propertyInfo.DeclaringType);
+                var valueCast = Expression.Convert(value, propertyInfo.PropertyType);
+                var setMethod = Expression.Call(instanceCast, propertyInfo.GetSetMethod(), valueCast);
+                return Expression.Lambda<Action<object, object>>(setMethod, instance, value).Compile();
+            }
+
+            public static Func<object, object> CreateGetMethod(PropertyInfo propertyInfo)
+            {
+                var instance = Expression.Parameter(typeof(object), "instance");
+                var instanceCast = Expression.Convert(instance, propertyInfo.DeclaringType);
+                var getMethod = Expression.Call(instanceCast, propertyInfo.GetGetMethod());
+                if (propertyInfo.PropertyType.IsValueType)
+                {
+                    var boxMethod = Expression.Convert(getMethod, typeof(object));
+                    return Expression.Lambda<Func<object, object>>(boxMethod, instance).Compile();
+                }
+                return Expression.Lambda<Func<object, object>>(getMethod, instance).Compile();
+            }
+        }
+
         public static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
             try
             {
+                //var fun = ReflectionHelper.CreateGetMethod(typeof(TestIMPL3).GetProperty("UpdateType"));
 
-                IServiceCollection services = new ServiceCollection();
+                var pp = typeof(TestIMPL3).GetProperty("UpdateType");
 
-                services.AddSingleton<ITest, TestIMPL3>();
-                services.AddSingleton<ITest, TestIMPL1>();
-                services.AddSingleton<ITest, TestIMPL2>();
+                //RuntimeHelpers.PrepareDelegate(fun);
 
-                IServiceProvider serviceProvider = services.BuildServiceProvider();
+                TestIMPL3 testIMPL3 = new TestIMPL3();
 
-                var test = serviceProvider.GetServices<ITest>().GroupBy(x => x.UpdateType).ToDictionary(x => x.Key, x => x.ToList());
+                for (int i = 0; i < 100000; i++)
+                {
+                    object aa = pp.GetValue(testIMPL3);
+                }
+
+                Console.WriteLine("");
+                //IServiceCollection services = new ServiceCollection();
+
+                //services.AddSingleton<ITest, TestIMPL3>();
+                //services.AddSingleton<ITest, TestIMPL1>();
+                //services.AddSingleton<ITest, TestIMPL2>();
+
+                //IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+                //var test = serviceProvider.GetServices<ITest>().GroupBy(x => x.UpdateType).ToDictionary(x => x.Key, x => x.ToList());
 
                 //ITelegramBot telegramBot = TelegramBotBuilder.Create()
                 //    .AddToken("5226896598:AAFa9N1GiF_i7W0fV4aWgz22IGv8kzVZ13Q")
