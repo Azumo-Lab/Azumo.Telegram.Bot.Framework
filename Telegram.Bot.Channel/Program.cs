@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using _1Password.TokenGetter;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Net;
@@ -64,25 +66,33 @@ namespace Telegram.Bot.Channel
             }
         }
 
+        public class Test01
+        {
+            public Test01(Test02 test02)
+            {
+
+            }
+        }
+
+        public class Test02
+        {
+            public Test02()
+            {
+
+            }
+        }
+
         public static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
             try
             {
-                //var fun = ReflectionHelper.CreateGetMethod(typeof(TestIMPL3).GetProperty("UpdateType"));
-
-                var pp = typeof(TestIMPL3).GetProperty("UpdateType");
-
-                //RuntimeHelpers.PrepareDelegate(fun);
-
-                TestIMPL3 testIMPL3 = new TestIMPL3();
-
-                for (int i = 0; i < 100000; i++)
+                OnePassword.SetPath("op");
+                using (OnePassword op = new OnePassword())
                 {
-                    object aa = pp.GetValue(testIMPL3);
+                    string token = op.Get("op://Tokens/rolpxqoi3qvkjnbsrq7m7ohmpq/credential");
+                    Console.WriteLine(token);
                 }
-
-                Console.WriteLine("");
                 //IServiceCollection services = new ServiceCollection();
 
                 //services.AddSingleton<ITest, TestIMPL3>();

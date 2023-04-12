@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Chan
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram.Bot.Framework.NuGet", "Telegram.Bot.Framework.NuGet", "{4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1Password.TokenGetter", "1Password.TokenGetter\1Password.TokenGetter.csproj", "{AFD86DB5-119C-49AC-9091-614D4A108318}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90DA7978-6B25-4C5F-96A1-B21FBFDDC409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD86DB5-119C-49AC-9091-614D4A108318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD86DB5-119C-49AC-9091-614D4A108318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD86DB5-119C-49AC-9091-614D4A108318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD86DB5-119C-49AC-9091-614D4A108318}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
