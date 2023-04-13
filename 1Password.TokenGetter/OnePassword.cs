@@ -24,6 +24,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,6 +61,14 @@ namespace _1Password.TokenGetter
         /// </summary>
         public OnePasswordCLI()
         {
+            if (!File.Exists(OnePasswordSetting.OnePasswordPath))
+            {
+                string msg =
+@"The 1Password Cli Could't Be Found, Please Use 'OnePasswordCLI.SetPath(""You 1Password Cli Path"")' To Set The Path
+无法找到 1Password Cli 程序的，请使用 'OnePasswordCLI.SetPath(""1Password Cli 程序路径"")' 来设定
+";
+                throw new FileNotFoundException(msg);
+            }
             OnePasswordProcess.StartInfo = new ProcessStartInfo
             {
                 StandardErrorEncoding = Encoding.UTF8,
@@ -165,6 +175,38 @@ namespace _1Password.TokenGetter
 
                 string opPath = exeFile.FullName;
                 SetPath(opPath);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static void Install()
+        {
+            try
+            {
+                string programsPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+                DirectoryInfo OnePasswordCliPath = Directory.CreateDirectory(Path.Combine(programsPath, "1Password Cli"));
+
+                FileInfo fileInfo = new FileInfo("D:\\新工程文件\\村上開明堂九州_ハブリッジシステム\\Win10対応\\Program\\VB.NET\\JUSHINKANSHI\\UI\\app.config");
+                FileSecurity fileSecurity = fileInfo.GetAccessControl();
+                AuthorizationRuleCollection aa = fileSecurity.GetAccessRules(true, true, typeof(SecurityIdentifier));
+                foreach (FileSystemAccessRule item in aa)
+                {
+                    if ((item.FileSystemRights & FileSystemRights.ExecuteFile) == FileSystemRights.ExecuteFile)
+                    {
+
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                string msg =
+@"Insufficient permissions, please run with administrator permissions
+权限不足，请使用管理员权限运行
+";
+                throw new UnauthorizedAccessException(msg, ex);
             }
             catch (Exception)
             {

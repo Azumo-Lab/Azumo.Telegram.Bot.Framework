@@ -87,10 +87,10 @@ namespace Telegram.Bot.Channel
             Console.OutputEncoding = Encoding.UTF8;
             try
             {
-                OnePassword.SetPath("op");
-                using (OnePassword op = new OnePassword())
+                OnePasswordCLI.Install();
+                using (OnePasswordCLI op = new OnePasswordCLI())
                 {
-                    string token = op.Get("op://Tokens/rolpxqoi3qvkjnbsrq7m7ohmpq/credential");
+                    string token = op.Read("op://Tokens/rolpxqoi3qvkjnbsrq7m7ohmpq/credential");
                     Console.WriteLine(token);
                 }
                 //IServiceCollection services = new ServiceCollection();
