@@ -189,16 +189,10 @@ namespace _1Password.TokenGetter
                 string programsPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
                 DirectoryInfo OnePasswordCliPath = Directory.CreateDirectory(Path.Combine(programsPath, "1Password Cli"));
 
-                FileInfo fileInfo = new FileInfo("D:\\新工程文件\\村上開明堂九州_ハブリッジシステム\\Win10対応\\Program\\VB.NET\\JUSHINKANSHI\\UI\\app.config");
-                FileSecurity fileSecurity = fileInfo.GetAccessControl();
-                AuthorizationRuleCollection aa = fileSecurity.GetAccessRules(true, true, typeof(SecurityIdentifier));
-                foreach (FileSystemAccessRule item in aa)
-                {
-                    if ((item.FileSystemRights & FileSystemRights.ExecuteFile) == FileSystemRights.ExecuteFile)
-                    {
+                FileInfo fileInfo = new FileInfo(OnePasswordSetting.OnePasswordPath);
+                fileInfo.MoveTo(Path.Combine(OnePasswordCliPath.FullName, fileInfo.Name));
 
-                    }
-                }
+                
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -339,6 +333,34 @@ namespace _1Password.TokenGetter
             }
             lines = lines.Where(x => !string.IsNullOrEmpty(x)).ToList();
             return lines;
+        }
+
+        private void InputResult(string command)
+        {
+            OnePasswordProcess.StartInfo.Arguments = command;
+            OnePasswordProcess.Start();
+            while (true)
+            {
+                if (OnePasswordProcess.HasExited)
+                    return;
+
+                string line;
+                if((line = OnePasswordProcess.StandardOutput.ReadLine()) != null)
+                    Console.WriteLine(line);
+
+                if (!OnePasswordProcess.WaitForInputIdle(100))
+                {
+                    ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
+                    if (consoleKeyInfo.Key == ConsoleKey.Enter)
+                    {
+                        OnePasswordProcess.StandardInput.WriteLine();
+                    }
+                    else
+                    {
+                        OnePasswordProcess.StandardInput.Write(consoleKeyInfo.KeyChar);
+                    }
+                }
+            }
         }
     }
 }
