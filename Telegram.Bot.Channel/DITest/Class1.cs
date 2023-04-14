@@ -20,7 +20,11 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 
 namespace Telegram.Bot.Channel.DITest
 {
@@ -29,17 +33,56 @@ namespace Telegram.Bot.Channel.DITest
         private string Guid = "[Guid(\"C6608E16-C627-4123-962D-F895235513C6\")]";
 
         private readonly Dictionary<Type, Delegate> NewInvoke = new ();
-        public static string GetInstance()
+        public static void GetInstance()
         {
-            Type type = typeof(Container);
-            Expression newInvoke = Expression.New(type.GetConstructors().First());
-            Func<Container> NewObj = Expression.Lambda<Func<Container>>(newInvoke).Compile();
+            try
+            {
+                // 获取方法信息
+                MethodInfo methodInfo = typeof(Container).GetMethod("Test", BindingFlags.Instance | BindingFlags.Public);
 
-            ParameterExpression param1 = Expression.Parameter(type);
-            Expression method = Expression.Field(param1, type.GetField("Guid", BindingFlags.NonPublic | BindingFlags.Instance)!);
-            Func<Container, string> GetGuid = Expression.Lambda<Func<Container, string>>(method, param1).Compile();
+                // 创建表达式树
+                ParameterExpression containerParam = Expression.Parameter(typeof(Container), "container");
+                ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
 
-            return GetGuid(NewObj());
+                var paramArray = methodInfo.GetParameters();
+                List<Expression> expressionList = new List<Expression>();
+                for (int i = 0; i < paramArray.Length; i++)
+                {
+                    var param = paramArray[i];
+                    var e = Expression.Convert(Expression.ArrayIndex(argsParam, Expression.Constant(i)), param.ParameterType);
+                    expressionList.Add(e);
+                }
+
+                MethodCallExpression call = Expression.Call(containerParam, methodInfo,
+                    expressionList.ToArray());
+                Expression<Action<Container, object[]>> lambda = Expression.Lambda<Action<Container, object[]>>(call, containerParam, argsParam);
+
+                // 编译表达式树
+                Action<Container, object[]> Action = lambda.Compile();
+
+                RuntimeHelpers.PrepareDelegate(Action);
+
+                // 执行方法
+                Container container = new Container();
+                object[] parameters = new object[] { "hello world", 5 } ;
+                Action(container, parameters);
+                Action(container, parameters);
+                Action(container, parameters);
+                Action(container, parameters);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+        }
+
+        public void Test(string str, int ii)
+        {
+            Console.WriteLine(ii);
+            Console.WriteLine(str);
+            Console.WriteLine(Guid);
         }
     }
 
