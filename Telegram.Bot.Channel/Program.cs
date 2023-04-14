@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Headers;
@@ -11,6 +10,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Telegram.Bot.Channel.DITest;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Controller;
@@ -87,12 +87,7 @@ namespace Telegram.Bot.Channel
             Console.OutputEncoding = Encoding.UTF8;
             try
             {
-                OnePasswordCLI.Install();
-                using (OnePasswordCLI op = new OnePasswordCLI())
-                {
-                    string token = op.Read("op://Tokens/rolpxqoi3qvkjnbsrq7m7ohmpq/credential");
-                    Console.WriteLine(token);
-                }
+                Container.GetInstance();
                 //IServiceCollection services = new ServiceCollection();
 
                 //services.AddSingleton<ITest, TestIMPL3>();

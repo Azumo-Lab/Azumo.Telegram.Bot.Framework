@@ -24,6 +24,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -38,6 +39,8 @@ namespace _1Password.TokenGetter
     {
         private static Setting OnePasswordSetting;
         private readonly Process OnePasswordProcess = new Process();
+
+        private static readonly SystemEnum SystemEnum;
 
         private class Setting
         {
@@ -54,6 +57,8 @@ namespace _1Password.TokenGetter
             OnePasswordSetting = File.Exists(nameof(OnePasswordCLI))
                 ? JsonConvert.DeserializeObject<Setting>(File.ReadAllText(nameof(OnePasswordCLI)))!
                 : new Setting();
+
+            SystemEnum = SystemOSVersion.GetSystemEnum();
         }
 
         /// <summary>
@@ -89,7 +94,7 @@ namespace _1Password.TokenGetter
         /// </summary>
         /// <param name="system">系统版本，默认下载Windows版本</param>
         /// <exception cref="Exception"></exception>
-        public static void Download(SystemEnum system = SystemEnum.Windows_AMD64)
+        public static void Download()
         {
             if (File.Exists(OnePasswordSetting.OnePasswordPath))
                 return;
@@ -118,7 +123,7 @@ namespace _1Password.TokenGetter
             List<HtmlNode> htmlNodes = htmlNode.SelectNodes($"{htmlNode.XPath}/div[@class=\"cli-archs\"]").SelectMany(x => x.SelectNodes($"{x.XPath}/p").ToList()).ToList();
 
             string systemClass;
-            switch (system)
+            switch (OnePasswordCLI.SystemEnum)
             {
                 case SystemEnum.Windows_386:
                 case SystemEnum.Windows_AMD64:
@@ -148,7 +153,7 @@ namespace _1Password.TokenGetter
                     throw new Exception();
             }
             HtmlNode downloadUrlNode = htmlNodes.Where(x => x.GetAttributeValue("class", "") == systemClass).FirstOrDefault();
-            string? downloadURL = downloadUrlNode.SelectNodes($"{downloadUrlNode.XPath}/a[@title=\"Download for {system.ToString().Split('_', 2, StringSplitOptions.None)[1].ToLower()}\"]")
+            string? downloadURL = downloadUrlNode.SelectNodes($"{downloadUrlNode.XPath}/a[@title=\"Download for {OnePasswordCLI.SystemEnum.ToString().Split('_', 2, StringSplitOptions.None)[1].ToLower()}\"]")
                 .FirstOrDefault()?.GetAttributeValue("href", string.Empty);
 
             if (string.IsNullOrEmpty(downloadURL))
@@ -182,6 +187,10 @@ namespace _1Password.TokenGetter
             }
         }
 
+        /// <summary>
+        /// 进行安装配置
+        /// </summary>
+        /// <exception cref="UnauthorizedAccessException">权限异常</exception>
         public static void Install()
         {
             try
@@ -192,7 +201,47 @@ namespace _1Password.TokenGetter
                 FileInfo fileInfo = new FileInfo(OnePasswordSetting.OnePasswordPath);
                 fileInfo.MoveTo(Path.Combine(OnePasswordCliPath.FullName, fileInfo.Name));
 
-                
+                using (Process OnePasswordProcess = new Process())
+                {
+                    OnePasswordProcess.StartInfo = new ProcessStartInfo
+                    {
+                        Arguments = " signin",
+                        StandardErrorEncoding = Encoding.UTF8,
+                        StandardInputEncoding = Encoding.UTF8,
+                        StandardOutputEncoding = Encoding.UTF8,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        RedirectStandardInput = true,
+                        FileName = $"{OnePasswordSetting.OnePasswordPath}",
+                        WindowStyle = ProcessWindowStyle.Normal,
+                        CreateNoWindow = false,
+                        UseShellExecute = false,
+                    };
+                    OnePasswordProcess.Start();
+                    while (true)
+                    {
+                        if (OnePasswordProcess.HasExited)
+                            break;
+
+                        string line;
+                        if ((line = OnePasswordProcess.StandardOutput.ReadLine()) != null)
+                            Console.WriteLine(line);
+
+                        if (!OnePasswordProcess.WaitForInputIdle(100))
+                        {
+                            ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
+                            if (consoleKeyInfo.Key == ConsoleKey.Enter)
+                            {
+                                OnePasswordProcess.StandardInput.WriteLine();
+                            }
+                            else
+                            {
+                                OnePasswordProcess.StandardInput.Write(consoleKeyInfo.KeyChar);
+                            }
+                        }
+                    }
+                    OnePasswordProcess.Kill();
+                }
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -333,34 +382,6 @@ namespace _1Password.TokenGetter
             }
             lines = lines.Where(x => !string.IsNullOrEmpty(x)).ToList();
             return lines;
-        }
-
-        private void InputResult(string command)
-        {
-            OnePasswordProcess.StartInfo.Arguments = command;
-            OnePasswordProcess.Start();
-            while (true)
-            {
-                if (OnePasswordProcess.HasExited)
-                    return;
-
-                string line;
-                if((line = OnePasswordProcess.StandardOutput.ReadLine()) != null)
-                    Console.WriteLine(line);
-
-                if (!OnePasswordProcess.WaitForInputIdle(100))
-                {
-                    ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
-                    if (consoleKeyInfo.Key == ConsoleKey.Enter)
-                    {
-                        OnePasswordProcess.StandardInput.WriteLine();
-                    }
-                    else
-                    {
-                        OnePasswordProcess.StandardInput.Write(consoleKeyInfo.KeyChar);
-                    }
-                }
-            }
         }
     }
 }
