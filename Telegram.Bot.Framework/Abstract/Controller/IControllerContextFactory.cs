@@ -14,26 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Interface;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
+namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ActionUpdateTypeInvoke : IMiddleware
+    internal interface IControllerContextFactory
     {
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
-        {
-            IUpdateTypeInvoker updateTypeInvoke = Session.UserService.GetService<IUpdateTypeInvoker>();
-            await updateTypeInvoke.CommandInvoke(Session.Update.Type);
+        public IControllerContext CreateControllerContext(ITelegramSession telegramSession);
 
-            await PipelineController.Next(Session);
-        }
+        public void AddContext(IControllerContextBuilder controllerContextBuilder);
     }
 }

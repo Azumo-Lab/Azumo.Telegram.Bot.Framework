@@ -20,15 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Controller.Interface
+namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IUpdateTypeInvoker
+    internal interface IControllerFactory
     {
-        public Task CommandInvoke(UpdateType command, params object[] param);
+        public TelegramController CreateController(IControllerContext context);
     }
 }

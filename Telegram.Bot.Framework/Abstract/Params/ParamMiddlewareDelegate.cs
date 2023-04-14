@@ -14,22 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalImplementation.Controller;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Abstract.Controller;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.Abstract.Controller
+namespace Telegram.Bot.Framework.Abstract.Params
 {
     /// <summary>
-    /// 
+    /// 委托
     /// </summary>
-    public interface ICommandInvoker
-    {
-        public Task CommandInvoke(string command, params object[] param);
-
-        public Task CommandInvoke(MessageType messageType, params object[] param);
-
-        public Task CommandInvoke(CommandInfo commandInfo, TelegramController controller, params object[] param);
-
-    }
+    /// <param name="Context"></param>
+    /// <returns></returns>
+    internal delegate Task<bool> ParamMiddlewareDelegate(ITelegramSession Session, IParamManager ParamManager, IControllerContext controllerContext);
 }

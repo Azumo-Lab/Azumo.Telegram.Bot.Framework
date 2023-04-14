@@ -14,32 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Controller;
-using Telegram.Bot.Framework.Controller.Interface;
-using Telegram.Bot.Framework.Helper;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalImplementation.Controller
+namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class UpdateTypeInvoke : InvokeBase, IUpdateTypeInvoker
+    internal interface IControllerContextBuilder
     {
-        private readonly IControllerManager ControllerManager;
-        public UpdateTypeInvoke(IControllerManager controllerManager)
-        {
-            ControllerManager = controllerManager;
-        }
+        public IControllerContext Build();
 
-        public async Task CommandInvoke(UpdateType command, params object[] param)
-        {
-            TelegramController telegramController = ControllerManager.GetController(command, out CommandInfo commandInfo);
-            if (telegramController.IsNull())
-                return;
+        public IControllerContextBuilder AddAttribute(Attribute attribute);
 
-            await CommandInvoke(commandInfo, telegramController, param);
-        }
+        public IControllerContextBuilder AddAttributes(Attribute[] attributes);
+
+        public IControllerContextBuilder AddDelegate(Action<TelegramController, object[]> Action);
+
+        public IControllerContextBuilder AddParam(ParameterInfo paramType);
+
+        public IControllerContextBuilder AddParams(ParameterInfo[] paramTypes);
+
+        public IControllerContextBuilder AddMethodInfo(MethodInfo methodInfo);
     }
 }

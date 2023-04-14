@@ -14,28 +14,31 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Params;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.InternalImplementation.Params.ParamMiddlewares;
 
-namespace Telegram.Bot.Framework.Abstract.Params
+namespace Telegram.Bot.Framework.InternalImplementation.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IParamManager
+    [DependencyInjection(ServiceLifetime.Scoped, InterfaceType = typeof(IParamMiddlewarePipeline))]
+    internal class PipelineParamCatch : AbstractParamMiddlewarePipeline
     {
-        public void AddParam(object param);
+        public PipelineParamCatch(IServiceProvider serviceProvider) : base(serviceProvider) { }
 
-        public object[] GetParams();
-
-        public void SetCommand(string Command);
-
-        public string GetCommand();
-
-        public void Clear();
+        protected override void AddMiddlewareHandles(IServiceProvider ServiceProvider)
+        {
+            AddMiddleware<InitParamCatchMiddleware>();
+            AddMiddleware<ParamCatchMiddleware>();
+        }
     }
 }

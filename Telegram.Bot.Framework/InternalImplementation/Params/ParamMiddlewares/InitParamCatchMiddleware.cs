@@ -15,34 +15,31 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Framework.ExtensionMethods;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
+namespace Telegram.Bot.Framework.InternalImplementation.Params.ParamMiddlewares
 {
     /// <summary>
-    /// 流程中参数的获取
+    /// 
     /// </summary>
-    internal class ActionParamCatch : IMiddleware
+    internal class InitParamCatchMiddleware : IParamMiddleware
     {
-        /// <summary>
-        /// 参数获取
-        /// </summary>
-        /// <param name="session">Context</param>
-        /// <param name="NextHandle">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
+        public async Task<bool> Execute(ITelegramSession Session, IParamManager paramManager, IControllerContext controllerContext, ParamMiddlewareDelegate Next)
         {
-            // 获取参数管理
-            IParamManager paramManger = Session.UserService.GetService<IParamManager>();
+            if (controllerContext.ParamModels.Count == 0)
+                return true;
 
-            if (!await paramManger.ReadParam(Session))
-                return;
-
-            await PipelineController.Next(Session);
+            return await Next(Session, paramManager, controllerContext);
         }
     }
 }

@@ -14,21 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.InternalImplementation.Controller;
-using Telegram.Bot.Types.Enums;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Controller;
+using Telegram.Bot.Framework.Abstract.Middlewares;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.Abstract.Controller
+namespace Telegram.Bot.Framework.Abstract.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IControllerManager
+    internal interface IParamMiddleware
     {
-
-        public TelegramController GetController(string command, out CommandInfo commandInfo);
-
-        public TelegramController GetController(MessageType messageType, out CommandInfo commandInfo);
-
-        public TelegramController GetController(UpdateType messageType, out CommandInfo commandInfo);
+        public Task<bool> Execute(ITelegramSession Session, IParamManager paramManager, IControllerContext controllerContext, ParamMiddlewareDelegate Next);
     }
 }

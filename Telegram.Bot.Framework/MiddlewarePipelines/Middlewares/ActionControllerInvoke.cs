@@ -39,16 +39,17 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <returns></returns>
         public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
-            IControllerManager controllerManager = Session.UserService.GetService<IControllerManager>();
-            IParamManager paramManger = Session.UserService.GetService<IParamManager>();
+            IControllerContextFactory controllerContextFactory = Session.UserService.GetService<IControllerContextFactory>();
+            IControllerContext controllerContext = controllerContextFactory.CreateControllerContext(Session);
+            if (controllerContext != null)
+            {
+                IParamMiddlewarePipeline paramMiddlewarePipeline = Session.UserService.GetService<IParamMiddlewarePipeline>();
+                if (!await paramMiddlewarePipeline.Execute(Session, controllerContext))
+                    return;
 
-            TelegramController controller;
-            controller = controllerManager.GetController(paramManger.GetCommand(), out CommandInfo commandInfo);
-            controller ??= controllerManager.GetController(Session.Update.Message.Type, out commandInfo);
-            controller ??= controllerManager.GetController(Session.Update.Type, out commandInfo);
-
-            if (!controller.IsNull())
-                await controller.Invoke(Session, commandInfo, paramManger.GetParam());
+                IControllerFactory controllerFactory = Session.UserService.GetService<IControllerFactory>();
+                controllerContext.ControllerInvokeAction(controllerFactory.CreateController(controllerContext), paramMiddlewarePipeline.Param.ToArray());
+            }
 
             await PipelineController.Next(Session);
         }

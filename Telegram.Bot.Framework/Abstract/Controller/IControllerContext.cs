@@ -22,43 +22,43 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.ExtensionMethods;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Framework.Authentication.Attribute;
+using Telegram.Bot.Framework.Controller.Attribute;
 
-namespace Telegram.Bot.Framework.InternalImplementation.Params
+namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class MyParamManager : IParamManager
+    internal interface IControllerContext
     {
+        public BotCommandAttribute BotCommandAttribute { get; }
 
-        private string __Command;
+        public AuthenticationAttribute AuthenticationAttribute { get; }
 
-        public void Cancel()
-        {
+        public DefaultTypeAttribute DefaultTypeAttribute { get; }
 
-        }
+        public DefaultMessageAttribute DefaultMessageAttribute { get; }
 
-        public string GetCommand()
-        {
-            return __Command;
-        }
+        public MethodInfo Action { get; }
 
-        public object[] GetParam()
-        {
-            return default!;
-        }
+        public List<ParamModel> ParamModels { get; }
 
-        public bool IsReadParam()
-        {
-            return false;
-        }
+        Action<TelegramController, object[]> ControllerInvokeAction { get; }
 
-        public Task<bool> ReadParam(ITelegramSession session)
-        {
-            __Command = session.GetCommand();
-            return Task.FromResult(true);
-        }
+        public Type ControllerType { get; }
+    }
+
+    internal class ParamModel
+    {
+        public Type ParamType { get; set; }
+
+        public Type ParamMsg { get; set; }
+
+        public Type ParamMaker { get; set; }
+
+        public ParamAttribute ParamAttr { get; set; }
+
+        public ParameterInfo ParameterInfo { get; set; }
     }
 }

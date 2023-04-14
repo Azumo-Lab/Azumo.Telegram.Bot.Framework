@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,12 +22,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Attributes;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Sessions
 {
     /// <summary>
     /// 内部Session实现
     /// </summary>
+    [DependencyInjection(ServiceLifetime.Scoped, InterfaceType = typeof(ISession))]
     internal sealed class InternalSession : ISession, IDisposable
     {
         /// <summary>
@@ -80,7 +83,14 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         {
             ThrowIfDispose();
 
-            __InternalSessionCache.TryAdd(sessionKey, data);
+            if (__InternalSessionCache.ContainsKey(sessionKey))
+            {
+                __InternalSessionCache[sessionKey] = data;
+            }
+            else
+            {
+                __InternalSessionCache.Add(sessionKey, data);
+            }
         }
 
         private void ThrowIfDispose()

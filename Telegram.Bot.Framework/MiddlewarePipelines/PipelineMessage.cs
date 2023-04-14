@@ -48,14 +48,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             AddMiddleware<ActionGroupChannel>();
             // 执行前过滤
             AddMiddleware<ActionFilterBefore>();
-            // 参数获取
-            AddMiddleware<ActionParamCatch>();
             // 执行命令控制器
             AddMiddleware<ActionControllerInvoke>();
             // 执行后过滤
             AddMiddleware<ActionFilterAfter>();
-
-            AddMiddleware<ActionUpdateTypeInvoke>();
         }
 
         /// <summary>

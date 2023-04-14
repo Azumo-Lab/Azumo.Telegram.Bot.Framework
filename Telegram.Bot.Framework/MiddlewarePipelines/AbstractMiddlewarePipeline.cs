@@ -119,16 +119,5 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         {
             await Task.CompletedTask;
         }
-
-        /// <summary>
-        /// 创建指定的一个对象
-        /// </summary>
-        /// <typeparam name="T">指定对象的类型</typeparam>
-        /// <param name="serviceProvider">DI服务</param>
-        /// <returns>指定对象的实例</returns>
-        protected virtual T CreateInstance<T>()
-        {
-            return ActivatorUtilities.CreateInstance<T>(__ServiceProvider, Array.Empty<object>());
-        }
     }
 }

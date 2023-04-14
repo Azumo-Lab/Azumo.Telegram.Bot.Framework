@@ -53,7 +53,9 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         public static string GetString(this ISession session, string key)
         {
             byte[] bytes = session.Get(key);
-            return Encoding.UTF8.GetString(bytes);
+            if (bytes != default)
+                return Encoding.UTF8.GetString(bytes);
+            return null;
         }
         #endregion
 

@@ -20,22 +20,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Controller;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface IParamManager
+    internal interface IParamMiddlewarePipeline
     {
-        public void AddParam(object param);
-
-        public object[] GetParams();
-
-        public void SetCommand(string Command);
-
-        public string GetCommand();
-
-        public void Clear();
+        public List<object> Param { get; }
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <param name="session">访问的请求对话</param>
+        /// <returns>异步方法</returns>
+        public Task<bool> Execute(ITelegramSession session, IControllerContext controllerContext);
     }
 }

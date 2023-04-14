@@ -10,7 +10,8 @@ namespace Telegram.Bot.Framework.Authentication.Attribute
     public class AuthenticationAttribute : System.Attribute
     {
         public BotCommandScopeType BotCommandScopeType { get; }
-        public ChatId? ChatId { get; set; }
+        
+        public ChatId ChatId { get; set; }
 
         public ChatUser ChatUser { get; set; }
 

@@ -33,6 +33,11 @@ using Telegram.Bot.Framework.Abstract.Middlewares;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Pipeline;
 using Telegram.Bot.Framework.Attributes;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using Telegram.Bot.Framework.Controller.Attribute;
+using Telegram.Bot.Framework.Abstract.Controller;
 
 namespace Telegram.Bot.Framework
 {
@@ -89,8 +94,8 @@ namespace Telegram.Bot.Framework
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ISession, InternalSession>();
-            services.AddScoped<IParamManager, MyParamManager>();
+            // 添加使用标签的自动服务注册
+            services.AddDependencyInjection();
 
             #region 中间件流水线相关的处理
             // 添加中间件流水线
@@ -130,13 +135,13 @@ namespace Telegram.Bot.Framework
                     switch (dependencyInjectionAttribute.ServiceLifetime)
                     {
                         case ServiceLifetime.Singleton:
-                            serviceDescriptors.AddSingleton(dependencyInjectionAttribute.InterfaceType ?? x.BaseType, x);
+                            serviceDescriptors.AddSingleton(dependencyInjectionAttribute.InterfaceType ?? x.BaseType ?? x, x);
                             break;
                         case ServiceLifetime.Scoped:
-                            serviceDescriptors.AddScoped(dependencyInjectionAttribute.InterfaceType ?? x.BaseType, x);
+                            serviceDescriptors.AddScoped(dependencyInjectionAttribute.InterfaceType ?? x.BaseType ?? x, x);
                             break;
                         case ServiceLifetime.Transient:
-                            serviceDescriptors.AddTransient(dependencyInjectionAttribute.InterfaceType ?? x.BaseType, x);
+                            serviceDescriptors.AddTransient(dependencyInjectionAttribute.InterfaceType ?? x.BaseType ?? x, x);
                             break;
                         default:
                             break;
@@ -180,5 +185,81 @@ namespace Telegram.Bot.Framework
         }
 
         #endregion
+    }
+
+    [DependencyInjection(ServiceLifetime.Singleton)]
+    internal class FrameworkBuilder
+    {
+        private readonly IServiceProvider serviceProvider;
+        private readonly List<Type> AllControllerType;
+        public FrameworkBuilder(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+
+            // 获取所有的控制器类
+            AllControllerType = typeof(TelegramController).GetSameType();
+
+            // 解析所有的控制器
+            foreach (Type ControllerType in AllControllerType)
+            {
+                ParseController(ControllerType);
+            }
+        }
+
+        private void ParseController(Type type)
+        {
+            if (type.IsNull())
+                throw new ArgumentNullException(nameof(type));
+
+            IControllerContextFactory controllerContextFactory = serviceProvider.GetService<IControllerContextFactory>();
+
+            // 获取方法信息
+            MethodInfo[] allMethodInfo = type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x =>
+                    Attribute.IsDefined(x, typeof(BotCommandAttribute))
+                ).ToArray();
+            foreach (MethodInfo methodInfo in allMethodInfo)
+            {
+                IControllerContextBuilder controllerContextBuilder = serviceProvider.GetService<IControllerContextBuilder>();
+                
+                Action<TelegramController, object[]> Action = CompileDelegate(methodInfo);
+                Attribute[] methodAttributes = Attribute.GetCustomAttributes(methodInfo);
+                Attribute[] controllerAttributes = Attribute.GetCustomAttributes(methodInfo.DeclaringType);
+                ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+
+                controllerContextBuilder
+                    .AddDelegate(Action)
+                    .AddAttributes(methodAttributes)
+                    .AddAttributes(controllerAttributes)
+                    .AddParams(parameterInfos);
+
+                controllerContextFactory.AddContext(controllerContextBuilder);
+            }
+        }
+
+        private Action<TelegramController, object[]> CompileDelegate(MethodInfo methodInfo)
+        {
+            // 创建表达式树
+            ParameterExpression containerParam = Expression.Parameter(typeof(TelegramController), nameof(TelegramController).ToLower());
+            ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
+
+            ParameterInfo[] paramArray = methodInfo.GetParameters();
+            List<Expression> expressionList = new List<Expression>();
+            for (int i = 0; i < paramArray.Length; i++)
+            {
+                ParameterInfo param = paramArray[i];
+                // 这一步是进行值转换，object[] 拆分成 -> object[] { string, int, ClassTest }
+                expressionList.Add(Expression.Convert(Expression.ArrayIndex(argsParam, Expression.Constant(i)), param.ParameterType));
+            }
+
+            MethodCallExpression call = Expression.Call(containerParam, methodInfo,
+                expressionList.ToArray());
+            Expression<Action<TelegramController, object[]>> lambda = Expression.Lambda<Action<TelegramController, object[]>>(call, containerParam, argsParam);
+
+            // 编译表达式树
+            Action<TelegramController, object[]> Action = lambda.Compile();
+            
+            return Action;
+        }
     }
 }

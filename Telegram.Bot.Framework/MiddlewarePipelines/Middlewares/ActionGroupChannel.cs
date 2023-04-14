@@ -20,6 +20,7 @@ using Telegram.Bot.Framework.Abstract;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -30,6 +31,19 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     {
         public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
         {
+            if (Session.Update.Message?.Chat.Type is ChatType.Group or ChatType.Supergroup)
+            {
+                PipelineController.ChangePipeline(nameof(ChatType.Supergroup));
+                await PipelineController.Next(Session);
+                return;
+            }
+            if (Session.Update.Message?.Chat.Type is ChatType.Channel)
+            {
+                PipelineController.ChangePipeline(nameof(ChatType.Channel));
+                await PipelineController.Next(Session);
+                return;
+            }
+
             await PipelineController.Next(Session);
         }
     }
