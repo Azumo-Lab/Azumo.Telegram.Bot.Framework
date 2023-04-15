@@ -58,9 +58,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         public AbstractMiddlewarePipeline(IServiceProvider ServiceProvider)
         {
             __ServiceProvider = ServiceProvider;
+
+            __PipelineBuilder = __ServiceProvider.GetRequiredService<IPipelineBuilder>();
             __PipelineController = __ServiceProvider.GetRequiredService<IPipelineController>();
             __PipelineController.AddPipeline(InvokeTypeStr, __PipelineBuilder);
-            __PipelineBuilder = __ServiceProvider.GetService<IPipelineBuilder>();
 
             AddMiddlewareHandleTemplate(__ServiceProvider);
         }

@@ -74,6 +74,7 @@ namespace Telegram.Bot.Framework
         /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
         public async Task BotStart()
         {
+            ServiceProvider.GetRequiredService<FrameworkBuilder>();
             ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
             CancellationTokenSource cancellationTokenSource = ServiceProvider.GetService<CancellationTokenSource>();
 

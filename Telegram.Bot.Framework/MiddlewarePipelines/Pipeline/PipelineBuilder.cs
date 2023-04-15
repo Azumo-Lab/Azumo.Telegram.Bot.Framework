@@ -20,12 +20,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
+using Telegram.Bot.Framework.Attributes;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
 {
     /// <summary>
     /// 流水线创建
     /// </summary>
+    [DependencyInjection(ServiceLifetime.Transient)]
     public class PipelineBuilder : IPipelineBuilder
     {
         private bool IsBuild;

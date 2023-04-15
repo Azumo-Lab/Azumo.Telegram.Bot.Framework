@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped)]
+    [DependencyInjection(ServiceLifetime.Transient)]
     internal class ControllerContextBuilder : IControllerContextBuilder
     {
         private MethodInfo MethodInfo;
@@ -63,7 +63,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
 
         public IControllerContextBuilder AddParams(ParameterInfo[] paramTypes)
         {
-            ParameterInfoList.AddRange(ParameterInfoList);
+            ParameterInfoList.AddRange(paramTypes);
             return this;
         }
 

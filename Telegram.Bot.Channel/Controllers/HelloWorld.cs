@@ -38,5 +38,11 @@ namespace Telegram.Bot.Channel.Controllers
             string command = Session.GetCommand();
             await Session.SendTextMessageAsync($"你发送的是{command}");
         }
+
+        [BotCommand("SayHello")]
+        public async Task Test2([Param(Message = "你想说什么？")]string str, [Param(Message = "下一句你想说什么")]string str2)
+        {
+            await Session.SendTextMessageAsync($"你的第一句：{str}。你的第二句：{str2}。");
+        }
     }
 }

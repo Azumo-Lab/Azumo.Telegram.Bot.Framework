@@ -38,7 +38,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
             AddMiddleware<ActionCallback>();
-            AddMiddleware<ActionUpdateTypeInvoke>();
         }
     }
 }

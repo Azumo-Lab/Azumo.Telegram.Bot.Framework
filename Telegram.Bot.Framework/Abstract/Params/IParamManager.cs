@@ -28,6 +28,10 @@ namespace Telegram.Bot.Framework.Abstract.Params
     /// </summary>
     internal interface IParamManager
     {
+        public bool MakeMode { get; set; }
+
+        public int ParamIndex { get; set; }
+
         public void AddParam(object param);
 
         public object[] GetParams();
@@ -37,5 +41,7 @@ namespace Telegram.Bot.Framework.Abstract.Params
         public string GetCommand();
 
         public void Clear();
+
+        public IParamMaker GetMaker(IServiceProvider serviceProvider, Type type);
     }
 }

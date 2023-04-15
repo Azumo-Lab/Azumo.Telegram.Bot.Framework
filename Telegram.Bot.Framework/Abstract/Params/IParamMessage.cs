@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Params
 {
@@ -31,6 +32,6 @@ namespace Telegram.Bot.Framework.Abstract.Params
         /// </summary>
         /// <param name="Message">消息</param>
         /// <returns></returns>
-        Task SendMessage(string Message);
+        Task SendMessage(ITelegramSession telegramSession, string Message);
     }
 }

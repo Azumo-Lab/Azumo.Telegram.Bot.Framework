@@ -14,18 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
-using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Params.ParamMiddlewares
 {
@@ -34,12 +26,29 @@ namespace Telegram.Bot.Framework.InternalImplementation.Params.ParamMiddlewares
     /// </summary>
     internal class InitParamCatchMiddleware : IParamMiddleware
     {
+        private string __Command;
         public async Task<bool> Execute(ITelegramSession Session, IParamManager paramManager, IControllerContext controllerContext, ParamMiddlewareDelegate Next)
         {
             if (controllerContext.ParamModels.Count == 0)
-                return true;
+                return ReturnTrue(paramManager);
+
+            string command;
+            if (__Command != (command = controllerContext.BotCommandAttribute.Command))
+                SetCommand(command, paramManager);
 
             return await Next(Session, paramManager, controllerContext);
+        }
+
+        private static bool ReturnTrue(IParamManager paramManager)
+        {
+            paramManager.Clear();
+            return true;
+        }
+
+        private void SetCommand(string command, IParamManager paramManager)
+        {
+            __Command = command;
+            paramManager.Clear();
         }
     }
 }

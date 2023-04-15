@@ -15,7 +15,7 @@ namespace Telegram.Bot.Framework.Attributes
     {
         public ServiceLifetime ServiceLifetime { get; }
 
-        public Type InterfaceType { get; set; }
+        public Type ServiceType { get; set; }
 
         public DependencyInjectionAttribute(ServiceLifetime serviceLifetime)
         { 

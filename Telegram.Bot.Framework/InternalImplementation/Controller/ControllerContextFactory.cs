@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped)]
+    [DependencyInjection(ServiceLifetime.Singleton)]
     internal class ControllerContextFactory : IControllerContextFactory
     {
         private static readonly Dictionary<string, IControllerContext> ControllerContextMapCommandName = new();
@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
             IControllerContext controllerContext = controllerContextBuilder.Build();
 
             if (controllerContext.BotCommandAttribute != null)
-                ControllerContextMapCommandName.Add(controllerContext.BotCommandAttribute.Command, controllerContext);
+                ControllerContextMapCommandName.Add(controllerContext.BotCommandAttribute.Command.ToLower(), controllerContext);
             if (controllerContext.DefaultMessageAttribute != null)
                 ControllerContextMapMessageType.Add(controllerContext.DefaultMessageAttribute.MessageType, controllerContext);
             if (controllerContext.DefaultTypeAttribute != null)
@@ -55,14 +55,14 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
         {
             string Command;
             IControllerContext controllerContext;
-            Command = telegramSession.Session.GetString(nameof(Command));
+            Command = telegramSession.GetCommand();
             if(Command == null)
             {
-                Command = telegramSession.GetCommand();
-                if (Command != null)
-                {
-                    telegramSession.Session.SaveString(nameof(Command), Command);
-                }
+                Command = telegramSession.Session.GetString(nameof(Command));
+            }
+            else
+            {
+                telegramSession.Session.SaveString(nameof(Command), Command);
             }
 
             if (Command == null)
@@ -74,7 +74,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
             }
             else
             {
-                if (ControllerContextMapCommandName.TryGetValue(Command, out controllerContext))
+                if (ControllerContextMapCommandName.TryGetValue(Command.ToLower(), out controllerContext))
                     return controllerContext;
             }
             return default;

@@ -14,11 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
@@ -26,6 +28,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
     /// <summary>
     /// 流水线控制器
     /// </summary>
+    [DependencyInjection(ServiceLifetime.Transient)]
     public class PipelineController : IPipelineController
     {
         private readonly Dictionary<string, IPipelineBuilder> __Pipelines = new();
@@ -37,6 +40,10 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         private string MainPipelineName;
 
         /// <summary>
+        /// 当前分支的名称
+        /// </summary>
+        private string NowPipelineName;
+        /// <summary>
         /// 切换流水线
         /// </summary>
         /// <param name="pipelineName">流水线名称，不输入即默认流水线</param>
@@ -44,6 +51,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         {
             if (pipelineName.IsTrimEmpty())
                 pipelineName = MainPipelineName;
+
+            if (NowPipelineName == pipelineName)
+                return;
 
             if (__Pipelines.TryGetValue(pipelineName, out IPipelineBuilder builder))
                 __NextHandle = builder.Builder(this);

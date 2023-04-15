@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Params
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped, InterfaceType = typeof(IParamMiddlewarePipeline))]
+    [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(IParamMiddlewarePipeline))]
     internal class PipelineParamCatch : AbstractParamMiddlewarePipeline
     {
         public PipelineParamCatch(IServiceProvider serviceProvider) : base(serviceProvider) { }

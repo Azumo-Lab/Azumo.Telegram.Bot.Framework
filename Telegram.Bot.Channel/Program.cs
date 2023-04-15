@@ -87,7 +87,22 @@ namespace Telegram.Bot.Channel
             Console.OutputEncoding = Encoding.UTF8;
             try
             {
-                Container.GetInstance();
+                string botToken;
+                using (OnePasswordCLI op = new OnePasswordCLI())
+                {
+                    // 从1Password读取开发测试一号机的Token
+                    botToken = op.Read("op://Tokens/rolpxqoi3qvkjnbsrq7m7ohmpq/credential");
+                }
+
+                ITelegramBot telegramBot = TelegramBotBuilder.Create()
+                    .AddDefaultClash()
+                    .AddToken(botToken)
+                    .AddReceiverOptions(new Polling.ReceiverOptions { AllowedUpdates = { } })
+                    .Build();
+
+                Task bot = telegramBot.BotStart();
+                bot.Wait();
+
                 //IServiceCollection services = new ServiceCollection();
 
                 //services.AddSingleton<ITest, TestIMPL3>();

@@ -32,30 +32,26 @@ namespace Telegram.Bot.Framework.InternalImplementation.Params.ParamMiddlewares
     /// </summary>
     internal class ParamCatchMiddleware : IParamMiddleware
     {
-        private int __Index;
-
-        private bool __MakerMode;
-
         public async Task<bool> Execute(ITelegramSession Session, IParamManager paramManager, IControllerContext controllerContext, ParamMiddlewareDelegate Next)
         {
-            if (__MakerMode)
+            if (paramManager.MakeMode)
             {
-                IParamMaker paramMaker = ActivatorUtilities.CreateInstance<IParamMaker>(Session.UserService, controllerContext.ParamModels[__Index].ParamMaker, Array.Empty<object>());
+                IParamMaker paramMaker = paramManager.GetMaker(Session.UserService, controllerContext.ParamModels[paramManager.ParamIndex].ParamMaker ?? controllerContext.ParamModels[paramManager.ParamIndex].ParamType);
                 if (!await paramMaker.ParamCheck(Session))
                     return false;
 
                 paramManager.AddParam(await paramMaker.GetParam(Session));
-                __MakerMode = !__MakerMode;
-                __Index++;
+                paramManager.MakeMode = !paramManager.MakeMode;
+                paramManager.ParamIndex++;
 
-                if (__Index < controllerContext.ParamModels.Count)
+                if (paramManager.ParamIndex < controllerContext.ParamModels.Count)
                     return await Execute(Session, paramManager, controllerContext, Next);
             }
             else
             {
-                IParamMessage paramMessage = ActivatorUtilities.CreateInstance<IParamMessage>(Session.UserService, controllerContext.ParamModels[__Index].ParamMsg, Array.Empty<object>());
-                await paramMessage.SendMessage(controllerContext.ParamModels[__Index].ParamAttr.Message ?? "请输入参数：");
-                __MakerMode = !__MakerMode;
+                IParamMessage paramMessage = (IParamMessage)ActivatorUtilities.CreateInstance(Session.UserService, controllerContext.ParamModels[paramManager.ParamIndex].ParamMsg, Array.Empty<object>());
+                await paramMessage.SendMessage(Session, controllerContext.ParamModels[paramManager.ParamIndex].ParamAttr.Message ?? "请输入参数：");
+                paramManager.MakeMode = !paramManager.MakeMode;
 
                 return false;
             }

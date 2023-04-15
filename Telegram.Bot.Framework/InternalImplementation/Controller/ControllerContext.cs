@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Authentication.Attribute;
 using Telegram.Bot.Framework.Controller.Attribute;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Controller
 {
@@ -57,6 +58,21 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
 
             if (AttributeList.Where(x => x is DefaultMessageAttribute).FirstOrDefault() is DefaultMessageAttribute defaultMessageAttribute)
                 DefaultMessageAttribute = defaultMessageAttribute;
+
+            foreach (ParameterInfo item in ParameterInfoList)
+            {
+                ParamAttribute paramAttribute = Attribute.GetCustomAttribute(item, typeof(ParamAttribute)) as ParamAttribute;
+                if (paramAttribute.IsNull())
+                    throw new ArgumentNullException(nameof(paramAttribute));
+                ParamModels.Add(new ParamModel
+                {
+                    ParamAttr = paramAttribute,
+                    ParameterInfo = item,
+                    ParamMaker = paramAttribute.ParamCatchClass,
+                    ParamMsg = paramAttribute.MessageClass,
+                    ParamType = item.ParameterType,
+                });
+            }
         }
 
         public BotCommandAttribute BotCommandAttribute { get; set; }
@@ -72,5 +88,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
         public DefaultTypeAttribute DefaultTypeAttribute { get; set; }
 
         public DefaultMessageAttribute DefaultMessageAttribute { get; set; }
+
+        public List<ParamModel> ParamModels { get; } = new List<ParamModel>();
     }
 }

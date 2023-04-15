@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Telegram.Bot.Framework.InternalImplementation.Params.ParamMsg;
 
 namespace Telegram.Bot.Framework.Controller.Attribute
 {
@@ -12,7 +13,7 @@ namespace Telegram.Bot.Framework.Controller.Attribute
     {
         public string Message { get; set; } = default!;
 
-        public Type MessageClass { get; set; } = default!;
+        public Type MessageClass { get; set; } = typeof(StringMessage);
 
         public Type ParamCatchClass { get; set; } = default!;
     }

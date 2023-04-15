@@ -48,7 +48,11 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
                     return;
 
                 IControllerFactory controllerFactory = Session.UserService.GetService<IControllerFactory>();
-                controllerContext.ControllerInvokeAction(controllerFactory.CreateController(controllerContext), paramMiddlewarePipeline.Param.ToArray());
+                TelegramController telegramController = controllerFactory.CreateController(controllerContext);
+
+                telegramController.SetSession(Session);
+
+                controllerContext.ControllerInvokeAction(telegramController, paramMiddlewarePipeline.Param.ToArray());
             }
 
             await PipelineController.Next(Session);

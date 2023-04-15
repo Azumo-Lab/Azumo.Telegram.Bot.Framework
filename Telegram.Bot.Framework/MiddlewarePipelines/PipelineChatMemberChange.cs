@@ -34,7 +34,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
-            AddMiddleware<ActionUpdateTypeInvoke>();
         }
 
         protected override async Task InvokeAction(ITelegramSession session)

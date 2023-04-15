@@ -58,6 +58,9 @@ namespace _1Password.TokenGetter
                 ? JsonConvert.DeserializeObject<Setting>(File.ReadAllText(nameof(OnePasswordCLI)))!
                 : new Setting();
 
+            // 默认的路径
+            OnePasswordSetting.OnePasswordPath = @"C:\Program Files\1Password CLI\op.exe";
+
             SystemEnum = SystemOSVersion.GetSystemEnum();
         }
 

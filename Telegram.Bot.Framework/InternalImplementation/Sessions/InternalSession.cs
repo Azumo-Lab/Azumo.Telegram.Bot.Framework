@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
     /// <summary>
     /// 内部Session实现
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped, InterfaceType = typeof(ISession))]
+    [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ISession))]
     internal sealed class InternalSession : ISession, IDisposable
     {
         /// <summary>
