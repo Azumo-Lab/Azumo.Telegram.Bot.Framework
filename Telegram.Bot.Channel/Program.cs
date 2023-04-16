@@ -14,6 +14,7 @@ using Telegram.Bot.Channel.DITest;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Channel
@@ -95,9 +96,9 @@ namespace Telegram.Bot.Channel
                 }
 
                 ITelegramBot telegramBot = TelegramBotBuilder.Create()
-                    .AddDefaultClash()
+                    .AddProxy("http://127.0.0.1:7890")
                     .AddToken(botToken)
-                    .AddReceiverOptions(new Polling.ReceiverOptions { AllowedUpdates = { } })
+                    .AddReceiverOptions(new ReceiverOptions { AllowedUpdates = { } })
                     .Build();
 
                 Task bot = telegramBot.BotStart();
