@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
@@ -35,6 +36,14 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
             foreach (IFilter item in filters)
                 if (await item.FilterBefore(Session))
                     return;
+
+            Message ReplyToMessage = Session.Update.Message?.ReplyToMessage;
+            if (ReplyToMessage != null) // 回复的消息
+            {
+                PipelineController.ChangePipeline(nameof(ReplyToMessage));
+                await PipelineController.Next(Session);
+                return;
+            }    
 
             await PipelineController.Next(Session);
         }

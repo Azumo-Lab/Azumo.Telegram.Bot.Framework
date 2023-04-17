@@ -10,5 +10,17 @@ namespace Telegram.Bot.Framework.Abstract.PrivateChats
         /// </summary>
         /// <returns></returns>
         public List<TelegramUser> GetOnlineUser();
+
+        /// <summary>
+        /// 随机获取一个用户
+        /// </summary>
+        /// <returns></returns>
+        public TelegramUser GetRandomUser();
+
+        /// <summary>
+        /// 获取管理员用户
+        /// </summary>
+        /// <returns></returns>
+        public TelegramUser GetAdmin();
     }
 }

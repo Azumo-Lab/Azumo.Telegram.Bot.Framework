@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Sessions;
@@ -30,8 +31,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     /// </summary>
     internal class PipelineMyChatMemberChange : AbstractMiddlewarePipeline
     {
-        private readonly IBotTelegramEvent telegramEvent;
-
         private delegate Task TelegramEventDelegate(ITelegramSession session);
 
         private event TelegramEventDelegate OnCreator;
@@ -47,15 +46,15 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <param name="serviceProvider"></param>
         public PipelineMyChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            telegramEvent = serviceProvider.GetService<IBotTelegramEvent>();
-            if (telegramEvent != null)
+            IEnumerable<IMyChatMemberChange> telegramEvent = serviceProvider.GetServices<IMyChatMemberChange>();
+            foreach (IMyChatMemberChange item in telegramEvent)
             {
-                OnCreator += telegramEvent.OnCreator;
-                OnBeAdmin += telegramEvent.OnBeAdmin;
-                OnInvited += telegramEvent.OnInvited;
-                OnLeft += telegramEvent.OnLeft;
-                OnKicked += telegramEvent.OnKicked;
-                OnRestricted += telegramEvent.OnRestricted;
+                OnCreator += item.OnCreator;
+                OnBeAdmin += item.OnBeAdmin;
+                OnInvited += item.OnInvited;
+                OnLeft += item.OnLeft;
+                OnKicked += item.OnKicked;
+                OnRestricted += item.OnRestricted;
             }
         }
 
@@ -87,10 +86,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             }
             if (task != null)
                 await task;
-        }
-
-        protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
-        {
         }
     }
 }

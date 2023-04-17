@@ -14,8 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
@@ -28,18 +31,57 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     /// </summary>
     internal class PipelineChatMemberChange : AbstractMiddlewarePipeline
     {
+        private delegate Task TelegramEventDelegate(ITelegramSession session);
+
+        private event TelegramEventDelegate OnCreator;
+        private event TelegramEventDelegate OnBeAdmin;
+        private event TelegramEventDelegate OnInvited;
+        private event TelegramEventDelegate OnLeft;
+        private event TelegramEventDelegate OnKicked;
+        private event TelegramEventDelegate OnRestricted;
+
         public override UpdateType InvokeType => UpdateType.ChatMember;
 
-        public PipelineChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider) { }
-
-        protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
+        public PipelineChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider) 
         {
+            IEnumerable<IChatMemberChange> chatMemberChanges = serviceProvider.GetServices<IChatMemberChange>();
+            foreach (IChatMemberChange item in chatMemberChanges)
+            {
+                OnCreator += item.OnCreator;
+                OnBeAdmin += item.OnBeAdmin;
+                OnInvited += item.OnInvited;
+                OnLeft += item.OnLeft;
+                OnKicked += item.OnKicked;
+                OnRestricted += item.OnRestricted;
+            }
         }
 
         protected override async Task InvokeAction(ITelegramSession session)
         {
-            //TODO:还没有开始
-            await Task.CompletedTask;
+            Task task = null;
+            switch (session.Update.ChatMember.NewChatMember.Status)
+            {
+                case ChatMemberStatus.Creator://创建聊天
+                    task = OnCreator?.Invoke(session);
+                    break;
+                case ChatMemberStatus.Administrator://成为管理员
+                    task = OnBeAdmin?.Invoke(session);
+                    break;
+                case ChatMemberStatus.Member://被邀请
+                    task = OnInvited?.Invoke(session);
+                    break;
+                case ChatMemberStatus.Left://离开
+                    task = OnLeft?.Invoke(session);
+                    break;
+                case ChatMemberStatus.Kicked://被踢
+                    task = OnKicked?.Invoke(session);
+                    break;
+                case ChatMemberStatus.Restricted:
+                    task = OnRestricted?.Invoke(session);
+                    break;
+            }
+            if (task != null)
+                await task;
         }
     }
 }
