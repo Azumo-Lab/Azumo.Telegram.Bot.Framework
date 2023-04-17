@@ -14,33 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines
+namespace Telegram.Bot.Framework.Abstract.Groups
 {
     /// <summary>
-    /// CallBack部分的获取与执行
+    /// 
     /// </summary>
-    internal class PipelineCallbackQuery : AbstractMiddlewarePipeline
+    public interface IGroupMessageProcess
     {
-        public PipelineCallbackQuery(IServiceProvider serviceProvider) : base(serviceProvider)
-        {
-
-        }
-
-        public override UpdateType InvokeType => UpdateType.CallbackQuery;
-
-        protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
-        {
-            AddPipelineBuilder(InvokeTypeStr, serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionCallback>());
-        }
+        public Task Invoke(Message message, ITelegramSession Session);
     }
 }

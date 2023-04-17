@@ -27,10 +27,13 @@ using Telegram.Bot.Framework.Attributes;
 namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
-    /// 控制器
+    /// 用于保存一个指令的各类信息
     /// </summary>
     internal interface IControllerContext
     {
+        /// <summary>
+        /// 方法上的指令信息
+        /// </summary>
         public BotCommandAttribute BotCommandAttribute { get; }
 
         public AuthenticationAttribute AuthenticationAttribute { get; }

@@ -33,9 +33,31 @@ namespace Telegram.Bot.Framework
     /// </summary>
     internal class TelegramBot : ITelegramBot
     {
+        #region 私有变量
+
+        /// <summary>
+        /// 由外部注入
+        /// </summary>
         private readonly IServiceProvider ServiceProvider;
+
+        /// <summary>
+        /// 判断当前机器人是否停止
+        /// </summary>
+        /// <remarks>
+        /// 在 <see cref="BotStart(bool)"/> 和 <see cref="BotStop"/> 中有所使用
+        /// </remarks>
         private bool IsStop;
+
+        /// <summary>
+        /// 是否要异步堵塞的一个标志物
+        /// </summary>
         private bool awaitFlag;
+        #endregion
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="ServiceProvider"></param>
         public TelegramBot(IServiceProvider ServiceProvider)
         {
             // 获取IServiceCollection
@@ -71,6 +93,12 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 启动机器人
         /// </summary>
+        /// <remarks>
+        /// 机器人启动的时候，可以配置 <paramref name="awaitFlag"/> 参数 <br/>
+        /// 当 <paramref name="awaitFlag"/> = true 时候，执行 <c>task.Wait()</c> 时候，会一直等待整个机器人结束执行。<br/>
+        /// 当 <paramref name="awaitFlag"/> = false 时候，执行 <c>task.Wait()</c> 时候，机器人启动完毕就会继续执行后面的代码
+        /// </remarks>
+        /// <param name="awaitFlag">是否可等待</param>
         /// <returns>可等待任务</returns>
         /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
         public async Task BotStart(bool awaitFlag = true)
@@ -93,6 +121,8 @@ namespace Telegram.Bot.Framework
             {
                 User user = await botClient.GetMeAsync(cancellationTokenSource.Token);
                 Console.WriteLine($"Start @{user.Username}");
+
+                // 如果可等待选项在这里是False，那么就不会堵塞运行
                 if (awaitFlag)
                 {
                     while (!IsStop)

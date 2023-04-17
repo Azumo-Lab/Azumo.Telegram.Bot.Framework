@@ -33,15 +33,14 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     public abstract class AbstractMiddlewarePipeline : IMiddlewarePipeline
     {
         private readonly IServiceProvider __ServiceProvider;
-        private readonly IPipelineController __PipelineController;
-        private IPipelineBuilder __PipelineBuilder;
+        private readonly List<(string pipelineName, IPipelineBuilder pipelineBuilder)> __PipelineBuilderList = new();
 
         /// <summary>
         /// 执行的类型
         /// </summary>
         public abstract UpdateType InvokeType { get; }
         private string _InvokeTypeString;
-        private string InvokeTypeStr
+        protected string InvokeTypeStr
         {
             get
             {
@@ -58,11 +57,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         public AbstractMiddlewarePipeline(IServiceProvider ServiceProvider)
         {
             __ServiceProvider = ServiceProvider;
-
-            __PipelineBuilder = __ServiceProvider.GetRequiredService<IPipelineBuilder>();
-            __PipelineController = __ServiceProvider.GetRequiredService<IPipelineController>();
-            __PipelineController.AddPipeline(InvokeTypeStr, __PipelineBuilder);
-
             AddMiddlewareHandleTemplate(__ServiceProvider);
         }
 
@@ -85,17 +79,14 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// 添加中间件，创建中间件流水线
         /// </summary>
         /// <param name="ServiceProvider">DI服务</param>
-        protected virtual void AddMiddlewareHandles(IServiceProvider ServiceProvider) 
-        { 
-            
-        }
+        protected virtual void AddMiddlewareHandles(IServiceProvider ServiceProvider) { }
 
         /// <summary>
         /// 用于向流水线中添加中间件
         /// </summary>
-        protected virtual void AddMiddleware<T>() where T : IMiddleware
+        protected virtual void AddPipelineBuilder(string name, IPipelineBuilder pipelineBuilder)
         {
-            __PipelineBuilder.AddMiddleware<T>();
+            __PipelineBuilderList.Add((name, pipelineBuilder));
         }
 
         /// <summary>
@@ -106,8 +97,17 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         public async Task Execute(ITelegramSession Session)
         {
             await InvokeAction(Session);
-
+            // 新创建一个IPipelineController对象
+            IPipelineController __PipelineController = Session.UserService.GetService<IPipelineController>();
+            if (__PipelineController.HasAnyPipeline)
+            {
+                // 尝试添加
+                foreach ((string pipelineName, IPipelineBuilder pipelineBuilder) in __PipelineBuilderList)
+                    __PipelineController.TryAddPipeline(pipelineName, pipelineBuilder);
+            }
+            // 切换到主分支
             __PipelineController.ChangePipeline(InvokeTypeStr);
+            // 开始处理
             await __PipelineController.Next(Session);
         }
 

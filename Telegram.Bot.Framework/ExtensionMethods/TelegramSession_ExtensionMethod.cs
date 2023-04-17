@@ -22,6 +22,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Abstract.Users;
+using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.ExtensionMethods
@@ -74,6 +76,21 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             else
                 chatID = long.MinValue;
             return vlChatID.HasValue;
+        }
+
+        public static long? GetChatID(this Update update)
+        {
+            return TelegramSession.GetChatID(update);
+        }
+
+        public static TelegramUser GetTelegramUser(this Update update)
+        {
+            return TelegramSession.GetTelegramUser(update);
+        }
+
+        public static User GetUser(this Update update)
+        {
+            return  TelegramSession.GetUser(update);
         }
 
         public static string GetCommand(this ITelegramSession session)

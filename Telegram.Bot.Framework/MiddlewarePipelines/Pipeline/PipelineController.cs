@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
     /// <summary>
     /// 流水线控制器
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Transient)]
+    [DependencyInjection(ServiceLifetime.Scoped)]
     public class PipelineController : IPipelineController
     {
         private readonly Dictionary<string, IPipelineBuilder> __Pipelines = new();
@@ -43,6 +43,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         /// 当前分支的名称
         /// </summary>
         private string NowPipelineName = string.Empty;
+
+        public bool HasAnyPipeline => __Pipelines.Count != 0;
+
         /// <summary>
         /// 切换流水线
         /// </summary>
@@ -54,6 +57,8 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
 
             if (NowPipelineName == pipelineName)
                 return;
+
+            NowPipelineName = pipelineName;
 
             if (__Pipelines.TryGetValue(pipelineName, out IPipelineBuilder builder))
                 __NextHandle = builder.Builder(this);
@@ -93,6 +98,30 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         void IPipelineController.SetNextHandle(MiddlewareDelegate handle)
         {
             __NextHandle = handle;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pipelineName"></param>
+        /// <param name="piplineBuilder"></param>
+        /// <returns></returns>
+        public bool TryAddPipeline(string pipelineName, IPipelineBuilder piplineBuilder)
+        {
+            bool result = false;
+            if (pipelineName.IsNullOrEmpty())
+                return result;
+
+            if (__Pipelines.ContainsKey(pipelineName))
+                return result;
+            
+            if (!__Pipelines.Any())
+                MainPipelineName = pipelineName;
+
+            if (result = !__Pipelines.ContainsKey(pipelineName))
+                __Pipelines.Add(pipelineName, piplineBuilder);
+
+            return result;
         }
     }
 }

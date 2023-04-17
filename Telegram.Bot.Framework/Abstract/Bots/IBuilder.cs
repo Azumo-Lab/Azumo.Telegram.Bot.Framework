@@ -15,45 +15,57 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Config;
 
 namespace Telegram.Bot.Framework.Abstract.Bots
 {
     /// <summary>
     /// 机器人创建接口
     /// </summary>
+    /// <remarks>
+    /// 用于创建机器人的接口，推荐使用扩展方法来进行扩展，添加功能
+    /// </remarks>
     public interface IBuilder
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <remarks>
+        /// Token 是类似这样的字符串：<br/>
+        /// <c>5298058194:AAFa9N1GiF_i7W0fV4aWgz22IGv8kzVZ13Q</c><br/>
+        /// 其中，<c>5298058194</c> 的部分，是机器人的User ID
+        /// <para>
+        /// Token可以通过 BotFather 来进行获取
+        /// </para>
+        /// <para>
+        /// <see cref="https://t.me/BotFather"/>
+        /// </para>
+        /// </remarks>
         public string Token { get; set; }
 
         /// <summary>
-        /// 
+        /// 代理设置用
         /// </summary>
+        /// <remarks>
+        /// 众所周知，中国大陆无法访问Telegram，运行，测试，等简单操作都成了大问题，可以通过设置代理的方式，来进行连接运行
+        /// </remarks>
         public HttpClient Proxy { get; set; }
 
         /// <summary>
-        /// 
+        /// 用于创建一些 <see cref="IBuilder"/> 用到的一些服务。
         /// </summary>
         public IServiceCollection BuilderServices { get; }
 
         /// <summary>
-        /// 
+        /// 用于创建整个机器人运行时候需要的服务
         /// </summary>
+        /// <remarks>
+        /// 例如 <see cref="IConfig"/> 接口的添加等操作，需要用到这个
+        /// </remarks>
         public IServiceCollection RuntimeServices { get; }
 
         /// <summary>
-        /// 
+        /// 开始创建TelegramBot
         /// </summary>
-        /// <returns></returns>
+        /// <returns>返回 <see cref="ITelegramBot"/> 机器人接口</returns>
         public ITelegramBot Build();
     }
 }

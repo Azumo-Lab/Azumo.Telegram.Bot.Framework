@@ -14,8 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
@@ -42,26 +44,21 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <param name="serviceProvider"></param>
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
-            // 简单的认证
-            AddMiddleware<ActionAuthentication>();
-            // 群组消息处理
-            AddMiddleware<ActionGroupChannel>();
-            // 执行前过滤
-            AddMiddleware<ActionFilterBefore>();
-            // 执行命令控制器
-            AddMiddleware<ActionControllerInvoke>();
-            // 执行后过滤
-            AddMiddleware<ActionFilterAfter>();
-        }
+            // 添加主分支
+            AddPipelineBuilder(InvokeTypeStr, serviceProvider.GetService<IPipelineBuilder>()
+                .AddMiddleware<ActionAuthentication>()          // 简单的认证
+                .AddMiddleware<ActionGroupChannel>()            // 群组消息处理
+                .AddMiddleware<ActionFilterBefore>()            // 执行前过滤
+                .AddMiddleware<ActionControllerInvoke>()        // 执行命令控制器
+                .AddMiddleware<ActionFilterAfter>());           // 执行后过滤
 
-        /// <summary>
-        /// 每次执行前的前置执行操作
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        protected override Task InvokeAction(ITelegramSession session)
-        {
-            return Task.CompletedTask;
+            // 添加新分支处理，频道处理 Channel
+            AddPipelineBuilder(ChatType.Channel.ToString(), serviceProvider.GetService<IPipelineBuilder>()
+                .AddMiddleware<ActionChannel>());
+
+            // 添加新分支处理，群组处理 Supergroup
+            AddPipelineBuilder(ChatType.Supergroup.ToString(), serviceProvider.GetService<IPipelineBuilder>()
+                .AddMiddleware<ActionGroupChannel>());
         }
     }
 }
