@@ -43,9 +43,11 @@ namespace Telegram.Bot.Framework.Abstract.Bots
         /// <summary>
         /// 
         /// </summary>
-        public List<Type> Configs { get; set; }
-
         public IServiceCollection BuilderServices { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceCollection RuntimeServices { get; }
 
         /// <summary>

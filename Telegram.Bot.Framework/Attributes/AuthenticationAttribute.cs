@@ -4,7 +4,7 @@ using System.Text;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Authentication.Attribute
+namespace Telegram.Bot.Framework.Attributes
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     public class AuthenticationAttribute : System.Attribute

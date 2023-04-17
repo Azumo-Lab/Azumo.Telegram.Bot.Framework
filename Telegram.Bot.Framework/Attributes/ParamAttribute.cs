@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Telegram.Bot.Framework.InternalImplementation.Params.ParamMsg;
 
-namespace Telegram.Bot.Framework.Controller.Attribute
+namespace Telegram.Bot.Framework.Attributes
 {
     /// <summary>
     /// 用于捕获参数数据

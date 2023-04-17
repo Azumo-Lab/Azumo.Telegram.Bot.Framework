@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Controller.Attribute
+namespace Telegram.Bot.Framework.Attributes
 {
     /// <summary>
     /// 默认处理的请求类型

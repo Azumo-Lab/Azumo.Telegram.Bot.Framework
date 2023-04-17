@@ -15,30 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Config;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Logger;
-using Telegram.Bot.Framework.Helper;
-using Telegram.Bot.Framework.MiddlewarePipelines;
-using Telegram.Bot.Framework.Abstract.Params;
-using Telegram.Bot.Framework.InternalImplementation.Params;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using Telegram.Bot.Framework.Abstract.Middlewares;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Telegram.Bot.Framework.MiddlewarePipelines.Pipeline;
-using Telegram.Bot.Framework.Attributes;
-using System.ComponentModel;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using Telegram.Bot.Framework.Controller.Attribute;
-using Telegram.Bot.Framework.Abstract.Controller;
-using Telegram.Bot.Framework.InternalImplementation.Controller;
 
 namespace Telegram.Bot.Framework
 {

@@ -4,7 +4,7 @@ using System.Text;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Controller.Attribute
+namespace Telegram.Bot.Framework.Attributes
 {
     /// <summary>
     /// 机器人指令标签

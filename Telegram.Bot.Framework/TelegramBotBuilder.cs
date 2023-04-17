@@ -17,12 +17,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Exceptions;
@@ -32,39 +28,34 @@ using Telegram.Bot.Polling;
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 机器人创建配置类
     /// </summary>
     public class TelegramBotBuilder : IBuilder
     {
         /// <summary>
-        /// 
+        /// Telegram机器人的Token
         /// </summary>
         public string Token { get; set; }
 
         /// <summary>
-        /// 
+        /// 代理设置
         /// </summary>
         public HttpClient Proxy { get; set; }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public List<Type> Configs { get; set; }
-
-        /// <summary>
-        /// 
+        /// 创建用
         /// </summary>
         public IServiceCollection BuilderServices { get; } = new ServiceCollection();
 
         /// <summary>
-        /// 
+        /// 运行用
         /// </summary>
         public IServiceCollection RuntimeServices { get; } = new ServiceCollection();
 
         /// <summary>
-        /// 
+        /// 用于创建本类的实例
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="IBuilder"/> 机器人创建接口 </returns>
         public static IBuilder Create()
         {
             return new TelegramBotBuilder();
@@ -73,53 +64,69 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <remarks>
+        /// 这里使用了私有的初始化方法，目的是为了要用户调用 <see cref="Create"/> 方法
+        /// </remarks>
         private TelegramBotBuilder() { }
 
         /// <summary>
         /// 开始创建TelegramBot
         /// </summary>
-        /// <returns>返回<see cref="ITelegramBot"/>接口</returns>
+        /// <returns>返回 <see cref="ITelegramBot"/> 机器人接口</returns>
         public ITelegramBot Build()
         {
             Token.ThrowIfNullOrEmpty();
 
-            BuilderServices.AddSingleton<IConfig, TGConf>();
-            BuilderServices.AddSingleton(RuntimeServices);
-            BuilderServices.AddSingleton<ITelegramBot, TelegramBot>();
-
-            RuntimeServices.AddSingleton<ITelegramBotClient, TelegramBotClient>(x => 
+            _ = RuntimeServices.AddSingleton<ITelegramBotClient, TelegramBotClient>(x =>
             {
                 return new TelegramBotClient(Token, Proxy);
             });
 
+            _ = BuilderServices.AddSingleton(RuntimeServices);
+            _ = BuilderServices.AddSingleton<IConfig, TGConf>();
+            _ = BuilderServices.AddSingleton<ITelegramBot, TelegramBot>();
+
             IServiceProvider serviceProvider = BuilderServices.BuildServiceProvider();
 
+            // 返回创建的 ITelegramBot 实例
             return serviceProvider.GetRequiredService<ITelegramBot>();
         }
     }
 
     /// <summary>
-    /// 设置扩展类
+    /// 设置扩展类，用于扩展 <see cref="IBuilder"/> 的内容
     /// </summary>
     public static class Setup
     {
         /// <summary>
         /// 用于检查重复Token
         /// </summary>
-        private static HashSet<string> HashTokens = new HashSet<string>();
+        private static readonly HashSet<string> __HashTokens = new();
 
         /// <summary>
-        /// 添加Token
+        /// 添加Token，如果添加了相同的Token，则会抛出异常 <see cref="TheSameTokenException"/>
         /// </summary>
+        /// <remarks>
+        /// Token 是类似这样的字符串：<br/>
+        /// <c>5298058194:AAFa9N1GiF_i7W0fV4aWgz22IGv8kzVZ13Q</c><br/>
+        /// 其中，<c>5298058194</c> 的部分，是机器人的User ID
+        /// <para>
+        /// Token可以通过 BotFather 来进行获取
+        /// </para>
+        /// <para>
+        /// <see cref="https://t.me/BotFather"/>
+        /// </para>
+        /// </remarks>
         /// <param name="builder">机器人创建接口</param>
         /// <param name="token">机器人的Token</param>
         /// <returns><see cref="IBuilder"/> 设置完Token的机器人创建接口</returns>
+        /// <exception cref="TheSameTokenException"></exception>
         public static IBuilder AddToken(this IBuilder builder, string token)
         {
             builder.ThrowIfNull();
             token.ThrowIfNullOrEmpty();
 
-            if (!HashTokens.Add(token))
+            if (!__HashTokens.Add(token))
                 throw new TheSameTokenException($"Token : {token}");
 
             builder.Token = token;
@@ -129,6 +136,13 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 添加网络代理
         /// </summary>
+        /// <remarks>
+        /// 网络代理可以使用 <see cref="http://127.0.0.1:7890/"/> 这样的URL形式来进行设置，也可以单独进行设置：<br/>
+        /// <paramref name="host"/> : 127.0.0.1 <br/>
+        /// <paramref name="port"/> : 7890 <br/>
+        /// <paramref name="username"/> : 用户名称  <br/>
+        /// <paramref name="password"/> : 用户密码  <br/>
+        /// </remarks>
         /// <param name="builder">机器人创建接口</param>
         /// <param name="host">代理地址</param>
         /// <param name="port">代理端口</param>
@@ -143,7 +157,7 @@ namespace Telegram.Bot.Framework
             WebProxy webProxy;
             if (port.IsNull())
             {
-                Uri uri = new Uri(host);
+                Uri uri = new(host);
                 webProxy = new(uri.Host, uri.Port);
             }
             else
@@ -155,25 +169,55 @@ namespace Telegram.Bot.Framework
             );
 
             return builder;
-
         }
 
         /// <summary>
-        /// 添加Clash的默认代理设置 'http://127.0.0.1:7890'
+        /// 添加Clash的默认代理设置
         /// </summary>
+        /// <remarks>
+        /// 如果你的Clash是使用默认设置的话，可以使用这个方法，这个方法将会设置代理为 <see cref="http://127.0.0.1:7890"/>
+        /// </remarks>
         /// <param name="builder">机器人创建接口</param>
         /// <returns><see cref="IBuilder"/> 设置代理后的创建接口</returns>
         public static IBuilder AddDefaultClash(this IBuilder builder)
         {
             builder.ThrowIfNull();
 
-            builder.AddProxy("http://127.0.0.1:7890");
+            _ = builder.AddProxy("http://127.0.0.1:7890");
             return builder;
         }
 
+        /// <summary>
+        /// 添加要处理的消息
+        /// </summary>
+        /// <remarks>
+        /// 如果 <see cref="ReceiverOptions.AllowedUpdates"/> 为空的话，则会处理全部的消息类型
+        /// </remarks>
+        /// <param name="builder">机器人创建接口</param>
+        /// <param name="receiverOptions">要处理的消息类型</param>
+        /// <returns><see cref="IBuilder"/> 设置处理消息后的创建接口</returns>
         public static IBuilder AddReceiverOptions(this IBuilder builder, ReceiverOptions receiverOptions)
         {
-            builder.RuntimeServices.AddSingleton(receiverOptions);
+            receiverOptions.ThrowIfNull();
+
+            _ = builder.RuntimeServices.AddSingleton(receiverOptions);
+            return builder;
+        }
+
+        /// <summary>
+        /// 添加配置类
+        /// </summary>
+        /// <remarks>
+        /// 添加配置类，其中配置类要实现 <see cref="IConfig"/> 接口
+        /// </remarks>
+        /// <typeparam name="T"><see cref="IConfig"/></typeparam>
+        /// <param name="builder">机器人创建接口</param>
+        /// <returns><see cref="IBuilder"/> 添加配置类后的创建接口</returns>
+        public static IBuilder AddConfig<T>(this IBuilder builder) where T : class, IConfig
+        {
+            builder.ThrowIfNull();
+
+            _ = builder.RuntimeServices.AddSingleton<IConfig, T>();
             return builder;
         }
     }

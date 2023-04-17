@@ -42,7 +42,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         /// <summary>
         /// 当前分支的名称
         /// </summary>
-        private string NowPipelineName;
+        private string NowPipelineName = string.Empty;
         /// <summary>
         /// 切换流水线
         /// </summary>

@@ -55,7 +55,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
         /// <returns><see cref="BotCommandScope"/>机器人指令作用范围</returns>
         public BotCommandScope GetBotCommandScope(ITelegramSession session)
         {
-            ChatId? chatID;
+            ChatId chatID;
             switch (Type)
             {
                 case BotCommandScopeType.Default:

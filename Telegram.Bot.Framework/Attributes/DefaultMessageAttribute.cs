@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Controller.Attribute
+namespace Telegram.Bot.Framework.Attributes
 {
     /// <summary>
     /// 默认消息处理

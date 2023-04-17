@@ -22,8 +22,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
-using Telegram.Bot.Framework.Authentication.Attribute;
-using Telegram.Bot.Framework.Controller.Attribute;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Controller

@@ -22,8 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Authentication.Attribute;
-using Telegram.Bot.Framework.Controller.Attribute;
+using Telegram.Bot.Framework.Attributes;
 
 namespace Telegram.Bot.Framework.Abstract.Controller
 {
