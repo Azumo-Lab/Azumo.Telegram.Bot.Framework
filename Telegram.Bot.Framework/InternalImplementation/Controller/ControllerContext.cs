@@ -35,15 +35,15 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
     {
         internal ControllerContext(
             MethodInfo MethodInfo,
-            Action<TelegramController, object[]> Action,
+            Func<TelegramController, object[], Task> Action,
             List<Attribute> AttributeList,
             List<ParameterInfo> ParameterInfoList)
         {
-            this.Action = MethodInfo;
+            this.MethodInfo = MethodInfo;
             ControllerType = MethodInfo.DeclaringType;
-            ControllerInvokeAction = Action;
+            this.Action = Action;
 
-            RuntimeHelpers.PrepareDelegate(ControllerInvokeAction);
+            RuntimeHelpers.PrepareDelegate(this.Action);
 
             if (AttributeList.Where(x => x is BotCommandAttribute).FirstOrDefault() is BotCommandAttribute botCommandAttribute)
                 BotCommandAttribute = botCommandAttribute;
@@ -77,11 +77,11 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
 
         public BotCommandAttribute BotCommandAttribute { get; set; }
 
-        public MethodInfo Action { get; set; }
+        public MethodInfo MethodInfo { get; set; }
 
         public Type ControllerType { get; set; }
 
-        public Action<TelegramController, object[]> ControllerInvokeAction { get; set; }
+        public Func<TelegramController, object[], Task> Action { get; set; }
 
         public AuthenticationAttribute AuthenticationAttribute { get; set; }
 

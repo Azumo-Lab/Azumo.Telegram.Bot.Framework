@@ -33,7 +33,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
     internal class ControllerContextBuilder : IControllerContextBuilder
     {
         private MethodInfo MethodInfo;
-        private Action<TelegramController, object[]> Action;
+        private Func<TelegramController, object[], Task> Action;
         private readonly List<Attribute> AttributeList = new List<Attribute>();
         private readonly List<ParameterInfo> ParameterInfoList = new List<ParameterInfo>();
 
@@ -49,7 +49,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
             return this;
         }
 
-        public IControllerContextBuilder AddDelegate(Action<TelegramController, object[]> Action)
+        public IControllerContextBuilder AddDelegate(Func<TelegramController, object[], Task> Action)
         {
             this.Action = Action;
             return this;

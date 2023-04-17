@@ -35,6 +35,7 @@ namespace Telegram.Bot.Framework
     {
         private readonly IServiceProvider ServiceProvider;
         private bool IsStop;
+        private bool awaitFlag;
         public TelegramBot(IServiceProvider ServiceProvider)
         {
             // 获取IServiceCollection
@@ -62,7 +63,7 @@ namespace Telegram.Bot.Framework
             // 停止
             await BotStop();
             // 等待一段时间，等待停止指令的执行
-            await Task.Delay(5000);
+            await Task.Delay(2000);
             // 重启
             await BotStart();
         }
@@ -72,9 +73,10 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <returns>可等待任务</returns>
         /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
-        public async Task BotStart()
+        public async Task BotStart(bool awaitFlag = true)
         {
-            ServiceProvider.GetRequiredService<FrameworkBuilder>();
+            this.awaitFlag = awaitFlag;
+            ServiceProvider.GetRequiredService<TGConf_FWBuilder>();
             ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
             CancellationTokenSource cancellationTokenSource = ServiceProvider.GetService<CancellationTokenSource>();
 
@@ -90,11 +92,14 @@ namespace Telegram.Bot.Framework
             await Task.Run(async () =>
             {
                 User user = await botClient.GetMeAsync(cancellationTokenSource.Token);
-                Console.WriteLine($"Start {user.Username}");
-                while (!IsStop)
-                    await Task.Delay(1000);
+                Console.WriteLine($"Start @{user.Username}");
+                if (awaitFlag)
+                {
+                    while (!IsStop)
+                        await Task.Delay(1000);
 
-                await botClient.CloseAsync();
+                    await botClient.CloseAsync();
+                }
             });
         }
 
@@ -105,7 +110,11 @@ namespace Telegram.Bot.Framework
         public async Task BotStop()
         {
             IsStop = true;
-
+            if (!awaitFlag)
+            {
+                ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
+                await botClient.CloseAsync();
+            }
             await Task.CompletedTask;
         }
     }

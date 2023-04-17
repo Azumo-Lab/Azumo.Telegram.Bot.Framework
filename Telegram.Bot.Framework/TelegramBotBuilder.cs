@@ -83,7 +83,7 @@ namespace Telegram.Bot.Framework
         {
             Token.ThrowIfNullOrEmpty();
 
-            BuilderServices.AddSingleton<IConfig, FrameworkConfig>();
+            BuilderServices.AddSingleton<IConfig, TGConf>();
             BuilderServices.AddSingleton(RuntimeServices);
             BuilderServices.AddSingleton<ITelegramBot, TelegramBot>();
 

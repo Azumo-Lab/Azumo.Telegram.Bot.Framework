@@ -35,6 +35,9 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
     [DependencyInjection(ServiceLifetime.Singleton)]
     internal class ControllerContextFactory : IControllerContextFactory
     {
+        /// <summary>
+        /// 指令类型对应
+        /// </summary>
         private static readonly Dictionary<string, IControllerContext> ControllerContextMapCommandName = new();
         private static readonly Dictionary<MessageType, IControllerContext> ControllerContextMapMessageType = new();
         private static readonly Dictionary<UpdateType, IControllerContext> ControllerContextMapUpdateType = new();

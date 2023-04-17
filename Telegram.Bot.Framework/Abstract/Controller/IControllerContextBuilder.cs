@@ -15,31 +15,62 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
-    /// 
+    /// 创建IControllerContext
     /// </summary>
     internal interface IControllerContextBuilder
     {
+        /// <summary>
+        /// 开始创建
+        /// </summary>
+        /// <returns>创建好的IControllerContext</returns>
         public IControllerContext Build();
 
+        /// <summary>
+        /// 添加标签
+        /// </summary>
+        /// <param name="attribute">标签</param>
+        /// <returns>这个建造类</returns>
         public IControllerContextBuilder AddAttribute(Attribute attribute);
 
+        /// <summary>
+        /// 添加多个标签
+        /// </summary>
+        /// <param name="attributes">多个标签</param>
+        /// <returns>这个建造类</returns>
         public IControllerContextBuilder AddAttributes(Attribute[] attributes);
 
-        public IControllerContextBuilder AddDelegate(Action<TelegramController, object[]> Action);
+        /// <summary>
+        /// 添加一个方法委托
+        /// </summary>
+        /// <param name="Action">委托</param>
+        /// <returns>这个建造类</returns>
+        public IControllerContextBuilder AddDelegate(Func<TelegramController, object[], Task> Action);
 
+        /// <summary>
+        /// 添加一个参数信息
+        /// </summary>
+        /// <param name="paramType">单个参数信息</param>
+        /// <returns>这个建造类</returns>
         public IControllerContextBuilder AddParam(ParameterInfo paramType);
 
+        /// <summary>
+        /// 添加多个参数的信息
+        /// </summary>
+        /// <param name="paramTypes">多个参数信息</param>
+        /// <returns>这个建造类</returns>
         public IControllerContextBuilder AddParams(ParameterInfo[] paramTypes);
 
+        /// <summary>
+        /// 添加一个方法信息
+        /// </summary>
+        /// <param name="methodInfo">一个方法信息</param>
+        /// <returns>这个建造类</returns>
         public IControllerContextBuilder AddMethodInfo(MethodInfo methodInfo);
     }
 }

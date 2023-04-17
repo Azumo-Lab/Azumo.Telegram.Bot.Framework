@@ -28,7 +28,7 @@ using Telegram.Bot.Framework.Controller.Attribute;
 namespace Telegram.Bot.Framework.Abstract.Controller
 {
     /// <summary>
-    /// 
+    /// 控制器
     /// </summary>
     internal interface IControllerContext
     {
@@ -40,15 +40,18 @@ namespace Telegram.Bot.Framework.Abstract.Controller
 
         public DefaultMessageAttribute DefaultMessageAttribute { get; }
 
-        public MethodInfo Action { get; }
+        public MethodInfo MethodInfo { get; }
 
         public List<ParamModel> ParamModels { get; }
 
-        Action<TelegramController, object[]> ControllerInvokeAction { get; }
+        Func<TelegramController, object[], Task> Action { get; }
 
         public Type ControllerType { get; }
     }
 
+    /// <summary>
+    /// 参数
+    /// </summary>
     internal class ParamModel
     {
         public Type ParamType { get; set; }

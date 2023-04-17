@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework.Abstract.Bots
         /// 启动机器人
         /// </summary>
         /// <returns></returns>
-        Task BotStart();
+        Task BotStart(bool await = true);
 
         /// <summary>
         /// 停止当前机器人

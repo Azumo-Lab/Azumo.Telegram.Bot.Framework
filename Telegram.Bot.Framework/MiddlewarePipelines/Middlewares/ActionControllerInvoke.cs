@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 
                 telegramController.SetSession(Session);
 
-                controllerContext.ControllerInvokeAction(telegramController, paramMiddlewarePipeline.Param.ToArray());
+                await controllerContext.Action(telegramController, paramMiddlewarePipeline.Param.ToArray());
             }
 
             await PipelineController.Next(Session);

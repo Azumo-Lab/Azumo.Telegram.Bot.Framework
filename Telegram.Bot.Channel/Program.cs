@@ -101,8 +101,9 @@ namespace Telegram.Bot.Channel
                     .AddReceiverOptions(new ReceiverOptions { AllowedUpdates = { } })
                     .Build();
 
-                Task bot = telegramBot.BotStart();
-                bot.Wait();
+                Task task = telegramBot.BotStart();
+                task.Wait();
+                
 
                 //IServiceCollection services = new ServiceCollection();
 
@@ -180,8 +181,6 @@ namespace Telegram.Bot.Channel
 
                 //    }
                 //}
-
-                Console.ReadKey();
             }
             catch (Exception ex)
             {
