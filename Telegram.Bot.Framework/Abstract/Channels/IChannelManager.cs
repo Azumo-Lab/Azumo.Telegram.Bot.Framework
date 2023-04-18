@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.Abstract.Channels
         /// <summary>
         /// 获取一个频道
         /// </summary>
-        ChatId[] GetActiveChannel(TelegramUser user);
+        public ChatId[] GetActiveChannel(TelegramUser user);
 
         /// <summary>
         /// 用户注册一个或几个频道

@@ -99,7 +99,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             await InvokeAction(Session);
             // 新创建一个IPipelineController对象
             IPipelineController __PipelineController = Session.UserService.GetService<IPipelineController>();
-            if (__PipelineController.HasAnyPipeline)
+            if (!__PipelineController.HasAnyPipeline)
             {
                 // 尝试添加
                 foreach ((string pipelineName, IPipelineBuilder pipelineBuilder) in __PipelineBuilderList)

@@ -1,10 +1,29 @@
-﻿using System;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Telegram.Bot.Framework.Abstract.Languages;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Languages
 {
+    /// <summary>
+    /// 实现了部分 <see cref="ILanguage"/> 接口功能的语言基类
+    /// </summary>
     public abstract class BaseLanguage : ILanguage
     {
 
@@ -18,6 +37,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Languages
             LoadLanguage();
         }
 
+        
         public string this[string key]
         {
             get
@@ -35,6 +55,13 @@ namespace Telegram.Bot.Framework.InternalImplementation.Languages
             }
         }
 
+        /// <summary>
+        /// 加载语言
+        /// </summary>
+        /// <remarks>
+        /// 只需要写一个类似的：<br/>
+        /// this[<see cref="ItemKey.StartInfo"/>] = "开始信息"; 
+        /// </remarks>
         protected abstract void LoadLanguage();
 
         public Dictionary<string, string> GetLanguageKeyValue()

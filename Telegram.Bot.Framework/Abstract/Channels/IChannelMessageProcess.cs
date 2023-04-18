@@ -26,7 +26,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Abstract.Channels
 {
     /// <summary>
-    /// 
+    /// 处理频道消息的接口
     /// </summary>
     public interface IChannelMessageProcess
     {

@@ -27,15 +27,22 @@ namespace Telegram.Bot.Framework.InternalImplementation.Params.ParamMiddlewares
     internal class InitParamCatchMiddleware : IParamMiddleware
     {
         private string __Command;
+        private const string Command = nameof(Command);
         public async Task<bool> Execute(ITelegramSession Session, IParamManager paramManager, IControllerContext controllerContext, ParamMiddlewareDelegate Next)
         {
             if (controllerContext.ParamModels.Count == 0)
+            {
+                Session.Session.Remove(Command);
                 return ReturnTrue(paramManager);
+            }
 
             string command;
             if (__Command != (command = controllerContext.BotCommandAttribute.Command))
+            {
+                Session.Session.Remove(Command);
                 SetCommand(command, paramManager);
-
+            }
+                
             return await Next(Session, paramManager, controllerContext);
         }
 

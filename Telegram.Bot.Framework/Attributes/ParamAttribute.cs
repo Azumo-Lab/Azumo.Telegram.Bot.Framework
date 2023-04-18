@@ -9,7 +9,7 @@ namespace Telegram.Bot.Framework.Attributes
     /// 用于捕获参数数据
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-    public class ParamAttribute : System.Attribute
+    public class ParamAttribute : Attribute
     {
         public string Message { get; set; } = default!;
 
@@ -22,7 +22,7 @@ namespace Telegram.Bot.Framework.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class ParamClassAttribute : System.Attribute
+    public class ParamClassAttribute : Attribute
     {
         public ParamClassAttribute()
         {

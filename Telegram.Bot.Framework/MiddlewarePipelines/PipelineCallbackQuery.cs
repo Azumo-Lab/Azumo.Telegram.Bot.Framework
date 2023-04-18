@@ -39,8 +39,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
+            // 注册一个主分支
             AddPipelineBuilder(InvokeTypeStr, serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionCallback>());
+                .AddMiddleware<ActionCallback>());              // 开始执行CallBack操作
         }
     }
 }

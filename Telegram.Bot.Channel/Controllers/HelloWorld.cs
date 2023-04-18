@@ -19,11 +19,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Controller.Attribute;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.ExtensionMethods;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Channel.Controllers
 {
@@ -43,6 +46,19 @@ namespace Telegram.Bot.Channel.Controllers
         public async Task Test2([Param(Message = "你想说什么？")]string str, [Param(Message = "下一句你想说什么")]string str2)
         {
             await Session.SendTextMessageAsync($"你的第一句：{str}。你的第二句：{str2}。");
+        }
+
+        [DefaultMessage(MessageType.ChatMembersAdded)]
+        public async Task ChatAdd()
+        {
+            Message message = Session.Update.Message!;
+
+            StringBuilder helloStr = new StringBuilder();
+            foreach (User item in message.NewChatMembers!)
+            {
+                helloStr.AppendLine($"欢迎用户 @{item.Username}");
+            }
+            await Session.SendTextMessageAsync(helloStr.ToString());
         }
     }
 }

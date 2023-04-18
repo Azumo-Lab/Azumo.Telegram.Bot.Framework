@@ -16,17 +16,11 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.CallBack;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Helper;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {

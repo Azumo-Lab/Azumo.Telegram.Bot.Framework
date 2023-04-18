@@ -13,7 +13,10 @@ using System.Text;
 using Telegram.Bot.Channel.DITest;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
-using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Abstract.Event;
+using Telegram.Bot.Framework.Abstract.Groups;
+using Telegram.Bot.Framework.ChannelGroup;
+using Telegram.Bot.Framework.Payment.AliPay;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
@@ -98,12 +101,16 @@ namespace Telegram.Bot.Channel
                 ITelegramBot telegramBot = TelegramBotBuilder.Create()
                     .AddProxy("http://127.0.0.1:7890")
                     .AddToken(botToken)
+                    .AddConfig(x =>
+                    {
+                        x.AddScoped<IGroupMessageProcess, GroupMessage>();
+                        x.AddScoped<IChatMemberChange, BotTelegramEvent>();
+                    })
                     .AddReceiverOptions(new ReceiverOptions { AllowedUpdates = { } })
                     .Build();
 
                 Task task = telegramBot.BotStart();
                 task.Wait();
-                
 
                 //IServiceCollection services = new ServiceCollection();
 

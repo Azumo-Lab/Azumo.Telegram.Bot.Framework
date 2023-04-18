@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Groups;
+using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Types;
@@ -28,19 +28,39 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.ChannelGroup
 {
     /// <summary>
-    /// 屏蔽群组垃圾信息
+    /// 
     /// </summary>
-    public class GroupSpam : IGroupMessageProcess
+    public class BotTelegramEvent : IChatMemberChange
     {
-        public async Task Invoke(Message message, ITelegramSession Session)
+        public async Task OnBeAdmin(ITelegramSession session)
         {
-            try
-            {
-                await Session.BotClient.DeleteMessageAsync(Session.Update.GetChatID()!, message.MessageId);
-            }
-            catch (Exception)
-            {
-            }
+            await Task.CompletedTask;
+        }
+
+        public async Task OnCreator(ITelegramSession session)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task OnInvited(ITelegramSession session)
+        {
+            ChatMember member = session.Update.ChatMember!.NewChatMember;
+            await session.SendTextMessageAsync($"欢迎新成员 @{member.User.Username}");
+        }
+
+        public async Task OnKicked(ITelegramSession session)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task OnLeft(ITelegramSession session)
+        {
+            await Task.CompletedTask;
+        }
+
+        public async Task OnRestricted(ITelegramSession session)
+        {
+            await Task.CompletedTask;
         }
     }
 }

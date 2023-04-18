@@ -69,8 +69,9 @@ namespace Telegram.Bot.Framework.Helper
             if (obj.IsNull())
                 throw new ArgumentNullException(nameof(obj));
         }
-
         #endregion
+
+        #region 判断对象是否为空
 
         /// <summary>
         /// 判断一个对象是否为NULL
@@ -106,6 +107,9 @@ namespace Telegram.Bot.Framework.Helper
                     return true;
             return false;
         }
+        #endregion
+
+        #region 反射相关的操作
 
         /// <summary>
         /// 获得与传入类型相同的 <see cref="Type"/> 类型
@@ -184,5 +188,6 @@ namespace Telegram.Bot.Framework.Helper
             __AllTypes.Clear();
             __SameTypesDic.Clear();
         }
+        #endregion
     }
 }

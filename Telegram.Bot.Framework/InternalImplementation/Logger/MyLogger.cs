@@ -121,7 +121,7 @@ namespace Telegram.Bot.Framework.Logger
             }
         }
 
-        private void PrintLog(string message)
+        private static void PrintLog(string message)
         {
             if (LoggerSettingModel.EnableConsoleLog)
             {

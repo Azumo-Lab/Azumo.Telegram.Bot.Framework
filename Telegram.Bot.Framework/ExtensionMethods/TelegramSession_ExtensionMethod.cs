@@ -59,6 +59,35 @@ namespace Telegram.Bot.Framework.ExtensionMethods
                 return Encoding.UTF8.GetString(bytes);
             return null;
         }
+
+        /// <summary>
+        /// 向Session中写入Command
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="CommandName"></param>
+        public static void SetCommand(this ISession session, string CommandName)
+        {
+            session.SaveString("COMMAND", CommandName);
+        }
+
+        /// <summary>
+        /// 从Session中读取Command
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public static string GetCommand(this ISession session)
+        {
+            return session.GetString("COMMAND");
+        }
+
+        /// <summary>
+        /// 从Session中移除Command
+        /// </summary>
+        /// <param name="session"></param>
+        public static void RemoveCommand(this ISession session)
+        {
+            session.Remove("COMMAND");
+        }
         #endregion
 
         #region 获取Session中的值

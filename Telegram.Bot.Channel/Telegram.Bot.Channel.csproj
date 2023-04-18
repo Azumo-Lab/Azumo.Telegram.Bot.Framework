@@ -13,7 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\1Password.TokenGetter\1Password.TokenGetter.csproj" />
-    <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.ChannelGroup\Telegram.Bot.Framework.ChannelGroup.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Payment\Telegram.Bot.Framework.Payment.csproj" />
   </ItemGroup>
 
 </Project>

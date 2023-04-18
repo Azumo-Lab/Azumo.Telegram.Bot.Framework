@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Http;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Config;
+using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Exceptions;
 using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Polling;
@@ -96,7 +97,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 设置扩展类，用于扩展 <see cref="IBuilder"/> 的内容
     /// </summary>
-    public static class Setup
+    public static class BuilerSetup
     {
         /// <summary>
         /// 用于检查重复Token
@@ -218,6 +219,32 @@ namespace Telegram.Bot.Framework
             builder.ThrowIfNull();
 
             _ = builder.RuntimeServices.AddSingleton<IConfig, T>();
+            return builder;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        public static IBuilder AddConfig(this IBuilder builder, Action<IServiceCollection> setting)
+        {
+            setting.ThrowIfNull();
+
+            setting.Invoke(builder.RuntimeServices);
+            return builder;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IBuilder AddLanguage<T>(this IBuilder builder) where T : class, ILanguage
+        {
+            builder.RuntimeServices.AddSingleton<ILanguage, T>();
             return builder;
         }
     }

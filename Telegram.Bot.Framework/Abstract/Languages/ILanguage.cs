@@ -20,12 +20,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.InternalImplementation.Languages;
 
 namespace Telegram.Bot.Framework.Abstract.Languages
 {
     /// <summary>
-    /// 语言
+    /// 语言接口，需要实现
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// 推荐实现 <see cref="BaseLanguage"/> 抽象类，这个抽象类已经实现了部分 <see cref="ILanguage"/> 接口的功能，
+    /// 使用这个抽象类会更加的方便一点
+    /// </para>
+    /// <para>
+    /// 语言字典的Key值有一个方便的类：<see cref="ItemKey"/> 这个类中包含了所有的使用到的Key值，只需要添加所有这些Key值的语言，即可完美实现不同的语言
+    /// </para>
+    /// </remarks>
     public interface ILanguage
     {
         /// <summary>
@@ -33,6 +43,10 @@ namespace Telegram.Bot.Framework.Abstract.Languages
         /// </summary>
         public string LanguageName { get; }
 
+        /// <summary>
+        /// 获取所有的语言项目
+        /// </summary>
+        /// <returns>语言字典</returns>
         public Dictionary<string, string> GetLanguageKeyValue();
     }
 }

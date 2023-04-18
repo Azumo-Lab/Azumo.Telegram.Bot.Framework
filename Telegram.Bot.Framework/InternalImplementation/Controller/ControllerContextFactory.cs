@@ -61,11 +61,11 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
             Command = telegramSession.GetCommand();
             if(Command == null)
             {
-                Command = telegramSession.Session.GetString(nameof(Command));
+                Command = telegramSession.Session.GetCommand();
             }
             else
             {
-                telegramSession.Session.SaveString(nameof(Command), Command);
+                telegramSession.Session.SetCommand(Command);
             }
 
             if (Command == null)

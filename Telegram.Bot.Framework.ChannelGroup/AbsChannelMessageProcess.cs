@@ -20,28 +20,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Abstract.Channels;
+using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Attributes
+namespace Telegram.Bot.Framework.ChannelGroup
 {
     /// <summary>
-    /// 默认处理的请求类型
+    /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DefaultTypeAttribute : Attribute
+    public abstract class AbsChannelMessageProcess : IChannelMessageProcess
     {
-        /// <summary>
-        /// 请求类型
-        /// </summary>
-        public UpdateType UpdateType { get; }
-
-        /// <summary>
-        /// 默认处理的请求类型
-        /// </summary>
-        /// <param name="UpdateType">请求类型</param>
-        public DefaultTypeAttribute(UpdateType UpdateType)
+        public Task Invoke(Message message, ITelegramSession Session)
         {
-            this.UpdateType = UpdateType;
+            throw new NotImplementedException();
         }
     }
 }

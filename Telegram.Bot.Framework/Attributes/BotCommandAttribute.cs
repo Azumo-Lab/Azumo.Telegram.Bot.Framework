@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Telegram.Bot.Framework.InternalImplementation.Languages;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -10,7 +11,7 @@ namespace Telegram.Bot.Framework.Attributes
     /// 机器人指令标签
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class BotCommandAttribute : System.Attribute
+    public class BotCommandAttribute : Attribute
     {
         /// <summary>
         /// 指令，以 '/start' 形式发送的指令
@@ -20,7 +21,15 @@ namespace Telegram.Bot.Framework.Attributes
         /// <summary>
         /// 指令的简单描述
         /// </summary>
-        public string Description { get; set; } = "没有描述";
+        public string Description 
+        { 
+            get => __Description ?? MultiLanguageStatic.Language[ItemKey.DefaultCommandDetails];
+            set
+            {
+                __Description = value;
+            }
+        }
+        private string __Description;
 
         /// <summary>
         /// 机器人指令标签

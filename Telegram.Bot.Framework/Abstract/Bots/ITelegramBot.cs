@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstract.Bots
 {
@@ -28,6 +29,11 @@ namespace Telegram.Bot.Framework.Abstract.Bots
     /// </summary>
     public interface ITelegramBot
     {
+        /// <summary>
+        /// 当前机器人的User信息
+        /// </summary>
+        public User ThisBot { get; }
+
         /// <summary>
         /// 启动机器人
         /// </summary>

@@ -27,18 +27,35 @@ namespace Telegram.Bot.Framework.Abstract.Languages
     /// <summary>
     /// 多语言对应
     /// </summary>
+    /// <remarks>
+    /// 要添加一种语言，请实现：<see cref="ILanguage"/> 接口。 <br/>
+    /// 实现 <see cref="ILanguage"/> 接口之后，使用 <see cref="BuilerSetup.AddLanguage{T}(Bots.IBuilder)"/> 来注册安装接口。 <br/>
+    /// 默认已经实现了中文接口 名称是 ：‘Chinese’
+    /// </remarks>
     public interface IMultiLanguage
     {
         /// <summary>
         /// 切换语言
         /// </summary>
-        /// <param name="language"></param>
+        /// <param name="language">语言的名称</param>
         public void ChangeLanguage(string name);
 
-        public string Name { get; }
+        /// <summary>
+        /// 当前语言名称
+        /// </summary>
+        public string LanguageName { get; }
 
+        /// <summary>
+        /// 获取所有语言
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetAllLanguageNames();
 
+        /// <summary>
+        /// 获取当前语言的指定Key项目
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string this[string key] { get; }
     }
 }

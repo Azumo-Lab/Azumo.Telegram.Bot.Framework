@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
@@ -37,12 +38,17 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
                 if (await item.FilterBefore(Session))
                     return;
 
+            // 这里回复的消息不是机器人的消息
             Message ReplyToMessage = Session.Update.Message?.ReplyToMessage;
             if (ReplyToMessage != null) // 回复的消息
             {
-                PipelineController.ChangePipeline(nameof(ReplyToMessage));
-                await PipelineController.Next(Session);
-                return;
+                ITelegramBot telegramBot = Session.UserService.GetRequiredService<ITelegramBot>();
+                if (ReplyToMessage.From.Id != telegramBot.ThisBot.Id)
+                {
+                    PipelineController.ChangePipeline(nameof(ReplyToMessage));
+                    await PipelineController.Next(Session);
+                    return;
+                }
             }    
 
             await PipelineController.Next(Session);

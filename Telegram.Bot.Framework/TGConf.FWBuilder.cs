@@ -23,9 +23,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
+using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.InternalImplementation.Languages;
 using Telegram.Bot.Framework.InternalImplementation.Params;
 
 namespace Telegram.Bot.Framework
@@ -56,6 +58,11 @@ namespace Telegram.Bot.Framework
         /// <param name="serviceProvider">实例化传入的IServiceProvider</param>
         public TGConf_FWBuilder(IServiceProvider serviceProvider)
         {
+            #region
+            IMultiLanguage multiLanguage = serviceProvider.GetService<IMultiLanguage>();
+            MultiLanguageStatic.Language = multiLanguage;
+            #endregion
+
             this.serviceProvider = serviceProvider;
 
             // 获取所有的控制器类

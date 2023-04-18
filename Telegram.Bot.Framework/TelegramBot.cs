@@ -76,6 +76,8 @@ namespace Telegram.Bot.Framework
             this.ServiceProvider = Services.BuildServiceProvider();
         }
 
+        public User ThisBot { get; private set; }
+
         /// <summary>
         /// 对当前Bot进行重启
         /// </summary>
@@ -120,6 +122,7 @@ namespace Telegram.Bot.Framework
             await Task.Run(async () =>
             {
                 User user = await botClient.GetMeAsync(cancellationTokenSource.Token);
+                this.ThisBot = user;
                 Console.WriteLine($"Start @{user.Username}");
 
                 // 如果可等待选项在这里是False，那么就不会堵塞运行

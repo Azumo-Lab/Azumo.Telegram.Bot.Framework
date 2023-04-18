@@ -54,11 +54,12 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
             // 添加新分支处理，频道处理 Channel
             AddPipelineBuilder(ChatType.Channel.ToString(), serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionChannel>());
+                .AddMiddleware<ActionChannel>());               // 添加频道信息处理，实现 IChannelMessageProcess 接口
 
             // 添加新分支处理，群组处理 Supergroup
             AddPipelineBuilder(ChatType.Supergroup.ToString(), serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionGroupChannel>());
+                .AddMiddleware<ActionGroup>()                   // 添加群组信息处理，实现 IGroupMessageProcess 接口
+                .AddMiddleware<ActionControllerInvoke>());      // 添加Controller，处理默认的消息
         }
     }
 }

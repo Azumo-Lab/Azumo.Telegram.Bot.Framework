@@ -9,7 +9,7 @@ namespace Telegram.Bot.Framework.Attributes
     /// 默认消息处理
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DefaultMessageAttribute : System.Attribute
+    public class DefaultMessageAttribute : Attribute
     {
         /// <summary>
         /// 消息类型
