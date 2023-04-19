@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.Abstract.Bots
     /// <summary>
     /// 机器人接口
     /// </summary>
-    public interface ITelegramBot
+    public interface ITelegramBot : IDisposable
     {
         /// <summary>
         /// 当前机器人的User信息

@@ -52,6 +52,8 @@ namespace Telegram.Bot.Framework
         /// 是否要异步堵塞的一个标志物
         /// </summary>
         private bool awaitFlag;
+
+        private bool disposedValue;
         #endregion
 
         /// <summary>
@@ -149,6 +151,38 @@ namespace Telegram.Bot.Framework
                 await botClient.CloseAsync();
             }
             await Task.CompletedTask;
+        }
+
+        protected virtual async void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // 释放托管状态(托管对象)
+                    await BotStop();
+                    (ServiceProvider as IDisposable)?.Dispose();
+                }
+
+                GC.Collect();
+                // 释放未托管的资源(未托管的对象)并重写终结器
+                // 将大型字段设置为 null
+                disposedValue = true;
+            }
+        }
+
+        // // 仅当“Dispose(bool disposing)”拥有用于释放未托管资源的代码时才替代终结器
+        // ~TelegramBot()
+        // {
+        //     // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
