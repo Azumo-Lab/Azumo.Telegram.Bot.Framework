@@ -32,6 +32,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Languages
 
             this[ItemKey.StartInfo] = "开始信息啦";
             this[ItemKey.DefaultCommandDetails] = "没有描述";
+            this[ItemKey.ErrorInfo_BotCommandException] = "错误的指令信息";
         }
     }
 }

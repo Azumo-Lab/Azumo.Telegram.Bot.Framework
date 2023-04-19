@@ -16,25 +16,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.InternalImplementation.Languages
+namespace Telegram.Bot.Framework.Exceptions
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class ItemKey
+    public class BotCommandException : Exception
     {
-        /// <summary>
-        /// 开始信息
-        /// </summary>
-        public const string StartInfo = nameof(StartInfo);
+        public BotCommandException(string str, Exception innerException) : base(str, innerException)
+        {
 
-        /// <summary>
-        /// 默认的指令详细信息
-        /// </summary>
-        public const string DefaultCommandDetails = nameof(DefaultCommandDetails);
-
-        public const string ErrorInfo_BotCommandException = nameof(ErrorInfo_BotCommandException);
+        }
     }
 }

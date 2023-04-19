@@ -24,7 +24,9 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Exceptions;
 using Telegram.Bot.Framework.ExtensionMethods;
+using Telegram.Bot.Framework.InternalImplementation.Languages;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Controller
@@ -46,12 +48,19 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
         {
             IControllerContext controllerContext = controllerContextBuilder.Build();
 
-            if (controllerContext.BotCommandAttribute != null)
-                ControllerContextMapCommandName.Add(controllerContext.BotCommandAttribute.Command.ToLower(), controllerContext);
-            if (controllerContext.DefaultMessageAttribute != null)
-                ControllerContextMapMessageType.Add(controllerContext.DefaultMessageAttribute.MessageType, controllerContext);
-            if (controllerContext.DefaultTypeAttribute != null)
-                ControllerContextMapUpdateType.Add(controllerContext.DefaultTypeAttribute.UpdateType, controllerContext);
+            try
+            {
+                if (controllerContext.BotCommandAttribute != null)
+                    ControllerContextMapCommandName.Add(controllerContext.BotCommandAttribute.Command.ToLower(), controllerContext);
+                if (controllerContext.DefaultMessageAttribute != null)
+                    ControllerContextMapMessageType.Add(controllerContext.DefaultMessageAttribute.MessageType, controllerContext);
+                if (controllerContext.DefaultTypeAttribute != null)
+                    ControllerContextMapUpdateType.Add(controllerContext.DefaultTypeAttribute.UpdateType, controllerContext);
+            }
+            catch (Exception ex)
+            {
+                throw new BotCommandException($"{MultiLanguageStatic.Language[ItemKey.ErrorInfo_BotCommandException]} : {controllerContext}", ex);
+            }
         }
 
         public IControllerContext CreateControllerContext(ITelegramSession telegramSession)

@@ -89,5 +89,10 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
         public DefaultMessageAttribute DefaultMessageAttribute { get; set; }
 
         public List<ParamModel> ParamModels { get; } = new List<ParamModel>();
+
+        public override string ToString()
+        {
+            return $"Controller : {ControllerType.FullName}, MethodInfo : {MethodInfo.Name}";
+        }
     }
 }
