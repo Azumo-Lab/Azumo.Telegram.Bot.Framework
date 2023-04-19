@@ -33,16 +33,12 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
     {
         private readonly Dictionary<string, IPipelineBuilder> __Pipelines = new();
         private MiddlewareDelegate __NextHandle = Session => Task.CompletedTask;
+        private MiddlewareDelegate Handlers = Session => Task.CompletedTask;
 
         /// <summary>
         /// 主分支的名称
         /// </summary>
         private string MainPipelineName;
-
-        /// <summary>
-        /// 当前分支的名称
-        /// </summary>
-        private string NowPipelineName = string.Empty;
 
         public bool HasAnyPipeline => __Pipelines.Count != 0;
 
@@ -54,11 +50,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         {
             if (pipelineName.IsTrimEmpty())
                 pipelineName = MainPipelineName;
-
-            if (NowPipelineName == pipelineName)
-                return;
-
-            NowPipelineName = pipelineName;
 
             if (__Pipelines.TryGetValue(pipelineName, out IPipelineBuilder builder))
                 __NextHandle = builder.Builder(this);

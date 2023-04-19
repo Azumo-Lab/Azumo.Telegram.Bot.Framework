@@ -46,7 +46,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
             try
             {
                 // 获取用户UID，使用UID来进行Session的存取
-                long? id = TelegramSession.GetUser(update).Id;
+                long? id = TelegramSession.GetUser(update)?.Id;
                 TelegramSession telegramSession = null!;
                 // 请求中存在UID
                 if (id != null)
