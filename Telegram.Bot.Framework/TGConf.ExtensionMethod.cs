@@ -58,11 +58,17 @@ namespace Telegram.Bot.Framework
         /// <exception cref="NotSupportedException"></exception>
         public static void AddDependencyInjection(this IServiceCollection serviceDescriptors)
         {
-
             Type objType = typeof(object);
             Type diAttr = typeof(DependencyInjectionAttribute);
             ObjectHelper.GetAllTypes()
                 .Where(x => Attribute.IsDefined(x, diAttr))
+                .ToList()
+                .Select(x =>
+                {
+                    return (x, (DependencyInjectionAttribute)Attribute.GetCustomAttribute(x, diAttr));
+                })
+                .OrderBy(x => x.Item2.Priority)
+                .Select(x => x.x)
                 .ToList()
                 .ForEach(x =>
                 {
@@ -74,7 +80,7 @@ namespace Telegram.Bot.Framework
                     Type serviceType = dependencyInjectionAttribute.ServiceType ??
                             (((baseType = x.BaseType).FullName == objType.FullName)
                             ? ((interFaceType = x.GetInterfaces()).Length > 1
-                                ? throw new NotSupportedException()
+                                ? throw new NotSupportedException($"在 {x.FullName} 中，检测到多个接口类型：{string.Join(',', interFaceType.Select(x=>x.FullName).ToList())}")
                                 : interFaceType.Length == 0 ? x : interFaceType[0])
                             : baseType);
                     switch (dependencyInjectionAttribute.ServiceLifetime)

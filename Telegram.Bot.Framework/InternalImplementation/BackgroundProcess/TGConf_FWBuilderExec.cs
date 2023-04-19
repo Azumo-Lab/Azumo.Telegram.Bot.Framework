@@ -14,23 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.BackgroundProcess;
+using Telegram.Bot.Framework.Attributes;
 
-namespace Telegram.Bot.Framework.Abstract.BackgroundProcess
+namespace Telegram.Bot.Framework.InternalImplementation.BackgroundProcess
 {
     /// <summary>
-    /// 启动前执行
+    /// 
     /// </summary>
-    public interface IStartBeforeExec
+    /// 
+    [DependencyInjection(ServiceLifetime.Singleton, Priority = 0)]
+    internal class TGConf_FWBuilderExec : IStartBeforeExec
     {
-        /// <summary>
-        /// 执行处理
-        /// </summary>
-        Task Exec();
+        public TGConf_FWBuilderExec(IServiceProvider serviceProvider)
+        {
+            serviceProvider.GetRequiredService<TGConf_FWBuilder>();
+        }
+        public Task Exec(){ return Task.CompletedTask; }
     }
 }

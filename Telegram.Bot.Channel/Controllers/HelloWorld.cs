@@ -34,7 +34,7 @@ namespace Telegram.Bot.Channel.Controllers
     /// 
     /// </summary>
     /// 
-    [BotName("Test00")]
+    [BotName("Test")]
     public class HelloWorld : TelegramController
     {
         [BotCommand("Test")]

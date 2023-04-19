@@ -41,6 +41,16 @@ namespace Telegram.Bot.Framework.Attributes
         private string __Description;
 
         /// <summary>
+        /// 一个值，指示是否将这个命令注册到Telegram Bot中
+        /// </summary>
+        public bool Register { get; set; } = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public BotCommandScopeType BotCommandScopeType { get; set; }
+
+        /// <summary>
         /// 机器人指令标签
         /// </summary>
         /// <remarks>

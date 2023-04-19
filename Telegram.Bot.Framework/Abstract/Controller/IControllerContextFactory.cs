@@ -31,6 +31,8 @@ namespace Telegram.Bot.Framework.Abstract.Controller
     {
         public IControllerContext CreateControllerContext(ITelegramSession telegramSession);
 
+        public List<IControllerContext> GetAllCommandControllerContext();
+
         public void AddContext(IControllerContextBuilder controllerContextBuilder);
     }
 }

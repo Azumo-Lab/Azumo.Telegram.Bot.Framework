@@ -91,5 +91,10 @@ namespace Telegram.Bot.Framework.InternalImplementation.Controller
             }
             return default;
         }
+
+        public List<IControllerContext> GetAllCommandControllerContext()
+        {
+            return ControllerContextMapCommandName.Values.ToList();
+        }
     }
 }

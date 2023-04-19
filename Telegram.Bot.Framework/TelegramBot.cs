@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.BackgroundProcess;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.MiddlewarePipelines;
@@ -108,7 +109,11 @@ namespace Telegram.Bot.Framework
         public async Task BotStart(bool awaitFlag = true)
         {
             this.awaitFlag = awaitFlag;
-            ServiceProvider.GetRequiredService<TGConf_FWBuilder>();
+
+            IEnumerable<IStartBeforeExec> startBeforeExecs = ServiceProvider.GetServices<IStartBeforeExec>();
+            foreach (IStartBeforeExec exec in startBeforeExecs)
+                await exec.Exec();
+
             ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
             CancellationTokenSource cancellationTokenSource = ServiceProvider.GetService<CancellationTokenSource>();
 

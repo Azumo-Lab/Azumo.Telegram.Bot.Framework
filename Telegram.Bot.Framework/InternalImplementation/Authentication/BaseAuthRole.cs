@@ -53,7 +53,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
         /// </summary>
         /// <param name="session">用户Session</param>
         /// <returns><see cref="BotCommandScope"/>机器人指令作用范围</returns>
-        public BotCommandScope GetBotCommandScope(ITelegramSession session)
+        public virtual BotCommandScope GetBotCommandScope(ITelegramSession session)
         {
             ChatId chatID;
             switch (Type)

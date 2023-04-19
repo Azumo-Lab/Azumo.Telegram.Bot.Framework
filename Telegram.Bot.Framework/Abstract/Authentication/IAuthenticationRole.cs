@@ -14,6 +14,8 @@ namespace Telegram.Bot.Framework.Authentication.Interface
     {
         public BotCommandScopeType Type { get; }
 
+        public BotCommandScope GetBotCommandScope(ITelegramSession session);
+
         public Task ChangeRole(ITelegramSession session);
     }
 }
