@@ -1,24 +1,12 @@
 ﻿using _1Password.TokenGetter;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
-using System.Linq.Expressions;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using System.Text;
-using Telegram.Bot.Channel.DITest;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Groups;
 using Telegram.Bot.Framework.ChannelGroup;
-using Telegram.Bot.Framework.Payment.AliPay;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Channel
 {
@@ -30,7 +18,7 @@ namespace Telegram.Bot.Channel
             try
             {
                 string botToken;
-                using (OnePasswordCLI op = new OnePasswordCLI())
+                using (OnePasswordCLI op = new())
                 {
                     // 从1Password读取开发测试一号机的Token
                     botToken = op.Read("op://Tokens/rolpxqoi3qvkjnbsrq7m7ohmpq/credential");
@@ -41,9 +29,10 @@ namespace Telegram.Bot.Channel
                     .AddToken(botToken)
                     .AddConfig(x =>
                     {
-                        x.AddScoped<IGroupMessageProcess, GroupMessage>();
-                        x.AddScoped<IChatMemberChange, BotTelegramEvent>();
+                        _ = x.AddScoped<IGroupMessageProcess, GroupMessage>();
+                        _ = x.AddScoped<IChatMemberChange, BotTelegramEvent>();
                     })
+                    .AddBotName("Test")
                     .AddReceiverOptions(new ReceiverOptions { AllowedUpdates = { } })
                     .Build();
 
@@ -57,7 +46,7 @@ namespace Telegram.Bot.Channel
                 Console.WriteLine(ex.Message);
                 Environment.Exit(1);
             }
-            
+
         }
     }
 }

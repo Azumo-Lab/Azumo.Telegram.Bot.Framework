@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.Attributes
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     public class BotNameAttribute : Attribute
     {
-        public HashSet<string> BotNames { get; set; }
+        public HashSet<string> BotNames { get; }
         public BotNameAttribute(params string[] BotNames)
         {
             this.BotNames = new HashSet<string>(BotNames);
