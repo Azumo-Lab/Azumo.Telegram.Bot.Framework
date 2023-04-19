@@ -24,6 +24,7 @@ using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Exceptions;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.InternalImplementation.Bots;
 using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Framework
@@ -245,6 +246,23 @@ namespace Telegram.Bot.Framework
         public static IBuilder AddLanguage<T>(this IBuilder builder) where T : class, ILanguage
         {
             builder.RuntimeServices.AddSingleton<ILanguage, T>();
+            return builder;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="botName"></param>
+        /// <returns></returns>
+        public static IBuilder AddBotName(this IBuilder builder, string botName)
+        {
+            builder.RuntimeServices.AddSingleton(typeof(IBotName), x =>
+            {
+                IBotName botNameUtil = new BotName();
+                botNameUtil.BotName = botName;
+                return botNameUtil;
+            });
             return builder;
         }
     }

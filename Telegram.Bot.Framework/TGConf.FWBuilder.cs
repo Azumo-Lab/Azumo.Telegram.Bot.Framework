@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Abstract.Params;
@@ -48,6 +48,7 @@ namespace Telegram.Bot.Framework
     {
         private readonly IServiceProvider serviceProvider;
         private readonly List<Type> AllControllerType;
+        private readonly string BotName;
 
         /// <summary>
         /// 初始化
@@ -58,12 +59,14 @@ namespace Telegram.Bot.Framework
         /// <param name="serviceProvider">实例化传入的IServiceProvider</param>
         public TGConf_FWBuilder(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
+
             #region
-            IMultiLanguage multiLanguage = serviceProvider.GetService<IMultiLanguage>();
+            IMultiLanguage multiLanguage = this.serviceProvider.GetService<IMultiLanguage>();
             MultiLanguageStatic.Language = multiLanguage;
             #endregion
 
-            this.serviceProvider = serviceProvider;
+            BotName = this.serviceProvider.GetService<IBotName>().BotName;
 
             // 获取所有的控制器类
             AllControllerType = typeof(TelegramController).GetSameType();
@@ -79,7 +82,7 @@ namespace Telegram.Bot.Framework
             {
                 TypeForAttribute typeForAttribute = (TypeForAttribute)Attribute.GetCustomAttribute(item, typeof(TypeForAttribute));
                 if (!typeForAttribute.IsNull())
-                    ParamManager.__ParamType_MakerType.TryAdd(typeForAttribute.Type, item);
+                    _ = ParamManager.__ParamType_MakerType.TryAdd(typeForAttribute.Type, item);
             }
         }
 
@@ -93,6 +96,10 @@ namespace Telegram.Bot.Framework
             if (type.IsNull())
                 throw new ArgumentNullException(nameof(type));
 
+            if (Attribute.GetCustomAttribute(type, typeof(BotNameAttribute)) is BotNameAttribute botNameAttribute)
+                if (!botNameAttribute.BotNames.Contains(BotName))
+                    return;
+
             IControllerContextFactory controllerContextFactory = serviceProvider.GetService<IControllerContextFactory>();
 
             // 获取方法信息
@@ -104,6 +111,10 @@ namespace Telegram.Bot.Framework
                 ).ToArray();
             foreach (MethodInfo methodInfo in allMethodInfo)
             {
+                if ((botNameAttribute = Attribute.GetCustomAttribute(methodInfo, typeof(BotNameAttribute)) as BotNameAttribute) != null)
+                    if (!botNameAttribute.BotNames.Contains(BotName))
+                        continue;
+
                 IControllerContextBuilder controllerContextBuilder = serviceProvider.GetService<IControllerContextBuilder>();
 
                 Func<TelegramController, object[], Task> Action = CompileDelegate(methodInfo);
@@ -111,7 +122,7 @@ namespace Telegram.Bot.Framework
                 Attribute[] controllerAttributes = Attribute.GetCustomAttributes(methodInfo.DeclaringType);
                 ParameterInfo[] parameterInfos = methodInfo.GetParameters();
 
-                controllerContextBuilder
+                _ = controllerContextBuilder
                     .AddDelegate(Action)
                     .AddAttributes(methodAttributes)
                     .AddAttributes(controllerAttributes)
@@ -134,7 +145,7 @@ namespace Telegram.Bot.Framework
             ParameterExpression argsParam = Expression.Parameter(typeof(object[]), "args");
 
             ParameterInfo[] paramArray = methodInfo.GetParameters();
-            List<Expression> expressionList = new List<Expression>();
+            List<Expression> expressionList = new();
             for (int i = 0; i < paramArray.Length; i++)
             {
                 ParameterInfo param = paramArray[i];
