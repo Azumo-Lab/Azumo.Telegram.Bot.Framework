@@ -108,30 +108,34 @@ namespace Telegram.Bot.Framework
         /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
         public async Task BotStart(bool awaitFlag = true)
         {
+            // 是否可能等待的值
             this.awaitFlag = awaitFlag;
 
+            // 整个框架启动前进行的部分配置工作
             IEnumerable<IStartBeforeExec> startBeforeExecs = ServiceProvider.GetServices<IStartBeforeExec>();
             foreach (IStartBeforeExec exec in startBeforeExecs)
                 await exec.Exec();
 
+            // 获取<ITelegramBotClient>接口
             ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
             CancellationTokenSource cancellationTokenSource = ServiceProvider.GetService<CancellationTokenSource>();
 
             if (!await botClient.TestApiAsync(cancellationTokenSource.Token))
                 throw new ArgumentException("API Error");
-
+            
+            // 启动
             botClient.StartReceiving(
                 ServiceProvider.GetService<IUpdateHandler>(),
                 ServiceProvider.GetService<ReceiverOptions>() ?? new ReceiverOptions { AllowedUpdates = { } },
                 cancellationTokenSource.Token
                 );
 
+            ThisBot = await botClient.GetMeAsync(cancellationTokenSource.Token);
+            Console.WriteLine($"Start @{ThisBot.Username}");
+
+            // 阻塞等待
             await Task.Run(async () =>
             {
-                User user = await botClient.GetMeAsync(cancellationTokenSource.Token);
-                this.ThisBot = user;
-                Console.WriteLine($"Start @{user.Username}");
-
                 // 如果可等待选项在这里是False，那么就不会堵塞运行
                 if (awaitFlag)
                 {
