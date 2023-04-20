@@ -49,17 +49,13 @@ namespace Telegram.Bot.Framework.InternalImplementation.BackgroundProcess
             ITelegramCommandsManager telegramCommandsManager = serviceProvider.GetService<ITelegramCommandsManager>();
             IControllerContextFactory controllerContextFactory = serviceProvider.GetService<IControllerContextFactory>();
 
-            List<BotCommand> botCommands = controllerContextFactory.GetAllCommandControllerContext()
+            List<BotCommandAttribute> botCommands = controllerContextFactory.GetAllCommandControllerContext()
                 .Where(x => x.BotCommandAttribute.Register)
-                .Select(x => new BotCommand()
-                {
-                    Command = x.BotCommandAttribute.Command,
-                    Description = x.BotCommandAttribute.Description,
-                }).ToList();
+                .Select(x => x.BotCommandAttribute).ToList();
 
             using (ITelegramCommandsChangeSession telegramCommandsChangeSession = telegramCommandsManager.ChangeTelegramCommands())
             {
-                foreach (BotCommand item in botCommands)
+                foreach (BotCommandAttribute item in botCommands)
                     telegramCommandsChangeSession.RegisterCommand(item.Command, item.Description, BotCommandScope.Default());
                 await telegramCommandsChangeSession.ApplyChanges();
             }

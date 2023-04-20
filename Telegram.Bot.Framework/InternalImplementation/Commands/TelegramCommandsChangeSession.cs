@@ -25,6 +25,7 @@ using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Types;
 using Telegram.Bot.Framework.Helper;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Commands
 {
@@ -37,6 +38,12 @@ namespace Telegram.Bot.Framework.InternalImplementation.Commands
     {
         private static readonly Dictionary<BotCommandScope, List<BotCommand>> __BotCommands = new();
         private static readonly Dictionary<BotCommandScope, List<BotCommand>> __BotCommandsRemove = new();
+
+        private static readonly BotCommandScope Default = BotCommandScope.Default();
+        private static readonly BotCommandScope AllPrivateChats = BotCommandScope.AllPrivateChats();
+        private static readonly BotCommandScope AllGroupChats = BotCommandScope.AllGroupChats();
+        private static readonly BotCommandScope AllChatAdministrators = BotCommandScope.AllChatAdministrators();
+        private static readonly List<BotCommandScope> OtherScope = new List<BotCommandScope>();
 
         private readonly Dictionary<BotCommandScope, List<BotCommand>> __BotCommandsCopy = new();
         private readonly IServiceProvider serviceProvider;
@@ -102,12 +109,56 @@ namespace Telegram.Bot.Framework.InternalImplementation.Commands
             CheckDisposeFlag();
 
             if (botCommandScope.IsNull())
-                botCommandScope = BotCommandScope.Default();
+                botCommandScope = Default;
+            else
+            {
+                switch (botCommandScope.Type)
+                {
+                    case Types.Enums.BotCommandScopeType.Default:
+                        botCommandScope = Default;
+                        break;
+                    case Types.Enums.BotCommandScopeType.AllPrivateChats:
+                        botCommandScope = AllPrivateChats;
+                        break;
+                    case Types.Enums.BotCommandScopeType.AllGroupChats:
+                        botCommandScope = AllGroupChats;
+                        break;
+                    case Types.Enums.BotCommandScopeType.AllChatAdministrators:
+                        botCommandScope = AllChatAdministrators;
+                        break;
+                    case Types.Enums.BotCommandScopeType.ChatAdministrators:
+                    case Types.Enums.BotCommandScopeType.Chat:
+                    case Types.Enums.BotCommandScopeType.ChatMember:
+                        BotCommandScope scope = OtherScope.Where(x =>
+                        {
+                            return botCommandScope.Type switch
+                            {
+                                Types.Enums.BotCommandScopeType.Chat => 
+                                    botCommandScope is BotCommandScopeChat chat &&
+                                    x is BotCommandScopeChat botCommandScopeChat && botCommandScopeChat.ChatId == chat.ChatId,
+                                Types.Enums.BotCommandScopeType.ChatAdministrators => 
+                                    botCommandScope is BotCommandScopeChatAdministrators chat && 
+                                    x is BotCommandScopeChatAdministrators botCommandScopeChatAdministrators && botCommandScopeChatAdministrators.ChatId == chat.ChatId,
+                                Types.Enums.BotCommandScopeType.ChatMember => 
+                                    botCommandScope is BotCommandScopeChatMember chat && 
+                                    x is BotCommandScopeChatMember botCommandScopeChatMember && botCommandScopeChatMember.ChatId == chat.ChatId && botCommandScopeChatMember.UserId == chat.UserId,
+                                _ => false,
+                            };
+                        }).FirstOrDefault();
+                        if (scope != null)
+                            botCommandScope = scope;
+                        else
+                            OtherScope.Add(botCommandScope);
+                        break;
+                }
+            }
+
             if(__BotCommandsCopy.TryGetValue(botCommandScope, out List<BotCommand> botCommands))
             {
                 botCommands.Add(new BotCommand
                 {
-                    Command = commandName,
+                    Command = (commandName.StartsWith('/') 
+                            ? commandName[1..] : commandName).ToLower(),
                     Description = commandInfo,
                 });
             }
@@ -117,7 +168,8 @@ namespace Telegram.Bot.Framework.InternalImplementation.Commands
                 {
                     new BotCommand
                     {
-                        Command = commandName,
+                        Command = (commandName.StartsWith('/')
+                            ? commandName[1..] : commandName).ToLower(),
                         Description = commandInfo,
                     }
                 };
