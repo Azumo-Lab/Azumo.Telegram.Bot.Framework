@@ -46,7 +46,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        public abstract Task ChangeRole(ITelegramSession session);
+        public abstract Task ChangeRole(ITelegramSession session, long? chatID, long? userID);
 
         /// <summary>
         /// 获取用户的BotCommandScope

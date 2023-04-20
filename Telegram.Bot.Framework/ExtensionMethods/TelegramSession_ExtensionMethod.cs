@@ -90,7 +90,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         }
         #endregion
 
-        #region 获取Session中的值
+        #region 获取ITelegramSession中的值
 
         public static long? GetChatID(this ITelegramSession session)
         {

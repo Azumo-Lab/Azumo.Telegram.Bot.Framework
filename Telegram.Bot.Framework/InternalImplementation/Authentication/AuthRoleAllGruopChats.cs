@@ -33,9 +33,9 @@ namespace Telegram.Bot.Framework.Authentication.Internal
     {
         public override BotCommandScopeType Type => BotCommandScopeType.AllGroupChats;
 
-        public override async Task ChangeRole(ITelegramSession session)
+        public override async Task ChangeRole(ITelegramSession session, long? chatID, long? userID)
         {
-            await ChangeBotCommand(session);
+             await ChangeBotCommand(session);
         }
     }
 }
