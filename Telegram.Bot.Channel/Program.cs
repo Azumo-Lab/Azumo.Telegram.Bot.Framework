@@ -1,6 +1,12 @@
 ﻿using _1Password.TokenGetter;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml.Linq;
+using Telegram.Bot.Channel.Controllers;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Event;
@@ -10,11 +16,19 @@ using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Channel
 {
+    
     public class Program
     {
-        public static void Main(string[] args)
+        private static Random random = new Random(Guid.NewGuid().GetHashCode());
+        static Program()
         {
             Console.OutputEncoding = Encoding.UTF8;
+        }
+        
+        public static void Main(string[] args)
+        {
+            
+
             try
             {
                 string botToken;
@@ -46,7 +60,6 @@ namespace Telegram.Bot.Channel
                 Console.WriteLine(ex.Message);
                 Environment.Exit(1);
             }
-
         }
     }
 }

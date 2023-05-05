@@ -103,5 +103,15 @@ namespace Telegram.Bot.Framework.Authentication.Internal
             List<BotCommand> botCommands = commandManager.GetBotCommands(botCommandScope);
             await session.BotClient.SetMyCommandsAsync(botCommands, botCommandScope);
         }
+
+        public BotCommandScope GetBotCommandScope(ITelegramSession session, long? chatID, long? userID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ChangeRole(ITelegramSession session)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
