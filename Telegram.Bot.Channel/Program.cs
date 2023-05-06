@@ -16,7 +16,6 @@ using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Channel
 {
-    
     public class Program
     {
         private static Random random = new Random(Guid.NewGuid().GetHashCode());
@@ -25,10 +24,19 @@ namespace Telegram.Bot.Channel
             Console.OutputEncoding = Encoding.UTF8;
         }
         
-        public static void Main(string[] args)
+        public record Hello
+        (
+            string Name, 
+            string PP
+        );
+
+        public ref struct MyStruct
         {
             
+        }
 
+        public static void Main(string[] args)
+        {
             try
             {
                 string botToken;

@@ -40,7 +40,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LICENSE", "LICENSE", "{8995
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Abstracts", "Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj", "{87632363-5DB1-495A-8C98-0A9F39B55447}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstracts", "Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj", "{87632363-5DB1-495A-8C98-0A9F39B55447}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzumoLab.Downloader", "AzumoLab.Downloader\AzumoLab.Downloader.csproj", "{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 		{87632363-5DB1-495A-8C98-0A9F39B55447}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87632363-5DB1-495A-8C98-0A9F39B55447}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87632363-5DB1-495A-8C98-0A9F39B55447}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{5D87E93D-64A8-4146-9999-10755B5748BA} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
 		{C1498B36-6AB9-4719-873C-B34C218F3673} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
+		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}
