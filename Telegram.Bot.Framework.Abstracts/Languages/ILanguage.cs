@@ -29,5 +29,7 @@ namespace Telegram.Bot.Framework.Abstracts.Languages
     public interface ILanguage
     {
         public string LanguageName { get; }
+
+        public string this[string key] { get; }
     }
 }

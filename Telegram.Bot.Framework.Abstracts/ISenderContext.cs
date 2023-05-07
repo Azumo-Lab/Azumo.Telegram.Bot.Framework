@@ -29,8 +29,14 @@ namespace Telegram.Bot.Framework.Abstracts
     /// </summary>
     public interface ISenderContext
     {
+        /// <summary>
+        /// 当前聊天的ChatID
+        /// </summary>
         public ChatId ChatId { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITelegramBotClient BotClient { get; }
     }
 }

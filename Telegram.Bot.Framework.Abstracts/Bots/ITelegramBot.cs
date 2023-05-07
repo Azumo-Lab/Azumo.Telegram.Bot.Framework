@@ -28,6 +28,8 @@ namespace Telegram.Bot.Framework.Abstracts.Bots
     /// </summary>
     public interface ITelegramBot
     {
-        public string BotName { get; }
+        public Task StartAsync();
+
+        public Task StopAsync();
     }
 }

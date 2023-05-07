@@ -28,6 +28,6 @@ namespace Telegram.Bot.Framework.Abstracts.Session
     /// </summary>
     public interface ITelegramSession
     {
-
+        public IServiceProvider UserService { get; }
     }
 }

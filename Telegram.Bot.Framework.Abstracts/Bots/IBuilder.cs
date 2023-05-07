@@ -28,6 +28,15 @@ namespace Telegram.Bot.Framework.Abstracts.Bots
     /// </summary>
     public interface IBuilder
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public Dictionary<string, object> ConfigSettings { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ITelegramBot Build();
     }
 }

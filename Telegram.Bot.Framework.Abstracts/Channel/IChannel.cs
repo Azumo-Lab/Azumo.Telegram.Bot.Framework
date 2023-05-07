@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.Abstracts.Channel
     public interface IChannel : ISenderContext
     {
         /// <summary>
-        /// 
+        /// 接收消息
         /// </summary>
         /// <param name="message"></param>
         public void Receive(Message message);
