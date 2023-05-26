@@ -26,11 +26,11 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Framework.Helper;
-using Telegram.Bot.Framework.Logger;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Abstract.Middlewares;
+using Telegram.Bot.Framework.Abstract.Managements;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -39,9 +39,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     /// </summary>
     internal class TelegramUpdateHandle : IUpdateHandler
     {
-        private readonly ILogger Logger;
-        private readonly IServiceProvider ServiceProvider;
-        private readonly Dictionary<UpdateType, IMiddlewarePipeline> MiddlewarePipelineDic;
+        private readonly Dictionary<UpdateType, IMiddlewarePipeline> __MiddlewarePipelineDic;
+        private readonly IServiceScope __BotScopeService;
+        private readonly IChatManager __ChatManager;
 
         /// <summary>
         /// 初始化
@@ -49,16 +49,21 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <param name="ServiceProvider">服务提供</param>
         public TelegramUpdateHandle(IServiceProvider ServiceProvider)
         {
-            this.ServiceProvider = ServiceProvider;
+            __BotScopeService = ServiceProvider.CreateScope();
+            __ChatManager = __BotScopeService.ServiceProvider.GetService<IChatManager>();
 
-            UpdateType[] receiverOptions = (this.ServiceProvider.GetService<ReceiverOptions>() ?? new()).AllowedUpdates ?? Array.Empty<UpdateType>();
-            Logger = this.ServiceProvider.GetService<ILogger>();
-            MiddlewarePipelineDic = this.ServiceProvider.GetServices<IMiddlewarePipeline>()
+            UpdateType[] receiverOptions = (__BotScopeService.ServiceProvider.GetService<ReceiverOptions>() ?? new()).AllowedUpdates ?? Array.Empty<UpdateType>();
+            __MiddlewarePipelineDic = __BotScopeService.ServiceProvider.GetServices<IMiddlewarePipeline>()
                 .GroupBy(x => x.InvokeType)
                 // 只使用用户要使用的类型， 如果用户没有指定，那么就监听全部的类型
                 .Where(x => receiverOptions.IsEmpty() || receiverOptions.Contains(x.Key))
                 // 这里选取最后一个，也就是最新的，如果用户添加了一个新的流水线，那么就用用户新添加的
                 .ToDictionary(x => x.Key, x => x.LastOrDefault());
+        }
+
+        ~TelegramUpdateHandle()
+        {
+            __BotScopeService.Dispose();
         }
 
         /// <summary>
@@ -70,8 +75,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <returns></returns>
         public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            Logger.ErrorLog(exception.Message);
-
             await Task.CompletedTask;
         }
 
@@ -86,18 +89,19 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         {
             try
             {
-                // 创造 TelegramSession
-                ITelegramSession Session = TelegramSessionManager.Instance.GetTelegramSession(ServiceProvider, Update);
-                if (Session.IsNull())
-                    return;
+                // 创建iChat对象
+                ITelegramRequest telegramRequest = TelegramRequestManager.GetTelegramRequest(__BotScopeService, Update);
+                IChat chat = __ChatManager.GetChat(telegramRequest);
 
-                // 根据消息类型获取 AbstractActionInvoker
-                if (MiddlewarePipelineDic.TryGetValue(Update.Type, out IMiddlewarePipeline MiddlewarePipeline))
-                    await MiddlewarePipeline.Execute(Session);
+                if (__MiddlewarePipelineDic.TryGetValue(Update.Type, out IMiddlewarePipeline middlewarePipeline))
+                    await middlewarePipeline.Execute(chat);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // 用户被Ban，无视错误
             }
             catch (ApiRequestException Ex)
             {
-                Logger.ErrorLog($"{nameof(ApiRequestException)} : {Environment.NewLine}{Ex.Message}");
             }
             catch (Exception Ex)
             {

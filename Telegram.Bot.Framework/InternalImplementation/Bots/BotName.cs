@@ -27,8 +27,12 @@ namespace Telegram.Bot.Framework.InternalImplementation.Bots
     /// <summary>
     /// 
     /// </summary>
-    internal class BotName : IBotName
+    internal class BotInfo : IBotInfo
     {
-        string IBotName.BotName { get; set; }
+        public long BotID { get; set; }
+
+        public DateTime BotStartTime { get; set; }
+
+        public string BotName { get; set; }
     }
 }

@@ -21,15 +21,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Groups
+namespace Telegram.Bot.Framework.Abstract.Managements
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IGroupMessageProcess
+    public interface IChatManager
     {
-        public Task Invoke(Message message, ITelegramSession Session);
+        public IChat GetChat(ITelegramRequest telegramRequest);
     }
 }

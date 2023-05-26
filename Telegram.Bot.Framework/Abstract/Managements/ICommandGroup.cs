@@ -20,30 +20,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Logger
+namespace Telegram.Bot.Framework.Abstract.Managements
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface ILogger
+    internal interface ICommandGroup
     {
-        void Log(string message, LogType logType);
+        public void AddGroup(BotCommandScopeType botCommandScopeType, params BotCommand[] botCommand);
 
-        void ErrorLog(string message);
-
-        void WarningLog(string message);
-
-        void InformationLog(string message);
-
-        void DebugLog(string message);  
-    }
-
-    public enum LogType
-    {
-        Error = 0,
-        Warning = 1,
-        Information = 2,
-        Debug = 3,
+        public BotCommand[] GetGroup(BotCommandScopeType botCommandScopeType);
     }
 }

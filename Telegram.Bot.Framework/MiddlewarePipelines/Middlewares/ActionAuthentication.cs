@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Authentication.Interface;
@@ -42,7 +43,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="Session"></param>
         /// <param name="PipelineController"></param>
         /// <returns></returns>
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
+        public async Task Execute(IChat Session, IPipelineController PipelineController)
         {
             IEnumerable<IAuthentication> authentications = Session.UserService.GetServices<IAuthentication>();
 

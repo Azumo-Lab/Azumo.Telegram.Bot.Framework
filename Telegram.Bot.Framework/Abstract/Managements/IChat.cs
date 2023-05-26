@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,55 +22,45 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract.Event
+namespace Telegram.Bot.Framework.Abstract.Managements
 {
     /// <summary>
-    /// Bot的事件，被邀请，被踢出群组等事件
+    /// 
     /// </summary>
-    public interface IBotTelegramEvent
+    public interface IChat : IDisposable
     {
         /// <summary>
-        /// 被邀请
+        /// 这个Chat的ID
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task OnInvited(ITelegramSession session);
+        public long ChatID { get; internal set; }
 
         /// <summary>
-        /// 被踢
+        /// Chat的类型
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task OnKicked(ITelegramSession session);
+        public ChatType ChatType { get; internal set; }
 
         /// <summary>
-        /// 离开群组
+        /// 是否绝交
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task OnLeft(ITelegramSession session);
+        public bool IsBan { get; set; }
 
         /// <summary>
-        /// 创建聊天
+        /// 机器人
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task OnCreator(ITelegramSession session);
+        public ITelegramBotClient TelegramBotClient { get; internal set; }
 
         /// <summary>
-        /// 成为管理员
+        /// Chat范围内的服务
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task OnBeAdmin(ITelegramSession session);
+        public IServiceScope ChatServiceScope { get; internal set; }
 
         /// <summary>
-        /// 
+        /// 用于存储数据的Session
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        Task OnRestricted(ITelegramSession session);
+        public ISession Session { get; internal set; }
+
+        public ITelegramRequest TelegramRequest { get; internal set; }
     }
 }

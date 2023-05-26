@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.CallBack;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Helper;
@@ -35,7 +36,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="Session">Context</param>
         /// <param name="PipelineController">下一个处理流程</param>
         /// <returns></returns>
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
+        public async Task Execute(IChat Session, IPipelineController PipelineController)
         {
             ICallBackManager callBackManager = Session.UserService.GetService<ICallBackManager>();
             Action<ITelegramSession> callbackAction = callBackManager.GetCallBack(Session.Update.CallbackQuery.Data);

@@ -66,7 +66,7 @@ namespace Telegram.Bot.Framework
             MultiLanguageStatic.Language = multiLanguage;
             #endregion
 
-            BotName = this.serviceProvider.GetService<IBotName>().BotName;
+            BotName = this.serviceProvider.GetService<IBotInfo>().BotName;
 
             // 获取所有的控制器类
             AllControllerType = typeof(TelegramController).GetSameType();

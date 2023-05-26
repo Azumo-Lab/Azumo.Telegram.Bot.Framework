@@ -30,6 +30,11 @@ namespace Telegram.Bot.Framework.Abstract.Bots
     public interface ITelegramBot : IDisposable
     {
         /// <summary>
+        /// 机器人的一些信息
+        /// </summary>
+        public IBotInfo BotInfo { get; }
+
+        /// <summary>
         /// 当前机器人的User信息
         /// </summary>
         public User ThisBot { get; }

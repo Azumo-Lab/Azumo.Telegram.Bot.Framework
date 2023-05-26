@@ -21,7 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Groups;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
@@ -32,12 +32,12 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     internal class ActionGroup : IMiddleware
     {
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
+        public async Task Execute(IChat Session, IPipelineController PipelineController)
         {
-            IEnumerable<IGroupMessageProcess> groupMessageProcess = Session.UserService.GetServices<IGroupMessageProcess>();
+            //IEnumerable<IGroupMessageProcess> groupMessageProcess = Session.UserService.GetServices<IGroupMessageProcess>();
 
-            foreach (IGroupMessageProcess item in groupMessageProcess)
-                await item.Invoke(Session.Update.Message, Session);
+            //foreach (IGroupMessageProcess item in groupMessageProcess)
+            //    await item.Invoke(Session.Update.Message, Session);
 
             await PipelineController.Next(Session);
         }

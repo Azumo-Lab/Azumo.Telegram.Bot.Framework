@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Abstract.Sessions;
@@ -37,7 +38,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
         /// <param name="session"></param>
         /// <param name="NextHandle"></param>
         /// <returns></returns>
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
+        public async Task Execute(IChat Session, IPipelineController PipelineController)
         {
             IControllerContextFactory controllerContextFactory = Session.UserService.GetService<IControllerContextFactory>();
             IControllerContext controllerContext = controllerContextFactory.CreateControllerContext(Session);

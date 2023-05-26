@@ -14,20 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Bots
+namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IBotName
+    public interface ITelegramRequest
     {
-        public string BotName { get; internal set; }
+        /// <summary>
+        /// 请求信息
+        /// </summary>
+        public Update Update { get; internal set; }
+
+        /// <summary>
+        /// 整个Bot范围内的服务
+        /// </summary>
+        public IServiceScope BotScopeService { get; internal set; }
     }
 }

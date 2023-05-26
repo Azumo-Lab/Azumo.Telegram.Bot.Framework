@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
@@ -30,5 +31,5 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
     /// </summary>
     /// <param name="Context"></param>
     /// <returns></returns>
-    public delegate Task MiddlewareDelegate(ITelegramSession Session);
+    public delegate Task MiddlewareDelegate(IChat Session);
 }

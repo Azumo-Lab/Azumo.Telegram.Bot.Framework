@@ -14,22 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Managements;
-using Telegram.Bot.Framework.Abstract.Middlewares;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 用户桥处理程序，用于处理用户发送到机器人的信息
+    /// 
     /// </summary>
-    public class ActionUserBridge : IMiddleware
+    public abstract class TelegramChannelController
     {
-        public async Task Execute(IChat Session, IPipelineController PipelineController)
+        protected IChannel Chat { get; private set; } = default!;
+
+        internal Task Invoke(IChannel chat)
         {
-            await PipelineController.Next(Session);
+            Chat = chat;
+            return Task.CompletedTask;
         }
     }
 }

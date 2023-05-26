@@ -24,6 +24,7 @@ using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.Abstract.Managements;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -94,11 +95,14 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         /// <param name="context">访问的请求对话</param>
         /// <returns>异步可等待的Task</returns>
-        public async Task Execute(ITelegramSession Session)
+        public async Task Execute(IChat Chat)
         {
-            await InvokeAction(Session);
+            if (Chat.IsBan)
+                throw new UnauthorizedAccessException($"Ban ID: {Chat.ChatID}");
+
+            await InvokeAction(Chat);
             // 新创建一个IPipelineController对象
-            IPipelineController __PipelineController = Session.UserService.GetService<IPipelineController>();
+            IPipelineController __PipelineController = Chat.ChatServiceScope.ServiceProvider.GetService<IPipelineController>();
             if (!__PipelineController.HasAnyPipeline)
             {
                 // 尝试添加
@@ -116,7 +120,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         /// <param name="context">访问的请求对话</param>
         /// <returns>无</returns>
-        protected virtual async Task InvokeAction(ITelegramSession Session)
+        protected virtual async Task InvokeAction(IChat Chat)
         {
             await Task.CompletedTask;
         }

@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
@@ -77,9 +78,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         /// </summary>
         /// <param name="Session">请求对话</param>
         /// <returns></returns>
-        public async Task Next(ITelegramSession Session)
+        public async Task Next(IChat Chat)
         {
-            await __NextHandle(Session);
+            await __NextHandle(Chat);
         }
 
         /// <summary>

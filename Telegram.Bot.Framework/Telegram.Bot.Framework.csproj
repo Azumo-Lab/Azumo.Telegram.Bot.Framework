@@ -34,8 +34,4 @@
     <ProjectReference Include="..\Telegram.Bot.Framework.Helper\Telegram.Bot.Framework.Helper.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstract\Groups\" />
-  </ItemGroup>
-
 </Project>

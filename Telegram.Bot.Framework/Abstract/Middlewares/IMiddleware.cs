@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Middlewares
@@ -30,6 +31,6 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// <param name="Session">访问的请求对话</param>
         /// <param name="PipelineController">流水线控制器</param>
         /// <returns>异步方法</returns>;
-        public Task Execute(ITelegramSession Session, IPipelineController PipelineController);
+        public Task Execute(IChat Session, IPipelineController PipelineController);
     }
 }

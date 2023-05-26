@@ -20,20 +20,32 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Logger
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    public class LoggerSettingModel
+    public abstract class TelegramGroupController
     {
-        public LogType LogLevel { get; set; } = LogType.Error;
+        protected IGroup Chat { get; private set; } = default!;
 
-        public bool EnableConsoleLog { get; set; } = false;
+        internal async Task Invoke(IGroup chat)
+        {
+            Chat = chat;
+            await MessageFilter(Chat.TelegramRequest.Update.Message);
+        }
 
-        public bool EnableFileLog { get; set; } = false;
-
-        public string LogFilePath { get; set; } = string.Empty;
+        /// <summary>
+        /// 群组消息过滤
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected virtual Task MessageFilter(Message message)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

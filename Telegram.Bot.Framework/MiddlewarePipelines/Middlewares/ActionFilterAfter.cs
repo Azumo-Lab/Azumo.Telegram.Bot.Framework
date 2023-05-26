@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
@@ -29,7 +30,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
     /// </summary>
     public class ActionFilterAfter : IMiddleware
     {
-        public async Task Execute(ITelegramSession Session, IPipelineController PipelineController)
+        public async Task Execute(IChat Session, IPipelineController PipelineController)
         {
             List<IFilter> filters = Session.UserService.GetServices<IFilter>().ToList();
             foreach (IFilter item in filters)

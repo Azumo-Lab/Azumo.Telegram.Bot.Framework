@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.Abstract.Middlewares
@@ -42,7 +43,7 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// 执行下一条作业
         /// </summary>
         /// <returns></returns>
-        public Task Next(ITelegramSession Session);
+        public Task Next(IChat Chat);
 
         /// <summary>
         /// 切换一条流水线

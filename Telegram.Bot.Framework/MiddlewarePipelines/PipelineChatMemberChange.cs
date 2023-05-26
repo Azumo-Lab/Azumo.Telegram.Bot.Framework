@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
@@ -44,16 +43,16 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         public PipelineChatMemberChange(IServiceProvider serviceProvider) : base(serviceProvider) 
         {
-            IEnumerable<IChatMemberChange> chatMemberChanges = serviceProvider.GetServices<IChatMemberChange>();
-            foreach (IChatMemberChange item in chatMemberChanges)
-            {
-                OnCreator += item.OnCreator;
-                OnBeAdmin += item.OnBeAdmin;
-                OnInvited += item.OnInvited;
-                OnLeft += item.OnLeft;
-                OnKicked += item.OnKicked;
-                OnRestricted += item.OnRestricted;
-            }
+            //IEnumerable<IChatMemberChange> chatMemberChanges = serviceProvider.GetServices<IChatMemberChange>();
+            //foreach (IChatMemberChange item in chatMemberChanges)
+            //{
+            //    OnCreator += item.OnCreator;
+            //    OnBeAdmin += item.OnBeAdmin;
+            //    OnInvited += item.OnInvited;
+            //    OnLeft += item.OnLeft;
+            //    OnKicked += item.OnKicked;
+            //    OnRestricted += item.OnRestricted;
+            //}
         }
 
         protected override async Task InvokeAction(ITelegramSession session)

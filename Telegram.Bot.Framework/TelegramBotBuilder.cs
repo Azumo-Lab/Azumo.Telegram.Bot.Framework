@@ -257,11 +257,11 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static IBuilder AddBotName(this IBuilder builder, string botName)
         {
-            builder.RuntimeServices.AddSingleton(typeof(IBotName), x =>
+            builder.RuntimeServices.AddSingleton(typeof(IBotInfo), x =>
             {
-                IBotName botNameUtil = new BotName();
-                botNameUtil.BotName = botName;
-                return botNameUtil;
+                BotInfo BotInfo = new();
+                BotInfo.BotName = botName;
+                return BotInfo;
             });
             return builder;
         }

@@ -81,6 +81,8 @@ namespace Telegram.Bot.Framework
 
         public User ThisBot { get; private set; }
 
+        public IBotInfo BotInfo => throw new NotImplementedException();
+
         /// <summary>
         /// 对当前Bot进行重启
         /// </summary>

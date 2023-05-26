@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
 
@@ -37,20 +39,14 @@ namespace Telegram.Bot.Framework
     /// 通过在Telegram中，向机器人发送指令 <c>/Test</c> 即可实现 回复 <c>Hello</c> 的功能<br/>
     /// 另外，需要注意的是：一旦方法上面设置 <see cref="BotCommandAttribute(string)"/> 之后，方法的参数也必须要设置 <see cref="ParamAttribute"/> 之后才能够正确执行参数的捕获操作
     /// </remarks>
-    public abstract class TelegramController
+    public abstract class TelegramPrivateChatController
     {
-        /// <summary>
-        /// 用户访问Telegram Bot 的一些信息
-        /// </summary>
-        protected ITelegramSession Session { get; private set; } = default!;
+        protected IPrivateChat Chat { get; private set; } = default!;
 
-        /// <summary>
-        /// 设置Session
-        /// </summary>
-        /// <remarks>
-        /// 这个方法是内部方法，用于在 <see cref="TelegramController"/> 实例化后，执行之前来进行的设置
-        /// </remarks>
-        /// <param name="session">会话</param>
-        internal void SetSession(ITelegramSession session) { Session = session; }
+        internal Task Invoke(IPrivateChat chat)
+        {
+            Chat = chat;
+            return Task.CompletedTask;
+        }
     }
 }

@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
@@ -41,6 +42,6 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// </summary>
         /// <param name="session">访问的请求对话</param>
         /// <returns>异步方法</returns>
-        public Task Execute(ITelegramSession session);
+        public Task Execute(IChat chat);
     }
 }
