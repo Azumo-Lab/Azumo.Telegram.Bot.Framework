@@ -14,23 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Managements;
-using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.Abstract.Middlewares
+namespace Telegram.Bot.Framework.ExtensionMethods
 {
     /// <summary>
-    /// 中间件接口
+    /// 
     /// </summary>
-    public interface IMiddleware
+    public static class Throw_ExtensionMethod
     {
-        /// <summary>
-        /// 开始执行
-        /// </summary>
-        /// <param name="Session">访问的请求对话</param>
-        /// <param name="PipelineController">流水线控制器</param>
-        /// <returns>异步方法</returns>;
-        public Task Execute(IChat Chat, IPipelineController PipelineController);
+        public static void ThrowIfNull(this object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
+        }
     }
 }

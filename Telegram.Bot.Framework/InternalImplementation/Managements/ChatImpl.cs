@@ -31,63 +31,59 @@ namespace Telegram.Bot.Framework.InternalImplementation.Managements
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(IPrivateChat))]
-    internal class PrivateChat : IPrivateChat
+    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(IChat))]
+    internal class ChatImpl : IChat
     {
-        private DateTime BanTime = DateTime.MinValue;
-        private TimeSpan TimeSpan = TimeSpan.Zero;
-        /// <summary>
-        /// 
-        /// </summary>
-        public long ChatID { get; set; }
-
-        private bool _Ban;
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsBan
+        public ChatImpl(IServiceProvider serviceProvider)
         {
-            get
-            {
-                if (BanTime + TimeSpan < DateTime.Now)
-                    return true;
-                return _Ban;
-            }
-            set
-            {
-                _Ban = value;
-            }
+            ChatServiceScope = serviceProvider.CreateScope();
+            TelegramBotClient = serviceProvider.GetService<TelegramBotClient>();
+            Session = serviceProvider.GetService<ISession>();
         }
 
         /// <summary>
-        /// 
+        /// 这个Chat的ID
+        /// </summary>
+        public long ChatID { get; set; }
+
+        /// <summary>
+        /// Chat的类型
+        /// </summary>
+        public ChatType ChatType { get; set; }
+
+        /// <summary>
+        /// 是否绝交
+        /// </summary>
+        public bool IsBan { get; set; }
+
+        /// <summary>
+        /// 机器人
         /// </summary>
         public ITelegramBotClient TelegramBotClient { get; set; }
 
-        public ChatType ChatType { get; set; }
-
+        /// <summary>
+        /// Chat范围内的服务
+        /// </summary>
         public IServiceScope ChatServiceScope { get; set; }
 
+        /// <summary>
+        /// 用于存储数据的Session
+        /// </summary>
         public ISession Session { get; set; }
 
         public ITelegramRequest TelegramRequest { get; set; }
 
-        public Task Ban()
-        {
-            IsBan = true;
-            return Task.CompletedTask;
-        }
+        public IChatCommandScope ChatCommandScope { get; set; }
 
-        public Task Ban(TimeSpan timeSpan)
-        {
-            BanTime = DateTime.Now;
-            TimeSpan = timeSpan;
-            return Task.CompletedTask;
-        }
+        public DateTime CreateTime { get; } = DateTime.Now;
+
+        public TimeSpan ValidTime { get; set; } = TimeSpan.FromDays(1);
+
+        public bool Expired => CreateTime + ValidTime < DateTime.Now;
 
         public void Dispose()
         {
-            ChatServiceScope.Dispose();
+            ChatCommandScope.Dispose();
         }
     }
 }

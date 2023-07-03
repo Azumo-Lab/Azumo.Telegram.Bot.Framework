@@ -100,8 +100,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             {
                 // 用户被Ban，无视错误
             }
-            catch (ApiRequestException Ex)
+            catch (ApiRequestException)
             {
+                // API 错误，网络不好，无视错误
             }
             catch (Exception Ex)
             {

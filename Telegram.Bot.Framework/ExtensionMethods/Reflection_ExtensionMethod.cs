@@ -14,34 +14,55 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Sessions
+namespace Telegram.Bot.Framework.ExtensionMethods
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface ITelegramRequest
+    public static class Reflection_ExtensionMethod
     {
-        /// <summary>
-        /// 请求信息
-        /// </summary>
-        public Update Update { get; internal set; }
+        private static List<Type> __AllTypes = new List<Type>();
+
+        static Reflection_ExtensionMethod()
+        {
+            __AllTypes.AddRange(AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()));
+        }
 
         /// <summary>
-        /// 整个Bot范围内的服务
+        /// 
         /// </summary>
-        public IServiceScope BotScopeService { get; internal set; }
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static List<Type> GetSameTypes(this object obj)
+        {
+            obj.ThrowIfNull();
 
-        public Message GetMessage();
+            Type baseType = null;
+            if (obj is Type t)
+                baseType = t;
+            else
+                baseType = obj.GetType();
 
-        public string GetCommand();
+            return __AllTypes.Where(x =>
+            {
+                return !x.IsAbstract && !x.IsInterface && baseType.IsAssignableFrom(x);
+            }).ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static List<Type> GetAllTypes()
+        {
+            return __AllTypes;
+        }
     }
 }

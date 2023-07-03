@@ -14,23 +14,39 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Managements;
-using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Abstract.Middlewares;
 
-namespace Telegram.Bot.Framework.Abstract.Middlewares
+namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
     /// <summary>
-    /// 中间件接口
+    /// 
     /// </summary>
-    public interface IMiddleware
+    internal class ActionSwitchPrivateGroupChannel : IMiddleware
     {
-        /// <summary>
-        /// 开始执行
-        /// </summary>
-        /// <param name="Session">访问的请求对话</param>
-        /// <param name="PipelineController">流水线控制器</param>
-        /// <returns>异步方法</returns>;
-        public Task Execute(IChat Chat, IPipelineController PipelineController);
+        public Task Execute(IChat Chat, IPipelineController PipelineController)
+        {
+            switch (Chat.ChatType)
+            {
+                case Types.Enums.ChatType.Private:
+                    break;
+                case Types.Enums.ChatType.Group:
+                    break;
+                case Types.Enums.ChatType.Channel:
+                    break;
+                case Types.Enums.ChatType.Supergroup:
+                    break;
+                case Types.Enums.ChatType.Sender:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

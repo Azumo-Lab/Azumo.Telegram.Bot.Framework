@@ -14,10 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework
 {
@@ -39,14 +42,40 @@ namespace Telegram.Bot.Framework
     /// 通过在Telegram中，向机器人发送指令 <c>/Test</c> 即可实现 回复 <c>Hello</c> 的功能<br/>
     /// 另外，需要注意的是：一旦方法上面设置 <see cref="BotCommandAttribute(string)"/> 之后，方法的参数也必须要设置 <see cref="ParamAttribute"/> 之后才能够正确执行参数的捕获操作
     /// </remarks>
-    public abstract class TelegramPrivateChatController
+    public abstract class TelegramController
     {
-        protected IPrivateChat Chat { get; private set; } = default!;
+        protected IChat Chat { get; private set; }
 
-        internal Task Invoke(IPrivateChat chat)
+        internal async Task Invoke(IChat _chat, Func<TelegramController, object[], Task> Action)
         {
-            Chat = chat;
-            return Task.CompletedTask;
+            Chat = _chat;
+
+            string command;
+            if (await MessageFilter(Chat.TelegramRequest.GetMessage()) ||
+                await CommandFilter(command = Chat.TelegramRequest.GetCommand()))
+                return;
+
+            await Action(this, Array.Empty<object>());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected virtual Task<bool> MessageFilter(Message message)
+        {
+            return Task.FromResult(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        protected virtual Task<bool> CommandFilter(string command)
+        {
+            return Task.FromResult(true);
         }
     }
 }

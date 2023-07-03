@@ -62,5 +62,13 @@ namespace Telegram.Bot.Framework.Abstract.Managements
         public ISession Session { get; internal set; }
 
         public ITelegramRequest TelegramRequest { get; internal set; }
+
+        public IChatCommandScope ChatCommandScope { get; }
+
+        public DateTime CreateTime { get; }
+
+        public TimeSpan ValidTime { get; set; }
+
+        public bool Expired { get; }
     }
 }

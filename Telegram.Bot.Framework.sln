@@ -31,8 +31,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Paym
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram.Bot.Framework.NuGet", "Telegram.Bot.Framework.NuGet", "{4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "1Password.TokenGetter", "1Password.TokenGetter\1Password.TokenGetter.csproj", "{AFD86DB5-119C-49AC-9091-614D4A108318}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.ChannelGroup", "Telegram.Bot.Framework.ChannelGroup\Telegram.Bot.Framework.ChannelGroup.csproj", "{C1498B36-6AB9-4719-873C-B34C218F3673}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LICENSE", "LICENSE", "{8995BEC6-B826-41B8-8891-A0FD5A227A67}"
@@ -76,10 +74,6 @@ Global
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFD86DB5-119C-49AC-9091-614D4A108318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AFD86DB5-119C-49AC-9091-614D4A108318}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AFD86DB5-119C-49AC-9091-614D4A108318}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AFD86DB5-119C-49AC-9091-614D4A108318}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1498B36-6AB9-4719-873C-B34C218F3673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1498B36-6AB9-4719-873C-B34C218F3673}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1498B36-6AB9-4719-873C-B34C218F3673}.Release|Any CPU.ActiveCfg = Release|Any CPU

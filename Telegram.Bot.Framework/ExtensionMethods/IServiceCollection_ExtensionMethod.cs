@@ -22,6 +22,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.ExtensionMethods
 {
@@ -30,6 +32,55 @@ namespace Telegram.Bot.Framework.ExtensionMethods
     /// </summary>
     public static class IServiceCollection_ExtensionMethod
     {
+        /// <summary>
+        /// 使用 <see cref="DependencyInjectionAttribute"/> 标签
+        /// </summary>
+        /// <param name="serviceDescriptors"></param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">未提供支持</exception>
+        public static IServiceCollection UseDependencyInjectionAttribute(this IServiceCollection serviceDescriptors)
+        {
+            Type objType = typeof(object);
+            Type diAttr = typeof(DependencyInjectionAttribute);
+            Reflection_ExtensionMethod.GetAllTypes()
+                .Where(x => Attribute.IsDefined(x, diAttr))
+                .ToList()
+                .Select(x =>
+                {
+                    return (x, (DependencyInjectionAttribute)Attribute.GetCustomAttribute(x, diAttr));
+                })
+                .OrderBy(x => x.Item2.Priority)
+                .Select(x => x.x)
+                .ToList()
+                .ForEach(x =>
+                {
+                    if (Attribute.GetCustomAttribute(x, diAttr) is not DependencyInjectionAttribute dependencyInjectionAttribute)
+                        return;
 
+                    Type baseType;
+                    Type[] interFaceType;
+                    Type serviceType = dependencyInjectionAttribute.ServiceType ??
+                            (((baseType = x.BaseType).FullName == objType.FullName)
+                            ? ((interFaceType = x.GetInterfaces()).Length > 1
+                                ? throw new NotSupportedException($"在 {x.FullName} 中，检测到多个接口类型：{string.Join(',', interFaceType.Select(x => x.FullName).ToList())}")
+                                : interFaceType.Length == 0 ? x : interFaceType[0])
+                            : baseType);
+                    switch (dependencyInjectionAttribute.ServiceLifetime)
+                    {
+                        case ServiceLifetime.Singleton:
+                            serviceDescriptors.AddSingleton(serviceType, x);
+                            break;
+                        case ServiceLifetime.Scoped:
+                            serviceDescriptors.AddScoped(serviceType, x);
+                            break;
+                        case ServiceLifetime.Transient:
+                            serviceDescriptors.AddTransient(serviceType, x);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            return serviceDescriptors;
+        }
     }
 }
