@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Sessions

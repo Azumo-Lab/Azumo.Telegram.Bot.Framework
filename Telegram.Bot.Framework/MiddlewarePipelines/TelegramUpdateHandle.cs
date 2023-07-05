@@ -25,7 +25,6 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.Abstract.Sessions;
@@ -41,7 +40,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     {
         private readonly Dictionary<UpdateType, IMiddlewarePipeline> __MiddlewarePipelineDic;
         private readonly IServiceScope __BotScopeService;
-        private readonly IChatManager __ChatManager;
+        private readonly ITelegramSessionManager __SessionManager;
 
         /// <summary>
         /// 初始化
@@ -50,13 +49,13 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         public TelegramUpdateHandle(IServiceProvider ServiceProvider)
         {
             __BotScopeService = ServiceProvider.CreateScope();
-            __ChatManager = __BotScopeService.ServiceProvider.GetService<IChatManager>();
+            __SessionManager = __BotScopeService.ServiceProvider.GetService<ITelegramSessionManager>();
 
             UpdateType[] receiverOptions = (__BotScopeService.ServiceProvider.GetService<ReceiverOptions>() ?? new()).AllowedUpdates ?? Array.Empty<UpdateType>();
             __MiddlewarePipelineDic = __BotScopeService.ServiceProvider.GetServices<IMiddlewarePipeline>()
                 .GroupBy(x => x.InvokeType)
                 // 只使用用户要使用的类型， 如果用户没有指定，那么就监听全部的类型
-                .Where(x => receiverOptions.IsEmpty() || receiverOptions.Contains(x.Key))
+                .Where(x => receiverOptions.Length == 0 || receiverOptions.Contains(x.Key))
                 // 这里选取最后一个，也就是最新的，如果用户添加了一个新的流水线，那么就用用户新添加的
                 .ToDictionary(x => x.Key, x => x.LastOrDefault());
         }
@@ -89,9 +88,8 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         {
             try
             {
-                // 创建iChat对象
-                ITelegramRequest telegramRequest = TelegramRequestManager.GetTelegramRequest(__BotScopeService, Update);
-                IChat chat = __ChatManager.GetChat(telegramRequest);
+                // 创建 ITelegramChat 对象
+                ITelegramChat chat = __SessionManager.GetChat(BotClient, Update);
 
                 if (__MiddlewarePipelineDic.TryGetValue(Update.Type, out IMiddlewarePipeline middlewarePipeline))
                     await middlewarePipeline.Execute(chat);

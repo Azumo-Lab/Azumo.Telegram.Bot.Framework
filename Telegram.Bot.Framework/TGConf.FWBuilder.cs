@@ -26,7 +26,7 @@ using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Abstract.Params;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Framework.InternalImplementation.Languages;
 using Telegram.Bot.Framework.InternalImplementation.Params;
 
@@ -69,7 +69,7 @@ namespace Telegram.Bot.Framework
             BotName = this.serviceProvider.GetService<IBotInfo>().BotName;
 
             // 获取所有的控制器类
-            AllControllerType = typeof(TelegramController).GetSameType();
+            AllControllerType = typeof(TelegramController).GetSameTypes();
 
             // 解析所有的控制器
             foreach (Type ControllerType in AllControllerType)
@@ -77,7 +77,7 @@ namespace Telegram.Bot.Framework
                 ParseController(ControllerType);
             }
 
-            List<Type> AllMakerType = typeof(IParamMaker).GetSameType();
+            List<Type> AllMakerType = typeof(IParamMaker).GetSameTypes();
             foreach (Type item in AllMakerType)
             {
                 TypeForAttribute typeForAttribute = (TypeForAttribute)Attribute.GetCustomAttribute(item, typeof(TypeForAttribute));

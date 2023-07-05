@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Telegram.Bot.Framework.Abstract.Sessions
 {
@@ -22,6 +20,14 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         public void Save(object sessionKey, byte[] data);
 
         /// <summary>
+        /// 保存指定的数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sessionKey"></param>
+        /// <param name="obj"></param>
+        public void Save<T>(object sessionKey, T obj);
+
+        /// <summary>
         /// 获得数据
         /// </summary>
         /// <param name="sessionKey">保存的Key</param>
@@ -29,9 +35,17 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         public byte[] Get(object sessionKey);
 
         /// <summary>
+        /// 获取指定的数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sessionKey"></param>
+        /// <returns></returns>
+        public T Get<T>(object sessionKey);
+
+        /// <summary>
         /// 清除某个数据
         /// </summary>
         /// <param name="sessionKey">保存的Key</param>
-        public void Remove(object sessionKey);
+        public bool Remove(object sessionKey);
     }
 }

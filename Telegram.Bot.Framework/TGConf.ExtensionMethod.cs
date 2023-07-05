@@ -22,8 +22,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.MiddlewarePipelines;
+using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework
 {
@@ -60,7 +60,7 @@ namespace Telegram.Bot.Framework
         {
             Type objType = typeof(object);
             Type diAttr = typeof(DependencyInjectionAttribute);
-            ObjectHelper.GetAllTypes()
+            Reflection_ExtensionMethod.GetAllTypes()
                 .Where(x => Attribute.IsDefined(x, diAttr))
                 .ToList()
                 .Select(x =>
@@ -129,7 +129,7 @@ namespace Telegram.Bot.Framework
         private static void AddTemplate<T>(IServiceCollection serviceDescriptors, Action<IServiceCollection, Type, Type> action)
         {
             Type baseType = typeof(T);
-            foreach (Type item in ObjectHelper.GetSameType(baseType))
+            foreach (Type item in baseType.GetSameTypes())
             {
                 action.Invoke(serviceDescriptors, baseType, item);
             }

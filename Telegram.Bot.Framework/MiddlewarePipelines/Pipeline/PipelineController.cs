@@ -22,25 +22,27 @@ using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
 {
     /// <summary>
-    /// 流水线控制器
+    /// 流水线控制器的实现类
     /// </summary>
     [DependencyInjection(ServiceLifetime.Scoped)]
     public class PipelineController : IPipelineController
     {
         private readonly Dictionary<string, IPipelineBuilder> __Pipelines = new();
         private MiddlewareDelegate __NextHandle = Session => Task.CompletedTask;
-        private MiddlewareDelegate Handlers = Session => Task.CompletedTask;
 
         /// <summary>
         /// 主分支的名称
         /// </summary>
         private string MainPipelineName;
 
+        /// <summary>
+        /// 判断当前的流水线是否具有流水线步骤
+        /// </summary>
         public bool HasAnyPipeline => __Pipelines.Count != 0;
 
         /// <summary>
@@ -49,7 +51,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         /// <param name="pipelineName">流水线名称，不输入即默认流水线</param>
         public void ChangePipeline(string pipelineName)
         {
-            if (pipelineName.IsTrimEmpty())
+            if (pipelineName.IsNullOrTrimEmpty())
                 pipelineName = MainPipelineName;
 
             if (__Pipelines.TryGetValue(pipelineName, out IPipelineBuilder builder))
@@ -63,7 +65,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         /// <param name="piplineBuilder"></param>
         public void AddPipeline(string pipelineName, IPipelineBuilder piplineBuilder)
         {
-            if (pipelineName.IsTrimEmpty())
+            if (pipelineName.IsNullOrTrimEmpty())
                 return;
 
             if (!__Pipelines.Any())
@@ -76,9 +78,9 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
         /// <summary>
         /// 下一个工序
         /// </summary>
-        /// <param name="Session">请求对话</param>
+        /// <param name="Chat">请求对话</param>
         /// <returns></returns>
-        public async Task Next(IChat Chat)
+        public async Task Next(ITelegramChat Chat)
         {
             await __NextHandle(Chat);
         }
@@ -106,7 +108,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines.Pipeline
 
             if (__Pipelines.ContainsKey(pipelineName))
                 return result;
-            
+
             if (!__Pipelines.Any())
                 MainPipelineName = pipelineName;
 

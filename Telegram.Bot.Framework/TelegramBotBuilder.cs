@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -23,7 +24,7 @@ using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Exceptions;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Framework.InternalImplementation.Bots;
 using Telegram.Bot.Polling;
 
@@ -47,12 +48,12 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 创建用
         /// </summary>
-        public IServiceCollection BuilderServices { get; } = new ServiceCollection();
+        public IServiceProvider BuilderServices { get; }
 
         /// <summary>
         /// 运行用
         /// </summary>
-        public IServiceCollection RuntimeServices { get; } = new ServiceCollection();
+        public IServiceCollection RuntimeServices { get; }
 
         /// <summary>
         /// 用于创建本类的实例
@@ -69,7 +70,17 @@ namespace Telegram.Bot.Framework
         /// <remarks>
         /// 这里使用了私有的初始化方法，目的是为了要用户调用 <see cref="Create"/> 方法
         /// </remarks>
-        private TelegramBotBuilder() { }
+        private TelegramBotBuilder()
+        {
+            BuilderServices = new ServiceCollection()
+                .AddSingleton<IServiceCollection>()
+                .AddSingleton<IConfig, TGConf>()
+                .AddSingleton<ITelegramBot, TelegramBot>()
+                .AddSingleton<IBotInfo, BotInfo>()
+                .BuildServiceProvider();
+
+            RuntimeServices = BuilderServices.GetRequiredService<IServiceCollection>();
+        }
 
         /// <summary>
         /// 开始创建TelegramBot
@@ -84,14 +95,8 @@ namespace Telegram.Bot.Framework
                 return new TelegramBotClient(Token, Proxy);
             });
 
-            _ = BuilderServices.AddSingleton(RuntimeServices);
-            _ = BuilderServices.AddSingleton<IConfig, TGConf>();
-            _ = BuilderServices.AddSingleton<ITelegramBot, TelegramBot>();
-
-            IServiceProvider serviceProvider = BuilderServices.BuildServiceProvider();
-
             // 返回创建的 ITelegramBot 实例
-            return serviceProvider.GetRequiredService<ITelegramBot>();
+            return BuilderServices.GetRequiredService<ITelegramBot>();
         }
     }
 
@@ -212,7 +217,7 @@ namespace Telegram.Bot.Framework
         /// <remarks>
         /// 添加配置类，其中配置类要实现 <see cref="IConfig"/> 接口
         /// </remarks>
-        /// <typeparam name="T"><see cref="IConfig"/></typeparam>
+        /// <typeparam name="T">类型是 <see cref="IConfig"/></typeparam>
         /// <param name="builder">机器人创建接口</param>
         /// <returns><see cref="IBuilder"/> 添加配置类后的创建接口</returns>
         public static IBuilder AddConfig<T>(this IBuilder builder) where T : class, IConfig
@@ -224,11 +229,14 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 
+        /// 添加配置
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="setting"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// 添加配置，实现 <see cref="Action"/> 来进行框架的配置
+        /// </remarks>
+        /// <param name="builder">机器人创建接口</param>
+        /// <param name="setting">用于配置的 <see cref="Action"/> 委托</param>
+        /// <returns><see cref="IBuilder"/> 添加配置后的创建接口</returns>
         public static IBuilder AddConfig(this IBuilder builder, Action<IServiceCollection> setting)
         {
             setting.ThrowIfNull();
@@ -238,31 +246,29 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
-        /// 
+        /// 添加语言
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">类型是 <see cref="ILanguage"/></typeparam>
+        /// <param name="builder">机器人创建接口</param>
+        /// <returns><see cref="IBuilder"/> 添加语言后的创建接口</returns>
         public static IBuilder AddLanguage<T>(this IBuilder builder) where T : class, ILanguage
         {
-            builder.RuntimeServices.AddSingleton<ILanguage, T>();
+            _ = builder.RuntimeServices.AddSingleton<ILanguage, T>();
             return builder;
         }
 
         /// <summary>
-        /// 
+        /// 添加一个Bot的名称
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="botName"></param>
-        /// <returns></returns>
+        /// <param name="builder">机器人创建接口</param>
+        /// <param name="botName">机器人的名称</param>
+        /// <returns><see cref="IBuilder"/> 添加机器人名称后的创建接口</returns>
         public static IBuilder AddBotName(this IBuilder builder, string botName)
         {
-            builder.RuntimeServices.AddSingleton(typeof(IBotInfo), x =>
-            {
-                BotInfo BotInfo = new();
-                BotInfo.BotName = botName;
-                return BotInfo;
-            });
+            IBotInfo botInfo = builder.BuilderServices.GetService<IBotInfo>();
+            botInfo.BotName = botName;
+            builder.RuntimeServices.TryAddSingleton(botInfo);
+            
             return builder;
         }
     }

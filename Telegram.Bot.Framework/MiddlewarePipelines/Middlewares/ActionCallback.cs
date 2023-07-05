@@ -14,39 +14,46 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.CallBack;
-using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.Models;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
 {
     /// <summary>
-    /// 回调函数
+    /// 
     /// </summary>
-    public class ActionCallback : IMiddleware
+    internal class ActionCallBack : IMiddleware
     {
-        /// <summary>
-        /// 执行回调函数
-        /// </summary>
-        /// <param name="Session">Context</param>
-        /// <param name="PipelineController">下一个处理流程</param>
-        /// <returns></returns>
-        public async Task Execute(IChat Session, IPipelineController PipelineController)
+        public async Task Execute(ITelegramChat Chat, IPipelineController PipelineController)
         {
-            ICallBackManager callBackManager = Session.UserService.GetService<ICallBackManager>();
-            Action<ITelegramSession> callbackAction = callBackManager.GetCallBack(Session.Update.CallbackQuery.Data);
-            if (!callbackAction.IsNull())
+            ICallBack callBack = Chat.CallBackManager.GetCallBack();
+            if (callBack != null)
             {
-                callbackAction.Invoke(Session);
-                await Session.BotClient.AnswerCallbackQueryAsync(Session.Update.CallbackQuery.Id);
+                CallBackResult callBackResult = callBack.Invoke(Chat);
+                if (callBackResult.Success)
+                {
+                    Task task = (Task)callBackResult.Result;
+                    if (task != null)
+                        try
+                        {
+                            await task;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                }
+                else
+                {
+                    Console.WriteLine(callBackResult.Exception.Message);
+                }
             }
 
-            await PipelineController.Next(Session);
+            await PipelineController.Next(Chat);
         }
     }
 }

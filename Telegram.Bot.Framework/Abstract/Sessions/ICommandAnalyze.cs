@@ -20,15 +20,42 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Adapter;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalImplementation.Adapter
+namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ConvertAdapter : IConvertAdapter
+    public interface ICommandAnalyze
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool HasCommand { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string GetCommand();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<(MessageEntity, string)> GetMessages();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Func<TelegramController, object[], Task> GetFunction();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        internal void SetMessage((MessageEntity, string)[] values);
     }
 }

@@ -43,7 +43,7 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// 执行下一条作业
         /// </summary>
         /// <returns></returns>
-        public Task Next(IChat Chat);
+        public Task Next(ITelegramChat Chat);
 
         /// <summary>
         /// 切换一条流水线

@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.CallBack;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Types.Enums;
 
@@ -64,6 +65,8 @@ namespace Telegram.Bot.Framework.Abstract.Managements
         public ITelegramRequest TelegramRequest { get; internal set; }
 
         public IChatCommandScope ChatCommandScope { get; }
+
+        public ICallBackManager CallBackManager { get; }
 
         public DateTime CreateTime { get; }
 

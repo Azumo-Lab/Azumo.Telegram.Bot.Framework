@@ -20,16 +20,44 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.CallBack;
+using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Models;
 
-namespace Telegram.Bot.Framework.Abstract.Adapter
+namespace Telegram.Bot.Framework.InternalImplementation.CallBack
 {
     /// <summary>
-    /// 用于转换各种类型
+    /// 
     /// </summary>
-    public interface IConvertAdapter
+    internal class InternalCallBack : ICallBack
     {
-        #region 一些基本的转换方法
 
-        #endregion
+        private Func<ITelegramChat, Task> __Callback;
+
+        public InternalCallBack(Func<ITelegramChat, Task> callback)
+        {
+            __Callback = callback;
+        }
+
+        public void Dispose()
+        {
+            __Callback = null;
+        }
+
+        public CallBackResult Invoke(ITelegramChat telegramChat)
+        {
+            CallBackResult callBackResult = new();
+            try
+            {
+                callBackResult.Success = true;
+                callBackResult.Result = __Callback(telegramChat);
+            }
+            catch (Exception ex)
+            {
+                callBackResult.Success = false;
+                callBackResult.Exception = ex;
+            }
+            return callBackResult;
+        }
     }
 }

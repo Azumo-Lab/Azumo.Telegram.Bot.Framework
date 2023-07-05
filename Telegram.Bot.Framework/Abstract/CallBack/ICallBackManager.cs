@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 
@@ -36,26 +37,32 @@ namespace Telegram.Bot.Framework.Abstract.CallBack
         /// </summary>
         /// <param name="CallBackAction"></param>
         /// <returns></returns>
-        string CreateCallBack(Action<ITelegramSession> CallBackAction);
-
-        /// <summary>
-        /// 创建一个CallBack
-        /// </summary>
-        /// <param name="CallBackAction"></param>
-        /// <returns></returns>
-        string CreateCallBack(string CallBackName, Action<ITelegramSession> CallBackAction);
+        string CreateCallBack(Func<ITelegramChat, Task> CallBackAction);
 
         /// <summary>
         /// 获取CallBack
         /// </summary>
         /// <param name="CallBackKey"></param>
         /// <returns></returns>
-        Action<ITelegramSession> GetCallBack(string CallBackKey);
+        ICallBack GetCallBack(string CallBackKey);
+
+        /// <summary>
+        /// 获取CallBack
+        /// </summary>
+        /// <param name="CallBackKey"></param>
+        /// <returns></returns>
+        ICallBack GetCallBack();
 
         /// <summary>
         /// 清除指定的Callback
         /// </summary>
         /// <param name="CallbackName"></param>
-        void Dispose(string CallbackName);
+        void Dispose(string CallBackKey);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CallBackKey"></param>
+        internal void SetCallBackKey(string CallBackKey);
     }
 }

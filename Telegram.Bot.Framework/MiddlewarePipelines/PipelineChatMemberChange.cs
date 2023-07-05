@@ -18,9 +18,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     /// </summary>
     internal class PipelineChatMemberChange : AbstractMiddlewarePipeline
     {
-        private delegate Task TelegramEventDelegate(ITelegramSession session);
+        private delegate Task TelegramEventDelegate(ITelegramChat session);
 
         private event TelegramEventDelegate OnCreator;
         private event TelegramEventDelegate OnBeAdmin;
@@ -55,28 +55,28 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             //}
         }
 
-        protected override async Task InvokeAction(ITelegramSession session)
+        protected override async Task InvokeAction(ITelegramChat chat)
         {
             Task task = null;
-            switch (session.Update.ChatMember.NewChatMember.Status)
+            switch (chat.Update.ChatMember.NewChatMember.Status)
             {
                 case ChatMemberStatus.Creator://创建聊天
-                    task = OnCreator?.Invoke(session);
+                    task = OnCreator?.Invoke(chat);
                     break;
                 case ChatMemberStatus.Administrator://成为管理员
-                    task = OnBeAdmin?.Invoke(session);
+                    task = OnBeAdmin?.Invoke(chat);
                     break;
                 case ChatMemberStatus.Member://被邀请
-                    task = OnInvited?.Invoke(session);
+                    task = OnInvited?.Invoke(chat);
                     break;
                 case ChatMemberStatus.Left://离开
-                    task = OnLeft?.Invoke(session);
+                    task = OnLeft?.Invoke(chat);
                     break;
                 case ChatMemberStatus.Kicked://被踢
-                    task = OnKicked?.Invoke(session);
+                    task = OnKicked?.Invoke(chat);
                     break;
                 case ChatMemberStatus.Restricted:
-                    task = OnRestricted?.Invoke(session);
+                    task = OnRestricted?.Invoke(chat);
                     break;
             }
             if (task != null)

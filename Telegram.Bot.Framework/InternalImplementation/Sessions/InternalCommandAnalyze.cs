@@ -20,47 +20,50 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Event;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.ChannelGroup
+namespace Telegram.Bot.Framework.InternalImplementation.Sessions
 {
     /// <summary>
     /// 
     /// </summary>
-    public class BotTelegramEvent : IChatMemberChange
+    internal class InternalCommandAnalyze : ICommandAnalyze
     {
-        public async Task OnBeAdmin(ITelegramSession session)
+        public bool HasCommand { get; set; }
+
+        private (MessageEntity, string)[] __Values;
+        private readonly IServiceProvider __ServiceProvider;
+
+        public InternalCommandAnalyze(IServiceProvider serviceProvider)
         {
-            await Task.CompletedTask;
+            __ServiceProvider = serviceProvider;
         }
 
-        public async Task OnCreator(ITelegramSession session)
+        string ICommandAnalyze.GetCommand()
         {
-            await Task.CompletedTask;
+            if (__Values.Length > 0)
+            {
+                (MessageEntity type, string command) = __Values[0];
+                if (type.Type == Types.Enums.MessageEntityType.BotCommand)
+                    return command;
+            }
+            return string.Empty;
         }
 
-        public async Task OnInvited(ITelegramSession session)
+        Func<TelegramController, object[], Task> ICommandAnalyze.GetFunction()
         {
-            ChatMember member = session.Update.ChatMember!.NewChatMember;
-            await session.SendTextMessageAsync($"欢迎新成员 @{member.User.Username}");
+            throw new NotImplementedException();
         }
 
-        public async Task OnKicked(ITelegramSession session)
+        List<(MessageEntity, string)> ICommandAnalyze.GetMessages()
         {
-            await Task.CompletedTask;
+            return __Values.ToList();
         }
 
-        public async Task OnLeft(ITelegramSession session)
+        void ICommandAnalyze.SetMessage((MessageEntity, string)[] values)
         {
-            await Task.CompletedTask;
-        }
-
-        public async Task OnRestricted(ITelegramSession session)
-        {
-            await Task.CompletedTask;
+            __Values = values;
         }
     }
 }

@@ -33,5 +33,11 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
         }
+
+        public static void ThrowIfNullOrEmpty(this string str)
+        {
+            if(str.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(str));
+        }
     }
 }

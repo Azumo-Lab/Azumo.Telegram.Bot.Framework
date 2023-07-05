@@ -23,14 +23,13 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.ExtensionMethods
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class IServiceCollection_ExtensionMethod
+    internal static class IServiceCollection_ExtensionMethod
     {
         /// <summary>
         /// 使用 <see cref="DependencyInjectionAttribute"/> 标签
@@ -80,6 +79,11 @@ namespace Telegram.Bot.Framework.ExtensionMethods
                             break;
                     }
                 });
+            return serviceDescriptors;
+        }
+
+        public static IServiceCollection UseCompileDelegate(this IServiceCollection serviceDescriptors)
+        {
             return serviceDescriptors;
         }
     }

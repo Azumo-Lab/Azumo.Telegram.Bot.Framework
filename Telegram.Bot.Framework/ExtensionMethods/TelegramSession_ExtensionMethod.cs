@@ -14,11 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
@@ -34,6 +32,8 @@ namespace Telegram.Bot.Framework.ExtensionMethods
     public static class TelegramSession_ExtensionMethod
     {
         #region ISession 的相关操作
+
+        private const string SESSION_COMMAND = nameof(SESSION_COMMAND);
 
         /// <summary>
         /// 将文本保存到Session中
@@ -55,9 +55,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         public static string GetString(this ISession session, string key)
         {
             byte[] bytes = session.Get(key);
-            if (bytes != default)
-                return Encoding.UTF8.GetString(bytes);
-            return null;
+            return bytes != default ? Encoding.UTF8.GetString(bytes) : null;
         }
 
         /// <summary>
@@ -67,7 +65,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         /// <param name="CommandName"></param>
         public static void SetCommand(this ISession session, string CommandName)
         {
-            session.SaveString("COMMAND", CommandName);
+            session.SaveString(SESSION_COMMAND, CommandName);
         }
 
         /// <summary>
@@ -77,7 +75,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         /// <returns></returns>
         public static string GetCommand(this ISession session)
         {
-            return session.GetString("COMMAND");
+            return session.GetString(SESSION_COMMAND);
         }
 
         /// <summary>
@@ -86,7 +84,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         /// <param name="session"></param>
         public static void RemoveCommand(this ISession session)
         {
-            session.Remove("COMMAND");
+            _ = session.Remove(SESSION_COMMAND);
         }
         #endregion
 
@@ -100,10 +98,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         public static bool GetChatID(this ITelegramSession session, out long chatID)
         {
             long? vlChatID = GetChatID(session);
-            if (vlChatID.HasValue)
-                chatID = vlChatID.Value;
-            else
-                chatID = long.MinValue;
+            chatID = vlChatID.HasValue ? vlChatID.Value : long.MinValue;
             return vlChatID.HasValue;
         }
 
@@ -119,7 +114,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
 
         public static User GetUser(this Update update)
         {
-            return  TelegramSession.GetUser(update);
+            return TelegramSession.GetUser(update);
         }
 
         public static string GetCommand(this ITelegramSession session)
@@ -139,10 +134,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             if ((messageEntity = messageEntities.FirstOrDefault()) == null)
                 return default!;
 
-            if (messageEntity.Type == Types.Enums.MessageEntityType.BotCommand)
-                return messageEntitiesVal.FirstOrDefault();
-
-            return default!;
+            return messageEntity.Type == Types.Enums.MessageEntityType.BotCommand ? messageEntitiesVal.FirstOrDefault() : default;
         }
 
         public static List<(MessageEntity msgEntity, string msgText)> GetAllMessageEntity(this ITelegramSession session)
@@ -158,7 +150,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             List<MessageEntity> messageEntities = session.Update.Message?.Entities?.ToList() ?? new();
             List<string> messageEntityValues = session.Update.Message?.EntityValues?.ToList() ?? new();
             foreach (MessageEntity item in messageEntities)
-                result.Add((item, messageEntityValues.GetAndRemove(defVal : string.Empty)));
+                result.Add((item, messageEntityValues.GetAndRemove(defVal: string.Empty)));
             return result;
         }
 
@@ -177,10 +169,10 @@ namespace Telegram.Bot.Framework.ExtensionMethods
         #region 文本消息的发送
         public static async Task SendTextMessageAsync(this ITelegramSession session, string message)
         {
-            if(!session.GetChatID(out long chatID))
+            if (!session.GetChatID(out long chatID))
                 return;
 
-            await session.BotClient.SendTextMessageAsync(chatID, message, Types.Enums.ParseMode.MarkdownV2);
+            _ = await session.BotClient.SendTextMessageAsync(chatID, message, Types.Enums.ParseMode.MarkdownV2);
         }
         #endregion
 
@@ -198,9 +190,9 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             if (!System.IO.File.Exists(PhotoPath))
                 return;
 
-            await session.BotClient.SendPhotoAsync(chatID,
-                new Types.InputFiles.InputOnlineFile(new FileStream(PhotoPath, FileMode.OpenOrCreate), Path.GetFileName(PhotoPath)), 
-                message, 
+            _ = await session.BotClient.SendPhotoAsync(chatID,
+                new Types.InputFiles.InputOnlineFile(new FileStream(PhotoPath, FileMode.OpenOrCreate), Path.GetFileName(PhotoPath)),
+                message,
                 Types.Enums.ParseMode.MarkdownV2);
         }
 
@@ -214,7 +206,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             if (!session.GetChatID(out long chatID))
                 return;
 
-            await session.BotClient.SendPhotoAsync(chatID, new Types.InputFiles.InputOnlineFile(photoSize.FileId), message, Types.Enums.ParseMode.MarkdownV2);
+            _ = await session.BotClient.SendPhotoAsync(chatID, new Types.InputFiles.InputOnlineFile(photoSize.FileId), message, Types.Enums.ParseMode.MarkdownV2);
         }
         #endregion
     }

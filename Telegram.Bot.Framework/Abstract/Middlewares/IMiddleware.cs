@@ -31,6 +31,6 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// <param name="Session">访问的请求对话</param>
         /// <param name="PipelineController">流水线控制器</param>
         /// <returns>异步方法</returns>;
-        public Task Execute(IChat Chat, IPipelineController PipelineController);
+        public Task Execute(ITelegramChat Chat, IPipelineController PipelineController);
     }
 }

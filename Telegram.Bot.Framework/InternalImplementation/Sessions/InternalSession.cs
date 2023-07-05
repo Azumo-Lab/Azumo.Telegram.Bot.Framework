@@ -17,19 +17,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Sessions
 {
     /// <summary>
     /// 内部Session实现
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ISession))]
+    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(ISession))]
     internal sealed class InternalSession : ISession, IDisposable
     {
         /// <summary>
@@ -37,7 +34,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         /// </summary>
         public string SessionID { get; } = Guid.NewGuid().ToString();
 
-        private readonly Dictionary<object, byte[]> __InternalSessionCache = new();
+        private readonly Dictionary<object, object> __InternalSessionCache = new();
         private bool __Disposed;
 
         /// <summary>
@@ -47,20 +44,19 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         /// <returns>返回对应的数据，可以为NULL</returns>
         public byte[] Get(object sessionKey)
         {
-            ThrowIfDispose();
-
-            return __InternalSessionCache.TryGetValue(sessionKey, out byte[] result) ? result : default;
+            return Get<byte[]>(sessionKey);
         }
 
         /// <summary>
         /// 删除指定Key的数据
         /// </summary>
         /// <param name="sessionKey">要删除数据的Key</param>
-        public void Remove(object sessionKey)
+        public bool Remove(object sessionKey)
         {
             ThrowIfDispose();
+            sessionKey.ThrowIfNull();
 
-            __InternalSessionCache.Remove(sessionKey);
+            return __InternalSessionCache.Remove(sessionKey);
         }
 
         /// <summary>
@@ -70,16 +66,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         /// <param name="data">要保存的数据</param>
         public void Save(object sessionKey, byte[] data)
         {
-            ThrowIfDispose();
-
-            if (__InternalSessionCache.ContainsKey(sessionKey))
-            {
-                __InternalSessionCache[sessionKey] = data;
-            }
-            else
-            {
-                __InternalSessionCache.Add(sessionKey, data);
-            }
+            Save<byte[]>(sessionKey, data);
         }
 
         private void ThrowIfDispose()
@@ -116,6 +103,25 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
             // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public void Save<T>(object sessionKey, T obj)
+        {
+            ThrowIfDispose();
+            sessionKey.ThrowIfNull();
+
+            if (__InternalSessionCache.ContainsKey(sessionKey))
+                __InternalSessionCache[sessionKey] = obj;
+            else
+                __InternalSessionCache.Add(sessionKey, obj);
+        }
+
+        public T Get<T>(object sessionKey)
+        {
+            ThrowIfDispose();
+            sessionKey.ThrowIfNull();
+
+            return __InternalSessionCache.TryGetValue(sessionKey, out object result) && result is T TypeResult ? TypeResult : default;
         }
     }
 }

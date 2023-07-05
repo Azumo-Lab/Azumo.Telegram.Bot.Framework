@@ -20,14 +20,44 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.CallBack;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.ChannelGroup
+namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ChannelManage
+    public interface ITelegramChat : IDisposable
     {
+        public Update Update { get; internal set; }
 
+        public ITelegramChatInfo ChatInfo { get; }
+
+        public IServiceProvider ChatService { get; }
+
+        public IServiceProvider BotService { get; }
+
+        public ITelegramBotClient BotClient { get; }
+
+        public ICommandAnalyze CommandAnalyze { get; }
+
+        public ISession Session { get; }
+
+        public ICallBackManager CallBackManager { get; }
+    }
+
+    public interface ITelegramChatInfo
+    {
+        public string ChatName { get; set; }
+
+        public User ChatUser { get; set; }
+
+        public ChatType ChatType { get; set; }
+
+        public long ChatID { get; set; }
+
+        public bool IsBan { get; set; }
     }
 }

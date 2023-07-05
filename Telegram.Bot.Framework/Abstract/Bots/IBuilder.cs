@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net.Http;
 using Telegram.Bot.Framework.Abstract.Config;
 
@@ -52,7 +53,7 @@ namespace Telegram.Bot.Framework.Abstract.Bots
         /// <summary>
         /// 用于创建一些 <see cref="IBuilder"/> 用到的一些服务。
         /// </summary>
-        public IServiceCollection BuilderServices { get; }
+        public IServiceProvider BuilderServices { get; }
 
         /// <summary>
         /// 用于创建整个机器人运行时候需要的服务

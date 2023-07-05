@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Authentication.Interface;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -97,7 +97,7 @@ namespace Telegram.Bot.Framework.Authentication.Internal
             ITelegramCommandsManager commandManager = session.UserService.GetService<ITelegramCommandsManager>()!;
             BotCommandScope botCommandScope = GetBotCommandScope(session);
 
-            if (ObjectHelper.HasAnyNull(commandManager, botCommandScope))
+            if (Object_ExtensionMethod.HasAnyNull(commandManager, botCommandScope))
                 return;
 
             List<BotCommand> botCommands = commandManager.GetBotCommands(botCommandScope);

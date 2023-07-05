@@ -23,7 +23,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Controller;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Helper;
+using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Controller
 {

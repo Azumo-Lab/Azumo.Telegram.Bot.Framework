@@ -23,8 +23,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Types;
-using Telegram.Bot.Framework.Helper;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Commands
 {

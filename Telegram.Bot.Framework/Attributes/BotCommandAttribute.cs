@@ -48,7 +48,7 @@ namespace Telegram.Bot.Framework.Attributes
         /// <summary>
         /// 
         /// </summary>
-        public BotCommandScopeType BotCommandScopeType { get; set; }
+        public BotCommandScopeType BotCommandScopeType { get; set; } = BotCommandScopeType.Default;
 
         /// <summary>
         /// 机器人指令标签

@@ -42,6 +42,6 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
         /// </summary>
         /// <param name="session">访问的请求对话</param>
         /// <returns>异步方法</returns>
-        public Task Execute(IChat chat);
+        public Task Execute(ITelegramChat chat);
     }
 }

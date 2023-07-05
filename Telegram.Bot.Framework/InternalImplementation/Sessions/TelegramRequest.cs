@@ -16,13 +16,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Sessions
@@ -36,5 +32,30 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         public Update Update { get; set; }
 
         public IServiceScope BotScopeService { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string GetCommand()
+        {
+            if (Update.IsNull())
+                return string.Empty;
+
+            string text = Update.Message?.Text;
+            if (!text.IsNull() && text.StartsWith('/'))
+                return text;
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Message GetMessage()
+        {
+            return Update.Message;
+        }
     }
 }

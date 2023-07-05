@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.ExtensionMethods
     /// </summary>
     public static class Reflection_ExtensionMethod
     {
-        private static List<Type> __AllTypes = new List<Type>();
+        private static readonly List<Type> __AllTypes = new();
 
         static Reflection_ExtensionMethod()
         {

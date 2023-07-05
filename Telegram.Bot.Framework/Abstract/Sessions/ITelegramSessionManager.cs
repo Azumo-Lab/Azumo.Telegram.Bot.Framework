@@ -14,31 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Helper
+namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
-    /// 这是 <see cref="FileInfo"/> 的扩展方法
+    /// 
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// <see cref="FileInfo"/> 的扩展方法, 通常是以下的方式：
-    /// </para>
-    /// <code>
-    /// public static void MethodName(this <see cref="FileInfo"/> obj)
-    /// </code>
-    /// </remarks>
-    public static class FileInfoHelper
+    internal interface ITelegramSessionManager
     {
-        /// <summary>
-        /// 判断一个文件是否是 0 字节的空文件
-        /// </summary>
-        /// <param name="fileInfo">文件信息</param>
-        /// <returns>True：空文件， False：非空文件</returns>
-        public static bool IsEmpty(this FileInfo fileInfo)
-        {
-            return fileInfo.IsNull() || !fileInfo.Exists || fileInfo.Length == 0;
-        }
+        public ITelegramChat GetChat(ITelegramBotClient BotClient, Update Update);
+
+        public ITelegramSession GetSession();
+
+        public ITelegramRequest GetRequest();
     }
 }

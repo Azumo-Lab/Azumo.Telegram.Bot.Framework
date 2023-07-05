@@ -24,8 +24,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Types;
-using Telegram.Bot.Framework.Helper;
 using System.Security.Cryptography.X509Certificates;
+using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework.InternalImplementation.Commands
 {

@@ -31,5 +31,5 @@ namespace Telegram.Bot.Framework.Abstract.Middlewares
     /// </summary>
     /// <param name="Context"></param>
     /// <returns></returns>
-    public delegate Task MiddlewareDelegate(IChat Session);
+    public delegate Task MiddlewareDelegate(ITelegramChat Session);
 }

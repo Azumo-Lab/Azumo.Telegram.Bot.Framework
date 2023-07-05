@@ -23,22 +23,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "代码规范", "代码规�
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.SendMessageBot", "Telegram.Bot.SendMessageBot\Telegram.Bot.SendMessageBot.csproj", "{93B57085-2EA6-4220-A140-DA685C204EAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Helper", "Telegram.Bot.Framework.Helper\Telegram.Bot.Framework.Helper.csproj", "{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Channel", "Telegram.Bot.Channel\Telegram.Bot.Channel.csproj", "{5D87E93D-64A8-4146-9999-10755B5748BA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Payment", "Telegram.Bot.Framework.Payment\Telegram.Bot.Framework.Payment.csproj", "{FE2DA8C4-60BC-4118-9B42-69297AE990A5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telegram.Bot.Framework.NuGet", "Telegram.Bot.Framework.NuGet", "{4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.ChannelGroup", "Telegram.Bot.Framework.ChannelGroup\Telegram.Bot.Framework.ChannelGroup.csproj", "{C1498B36-6AB9-4719-873C-B34C218F3673}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LICENSE", "LICENSE", "{8995BEC6-B826-41B8-8891-A0FD5A227A67}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzumoLab.Downloader", "AzumoLab.Downloader\AzumoLab.Downloader.csproj", "{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,26 +52,10 @@ Global
 		{93B57085-2EA6-4220-A140-DA685C204EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93B57085-2EA6-4220-A140-DA685C204EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93B57085-2EA6-4220-A140-DA685C204EAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{286466DA-AF99-489E-A58F-5BA7DA7DBAE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D87E93D-64A8-4146-9999-10755B5748BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE2DA8C4-60BC-4118-9B42-69297AE990A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1498B36-6AB9-4719-873C-B34C218F3673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1498B36-6AB9-4719-873C-B34C218F3673}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1498B36-6AB9-4719-873C-B34C218F3673}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1498B36-6AB9-4719-873C-B34C218F3673}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,9 +65,6 @@ Global
 		{0D92EFF3-88F6-4604-BF53-B349A78E86F1} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 		{93B57085-2EA6-4220-A140-DA685C204EAC} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 		{5D87E93D-64A8-4146-9999-10755B5748BA} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
-		{FE2DA8C4-60BC-4118-9B42-69297AE990A5} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
-		{C1498B36-6AB9-4719-873C-B34C218F3673} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
-		{A9ECE4D6-EEBF-4CE8-BE7B-29EA0B73EEC3} = {4A2B09DA-76C7-44EA-A563-65B28EBF6CB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}

@@ -23,7 +23,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;

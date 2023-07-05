@@ -23,8 +23,8 @@ using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Framework.Helper;
 using Telegram.Bot.Framework.Abstract.Managements;
+using Telegram.Bot.Framework.ExtensionMethods;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -95,14 +95,14 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         /// <param name="context">访问的请求对话</param>
         /// <returns>异步可等待的Task</returns>
-        public async Task Execute(IChat Chat)
+        public async Task Execute(ITelegramChat Chat)
         {
-            if (Chat.IsBan)
-                throw new UnauthorizedAccessException($"Ban ID: {Chat.ChatID}");
+            if (Chat.ChatInfo.IsBan)
+                throw new UnauthorizedAccessException($"Ban ID: {Chat.ChatInfo.ChatID}");
 
             await InvokeAction(Chat);
             // 新创建一个IPipelineController对象
-            IPipelineController __PipelineController = Chat.ChatServiceScope.ServiceProvider.GetService<IPipelineController>();
+            IPipelineController __PipelineController = Chat.ChatService.GetService<IPipelineController>();
             if (!__PipelineController.HasAnyPipeline)
             {
                 // 尝试添加
@@ -112,7 +112,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             // 切换到主分支
             __PipelineController.ChangePipeline(InvokeTypeStr);
             // 开始处理
-            await __PipelineController.Next(Session);
+            await __PipelineController.Next(Chat);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// </summary>
         /// <param name="context">访问的请求对话</param>
         /// <returns>无</returns>
-        protected virtual async Task InvokeAction(IChat Chat)
+        protected virtual async Task InvokeAction(ITelegramChat Chat)
         {
             await Task.CompletedTask;
         }

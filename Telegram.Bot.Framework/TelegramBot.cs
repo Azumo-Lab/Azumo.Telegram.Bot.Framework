@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.BackgroundProcess;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Config;
+using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Framework.MiddlewarePipelines;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -55,6 +56,41 @@ namespace Telegram.Bot.Framework
         private bool awaitFlag;
 
         private bool disposedValue;
+
+        private const string AzumoLab_Logo = 
+@"
+                                        _           _            
+     /\                                | |         | |           
+    /  \    _____   _ _ __ ___   ___   | |     __ _| |__         
+   / /\ \  |_  / | | | '_ ` _ \ / _ \  | |    / _` | '_ \        
+  / ____ \  / /| |_| | | | | | | (_) | | |___| (_| | |_) |       
+ /_/    \_\/___|\__,_|_| |_| |_|\___/  |______\__,_|_.__/        
+  _______   _                                  ____        _     
+ |__   __| | |                                |  _ \      | |    
+    | | ___| | ___  __ _ _ __ __ _ _ __ ___   | |_) | ___ | |_   
+    | |/ _ \ |/ _ \/ _` | '__/ _` | '_ ` _ \  |  _ < / _ \| __|  
+    | |  __/ |  __/ (_| | | | (_| | | | | | |_| |_) | (_) | |_ _ 
+  __|_|\___|_|\___|\__, |_|  \__,_|_| |_| |_(_)____/ \___/ \__(_)
+ |  ____|           __/ |                         | |            
+ | |__ _ __ __ _ _ |___/_   _____      _____  _ __| | __         
+ |  __| '__/ _` | '_ ` _ \ / _ \ \ /\ / / _ \| '__| |/ /         
+ | |  | | | (_| | | | | | |  __/\ V  V / (_) | |  |   <          
+ |_|  |_|  \__,_|_| |_| |_|\___| \_/\_/ \___/|_|  |_|\_\         
+";
+        #endregion
+
+        #region 公开的变量属性
+
+        /// <summary>
+        /// 这个机器人用户的信息
+        /// </summary>
+        public User ThisBot { get; private set; }
+
+        /// <summary>
+        /// Bot的一些信息
+        /// </summary>
+        public IBotInfo BotInfo { get; private set; }
+
         #endregion
 
         /// <summary>
@@ -74,14 +110,11 @@ namespace Telegram.Bot.Framework
             Services.AddSingleton<CancellationTokenSource>();
             Services.AddSingleton<ITelegramBot>(this);
             Services.AddSingleton<IUpdateHandler, TelegramUpdateHandle>();
+            Services.AddSingleton(BotInfo = ServiceProvider.GetService<IBotInfo>());
 
             // 创建服务
             this.ServiceProvider = Services.BuildServiceProvider();
         }
-
-        public User ThisBot { get; private set; }
-
-        public IBotInfo BotInfo => throw new NotImplementedException();
 
         /// <summary>
         /// 对当前Bot进行重启
@@ -110,6 +143,10 @@ namespace Telegram.Bot.Framework
         /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
         public async Task BotStart(bool awaitFlag = true)
         {
+            ConsoleHelper.Clear();
+            // 输出Logo图像
+            ConsoleHelper.WriteLine(AzumoLab_Logo);
+
             // 是否可能等待的值
             this.awaitFlag = awaitFlag;
 
@@ -125,7 +162,7 @@ namespace Telegram.Bot.Framework
             if (!await botClient.TestApiAsync(cancellationTokenSource.Token))
                 throw new ArgumentException("API Error");
             
-            // 启动
+            // 开始启动
             botClient.StartReceiving(
                 ServiceProvider.GetService<IUpdateHandler>(),
                 ServiceProvider.GetService<ReceiverOptions>() ?? new ReceiverOptions { AllowedUpdates = { } },
@@ -133,7 +170,7 @@ namespace Telegram.Bot.Framework
                 );
 
             ThisBot = await botClient.GetMeAsync(cancellationTokenSource.Token);
-            Console.WriteLine($"Start @{ThisBot.Username}");
+            ConsoleHelper.Info($"Start @{ThisBot.Username}");
 
             // 阻塞等待
             await Task.Run(async () =>

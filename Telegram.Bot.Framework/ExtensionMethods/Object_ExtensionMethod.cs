@@ -59,6 +59,30 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             return obj == null;
         }
 
+        public static bool HasAnyNull(params object[] objs)
+        {
+            if (objs.IsNull())
+                return true;
+            foreach (object item in objs)
+            {
+                if (item.IsNull())
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool HasAllNull(params object[] objs)
+        {
+            if (objs.IsNull())
+                return true;
+            foreach (object item in objs)
+            {
+                if (!item.IsNull())
+                    return false;
+            }
+            return true;
+        }
+
         #endregion
 
         #region 文件类的扩展处理
@@ -80,6 +104,16 @@ namespace Telegram.Bot.Framework.ExtensionMethods
                     newIndex = 0;
             }
             return list[newIndex];
+        }
+
+        public static bool IsEmpty<T>(this T[] list)
+        {
+            return list.IsNull() || list.Length == 0;
+        }
+
+        public static bool IsEmpty<T>(this List<T> list)
+        {
+            return list.IsNull() || list.Count == 0;
         }
 
         #endregion

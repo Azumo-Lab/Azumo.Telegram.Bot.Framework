@@ -20,33 +20,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Managements;
-using Telegram.Bot.Framework.Abstract.Middlewares;
+using Telegram.Bot.Framework.Abstract.Sessions;
+using Telegram.Bot.Framework.Models;
 
-namespace Telegram.Bot.Framework.MiddlewarePipelines.Middlewares
+namespace Telegram.Bot.Framework.Abstract.CallBack
 {
     /// <summary>
-    /// 
+    /// 回调
     /// </summary>
-    internal class ActionSwitchPrivateGroupChannel : IMiddleware
+    public interface ICallBack : IDisposable
     {
-        public Task Execute(IChat Chat, IPipelineController PipelineController)
-        {
-            switch (Chat.ChatType)
-            {
-                case Types.Enums.ChatType.Private:
-                    break;
-                case Types.Enums.ChatType.Group:
-                    break;
-                case Types.Enums.ChatType.Channel:
-                    break;
-                case Types.Enums.ChatType.Supergroup:
-                    break;
-                case Types.Enums.ChatType.Sender:
-                    break;
-                default:
-                    break;
-            }
-        }
+        /// <summary>
+        /// 执行这个回调
+        /// </summary>
+        /// <returns> <see cref="CallBackResult"/> 回调函数的执行结果 </returns>
+        public CallBackResult Invoke(ITelegramChat telegramChat);
     }
 }

@@ -34,5 +34,10 @@ namespace Telegram.Bot.Framework.InternalImplementation.Bots
         public DateTime BotStartTime { get; set; }
 
         public string BotName { get; set; }
+
+        public TimeSpan RunTimes()
+        {
+            return DateTime.Now - BotStartTime;
+        }
     }
 }

@@ -16,9 +16,9 @@
 
 using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
@@ -34,11 +34,6 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
 
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
-        }
-
-        protected override async Task InvokeAction(ITelegramSession session)
-        {
-            await Task.CompletedTask;
         }
     }
 }

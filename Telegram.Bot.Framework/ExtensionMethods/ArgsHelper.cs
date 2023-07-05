@@ -21,13 +21,28 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.ChannelGroup
+namespace Telegram.Bot.Framework.ExtensionMethods
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class GroupManage
+    public static class ArgsHelper
     {
-
+        /// <summary>
+        /// 获取参数， -Token "Token" -Proxy "http://127.0.0.1:7890/"
+        /// </summary>
+        /// <param name="args">参数列表</param>
+        /// <param name="name">想要捕获的参数</param>
+        /// <returns>返回的是想要的参数</returns>
+        public static string GetArgs(this string[] args, string name)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                string arg = args[i];
+                if (arg.ToLower() == name.ToLower() || arg.ToUpper() == name.ToUpper())
+                    return args.GetVal(i);
+            }
+            return string.Empty;
+        }
     }
 }

@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using Telegram.Bot.Framework.MiddlewarePipelines.Middlewares;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
@@ -44,22 +43,22 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         /// <param name="serviceProvider"></param>
         protected override void AddMiddlewareHandles(IServiceProvider serviceProvider)
         {
-            // 添加主分支
-            AddPipelineBuilder(InvokeTypeStr, serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionAuthentication>()          // 简单的认证
-                .AddMiddleware<ActionGroupChannel>()            // 群组消息处理
-                .AddMiddleware<ActionFilterBefore>()            // 执行前过滤
-                .AddMiddleware<ActionControllerInvoke>()        // 执行命令控制器
-                .AddMiddleware<ActionFilterAfter>());           // 执行后过滤
+            //// 添加主分支
+            //AddPipelineBuilder(InvokeTypeStr, serviceProvider.GetService<IPipelineBuilder>()
+            //    .AddMiddleware<ActionAuthentication>()          // 简单的认证
+            //    .AddMiddleware<ActionGroupChannel>()            // 群组消息处理
+            //    .AddMiddleware<ActionFilterBefore>()            // 执行前过滤
+            //    .AddMiddleware<ActionControllerInvoke>()        // 执行命令控制器
+            //    .AddMiddleware<ActionFilterAfter>());           // 执行后过滤
 
-            // 添加新分支处理，频道处理 Channel
-            AddPipelineBuilder(nameof(ChatType.Channel), serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionChannel>());               // 添加频道信息处理，实现 IChannelMessageProcess 接口
+            //// 添加新分支处理，频道处理 Channel
+            //AddPipelineBuilder(nameof(ChatType.Channel), serviceProvider.GetService<IPipelineBuilder>()
+            //    .AddMiddleware<ActionChannel>());               // 添加频道信息处理，实现 IChannelMessageProcess 接口
 
-            // 添加新分支处理，群组处理 Supergroup
-            AddPipelineBuilder(nameof(ChatType.Supergroup), serviceProvider.GetService<IPipelineBuilder>()
-                .AddMiddleware<ActionGroup>()                   // 添加群组信息处理，实现 IGroupMessageProcess 接口
-                .AddMiddleware<ActionControllerInvoke>());      // 添加Controller，处理默认的消息
+            //// 添加新分支处理，群组处理 Supergroup
+            //AddPipelineBuilder(nameof(ChatType.Supergroup), serviceProvider.GetService<IPipelineBuilder>()
+            //    .AddMiddleware<ActionGroup>()                   // 添加群组信息处理，实现 IGroupMessageProcess 接口
+            //    .AddMiddleware<ActionControllerInvoke>());      // 添加Controller，处理默认的消息
         }
     }
 }
