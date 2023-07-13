@@ -9,52 +9,17 @@ namespace Telegram.Bot.Channel
     {
         public static void Main(string[] args)
         {
-            try
-            {
-                string logo = @"
-                                        _           _            
-     /\                                | |         | |           
-    /  \    _____   _ _ __ ___   ___   | |     __ _| |__         
-   / /\ \  |_  / | | | '_ ` _ \ / _ \  | |    / _` | '_ \        
-  / ____ \  / /| |_| | | | | | | (_) | | |___| (_| | |_) |       
- /_/    \_\/___|\__,_|_| |_| |_|\___/  |______\__,_|_.__/        
-  _______   _                                  ____        _     
- |__   __| | |                                |  _ \      | |    
-    | | ___| | ___  __ _ _ __ __ _ _ __ ___   | |_) | ___ | |_   
-    | |/ _ \ |/ _ \/ _` | '__/ _` | '_ ` _ \  |  _ < / _ \| __|  
-    | |  __/ |  __/ (_| | | | (_| | | | | | |_| |_) | (_) | |_ _ 
-  __|_|\___|_|\___|\__, |_|  \__,_|_| |_| |_(_)____/ \___/ \__(_)
- |  ____|           __/ |                         | |            
- | |__ _ __ __ _ _ |___/_   _____      _____  _ __| | __         
- |  __| '__/ _` | '_ ` _ \ / _ \ \ /\ / / _ \| '__| |/ /         
- | |  | | | (_| | | | | | |  __/\ V  V / (_) | |  |   <          
- |_|  |_|  \__,_|_| |_| |_|\___| \_/\_/ \___/|_|  |_|\_\         
-";
-                ConsoleHelper.WriteLine(logo);
+            Console.WriteLine(1 << 0);
 
-                string botToken = "5226896598:AAG7jEdVOBEGQn0x-5klLFSov7W9Er4XKK0";
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-                ITelegramBot telegramBot = TelegramBotBuilder.Create()
-                    .AddProxy("http://127.0.0.1:7890")
-                    .AddToken(botToken)
-                    .AddConfig(x =>
-                    {
+            throw new Exception("Error");
+        }
 
-                    })
-                    .AddBotName("Test")
-                    .AddReceiverOptions(new ReceiverOptions { AllowedUpdates = { } })
-                    .Build();
-
-                Task task = telegramBot.BotStart();
-                task.Wait();
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"发生致命错误：");
-                Console.WriteLine(ex.Message);
-                Environment.Exit(1);
-            }
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception)e.ExceptionObject;
+            ConsoleHelper.Error(ex.Message);
         }
     }
 

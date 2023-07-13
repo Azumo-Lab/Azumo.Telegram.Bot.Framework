@@ -20,18 +20,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Pipeline.Framework.Abstracts
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ICommandGroup
+    public interface IProcedure<T>
     {
-        public void AddGroup(BotCommandScopeType botCommandScopeType, params BotCommand[] botCommand);
-
-        public BotCommand[] GetGroup(BotCommandScopeType botCommandScopeType);
+        /// <summary>
+        /// 执行工序
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="pipelineController"></param>
+        /// <returns></returns>
+        public Task<T> Execute(T t, IPipelineController<T> pipelineController);
     }
 }

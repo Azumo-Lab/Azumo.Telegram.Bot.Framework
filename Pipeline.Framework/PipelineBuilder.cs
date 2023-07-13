@@ -14,27 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Pipeline.Framework.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Managements;
 
-namespace Telegram.Bot.Framework
+namespace Pipeline.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    public abstract class TelegramChannelController
+    internal class PipelineBuilder<T> : IPipelineBuilder<T>
     {
-        protected IChannel Chat { get; private set; } = default!;
+        private readonly List<IProcedure<T>> __Procedures = new();
+        private readonly IPipelineController<T> __Controller;
 
-        internal Task Invoke(IChannel chat)
+        public PipelineBuilder() 
         {
-            Chat = chat;
-            return Task.CompletedTask;
+            __Controller = InternalFactory.CreateIPipelineController<T>();
+        }
+
+        public IPipelineBuilder<T> AddProcedure(IProcedure<T> procedure)
+        {
+            __Procedures.Add(procedure);
+            return this;
+        }
+
+        public IPipelineController<T> BuilderPipelineController()
+        {
+            return __Controller;
+        }
+
+        public IPipelineBuilder<T> CreatePipeline(string pipelineName)
+        {
+            __Controller.AddPipeline(pipelineName, InternalFactory.CreateIPipeline(pipelineName, __Procedures.ToArray(), __Controller));
+            __Procedures.Clear();
+            return this;
         }
     }
 }

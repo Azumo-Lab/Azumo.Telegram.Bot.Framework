@@ -54,11 +54,21 @@ namespace Telegram.Bot.Framework.ExtensionMethods
 
         #region Object类型的处理，扩展方法
 
+        /// <summary>
+        /// 判断对象是否是空
+        /// </summary>
+        /// <param name="obj">要判断的对象</param>
+        /// <returns>布尔值，Null为True，反之</returns>
         public static bool IsNull(this object obj)
         {
             return obj == null;
         }
 
+        /// <summary>
+        /// 判断对象中是否有任意的空值
+        /// </summary>
+        /// <param name="objs">要判断的对象</param>
+        /// <returns>布尔值，数组有任意空元素为True，反之</returns>
         public static bool HasAnyNull(params object[] objs)
         {
             if (objs.IsNull())
@@ -71,6 +81,38 @@ namespace Telegram.Bot.Framework.ExtensionMethods
             return false;
         }
 
+        /// <summary>
+        /// 判断对象中是否有任意的空值
+        /// </summary>
+        /// <param name="arrays">要判断的对象</param>
+        /// <returns>布尔值，数组有任意空元素为True，反之</returns>
+        public static bool HasAnyNull<T>(this T[] arrays)
+        {
+            return HasAnyNull(arrays);
+        }
+
+        /// <summary>
+        /// 判断对象中是否有任意的空值
+        /// </summary>
+        /// <param name="list">要判断的对象</param>
+        /// <returns>布尔值，数组有任意空元素为True，反之</returns>
+        public static bool HasAnyNull<T>(this List<T> list)
+        {
+            if (list.IsNull())
+                return true;
+            foreach (T item in list)
+            {
+                if (item.IsNull())
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 判断对象中的对象是否都是Null
+        /// </summary>
+        /// <param name="objs">要判断的对象</param>
+        /// <returns>布尔值，数组所有元素皆为Null为True，反之</returns>
         public static bool HasAllNull(params object[] objs)
         {
             if (objs.IsNull())

@@ -15,21 +15,14 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Telegram.Bot.Framework.Abstract.BackgroundProcess
 {
     /// <summary>
-    /// 指令管理接口
+    /// 在Bot启动完成后立即执行
     /// </summary>
-    internal interface ICommand
+    public interface IStartAfterExec : IExec
     {
-        public Task ChangeCommandGroup(ITelegramSession telegramSession, BotCommandScopeType botCommandScopeType);
     }
 }

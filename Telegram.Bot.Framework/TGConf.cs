@@ -72,8 +72,7 @@ namespace Telegram.Bot.Framework
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            // 添加使用标签的自动服务注册
-            services.AddDependencyInjection();
+            
 
             #region 中间件流水线相关的处理
             // 添加中间件流水线

@@ -44,15 +44,15 @@ namespace Telegram.Bot.Framework
     /// </remarks>
     public abstract class TelegramController
     {
-        protected IChat Chat { get; private set; }
+        protected ITelegramChat Chat { get; private set; }
 
-        internal async Task Invoke(IChat _chat, Func<TelegramController, object[], Task> Action)
+        internal async Task Invoke(ITelegramChat _chat, Func<TelegramController, object[], Task> Action)
         {
             Chat = _chat;
 
             string command;
-            if (await MessageFilter(Chat.TelegramRequest.GetMessage()) ||
-                await CommandFilter(command = Chat.TelegramRequest.GetCommand()))
+            if (await MessageFilter(default) ||
+                await CommandFilter(default))
                 return;
 
             await Action(this, Array.Empty<object>());

@@ -57,26 +57,22 @@ namespace Telegram.Bot.Framework
 
         private bool disposedValue;
 
-        private const string AzumoLab_Logo = 
+        private const string AzumoLab_Logo =
 @"
-                                        _           _            
-     /\                                | |         | |           
-    /  \    _____   _ _ __ ___   ___   | |     __ _| |__         
-   / /\ \  |_  / | | | '_ ` _ \ / _ \  | |    / _` | '_ \        
-  / ____ \  / /| |_| | | | | | | (_) | | |___| (_| | |_) |       
- /_/    \_\/___|\__,_|_| |_| |_|\___/  |______\__,_|_.__/        
-  _______   _                                  ____        _     
- |__   __| | |                                |  _ \      | |    
-    | | ___| | ___  __ _ _ __ __ _ _ __ ___   | |_) | ___ | |_   
-    | |/ _ \ |/ _ \/ _` | '__/ _` | '_ ` _ \  |  _ < / _ \| __|  
-    | |  __/ |  __/ (_| | | | (_| | | | | | |_| |_) | (_) | |_ _ 
-  __|_|\___|_|\___|\__, |_|  \__,_|_| |_| |_(_)____/ \___/ \__(_)
- |  ____|           __/ |                         | |            
- | |__ _ __ __ _ _ |___/_   _____      _____  _ __| | __         
- |  __| '__/ _` | '_ ` _ \ / _ \ \ /\ / / _ \| '__| |/ /         
- | |  | | | (_| | | | | | |  __/\ V  V / (_) | |  |   <          
- |_|  |_|  \__,_|_| |_| |_|\___| \_/\_/ \___/|_|  |_|\_\         
-";
+                                        _           _                                                                  
+     /\                                | |         | |                                                                 
+    /  \    _____   _ _ __ ___   ___   | |     __ _| |__                                                               
+   / /\ \  |_  / | | | '_ ` _ \ / _ \  | |    / _` | '_ \                                                              
+  / ____ \  / /| |_| | | | | | | (_) | | |___| (_| | |_) |                                                             
+ /_/    \_\/___|\__,_|_| |_| |_|\___/  |______\__,_|_.__/                                                              
+  _______   _                                  ____        _     ______                                           _    
+ |__   __| | |                                |  _ \      | |   |  ____|                                         | |   
+    | | ___| | ___  __ _ _ __ __ _ _ __ ___   | |_) | ___ | |_  | |__ _ __ __ _ _ __ ___   _____      _____  _ __| | __
+    | |/ _ \ |/ _ \/ _` | '__/ _` | '_ ` _ \  |  _ < / _ \| __| |  __| '__/ _` | '_ ` _ \ / _ \ \ /\ / / _ \| '__| |/ /
+    | |  __/ |  __/ (_| | | | (_| | | | | | |_| |_) | (_) | |_ _| |  | | | (_| | | | | | |  __/\ V  V / (_) | |  |   < 
+    |_|\___|_|\___|\__, |_|  \__,_|_| |_| |_(_)____/ \___/ \__(_)_|  |_|  \__,_|_| |_| |_|\___| \_/\_/ \___/|_|  |_|\_\
+                    __/ |                                                                                              
+                   |___/                                                                                               ";
         #endregion
 
         #region 公开的变量属性
@@ -143,22 +139,23 @@ namespace Telegram.Bot.Framework
         /// <exception cref="ArgumentException">API 配置不对的话会触发</exception>
         public async Task BotStart(bool awaitFlag = true)
         {
+            // 是否可能等待的值
+            this.awaitFlag = awaitFlag;
+            // 清除旧的控制台信息
             ConsoleHelper.Clear();
             // 输出Logo图像
             ConsoleHelper.WriteLine(AzumoLab_Logo);
+            // 设置全局异常处理
+            AppDomain.CurrentDomain.UnhandledException += GlobalExceptionHandling;
 
-            // 是否可能等待的值
-            this.awaitFlag = awaitFlag;
-
-            // 整个框架启动前进行的部分配置工作
-            IEnumerable<IStartBeforeExec> startBeforeExecs = ServiceProvider.GetServices<IStartBeforeExec>();
-            foreach (IStartBeforeExec exec in startBeforeExecs)
-                await exec.Exec();
+            // 程序启动前执行的任务
+            await StartExec<IStartBeforeExec>();
 
             // 获取<ITelegramBotClient>接口
             ITelegramBotClient botClient = ServiceProvider.GetService<ITelegramBotClient>();
             CancellationTokenSource cancellationTokenSource = ServiceProvider.GetService<CancellationTokenSource>();
 
+            // 测试API能否连接
             if (!await botClient.TestApiAsync(cancellationTokenSource.Token))
                 throw new ArgumentException("API Error");
             
@@ -169,8 +166,14 @@ namespace Telegram.Bot.Framework
                 cancellationTokenSource.Token
                 );
 
+            // 获取机器人自身
             ThisBot = await botClient.GetMeAsync(cancellationTokenSource.Token);
-            ConsoleHelper.Info($"Start @{ThisBot.Username}");
+            ConsoleHelper.Info($"Start OK @{ThisBot.Username}");
+
+            // 程序启动后执行的任务
+            await StartExec<IStartAfterExec>();
+            // 程序执行的定时任务
+            await StartExec<ITimedTask>();
 
             // 阻塞等待
             await Task.Run(async () =>
@@ -184,6 +187,33 @@ namespace Telegram.Bot.Framework
                     await botClient.CloseAsync();
                 }
             });
+        }
+
+        /// <summary>
+        /// 启动实现了 <see cref="IExec"/> 接口的类
+        /// </summary>
+        /// <typeparam name="T">IExec接口</typeparam>
+        /// <returns>异步执行任务</returns>
+        private async Task StartExec<T>() where T : IExec
+        {
+            IEnumerable<T> iExecs = ServiceProvider.GetServices<T>();
+            foreach (IExec exec in iExecs)
+                await exec.Exec();
+        }
+
+        /// <summary>
+        /// 一个全局异常处理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GlobalExceptionHandling(object sender, UnhandledExceptionEventArgs e)
+        {
+            // 获取异常，并输出到控制台
+            Exception ex;
+            if ((ex = e.ExceptionObject as Exception) != null || (ex = sender as Exception) != null)
+                ConsoleHelper.Error(ex.ToString());
+            else
+                ConsoleHelper.Error("Error");
         }
 
         /// <summary>

@@ -30,4 +30,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Abstract\Authentication\" />
+    <Folder Include="Abstract\Managements\" />
+  </ItemGroup>
+
 </Project>

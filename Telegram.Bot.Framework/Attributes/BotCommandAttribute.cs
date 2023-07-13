@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Telegram.Bot.Framework.InternalImplementation.Languages;
+using Telegram.Bot.Framework.Models.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -46,9 +47,9 @@ namespace Telegram.Bot.Framework.Attributes
         public bool Register { get; set; } = true;
 
         /// <summary>
-        /// 
+        /// 该指令能够使用的范围
         /// </summary>
-        public BotCommandScopeType BotCommandScopeType { get; set; } = BotCommandScopeType.Default;
+        public ChatScopeEnum ChatScope { get; set; } = ChatScopeEnum.All;
 
         /// <summary>
         /// 机器人指令标签

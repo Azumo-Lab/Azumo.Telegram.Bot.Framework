@@ -20,52 +20,29 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstract.Commands
+namespace Pipeline.Framework.Abstracts
 {
     /// <summary>
-    /// Command 指令管理器
+    /// 
     /// </summary>
-    public interface ITelegramCommandsManager
+    public interface IPipelineBuilder<T>
     {
-        #region 改
         /// <summary>
-        /// 
+        /// 添加工序
         /// </summary>
-        /// <returns></returns>
-        public ITelegramCommandsChangeSession ChangeTelegramCommands();
-        #endregion
-
-        #region 查
-        /// <summary>
-        /// 系统中是否具有此Command
-        /// </summary>
-        /// <param name="commandName"></param>
-        /// <returns></returns>
-        public bool ContainsCommand(string commandName);
+        /// <param name="procedure"></param>
+        public IPipelineBuilder<T> AddProcedure(IProcedure<T> procedure);
 
         /// <summary>
-        /// 查询指定的指令
+        /// 将工序组装成流水线
         /// </summary>
-        /// <param name="commandName"></param>
-        /// <returns></returns>
-        public BotCommand GetBotCommand(string commandName);
+        public IPipelineBuilder<T> CreatePipeline(string pipelineName);
 
         /// <summary>
-        /// 
+        /// 创建流水线控制器
         /// </summary>
         /// <returns></returns>
-        public List<BotCommand> GetBotCommands();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="botCommandScope"></param>
-        /// <returns></returns>
-        public List<BotCommand> GetBotCommands(BotCommandScope botCommandScope);
-
-        #endregion
+        public IPipelineController<T> BuilderPipelineController();
     }
 }

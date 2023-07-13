@@ -20,50 +20,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Bots;
-using Telegram.Bot.Framework.Abstract.Users;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Sessions
+namespace AOT.Security
 {
     /// <summary>
-    /// 访问的请求会话
+    /// 基础的加密接口，用于将类的属性数据加密保存
     /// </summary>
-    public interface ITelegramSession
+    public interface IEncryptDecode<T>
     {
         /// <summary>
-        /// 会话是否已经结束
+        /// 解密数据
         /// </summary>
-        public bool IsDispose { get; }
+        /// <param name="json"></param>
+        /// <returns></returns>
+        T Decode(string json);
 
         /// <summary>
-        /// 会话的用户
+        /// 加密数据
         /// </summary>
-        public TelegramUser User { get; }
-
-        /// <summary>
-        /// Session的存储
-        /// </summary>
-        public ISession Session { get; }
-
-        /// <summary>
-        /// 请求信息
-        /// </summary>
-        public Update Update { get; }
-
-        /// <summary>
-        /// 用户范围内的服务
-        /// </summary>
-        public IServiceProvider UserService { get; }
-
-        /// <summary>
-        /// Bot客户端
-        /// </summary>
-        public ITelegramBotClient BotClient { get; }
-
-        /// <summary>
-        /// Bot启动关闭的控制
-        /// </summary>
-        public ITelegramBot TelegramBot { get; }
+        /// <returns></returns>
+        string Encrypt();
     }
 }

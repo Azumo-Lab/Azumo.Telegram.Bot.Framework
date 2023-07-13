@@ -61,7 +61,11 @@ namespace Telegram.Bot.Framework
         /// <returns><see cref="IBuilder"/> 机器人创建接口 </returns>
         public static IBuilder Create()
         {
-            return new TelegramBotBuilder();
+            return new TelegramBotBuilder().AddConfig(serviceCollection =>
+            {
+                // 使用
+                serviceCollection.UseDependencyInjectionAttribute();
+            });
         }
 
         /// <summary>

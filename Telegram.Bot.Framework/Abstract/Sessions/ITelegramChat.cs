@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.CallBack;
+using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -31,33 +32,51 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
     /// </summary>
     public interface ITelegramChat : IDisposable
     {
-        public Update Update { get; internal set; }
+        #region 聊天的基本信息
 
-        public ITelegramChatInfo ChatInfo { get; }
+        /// <summary>
+        /// 这个Chat的信息
+        /// </summary>
+        public Chat Chat { get; internal set; }
 
+        #endregion
+
+        #region 基础服务
+
+        /// <summary>
+        /// 请求
+        /// </summary>
+        public ITelegramRequest Request { get; internal set; }
+
+        /// <summary>
+        /// Chat范围的服务提供
+        /// </summary>
         public IServiceProvider ChatService { get; }
 
-        public IServiceProvider BotService { get; }
-
+        /// <summary>
+        /// Bot的客户端
+        /// </summary>
         public ITelegramBotClient BotClient { get; }
 
-        public ICommandAnalyze CommandAnalyze { get; }
+        #endregion
 
+        #region 各类服务
+
+        /// <summary>
+        /// 指令相关的服务
+        /// </summary>
+        public ICommandService CommandService { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICallBackService CallBackManager { get; }
+
+        /// <summary>
+        /// Session存储
+        /// </summary>
         public ISession Session { get; }
 
-        public ICallBackManager CallBackManager { get; }
-    }
-
-    public interface ITelegramChatInfo
-    {
-        public string ChatName { get; set; }
-
-        public User ChatUser { get; set; }
-
-        public ChatType ChatType { get; set; }
-
-        public long ChatID { get; set; }
-
-        public bool IsBan { get; set; }
+        #endregion
     }
 }

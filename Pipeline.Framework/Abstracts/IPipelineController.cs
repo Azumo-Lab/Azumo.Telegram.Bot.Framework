@@ -21,24 +21,44 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Pipeline.Framework.Abstracts
 {
     /// <summary>
-    /// 
+    /// 流水线管理控制器
     /// </summary>
-    public interface IPrivateChat : IChat
+    public interface IPipelineController<T>
     {
         /// <summary>
-        /// 与这个用户绝交！哼！！
+        /// 切换一条流水线
         /// </summary>
-        /// <returns></returns>
-        public Task Ban();
+        /// <param name="pipelineName"></param>
+        public void ChangePipeline(string pipelineName);
 
         /// <summary>
-        /// 绝交一定时间
+        /// 添加一条流水线
         /// </summary>
-        /// <param name="timeSpan"></param>
+        /// <param name="pipelineName"></param>
+        /// <param name="pipeline"></param>
+        public void AddPipeline(string pipelineName, IPipeline<T> pipeline);
+
+        /// <summary>
+        /// 设置下一道工序
+        /// </summary>
+        /// <param name="pipelineDelegate"></param>
+        internal void SetNext(PipelineDelegate<T> pipelineDelegate);
+
+        /// <summary>
+        /// 执行下一道工序
+        /// </summary>
+        /// <param name="t"></param>
         /// <returns></returns>
-        public Task Ban(TimeSpan timeSpan);
+        public Task<T> Next(T t);
+
+        /// <summary>
+        /// 停止当前流水线并立刻返回值
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public Task<T> Stop(T t);
     }
 }

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Pipeline.Framework.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Pipeline.Framework
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IChatCommandScope : IDisposable
-    {
-        public string Command { get; set; }
-    }
+    public delegate Task<T> PipelineDelegate<T>(T processObj, IPipelineController<T> controller);
 }

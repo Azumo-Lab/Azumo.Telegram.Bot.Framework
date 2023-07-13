@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Pipeline.Framework.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,26 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Pipeline.Framework
 {
     /// <summary>
-    /// 群组管理
+    /// 
     /// </summary>
-    public interface IGroup : IChat
+    public static class InternalFactory
     {
-        
+        public static IPipeline<T> CreateIPipeline<T>(string pipelineName, IProcedure<T>[] procedures, IPipelineController<T> pipelineController)
+        {
+            return new Pipeline<T>(pipelineName, procedures, pipelineController);
+        }
+
+        public static IPipelineController<T> CreateIPipelineController<T>()
+        {
+            return new PipelineController<T>();
+        }
+
+        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>()
+        {
+            return new PipelineBuilder<T>();
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.Abstract.CallBack
     /// <summary>
     /// 回调管理
     /// </summary>
-    public interface ICallBackManager
+    public interface ICallBackService
     {
         /// <summary>
         /// 创建一个CallBack

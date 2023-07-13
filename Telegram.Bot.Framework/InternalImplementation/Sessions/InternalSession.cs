@@ -34,7 +34,14 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
         /// </summary>
         public string SessionID { get; } = Guid.NewGuid().ToString();
 
+        /// <summary>
+        /// 保存指定对象的字典
+        /// </summary>
         private readonly Dictionary<object, object> __InternalSessionCache = new();
+
+        /// <summary>
+        /// 指示该对象是否已经关闭
+        /// </summary>
         private bool __Disposed;
 
         /// <summary>
@@ -69,6 +76,10 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
             Save<byte[]>(sessionKey, data);
         }
 
+        /// <summary>
+        /// 如果关闭了，就抛出异常
+        /// </summary>
+        /// <exception cref="Exception"></exception>
         private void ThrowIfDispose()
         {
             if (__Disposed)
@@ -105,6 +116,12 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// 保存指定的对象
+        /// </summary>
+        /// <typeparam name="T">要保存对象的类型</typeparam>
+        /// <param name="sessionKey">保存对象的Key</param>
+        /// <param name="obj">保存的对象</param>
         public void Save<T>(object sessionKey, T obj)
         {
             ThrowIfDispose();
@@ -116,6 +133,12 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
                 __InternalSessionCache.Add(sessionKey, obj);
         }
 
+        /// <summary>
+        /// 获取指定的对象
+        /// </summary>
+        /// <typeparam name="T">获取对象的类型</typeparam>
+        /// <param name="sessionKey">获取对象的Key</param>
+        /// <returns>返回获取的指定对象，如果无法获取，则返回NULL</returns>
         public T Get<T>(object sessionKey)
         {
             ThrowIfDispose();

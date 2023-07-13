@@ -21,12 +21,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstract.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstract.Sessions
 {
     /// <summary>
-    /// 
+    /// Telegram 请求接口
     /// </summary>
     public interface ITelegramRequest
     {
@@ -40,8 +41,15 @@ namespace Telegram.Bot.Framework.Abstract.Sessions
         /// </summary>
         public IServiceScope BotScopeService { get; internal set; }
 
-        public Message GetMessage();
+        /// <summary>
+        /// 请求的用户
+        /// </summary>
+        public TelegramUser RequestUser { get; internal set; }
 
-        public string GetCommand();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Message GetMessage();
     }
 }

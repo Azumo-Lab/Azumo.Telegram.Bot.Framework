@@ -20,15 +20,34 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Sessions;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Telegram.Bot.Framework.Abstract.Commands
 {
     /// <summary>
-    /// 
+    /// 指令相关的服务
     /// </summary>
-    public interface IChatManager
+    public interface ICommandService
     {
-        public IChat GetChat(ITelegramRequest telegramRequest);
+        /// <summary>
+        /// 是否有指令
+        /// </summary>
+        public bool HasCommand { get; }
+
+        /// <summary>
+        /// 获取指令
+        /// </summary>
+        /// <returns>返回指令</returns>
+        public string GetCommand();
+
+        /// <summary>
+        /// 获取指令的执行方法
+        /// </summary>
+        /// <returns></returns>
+        public Func<TelegramController, object[], Task> GetCommandFunc();
+
+        /// <summary>
+        /// 指令的管理
+        /// </summary>
+        public ICommandManager CommandManager { get; }
     }
 }

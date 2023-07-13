@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework.Abstract.Bots
         /// Token可以通过 BotFather 来进行获取
         /// </para>
         /// <para>
-        /// <see cref="https://t.me/BotFather"/>
+        /// 详细可以访问：<see cref="https://t.me/BotFather"/>
         /// </para>
         /// </remarks>
         public string Token { get; set; }
@@ -64,7 +64,7 @@ namespace Telegram.Bot.Framework.Abstract.Bots
         public IServiceCollection RuntimeServices { get; }
 
         /// <summary>
-        /// 开始创建TelegramBot
+        /// 创建 <see cref="ITelegramBot"/> 对象
         /// </summary>
         /// <returns>返回 <see cref="ITelegramBot"/> 机器人接口</returns>
         public ITelegramBot Build();

@@ -20,42 +20,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Sessions
+namespace Telegram.Bot.Framework.Abstract.BackgroundProcess
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface ICommandAnalyze
+    public interface IExec
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool HasCommand { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public string GetCommand();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<(MessageEntity, string)> GetMessages();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public Func<TelegramController, object[], Task> GetFunction();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        internal void SetMessage((MessageEntity, string)[] values);
+        Task Exec();
     }
 }

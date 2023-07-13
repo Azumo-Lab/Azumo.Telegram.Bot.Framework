@@ -24,16 +24,29 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Abstract.Bots
 {
     /// <summary>
-    /// 
+    /// 对Bot设定的一些信息
     /// </summary>
     public interface IBotInfo
     {
+        /// <summary>
+        /// Bot的名称
+        /// </summary>
         public string BotName { get; internal set; }
 
+        /// <summary>
+        /// Bot的ID
+        /// </summary>
         public long BotID { get; internal set; }
 
+        /// <summary>
+        /// Bot的启动时间
+        /// </summary>
         public DateTime BotStartTime { get; internal set; }
 
+        /// <summary>
+        /// Bot的运行时长
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan RunTimes();
     }
 }

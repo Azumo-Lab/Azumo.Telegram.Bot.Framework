@@ -20,19 +20,25 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstract.Sessions
+namespace Telegram.Bot.Framework.Abstract.Commands
 {
     /// <summary>
     /// 
     /// </summary>
-    internal interface ITelegramSessionManager
+    public interface ICommandManager
     {
-        public ITelegramChat GetChat(ITelegramBotClient BotClient, Update Update);
+        /// <summary>
+        /// 添加一个新的指令
+        /// </summary>
+        /// <param name="Attributes"></param>
+        /// <param name="Func"></param>
+        public void AddCommand(Attribute[] Attributes, Func<TelegramController, object[], Task> Func);
 
-        public ITelegramSession GetSession();
+        public void AddMyCommand(BotCommand botCommand);
 
-        public ITelegramRequest GetRequest();
+        public void RemoveMyCommand(BotCommand botCommand);
     }
 }

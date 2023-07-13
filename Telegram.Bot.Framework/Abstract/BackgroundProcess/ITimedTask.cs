@@ -21,13 +21,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Abstract.Managements
+namespace Telegram.Bot.Framework.Abstract.BackgroundProcess
 {
     /// <summary>
-    /// 频道管理
+    /// 
     /// </summary>
-    public interface IChannel : IChat
+    public interface ITimedTask : IExec
     {
-        
     }
 }

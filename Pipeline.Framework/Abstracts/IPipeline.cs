@@ -20,32 +20,19 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Managements;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework
+namespace Pipeline.Framework.Abstracts
 {
     /// <summary>
     /// 
     /// </summary>
-    public abstract class TelegramGroupController
+    public interface IPipeline<T>
     {
-        protected IGroup Chat { get; private set; } = default!;
-
-        internal async Task Invoke(IGroup chat)
-        {
-            Chat = chat;
-            await MessageFilter(Chat.TelegramRequest.Update.Message);
-        }
-
         /// <summary>
-        /// 群组消息过滤
+        /// 执行流水线
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        protected virtual Task MessageFilter(Message message)
-        {
-            return Task.CompletedTask;
-        }
+        public Task<T> Invoke(T obj);
     }
 }

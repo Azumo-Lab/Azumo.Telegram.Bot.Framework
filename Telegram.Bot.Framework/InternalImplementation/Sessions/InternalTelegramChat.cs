@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Abstract.CallBack;
+using Telegram.Bot.Framework.Abstract.Commands;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Types;
@@ -78,16 +79,17 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
                 }
             }
         }
-        public ITelegramChatInfo ChatInfo { get; set; }
         public IServiceProvider ChatService => __ChatScope.ServiceProvider;
         public IServiceProvider BotService { get; set; }
         public ITelegramBotClient BotClient { get; set; }
 
-        public ICommandAnalyze CommandAnalyze { get; set; }
-
         public ISession Session { get; set; }
 
-        public ICallBackManager CallBackManager { get; set; }
+        public ICallBackService CallBackManager { get; set; }
+
+        public ICommandService CommandService { get; set; }
+
+        public Chat Chat { get; set; }
 
         private readonly IServiceScope __ChatScope;
 
@@ -97,8 +99,8 @@ namespace Telegram.Bot.Framework.InternalImplementation.Sessions
             __ChatScope = BotService.CreateScope();
 
             Session = ChatService.GetService<ISession>();
-            CommandAnalyze = ChatService.GetService<ICommandAnalyze>();
-            CallBackManager = ChatService.GetService<ICallBackManager>();
+            CallBackManager = ChatService.GetService<ICallBackService>();
+            CommandService = ChatService.GetService<ICommandService>();
         }
 
         public void Dispose()

@@ -14,12 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.CallBack;
-using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 
 namespace Telegram.Bot.Framework.InternalImplementation.CallBack
@@ -27,7 +25,7 @@ namespace Telegram.Bot.Framework.InternalImplementation.CallBack
     /// <summary>
     /// 
     /// </summary>
-    internal class InternalCallBackManager : ICallBackManager
+    internal class InternalCallBackManager : ICallBackService
     {
         private string __CallBackKey;
         private readonly IServiceProvider __serviceProvider;
@@ -42,14 +40,12 @@ namespace Telegram.Bot.Framework.InternalImplementation.CallBack
         {
             ICallBack callBack = new InternalCallBack(CallBackAction);
             string result = Guid.NewGuid().ToString();
-            if (__CallBackDic.TryAdd(result, callBack))
-                return result;
-            return string.Empty;
+            return __CallBackDic.TryAdd(result, callBack) ? result : string.Empty;
         }
 
         public void Dispose(string CallBackKey)
         {
-            __CallBackDic.Remove(CallBackKey);
+            _ = __CallBackDic.Remove(CallBackKey);
         }
 
         public ICallBack GetCallBack(string CallBackKey)
@@ -57,12 +53,12 @@ namespace Telegram.Bot.Framework.InternalImplementation.CallBack
             return __CallBackDic.TryGetValue(CallBackKey, out ICallBack callBack) ? callBack : null;
         }
 
-        void ICallBackManager.SetCallBackKey(string CallBackKey)
+        void ICallBackService.SetCallBackKey(string CallBackKey)
         {
             __CallBackKey = CallBackKey;
         }
 
-        ICallBack ICallBackManager.GetCallBack()
+        ICallBack ICallBackService.GetCallBack()
         {
             return __CallBackDic.TryGetValue(__CallBackKey, out ICallBack callBack) ? callBack : null;
         }

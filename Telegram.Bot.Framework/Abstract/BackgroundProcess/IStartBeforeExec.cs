@@ -14,11 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Abstract.BackgroundProcess
@@ -26,11 +21,7 @@ namespace Telegram.Bot.Framework.Abstract.BackgroundProcess
     /// <summary>
     /// 启动前执行
     /// </summary>
-    public interface IStartBeforeExec
+    public interface IStartBeforeExec : IExec
     {
-        /// <summary>
-        /// 执行处理
-        /// </summary>
-        Task Exec();
     }
 }

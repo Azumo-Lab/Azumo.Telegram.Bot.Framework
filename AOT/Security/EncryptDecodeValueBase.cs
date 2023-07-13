@@ -14,16 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalImplementation.Security;
+using System.Text.Json;
 
-namespace Telegram.Bot.Framework.Abstract.Security
+namespace AOT.Security
 {
     /// <summary>
     /// 一个加密实现类，继承后用于加密属性的值
@@ -50,7 +45,8 @@ namespace Telegram.Bot.Framework.Abstract.Security
         /// <summary>
         /// 
         /// </summary>
-        private readonly static Dictionary<string, List<PropertyInfo>> __PrivatePropertyInfos = new();
+        private static readonly Dictionary<string, List<PropertyInfo>> __PrivatePropertyInfos = new();
+
         private readonly Type __PrivateType;
         /// <summary>
         /// 子类的属性信息
@@ -59,12 +55,27 @@ namespace Telegram.Bot.Framework.Abstract.Security
 
         public EncryptDecodeValueBase()
         {
-            __PrivateType = typeof(T);
-            string typeFullName = __PrivateType.FullName;
-            if (!__PrivatePropertyInfos.ContainsKey(typeFullName))
-                __PrivatePropertyInfos.Add(typeFullName, __PrivateType.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList());
-            if (!__PrivatePropertyInfos.TryGetValue(typeFullName, out __PropertyInfos))
-                __PropertyInfos = new();
+            //Console.WriteLine("开始分析");
+
+            //__PrivateType = typeof(T);
+            //Console.WriteLine($"类型：{__PrivateType}");
+
+            //string typeFullName = __PrivateType.FullName;
+            //Console.WriteLine($"类型全名：{typeFullName}");
+
+            //if (!__PrivatePropertyInfos.ContainsKey(typeFullName))
+            //{
+            //    PropertyInfo[] infos = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            //    foreach (PropertyInfo item in infos)
+            //    {
+            //        __PropertyInfos.Add(item);
+            //    }
+            //    __PrivatePropertyInfos.Add(typeFullName, __PropertyInfos);
+            //}
+            //if (!__PrivatePropertyInfos.TryGetValue(typeFullName, out __PropertyInfos))
+            //    __PropertyInfos = new();
+
+            //Console.WriteLine($"字段个数：{__PropertyInfos.Count}");
         }
 
         /// <summary>
@@ -91,7 +102,7 @@ namespace Telegram.Bot.Framework.Abstract.Security
         /// <returns>解密后的数据</returns>
         public virtual T Decode(string json)
         {
-            Dictionary<string, string> Obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            Dictionary<string, string> Obj = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
             foreach (PropertyInfo item in __PropertyInfos)
             {
                 if (!Obj.TryGetValue(item.Name, out string PassWordStrings))
@@ -111,16 +122,25 @@ namespace Telegram.Bot.Framework.Abstract.Security
         /// <returns>加密字符串</returns>
         public virtual string Encrypt()
         {
+            Console.WriteLine("开始加密");
             Dictionary<string, string> Obj = new();
             foreach (PropertyInfo item in __PropertyInfos)
             {
+                Console.WriteLine($"字段个数：{__PropertyInfos.Count}");
                 object val = item.GetValue(this);
                 if (val == null)
                     continue;
 
+                Console.WriteLine($"字段名称：{item.Name}");
                 Obj.Add(item.Name, Convert.ToBase64String(AESEncrypt.StaticEncrypt(val.ToString())));
             }
-            return JsonConvert.SerializeObject(Obj);
+            foreach (KeyValuePair<string, string> item in Obj)
+            {
+                Console.WriteLine(item.ToString());
+            }
+            string json = JsonSerializer.Serialize(this);
+            Console.WriteLine(json);
+            return json;
         }
     }
 }
