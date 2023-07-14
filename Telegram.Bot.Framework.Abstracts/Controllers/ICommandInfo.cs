@@ -20,20 +20,23 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Pipeline.Framework.Abstracts
+namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IProcedure<T>
+    public interface ICommandInfo
     {
-        /// <summary>
-        /// 执行工序
-        /// </summary>
-        /// <param name="t"></param>
-        /// <param name="pipelineController"></param>
-        /// <returns></returns>
-        public Task<T> Execute(T t, IPipelineController<T> pipelineController);
+        public string CommandName { get; }
+
+        public MessageType MessageType { get; }
+
+        public Type ControllerType { get; }
+
+        public Func<TelegramController, object[], Task> Func { get; }
+
+        public List<(ParameterInfo ParameterInfo, Type Message, Type Catch)> Params { get; }
     }
 }

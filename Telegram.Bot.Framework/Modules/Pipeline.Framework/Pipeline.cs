@@ -14,9 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Pipeline.Framework.Abstracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Modules.Pipeline.Framework.Abstracts;
 
-namespace Pipeline.Framework
+namespace Telegram.Bot.Framework.Modules.Pipeline.Framework
 {
     /// <summary>
     /// 
@@ -24,15 +28,13 @@ namespace Pipeline.Framework
     internal class Pipeline<T> : IPipeline<T>
     {
         /// <summary>
-        /// 流水线的名称
-        /// </summary>
-        private readonly string __PipelineName;
-
-        /// <summary>
         /// 流水线的委托
         /// </summary>
         private readonly PipelineDelegate<T> __PipelineFuns = (t, c) => Task.FromResult(t);
 
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly IPipelineController<T> __Controller;
 
         /// <summary>
@@ -40,13 +42,12 @@ namespace Pipeline.Framework
         /// </summary>
         /// <param name="pipelineName"></param>
         /// <param name="procedures"></param>
-        public Pipeline(string pipelineName, IProcedure<T>[] procedures, IPipelineController<T> pipelineController)
+        public Pipeline(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
         {
-            __PipelineName = pipelineName;
             __Controller = pipelineController;
 
             List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = new();
-            foreach (IProcedure<T> proc in procedures)
+            foreach (IProcess<T> proc in procedures)
                 procs.Add(handle => (t, c) =>
                 {
                     __Controller.SetNext(handle);
@@ -57,6 +58,11 @@ namespace Pipeline.Framework
                 __PipelineFuns = item(__PipelineFuns);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public async Task<T> Invoke(T obj)
         {
             return await __PipelineFuns(obj, __Controller);

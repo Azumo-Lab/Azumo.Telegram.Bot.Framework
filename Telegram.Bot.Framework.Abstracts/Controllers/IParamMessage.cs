@@ -14,34 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Pipeline.Framework.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts.User;
 
-namespace Pipeline.Framework
+namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     /// <summary>
-    /// 
+    /// 用于返回参数接受时的提示消息
     /// </summary>
-    public static class InternalFactory
+    public interface IParamMessage
     {
-        public static IPipeline<T> CreateIPipeline<T>(string pipelineName, IProcedure<T>[] procedures, IPipelineController<T> pipelineController)
-        {
-            return new Pipeline<T>(pipelineName, procedures, pipelineController);
-        }
-
-        public static IPipelineController<T> CreateIPipelineController<T>()
-        {
-            return new PipelineController<T>();
-        }
-
-        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>()
-        {
-            return new PipelineBuilder<T>();
-        }
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="Message">消息</param>
+        /// <returns></returns>
+        Task SendMessage(IChat chat, string Message);
     }
 }

@@ -20,19 +20,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Pipeline.Framework.Abstracts
+namespace Telegram.Bot.Framework.Abstracts.User
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IPipeline<T>
+    public interface IChatInfo
     {
-        /// <summary>
-        /// 执行流水线
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public Task<T> Invoke(T obj);
+        public Types.User ChatUser { get; }
+
+        public Types.User SendUser { get; }
+
+        public Chat Chat { get; }
+
+        public bool IsBan { get; }
     }
 }

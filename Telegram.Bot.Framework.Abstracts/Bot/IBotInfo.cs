@@ -21,28 +21,32 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Pipeline.Framework.Abstracts
+namespace Telegram.Bot.Framework.Abstracts.Bot
 {
     /// <summary>
-    /// 
+    /// 对Bot设定的一些信息
     /// </summary>
-    public interface IPipelineBuilder<T>
+    public interface IBotInfo
     {
         /// <summary>
-        /// 添加工序
+        /// Bot的名称
         /// </summary>
-        /// <param name="procedure"></param>
-        public IPipelineBuilder<T> AddProcedure(IProcedure<T> procedure);
+        public string BotName { get; internal set; }
 
         /// <summary>
-        /// 将工序组装成流水线
+        /// Bot的ID
         /// </summary>
-        public IPipelineBuilder<T> CreatePipeline(string pipelineName);
+        public long BotID { get; internal set; }
 
         /// <summary>
-        /// 创建流水线控制器
+        /// Bot的启动时间
+        /// </summary>
+        public DateTime BotStartTime { get; internal set; }
+
+        /// <summary>
+        /// Bot的运行时长
         /// </summary>
         /// <returns></returns>
-        public IPipelineController<T> BuilderPipelineController();
+        public TimeSpan RunTimes();
     }
 }

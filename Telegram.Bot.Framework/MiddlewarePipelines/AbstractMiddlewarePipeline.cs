@@ -21,10 +21,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Sessions;
-using Telegram.Bot.Framework.InternalImplementation.Sessions;
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.ExtensionMethods;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -107,7 +105,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
             {
                 // 尝试添加
                 foreach ((string pipelineName, IPipelineBuilder pipelineBuilder) in __PipelineBuilderList)
-                    __PipelineController.TryAddPipeline(pipelineName, pipelineBuilder);
+                    _ = __PipelineController.TryAddPipeline(pipelineName, pipelineBuilder);
             }
             // 切换到主分支
             __PipelineController.ChangePipeline(InvokeTypeStr);

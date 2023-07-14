@@ -14,43 +14,60 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Pipeline.Framework.Abstracts;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+using Telegram.Bot.Framework.Modules.Pipeline.Framework.Abstracts;
 
-namespace Pipeline.Framework
+namespace Telegram.Bot.Framework.Modules.Pipeline.Framework
 {
     /// <summary>
     /// 
     /// </summary>
     internal class PipelineBuilder<T> : IPipelineBuilder<T>
     {
-        private readonly List<IProcedure<T>> __Procedures = new();
+        private readonly List<IProcess<T>> __Procedures = new();
         private readonly IPipelineController<T> __Controller;
 
-        public PipelineBuilder() 
+        /// <summary>
+        /// 
+        /// </summary>
+        public PipelineBuilder()
         {
-            __Controller = InternalFactory.CreateIPipelineController<T>();
+            __Controller = PipelineFactory.CreateIPipelineController<T>();
         }
 
-        public IPipelineBuilder<T> AddProcedure(IProcedure<T> procedure)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="procedure"></param>
+        /// <returns></returns>
+        public IPipelineBuilder<T> AddProcedure(IProcess<T> procedure)
         {
             __Procedures.Add(procedure);
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IPipelineController<T> BuilderPipelineController()
         {
             return __Controller;
         }
 
-        public IPipelineBuilder<T> CreatePipeline(string pipelineName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="PipelineNameType"></typeparam>
+        /// <param name="pipelineName"></param>
+        /// <returns></returns>
+        public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull
         {
-            __Controller.AddPipeline(pipelineName, InternalFactory.CreateIPipeline(pipelineName, __Procedures.ToArray(), __Controller));
+            if (pipelineName == null)
+                throw new ArgumentNullException(nameof(pipelineName));
+
+            __Controller.AddPipeline(pipelineName, PipelineFactory.CreateIPipeline(__Procedures.ToArray(), __Controller));
             __Procedures.Clear();
             return this;
         }

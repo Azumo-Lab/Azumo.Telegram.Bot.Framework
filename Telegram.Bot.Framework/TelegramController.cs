@@ -14,10 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.Managements;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Types;
@@ -49,10 +47,10 @@ namespace Telegram.Bot.Framework
         internal async Task Invoke(ITelegramChat _chat, Func<TelegramController, object[], Task> Action)
         {
             Chat = _chat;
-
-            string command;
-            if (await MessageFilter(default) ||
-                await CommandFilter(default))
+            Message message = Chat.Request.GetMessage();
+            string Command = Chat.CommandService.GetCommand();
+            if (!await MessageFilter(message) ||
+                !await CommandFilter(Command))
                 return;
 
             await Action(this, Array.Empty<object>());

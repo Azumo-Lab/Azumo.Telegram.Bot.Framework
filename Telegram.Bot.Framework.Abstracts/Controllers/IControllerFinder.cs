@@ -14,15 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Pipeline.Framework.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.Enums;
 
-namespace Pipeline.Framework
+namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
-    public delegate Task<T> PipelineDelegate<T>(T processObj, IPipelineController<T> controller);
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IControllerFinder
+    {
+        public ICommandInfo Find(string CommandName);
+
+        public ICommandInfo Find(MessageType MessageType);
+    }
 }

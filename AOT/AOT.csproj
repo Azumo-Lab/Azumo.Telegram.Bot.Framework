@@ -8,8 +8,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pipeline.Framework\Pipeline.Framework.csproj" />
-  </ItemGroup>
-
 </Project>

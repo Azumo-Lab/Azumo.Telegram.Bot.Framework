@@ -9,14 +9,14 @@ namespace AOT
         private static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-
-            IPipelineBuilder<(string, string)> builder = InternalFactory.CreateIPipelineBuilder<(string, string)>();
+            
             IPipelineController<(string, string)> pipelineController =
-                 builder.AddProcedure(new 加工产品())
+                 PipelineFactory.CreateIPipelineBuilder<(string, string)>()
+                        .AddProcedure(new 加工产品())
                         .AddProcedure(new 检测不良品())
                         .AddProcedure(new 包装产品())
                         .AddProcedure(new 产品出厂())
-                        .CreatePipeline("合格产品")
+                        .CreatePipeline(new object())
 
                         .AddProcedure(new 修复不良品())
                         .AddProcedure(new 包装产品())
@@ -29,11 +29,9 @@ namespace AOT
 
             while (true)
             {
-                pipelineController.ChangePipeline("合格产品");
-
                 Console.WriteLine("请输入产品：");
                 string input = Console.ReadLine() ?? string.Empty;
-                (string, string) processStr = pipelineController.Next((string.Empty, input)).Result;
+                (string, string) processStr = pipelineController.SwitchTo("商品加工", (string.Empty, input)).Result;
 
                 Console.WriteLine("最终结果：");
                 Console.WriteLine(processStr.Item1);
@@ -42,7 +40,7 @@ namespace AOT
         }
     }
 
-    public class 包装产品 : IProcedure<(string, string)>
+    public class 包装产品 : IProcess<(string, string)>
     {
         public async Task<(string, string)> Execute((string, string) t, IPipelineController<(string, string)> pipelineController)
         {
@@ -53,7 +51,7 @@ namespace AOT
         }
     }
 
-    public class 检测不良品 : IProcedure<(string, string)>
+    public class 检测不良品 : IProcess<(string, string)>
     {
         public async Task<(string, string)> Execute((string, string) t, IPipelineController<(string, string)> pipelineController)
         {
@@ -61,8 +59,7 @@ namespace AOT
             if (t.Item2.EndsWith('!'))
             {
                 Console.WriteLine("检测到说话带叹号的不良品，尝试修复");
-                pipelineController.ChangePipeline("可修复产品");
-                return await pipelineController.Next(t);
+                return await pipelineController.SwitchTo("可修复产品", t);
             }
             else
             {
@@ -72,7 +69,7 @@ namespace AOT
         }
     }
 
-    public class 修复不良品 : IProcedure<(string, string)>
+    public class 修复不良品 : IProcess<(string, string)>
     {
         public async Task<(string, string)> Execute((string, string) t, IPipelineController<(string, string)> pipelineController)
         {
@@ -81,8 +78,7 @@ namespace AOT
             if (t.Item2.EndsWith('!'))
             {
                 Console.WriteLine("依然带叹号，属于不可修复产品，修复失败");
-                pipelineController.ChangePipeline("不可修复产品");
-                return await pipelineController.Next(t);
+                return await pipelineController.SwitchTo("不可修复产品", t);
             }
             else
             {
@@ -92,7 +88,7 @@ namespace AOT
         }
     }
 
-    public class 加工产品 : IProcedure<(string, string)>
+    public class 加工产品 : IProcess<(string, string)>
     {
         public async Task<(string, string)> Execute((string, string) t, IPipelineController<(string, string)> pipelineController)
         {
@@ -105,7 +101,7 @@ namespace AOT
         }
     }
 
-    public class 产品出厂 : IProcedure<(string, string)>
+    public class 产品出厂 : IProcess<(string, string)>
     {
         public async Task<(string, string)> Execute((string, string) t, IPipelineController<(string, string)> pipelineController)
         {
@@ -119,7 +115,7 @@ namespace AOT
         }
     }
 
-    public class 废弃不良品 : IProcedure<(string, string)>
+    public class 废弃不良品 : IProcess<(string, string)>
     {
         public async Task<(string, string)> Execute((string, string) t, IPipelineController<(string, string)> pipelineController)
         {

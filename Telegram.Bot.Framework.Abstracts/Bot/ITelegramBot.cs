@@ -20,45 +20,41 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Pipeline.Framework.Abstracts
+namespace Telegram.Bot.Framework.Abstracts.Bot
 {
     /// <summary>
-    /// 流水线管理控制器
+    /// 机器人接口
     /// </summary>
-    public interface IPipelineController<T>
+    public interface ITelegramBot : IDisposable
     {
         /// <summary>
-        /// 切换一条流水线
+        /// 机器人的一些信息
         /// </summary>
-        /// <param name="pipelineName"></param>
-        public void ChangePipeline(string pipelineName);
+        public IBotInfo BotInfo { get; }
 
         /// <summary>
-        /// 添加一条流水线
+        /// 当前机器人的User信息
         /// </summary>
-        /// <param name="pipelineName"></param>
-        /// <param name="pipeline"></param>
-        public void AddPipeline(string pipelineName, IPipeline<T> pipeline);
+        public User ThisBot { get; }
 
         /// <summary>
-        /// 设置下一道工序
+        /// 启动机器人
         /// </summary>
-        /// <param name="pipelineDelegate"></param>
-        internal void SetNext(PipelineDelegate<T> pipelineDelegate);
-
-        /// <summary>
-        /// 执行下一道工序
-        /// </summary>
-        /// <param name="t"></param>
         /// <returns></returns>
-        public Task<T> Next(T t);
+        Task BotStart(bool await = true);
 
         /// <summary>
-        /// 停止当前流水线并立刻返回值
+        /// 停止当前机器人
         /// </summary>
-        /// <param name="t"></param>
         /// <returns></returns>
-        public Task<T> Stop(T t);
+        Task BotStop();
+
+        /// <summary>
+        /// 重启当前机器人
+        /// </summary>
+        /// <returns></returns>
+        Task BotReStart();
     }
 }
