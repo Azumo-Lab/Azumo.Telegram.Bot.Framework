@@ -23,6 +23,8 @@ using System.Net.Http;
 using Telegram.Bot.Framework.Abstract.Bots;
 using Telegram.Bot.Framework.Abstract.Config;
 using Telegram.Bot.Framework.Abstract.Languages;
+using Telegram.Bot.Framework.Abstracts;
+using Telegram.Bot.Framework.Abstracts.Bot;
 using Telegram.Bot.Framework.Exceptions;
 using Telegram.Bot.Framework.ExtensionMethods;
 using Telegram.Bot.Framework.InternalImplementation.Bots;
@@ -78,9 +80,8 @@ namespace Telegram.Bot.Framework
         {
             BuilderServices = new ServiceCollection()
                 .AddSingleton<IServiceCollection>()
-                .AddSingleton<IConfig, TGConf>()
+                .AddSingleton<IStartup, TGConf>()
                 .AddSingleton<ITelegramBot, TelegramBot>()
-                .AddSingleton<IBotInfo, BotInfo>()
                 .BuildServiceProvider();
 
             RuntimeServices = BuilderServices.GetRequiredService<IServiceCollection>();

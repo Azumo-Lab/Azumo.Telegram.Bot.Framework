@@ -20,14 +20,63 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts.User;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts
 {
     /// <summary>
-    /// 
+    /// 控制器，是整个系统里面的关键的一个类
     /// </summary>
+    /// <remarks>
+    /// 想要实现一个指令，需要继承 这个类 <see cref="TelegramController"/>，之后，自定义一个方法：
+    /// <code>
+    /// public async Task Test()
+    /// {
+    ///     await Session.SendMessage("Hello")
+    /// }
+    /// </code>
+    /// 这样定义之后，通过在方法上面设置 <see cref="BotCommandAttribute(string)"/> 之后即可使用指令，例如定义这样的指令：
+    /// <code>
+    /// [BotCommand("Test")]
+    /// </code>
+    /// 通过在Telegram中，向机器人发送指令 <c>/Test</c> 即可实现 回复 <c>Hello</c> 的功能<br/>
+    /// 另外，需要注意的是：一旦方法上面设置 <see cref="BotCommandAttribute(string)"/> 之后，方法的参数也必须要设置 <see cref="ParamAttribute"/> 之后才能够正确执行参数的捕获操作
+    /// </remarks>
     public abstract class TelegramController
     {
+        protected IChat Chat { get; private set; }
 
+        internal async Task Invoke(IChat _chat, Func<TelegramController, object[], Task> Action)
+        {
+            Chat = _chat;
+            Message message = Chat.Request.GetMessage();
+            string Command = Chat.Request.GetCommand();
+            if (!await MessageFilter(message) ||
+                !await CommandFilter(Command))
+                return;
+
+            await Action(this, Array.Empty<object>());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected virtual Task<bool> MessageFilter(Message message)
+        {
+            return Task.FromResult(true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        protected virtual Task<bool> CommandFilter(string command)
+        {
+            return Task.FromResult(true);
+        }
     }
 }

@@ -15,15 +15,14 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstract.BackgroundProcess;
-using Telegram.Bot.Framework.Abstract.Bots;
-using Telegram.Bot.Framework.Abstract.Config;
-using Telegram.Bot.Framework.ExtensionMethods;
+using Telegram.Bot.Framework.Abstracts.Bot;
+using Telegram.Bot.Framework.Abstracts.Process;
 using Telegram.Bot.Framework.MiddlewarePipelines;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -49,6 +48,8 @@ namespace Telegram.Bot.Framework
         /// 在 <see cref="BotStart(bool)"/> 和 <see cref="BotStop"/> 中有所使用
         /// </remarks>
         private bool IsStop;
+
+        private readonly ILogger __Log;
 
         /// <summary>
         /// 是否要异步堵塞的一个标志物
@@ -99,7 +100,7 @@ namespace Telegram.Bot.Framework
             IServiceCollection Services = ServiceProvider.GetService<IServiceCollection>();
 
             // 配置框架Service
-            List<IConfig> configs = ServiceProvider.GetServices<IConfig>()?.ToList() ?? new();
+            List<IStartup> configs = ServiceProvider.GetServices<IStartup>()?.ToList() ?? new();
             configs.ForEach(config => { config.ConfigureServices(Services); });
 
             // 配置一些基本的设置
@@ -107,9 +108,12 @@ namespace Telegram.Bot.Framework
             Services.AddSingleton<ITelegramBot>(this);
             Services.AddSingleton<IUpdateHandler, TelegramUpdateHandle>();
             Services.AddSingleton(BotInfo = ServiceProvider.GetService<IBotInfo>());
+            Services.AddLogging();
 
             // 创建服务
             this.ServiceProvider = Services.BuildServiceProvider();
+
+            __Log = ServiceProvider.GetService<ILogger>();
         }
 
         /// <summary>
@@ -141,10 +145,8 @@ namespace Telegram.Bot.Framework
         {
             // 是否可能等待的值
             this.awaitFlag = awaitFlag;
-            // 清除旧的控制台信息
-            ConsoleHelper.Clear();
             // 输出Logo图像
-            ConsoleHelper.WriteLine(AzumoLab_Logo);
+            __Log.LogInformation(AzumoLab_Logo);
             // 设置全局异常处理
             AppDomain.CurrentDomain.UnhandledException += GlobalExceptionHandling;
 
@@ -158,7 +160,7 @@ namespace Telegram.Bot.Framework
             // 测试API能否连接
             if (!await botClient.TestApiAsync(cancellationTokenSource.Token))
                 throw new ArgumentException("API Error");
-            
+
             // 开始启动
             botClient.StartReceiving(
                 ServiceProvider.GetService<IUpdateHandler>(),
@@ -168,7 +170,7 @@ namespace Telegram.Bot.Framework
 
             // 获取机器人自身
             ThisBot = await botClient.GetMeAsync(cancellationTokenSource.Token);
-            ConsoleHelper.Info($"Start OK @{ThisBot.Username}");
+            __Log.LogInformation($"Start OK @{ThisBot.Username}");
 
             // 程序启动后执行的任务
             await StartExec<IStartAfterExec>();
@@ -198,7 +200,7 @@ namespace Telegram.Bot.Framework
         {
             IEnumerable<T> iExecs = ServiceProvider.GetServices<T>();
             foreach (IExec exec in iExecs)
-                await exec.Exec();
+                await exec.StartAsync();
         }
 
         /// <summary>
@@ -211,9 +213,9 @@ namespace Telegram.Bot.Framework
             // 获取异常，并输出到控制台
             Exception ex;
             if ((ex = e.ExceptionObject as Exception) != null || (ex = sender as Exception) != null)
-                ConsoleHelper.Error(ex.ToString());
+                __Log.LogError(ex.ToString());
             else
-                ConsoleHelper.Error("Error");
+                __Log.LogError("Error");
         }
 
         /// <summary>

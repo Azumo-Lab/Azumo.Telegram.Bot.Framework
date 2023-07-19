@@ -14,27 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
+using Telegram.Bot.Framework.Pipeline.Abstracts;
 
-namespace Telegram.Bot.Framework.Abstracts.User
+namespace Telegram.Bot.Framework.Pipeline
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IChatInfo
-    {
-        public Types.User ChatUser { get; }
-
-        public Types.User SendUser { get; set; }
-
-        public Chat Chat { get; }
-
-        public bool IsBan { get; set; }
-    }
+    public delegate Task<T> PipelineDelegate<T>(T processObj, IPipelineController<T> controller);
 }

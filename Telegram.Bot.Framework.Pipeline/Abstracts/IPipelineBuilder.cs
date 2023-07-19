@@ -14,47 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
-
-namespace Telegram.Bot.Framework.Abstracts.Bot
+namespace Telegram.Bot.Framework.Pipeline.Abstracts
 {
     /// <summary>
-    /// 机器人接口
+    /// 创建流水线控制器
     /// </summary>
-    public interface ITelegramBot : IDisposable
+    public interface IPipelineBuilder<T>
     {
         /// <summary>
-        /// 机器人的一些信息
+        /// 添加工序
         /// </summary>
-        public IBotInfo BotInfo { get; }
+        /// <param name="procedure"></param>
+        public IPipelineBuilder<T> AddProcedure(IProcess<T> procedure);
 
         /// <summary>
-        /// 当前机器人的User信息
+        /// 将工序组装成流水线
         /// </summary>
-        public Types.User ThisBot { get; }
+        public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull;
 
         /// <summary>
-        /// 启动机器人
+        /// 创建流水线控制器
         /// </summary>
         /// <returns></returns>
-        Task BotStart(bool await = true);
-
-        /// <summary>
-        /// 停止当前机器人
-        /// </summary>
-        /// <returns></returns>
-        Task BotStop();
-
-        /// <summary>
-        /// 重启当前机器人
-        /// </summary>
-        /// <returns></returns>
-        Task BotReStart();
+        public IPipelineController<T> BuilderPipelineController();
     }
 }

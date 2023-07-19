@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Abstracts.Services;
-using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.User
 {
@@ -25,27 +24,59 @@ namespace Telegram.Bot.Framework.Abstracts.User
     public interface IChat : IDisposable
     {
         #region 用户Session存储
+        /// <summary>
+        /// 存储
+        /// </summary>
         public ISessionCache SessionCache { get; }
         #endregion
 
         #region 该次访问范围内的内容
+        /// <summary>
+        /// 请求
+        /// </summary>
         public IRequest Request { get; }
         #endregion
 
         #region 用户的信息
+        /// <summary>
+        /// 聊天信息
+        /// </summary>
         public IChatInfo ChatInfo { get; }
         #endregion
 
         #region 服务提供器
+        /// <summary>
+        /// Bot范围的服务提供
+        /// </summary>
         public IServiceProvider BotService { get; }
 
+        /// <summary>
+        /// Chat范围的服务提供
+        /// </summary>
         public IServiceProvider ChatService { get; }
         #endregion
 
         #region 各种服务
+        public ITelegramBotClient BotClient { get; }
+
+        /// <summary>
+        /// 回调的管理
+        /// </summary>
         public ICallbackService CallbackService { get; }
+
+        /// <summary>
+        /// Bot指令的管理
+        /// </summary>
         public ICommandService CommandService { get; }
+
+        /// <summary>
+        /// 权限管理
+        /// </summary>
         public IAuthenticationService AuthenticationService { get; }
+
+        /// <summary>
+        /// 任务管理
+        /// </summary>
         public ITaskService TaskService { get; }
         #endregion
     }

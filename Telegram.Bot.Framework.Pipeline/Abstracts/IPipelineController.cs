@@ -14,47 +14,55 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
-
-namespace Telegram.Bot.Framework.Abstracts.Bot
+namespace Telegram.Bot.Framework.Pipeline.Abstracts
 {
     /// <summary>
-    /// 机器人接口
+    /// 流水线管理控制器
     /// </summary>
-    public interface ITelegramBot : IDisposable
+    public interface IPipelineController<T>
     {
         /// <summary>
-        /// 机器人的一些信息
+        /// 添加一条流水线
         /// </summary>
-        public IBotInfo BotInfo { get; }
+        /// <param name="pipelineName"></param>
+        /// <param name="pipeline"></param>
+        public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull;
 
         /// <summary>
-        /// 当前机器人的User信息
+        /// 设置下一道工序
         /// </summary>
-        public Types.User ThisBot { get; }
+        /// <param name="pipelineDelegate"></param>
+        internal void SetNext(PipelineDelegate<T> pipelineDelegate);
 
         /// <summary>
-        /// 启动机器人
+        /// 获取执行路径
         /// </summary>
         /// <returns></returns>
-        Task BotStart(bool await = true);
+        public string GetInvokePath();
+
+        #region 控制器控制
 
         /// <summary>
-        /// 停止当前机器人
+        /// 执行下一道工序
         /// </summary>
+        /// <param name="t"></param>
         /// <returns></returns>
-        Task BotStop();
+        public Task<T> Next(T t);
 
         /// <summary>
-        /// 重启当前机器人
+        /// 停止当前流水线并立刻返回值
         /// </summary>
+        /// <param name="t"></param>
         /// <returns></returns>
-        Task BotReStart();
+        public Task<T> Stop(T t);
+
+        /// <summary>
+        /// 切换到指定流水线
+        /// </summary>
+        /// <param name="pipelineName"></param>
+        /// <returns></returns>
+        public Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull;
+
+        #endregion
     }
 }

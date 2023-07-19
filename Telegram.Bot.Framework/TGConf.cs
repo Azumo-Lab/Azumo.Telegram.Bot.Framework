@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstract.Config;
+using Telegram.Bot.Framework.Abstracts.Bot;
 
 namespace Telegram.Bot.Framework
 {
@@ -68,7 +69,7 @@ namespace Telegram.Bot.Framework
     /// 写一个简单数据库的博客文章
     /// https://www.cnblogs.com/kesshei/p/16519862.html
     /// </summary>
-    internal class TGConf : IConfig
+    internal class TGConf : IStartup
     {
         public void ConfigureServices(IServiceCollection services)
         {

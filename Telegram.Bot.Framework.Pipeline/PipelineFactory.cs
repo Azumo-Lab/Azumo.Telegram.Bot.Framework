@@ -14,47 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
+using Telegram.Bot.Framework.Pipeline.Abstracts;
 
-namespace Telegram.Bot.Framework.Abstracts.Bot
+namespace Telegram.Bot.Framework.Pipeline
 {
     /// <summary>
-    /// 机器人接口
+    /// 
     /// </summary>
-    public interface ITelegramBot : IDisposable
+    public static class PipelineFactory
     {
         /// <summary>
-        /// 机器人的一些信息
+        /// 
         /// </summary>
-        public IBotInfo BotInfo { get; }
-
-        /// <summary>
-        /// 当前机器人的User信息
-        /// </summary>
-        public Types.User ThisBot { get; }
-
-        /// <summary>
-        /// 启动机器人
-        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="procedures"></param>
+        /// <param name="pipelineController"></param>
         /// <returns></returns>
-        Task BotStart(bool await = true);
+        internal static IPipeline<T> CreateIPipeline<T>(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
+        {
+            return new Pipeline<T>(procedures, pipelineController);
+        }
 
         /// <summary>
-        /// 停止当前机器人
+        /// 
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        Task BotStop();
+        internal static IPipelineController<T> CreateIPipelineController<T>()
+        {
+            return new PipelineController<T>();
+        }
 
         /// <summary>
-        /// 重启当前机器人
+        /// 
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        Task BotReStart();
+        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>()
+        {
+            return new PipelineBuilder<T>();
+        }
     }
 }
