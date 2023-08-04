@@ -25,20 +25,43 @@ using Telegram.Bot.Framework.Abstracts.Process;
 namespace Telegram.Bot.Framework.Abstracts.Services
 {
     /// <summary>
-    /// 
+    /// 任务管理服务
     /// </summary>
     public interface ITaskService
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskName"></param>
+        /// <param name="timedTask"></param>
         public void AddTask(string taskName, ITimedTask timedTask);
 
-        public void Stop(string taskName);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskName"></param>
+        public Task StopAsync(string taskName);
 
-        public void StopAll();
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task StopAllAsync();
 
-        public void StartAll();
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task StartAllAsync();
 
-        public void Start(string taskName);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskName"></param>
+        public Task StartAsync(string taskName);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="taskName"></param>
         public void Remove(string taskName);
     }
 }

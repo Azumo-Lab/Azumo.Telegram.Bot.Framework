@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Framework.Abstracts.User;
+using Telegram.Bot.Framework.CorePipelines.Proc;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 using Telegram.Bot.Polling;
@@ -33,6 +34,13 @@ namespace Telegram.Bot.Framework.CorePipelines
             __UserManager = __BotScopeService.ServiceProvider.GetService<IUserManager>();
 
             __PipelineController = PipelineFactory.CreateIPipelineBuilder<IChat>()
+                //UpdateType.Unknown
+                .AddProcedure(Create<PipelineUnknowType>())
+                .CreatePipeline(UpdateType.Unknown)
+
+                //UpdateType.Message
+                .AddProcedure(Create<PipelineGetParameters>())
+                .CreatePipeline(UpdateType.Message)
                 .BuilderPipelineController();
         }
 
@@ -40,6 +48,19 @@ namespace Telegram.Bot.Framework.CorePipelines
         {
             __BotScopeService.Dispose();
         }
+
+        #region 一些工具方法
+
+        /// <summary>
+        /// 创建新对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private T Create<T>()
+        {
+            return ActivatorUtilities.CreateInstance<T>(__BotScopeService.ServiceProvider, Array.Empty<object>());
+        }
+        #endregion
 
         /// <summary>
         /// 错误的执行者

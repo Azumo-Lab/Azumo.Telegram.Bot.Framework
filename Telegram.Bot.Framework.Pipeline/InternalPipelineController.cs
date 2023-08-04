@@ -22,12 +22,12 @@ namespace Telegram.Bot.Framework.Pipeline
     /// <summary>
     /// 
     /// </summary>
-    internal class PipelineController<T> : IPipelineController<T>
+    internal class InternalPipelineController<T> : IPipelineController<T>
     {
         private readonly Dictionary<object, IPipeline<T>> __Pipelines = new();
 
-        private PipelineDelegate<T> __Next;
-        private IPipeline<T> __NowPipeline;
+        private PipelineDelegate<T>? __Next;
+        private IPipeline<T>? __NowPipeline;
 
         /// <summary>
         /// 
@@ -80,7 +80,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <returns></returns>
         public async Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull
         {
-            if (__Pipelines.TryGetValue(pipelineName, out IPipeline<T> val))
+            if (__Pipelines.TryGetValue(pipelineName, out IPipeline<T>? val))
                 __NowPipeline = val;
             return await Next(t);
         }

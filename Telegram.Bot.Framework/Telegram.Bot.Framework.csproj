@@ -40,8 +40,4 @@
     <ProjectReference Include="..\Telegram.Bot.Framework.Pipeline\Telegram.Bot.Framework.Pipeline.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CorePipelines\Proc\" />
-  </ItemGroup>
-
 </Project>

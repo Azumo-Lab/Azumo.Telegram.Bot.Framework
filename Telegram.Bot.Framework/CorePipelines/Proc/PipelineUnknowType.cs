@@ -14,20 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts.User;
+using Telegram.Bot.Framework.Pipeline.Abstracts;
 
-namespace Telegram.Bot.Framework.Abstracts.Services
+namespace Telegram.Bot.Framework.CorePipelines.Proc
 {
     /// <summary>
-    /// 用户权限管理服务
+    /// 
     /// </summary>
-    public interface IAuthenticationService
+    internal class PipelineUnknowType : IProcess<IChat>
     {
-
+        private ILogger __Log;
+        public PipelineUnknowType(ILogger logger)
+        {
+            __Log = logger;
+        }
+        public async Task<IChat> Execute(IChat t, IPipelineController<IChat> pipelineController)
+        {
+            __Log.LogWarning(nameof(PipelineUnknowType));
+            return await pipelineController.Stop(t);
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace Telegram.Bot.Framework.Pipeline
     /// <summary>
     /// 
     /// </summary>
-    internal class PipelineBuilder<T> : IPipelineBuilder<T>
+    internal class InternalPipelineBuilder<T> : IPipelineBuilder<T>
     {
         private readonly List<IProcess<T>> __Procedures = new();
         private readonly IPipelineController<T> __Controller;
@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <summary>
         /// 
         /// </summary>
-        public PipelineBuilder()
+        public InternalPipelineBuilder()
         {
             __Controller = PipelineFactory.CreateIPipelineController<T>();
         }

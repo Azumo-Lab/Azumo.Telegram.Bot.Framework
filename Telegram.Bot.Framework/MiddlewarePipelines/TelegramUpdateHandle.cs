@@ -30,6 +30,7 @@ using Telegram.Bot.Framework.InternalImplementation.Sessions;
 using Telegram.Bot.Framework.Abstract.Sessions;
 using Telegram.Bot.Framework.Abstract.Middlewares;
 using Telegram.Bot.Framework.Abstract.Managements;
+using Telegram.Bot.Framework.Abstracts.User;
 
 namespace Telegram.Bot.Framework.MiddlewarePipelines
 {
@@ -40,6 +41,7 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
     {
         private readonly Dictionary<UpdateType, IMiddlewarePipeline> __MiddlewarePipelineDic;
         private readonly IServiceScope __BotScopeService;
+        private readonly IUserManager __UserManager;
         private readonly ITelegramSessionManager __SessionManager;
 
         /// <summary>
@@ -88,8 +90,8 @@ namespace Telegram.Bot.Framework.MiddlewarePipelines
         {
             try
             {
-                // 创建 ITelegramChat 对象
-                ITelegramChat chat = __SessionManager.GetChat(BotClient, Update);
+                /// 创建 <see cref="IChat"/> 对象
+                IChat chat = __UserManager.CreateIChat(BotClient, Update, __BotScopeService);
 
                 if (__MiddlewarePipelineDic.TryGetValue(Update.Type, out IMiddlewarePipeline middlewarePipeline))
                     await middlewarePipeline.Execute(chat);

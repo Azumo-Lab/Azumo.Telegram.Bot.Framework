@@ -1,17 +1,33 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.AccessControl;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Helper
     {
+        /// <summary>
+        /// 当前程序加载的所有的类
+        /// </summary>
         public static List<Type> AllTypes { get; } = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
+        /// <summary>
+        /// 
+        /// </summary>
         private static readonly Dictionary<string, List<Type>> __TypeCache = new();
 
-        public static List<Type> FindTypes(this object obj)
+        /// <summary>
+        /// 寻找指定的类型
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public static List<Type> FindTypes(this object obj, bool reload = false)
         {
             if (obj is not Type baseType)
                 baseType = obj.GetType();
@@ -19,23 +35,37 @@ namespace Telegram.Bot.Framework.Abstracts
             if (baseType.IsNull())
                 throw new NullReferenceException(nameof(baseType));
 
-            if (!__TypeCache.TryGetValue(baseType.FullName!, out List<Type>? typeList))
+            if (reload || !__TypeCache.TryGetValue(baseType.FullName!, out List<Type>? result))
             {
-                typeList = AllTypes.Where(x =>
+                result = AllTypes.Where(x =>
                     !x.IsInterface && !x.IsAbstract && baseType.IsAssignableFrom(x)
                 ).ToList();
 
-                __TypeCache.TryAdd(baseType.FullName!, typeList);
+                string key = baseType.FullName!;
+                if (__TypeCache.ContainsKey(key))
+                    __TypeCache[key] = result;
+                else
+                    __TypeCache.TryAdd(baseType.FullName!, result);
             }
-
-            return typeList;
+            return result;
         }
 
-        public static List<T> FindTypes<T>(this object obj)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static List<T> FindTypes<T>(this object obj, bool reload = false)
         {
-            return FindTypes(obj).Select(Activator.CreateInstance).Select(x => (T)x!).Where(x => x != null).ToList();
+            return FindTypes(obj, reload).Select(Activator.CreateInstance).Select(x => (T)x!).Where(x => x != null).ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static bool IsNotNull(this object obj)
         {
             return obj != null;
@@ -247,6 +277,24 @@ namespace Telegram.Bot.Framework.Abstracts
             return list.IsNull() || list.Count == 0;
         }
 
+        #endregion
+
+        #region 抛出异常
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <exception cref="NullReferenceException"></exception>
+        public static void ThrowIfNull(this object obj)
+        {
+            if (obj.IsNull()) throw new NullReferenceException();
+        }
+
+        public static void ThrowIfNullOrEmpty(this string str)
+        {
+            if (str.IsNullOrEmpty()) throw new NullReferenceException();
+        }
         #endregion
 
         public static Chat? GetChat(this Update update)

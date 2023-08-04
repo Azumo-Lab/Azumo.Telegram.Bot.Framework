@@ -28,18 +28,50 @@ namespace Telegram.Bot.Framework.Abstracts.User
     /// </summary>
     public interface ISessionCache : IDisposable
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string SessionID { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void Save(object key, object value);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public object Get(object key);
 
+        public T Get<T>(object key, T defaultValue);    
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
         public void Remove(object key);
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Clear();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Contains(object key);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool ContainsKey(object key);
     }
 }

@@ -25,14 +25,28 @@ using Telegram.Bot.Framework.Abstracts.User;
 namespace Telegram.Bot.Framework.Abstracts.Services
 {
     /// <summary>
-    /// 
+    /// 用于回调的服务
     /// </summary>
     public interface ICallbackService : IDisposable
     {
+        /// <summary>
+        /// 创建一个回调函数
+        /// </summary>
+        /// <param name="callbackfunc"></param>
+        /// <returns></returns>
         public string CreateCallback(Func<IChat, Task> callbackfunc);
 
+        /// <summary>
+        /// 执行回调
+        /// </summary>
+        /// <param name="chat"></param>
+        /// <returns></returns>
         public Task InvokeCallback(IChat chat);
 
+        /// <summary>
+        /// 移除一个回调函数
+        /// </summary>
+        /// <param name="callbackData"></param>
         public void RemoveCallback(string callbackData);
     }
 }

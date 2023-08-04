@@ -29,12 +29,24 @@ namespace Telegram.Bot.Framework.Abstracts.User
     /// </summary>
     public interface IChatInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Types.User ChatUser { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Types.User SendUser { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Chat Chat { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsBan { get; set; }
     }
 }

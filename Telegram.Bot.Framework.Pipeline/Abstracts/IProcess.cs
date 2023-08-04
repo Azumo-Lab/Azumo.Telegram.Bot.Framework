@@ -19,14 +19,18 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// <summary>
     /// 处理任务
     /// </summary>
+    /// <remarks>
+    /// 流水线的一个处理任务
+    /// </remarks>
+    /// <typeparam name="T">要进行处理的类型</typeparam>
     public interface IProcess<T>
     {
         /// <summary>
-        /// 执行工序
+        /// 执行处理任务
         /// </summary>
-        /// <param name="t"></param>
-        /// <param name="pipelineController"></param>
-        /// <returns></returns>
+        /// <param name="t">任务处理的数据类型</param>
+        /// <param name="pipelineController">流水线控制器</param>
+        /// <returns>异步的处理后的数据</returns>
         public Task<T> Execute(T t, IPipelineController<T> pipelineController);
     }
 }

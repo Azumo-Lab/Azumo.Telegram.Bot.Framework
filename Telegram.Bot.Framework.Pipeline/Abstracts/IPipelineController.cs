@@ -19,6 +19,9 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// <summary>
     /// 流水线管理控制器
     /// </summary>
+    /// <remarks>
+    /// 流水线的控制器，用于控制流水线继续停止
+    /// </remarks>
     public interface IPipelineController<T>
     {
         /// <summary>

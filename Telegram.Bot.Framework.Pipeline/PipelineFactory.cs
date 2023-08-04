@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <returns></returns>
         internal static IPipeline<T> CreateIPipeline<T>(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
         {
-            return new Pipeline<T>(procedures, pipelineController);
+            return new InternalPipeline<T>(procedures, pipelineController);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <returns></returns>
         internal static IPipelineController<T> CreateIPipelineController<T>()
         {
-            return new PipelineController<T>();
+            return new InternalPipelineController<T>();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <returns></returns>
         public static IPipelineBuilder<T> CreateIPipelineBuilder<T>()
         {
-            return new PipelineBuilder<T>();
+            return new InternalPipelineBuilder<T>();
         }
     }
 }

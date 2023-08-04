@@ -20,14 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using Telegram.Bot.Framework.Abstract.Bots;
-using Telegram.Bot.Framework.Abstract.Config;
-using Telegram.Bot.Framework.Abstract.Languages;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bot;
-using Telegram.Bot.Framework.Exceptions;
-using Telegram.Bot.Framework.ExtensionMethods;
-using Telegram.Bot.Framework.InternalImplementation.Bots;
 using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Framework
@@ -66,7 +60,7 @@ namespace Telegram.Bot.Framework
             return new TelegramBotBuilder().AddConfig(serviceCollection =>
             {
                 // 使用
-                serviceCollection.UseDependencyInjectionAttribute();
+                _ = serviceCollection.UseDependencyInjectionAttribute();
             });
         }
 
@@ -139,7 +133,7 @@ namespace Telegram.Bot.Framework
             token.ThrowIfNullOrEmpty();
 
             if (!__HashTokens.Add(token))
-                throw new TheSameTokenException($"Token : {token}");
+                throw new Exception($"Token : {token}");
 
             builder.Token = token;
             return builder;
@@ -225,11 +219,11 @@ namespace Telegram.Bot.Framework
         /// <typeparam name="T">类型是 <see cref="IConfig"/></typeparam>
         /// <param name="builder">机器人创建接口</param>
         /// <returns><see cref="IBuilder"/> 添加配置类后的创建接口</returns>
-        public static IBuilder AddConfig<T>(this IBuilder builder) where T : class, IConfig
+        public static IBuilder AddConfig<T>(this IBuilder builder) where T : class, IStartup
         {
             builder.ThrowIfNull();
 
-            _ = builder.RuntimeServices.AddSingleton<IConfig, T>();
+            _ = builder.RuntimeServices.AddSingleton<IStartup, T>();
             return builder;
         }
 
@@ -273,7 +267,7 @@ namespace Telegram.Bot.Framework
             IBotInfo botInfo = builder.BuilderServices.GetService<IBotInfo>();
             botInfo.BotName = botName;
             builder.RuntimeServices.TryAddSingleton(botInfo);
-            
+
             return builder;
         }
     }

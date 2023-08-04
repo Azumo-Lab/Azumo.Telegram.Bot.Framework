@@ -21,7 +21,7 @@ namespace Telegram.Bot.Framework.Pipeline
     /// <summary>
     /// 
     /// </summary>
-    internal class Pipeline<T> : IPipeline<T>
+    internal class InternalPipeline<T> : IPipeline<T>
     {
         /// <summary>
         /// 流水线的委托
@@ -38,7 +38,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// </summary>
         /// <param name="pipelineName"></param>
         /// <param name="procedures"></param>
-        public Pipeline(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
+        public InternalPipeline(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
         {
             __Controller = pipelineController;
 

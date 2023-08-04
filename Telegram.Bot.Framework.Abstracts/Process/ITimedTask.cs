@@ -14,20 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
 namespace Telegram.Bot.Framework.Abstracts.Process
 {
     /// <summary>
-    /// 
+    /// 定时任务
     /// </summary>
+    /// <remarks>
+    /// 每隔一定时间执行的任务，想要实现定时任务，请继承 <see cref="AbsTimedTask"/> <br></br>
+    /// 在 <see cref="AbsTimedTask"/> 内部已经实现了定时任务的机制
+    /// </remarks>
     public interface ITimedTask : IExec
     {
+        /// <summary>
+        /// 停止执行任务
+        /// </summary>
+        /// <returns>异步</returns>
         public Task StopAsync();
     }
 }

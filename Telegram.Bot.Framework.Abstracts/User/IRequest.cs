@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.User
@@ -29,12 +30,29 @@ namespace Telegram.Bot.Framework.Abstracts.User
     /// </summary>
     public interface IRequest
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Update Update { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Message GetMessage();
 
+        public ICommandInfo? Find();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string GetCommand();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool HasCommand();
     }
 }

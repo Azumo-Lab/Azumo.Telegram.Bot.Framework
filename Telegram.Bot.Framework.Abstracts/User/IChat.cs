@@ -19,8 +19,11 @@ using Telegram.Bot.Framework.Abstracts.Services;
 namespace Telegram.Bot.Framework.Abstracts.User
 {
     /// <summary>
-    /// 
+    /// 用户的聊天信息接口
     /// </summary>
+    /// <remarks>
+    /// 这个接口里面包含了所有能用到的数据
+    /// </remarks>
     public interface IChat : IDisposable
     {
         #region 用户Session存储
@@ -78,6 +81,8 @@ namespace Telegram.Bot.Framework.Abstracts.User
         /// 任务管理
         /// </summary>
         public ITaskService TaskService { get; }
+
+        // GUN协议的软件工程
         #endregion
     }
 }

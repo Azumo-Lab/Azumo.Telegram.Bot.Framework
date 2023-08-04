@@ -20,7 +20,7 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// 一条流水线
     /// </summary>
     /// <remarks>
-    /// 流水线处理的数据类型
+    /// 一条流水线，泛型为流水线处理的数据类型
     /// </remarks>
     /// <typeparam name="T">流水线处理的数据类型</typeparam>
     public interface IPipeline<T>

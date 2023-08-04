@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
@@ -34,11 +28,35 @@ namespace Telegram.Bot.Framework.Abstracts.Process
     public abstract class AbsTimedTask : ITimedTask
     {
         #region 私有变量
+
+        /// <summary>
+        /// 用于加锁
+        /// </summary>
         private readonly ReaderWriterLockSlim __Lock = new();
+
+        /// <summary>
+        /// 用于指示该任务是否正在执行
+        /// </summary>
         private bool __Running;
+
+        /// <summary>
+        /// 上一次的执行时间
+        /// </summary>
         private DateTime __PrevInvokeTime;
+
+        /// <summary>
+        /// 下一次的执行时间
+        /// </summary>
         private DateTime __NextInvokeTime;
+
+        /// <summary>
+        /// 一个计时器
+        /// </summary>
+        /// <remarks>
+        /// 这个计时器是用于计时任务的执行
+        /// </remarks>
         private static readonly Timer __InvokeTImer = new(TimeSpan.FromSeconds(1));
+
         #endregion
 
         #region 公用变量
@@ -51,16 +69,27 @@ namespace Telegram.Bot.Framework.Abstracts.Process
         /// </remarks>
         public static TimeSpan Interval
         {
-            get
-            {
-                return TimeSpan.FromMilliseconds(__InvokeTImer.Interval);
-            }
-            set
-            {
-                __InvokeTImer.Interval = value.Milliseconds;
-            }
+            get => TimeSpan.FromMilliseconds(__InvokeTImer.Interval);
+            set => __InvokeTImer.Interval = value.Milliseconds;
         }
         #endregion
+
+        /// <summary>
+        /// 静态初始化
+        /// </summary>
+        static AbsTimedTask()
+        {
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler((obj, e) =>
+            {
+                __InvokeTImer.Stop();
+                __InvokeTImer.Dispose();
+            });
+            // 一个默认实现的方法
+            __InvokeTImer.Elapsed += new ElapsedEventHandler((obj, e) => { });
+            // 启动
+            __InvokeTImer.Start();
+        }
+
         /// <summary>
         /// 获取执行间隔
         /// </summary>
@@ -68,7 +97,7 @@ namespace Telegram.Bot.Framework.Abstracts.Process
         /// 通过这个方法获得执行间隔，例如，每10秒执行一次
         /// </remarks>
         /// <returns>执行间隔</returns>
-        public abstract TimeSpan GetTimeSpan();
+        protected abstract TimeSpan GetTimeSpan();
 
         /// <summary>
         /// 执行的内容
@@ -80,20 +109,7 @@ namespace Telegram.Bot.Framework.Abstracts.Process
         protected abstract Task Invoke();
 
         /// <summary>
-        /// 执行任务
-        /// </summary>
-        /// <returns>异步任务</returns>
-        private async Task Exec()
-        {
-            UpdateInvokeTime();
-
-            __InvokeTImer.Elapsed += InvokeTImer_Elapsed;
-
-            await Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 
+        /// 计时循环的主体部分
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -108,20 +124,20 @@ namespace Telegram.Bot.Framework.Abstracts.Process
         }
 
         /// <summary>
-        /// 
+        /// 开始执行计时任务的部分
         /// </summary>
         /// <returns></returns>
         private async Task InvokeExec()
         {
-            RunFlag(true);
+            UpdateRunFlag(true);
             await Invoke();
 
             UpdateInvokeTime();
-            RunFlag(false);
+            UpdateRunFlag(false);
         }
 
         /// <summary>
-        /// 
+        /// 更新执行的时间
         /// </summary>
         private void UpdateInvokeTime()
         {
@@ -132,26 +148,35 @@ namespace Telegram.Bot.Framework.Abstracts.Process
         }
 
         /// <summary>
-        /// 
+        /// 更新运行Flag
         /// </summary>
         /// <param name="flag"></param>
-        private void RunFlag(bool flag)
+        private void UpdateRunFlag(bool flag)
         {
             __Lock.EnterWriteLock();
             __Running = flag;
             __Lock.ExitWriteLock();
         }
 
+        /// <summary>
+        /// 停止执行当前任务
+        /// </summary>
+        /// <returns></returns>
         public async Task StopAsync()
         {
-            __InvokeTImer.Elapsed -= InvokeTImer_Elapsed;
-
+            __InvokeTImer.Elapsed -= InvokeTImer_Elapsed!;
             await Task.CompletedTask;
         }
 
+        /// <summary>
+        /// 开始执行当前任务
+        /// </summary>
+        /// <returns></returns>
         public async Task StartAsync()
         {
-            await Exec();
+            UpdateInvokeTime();
+            __InvokeTImer.Elapsed += InvokeTImer_Elapsed!;
+            await Task.CompletedTask;
         }
     }
 }
