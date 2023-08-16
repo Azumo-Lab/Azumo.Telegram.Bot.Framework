@@ -18,11 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Telegram.Bot.Framework.Abstracts;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.User;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalProc.User
 {
+    [DependencyInjection<IUserManager>(ServiceLifetime.Singleton)]
     internal class InternalUserManager : IUserManager
     {
         private int __UserCount;

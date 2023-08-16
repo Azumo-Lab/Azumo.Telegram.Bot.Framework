@@ -14,8 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Process;
 using Telegram.Bot.Framework.Abstracts.Services;
 
@@ -24,6 +23,7 @@ namespace Telegram.Bot.Framework.InternalProc.Services
     /// <summary>
     /// 
     /// </summary>
+    [DependencyInjection<ITaskService>(ServiceLifetime.Singleton)]
     internal class TaskService : ITaskService
     {
         private readonly Dictionary<string, ITimedTask> __TimedTask = new();

@@ -11,4 +11,13 @@
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="System.Reflection" />
+    <Using Include="System.Timers" />
+    <Using Include="System.Timers.Timer">
+      <Alias>Timer</Alias>
+    </Using>
+  </ItemGroup>
+
 </Project>

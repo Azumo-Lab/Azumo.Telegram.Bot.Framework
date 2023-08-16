@@ -14,23 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Types.Enums;
-
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Attributes
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface ICommandInfo
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class ParamForAttribute<T> : Attribute
     {
-        public string CommandName { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type? Type { get; }
 
-        public MessageType MessageType { get; }
-
-        public Type ControllerType { get; }
-
-        public Func<TelegramController, object[], Task> Func { get; }
-
-        public List<(ParameterInfo ParameterInfo, Type Message, Type Catch)> Params { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public ParamForAttribute()
+            => Type = typeof(T);
     }
 }

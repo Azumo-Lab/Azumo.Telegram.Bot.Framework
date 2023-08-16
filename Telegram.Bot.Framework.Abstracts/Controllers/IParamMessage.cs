@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.User;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
@@ -32,7 +26,8 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <summary>
         /// 发送消息
         /// </summary>
-        /// <param name="Message">消息</param>
+        /// <param name="chat"></param>
+        /// <param name="Message"></param>
         /// <returns></returns>
         Task SendMessage(IChat chat, string Message);
     }

@@ -14,30 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Process;
 using Telegram.Bot.Framework.Abstracts.User;
 
 namespace Telegram.Bot.Framework.InternalProc.Process
 {
     /// <summary>
-    /// 
+    /// 用户数量的定时更新
     /// </summary>
+    [DependencyInjection<IExec>(ServiceLifetime.Singleton)]
     internal class UserCountUpdate : AbsTimedTask
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly IServiceProvider __ServiceProvider;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public UserCountUpdate(IServiceProvider serviceProvider)
+            => __ServiceProvider = serviceProvider;
+
         /// <summary>
         /// 用户数量更新间隔
         /// </summary>
         /// <returns></returns>
         protected override TimeSpan GetTimeSpan() => TimeSpan.FromMinutes(10);
 
+        /// <summary>
+        /// 执行用户数量更新
+        /// </summary>
+        /// <returns></returns>
         protected override async Task Invoke()
         {
             IUserManager userManager = __ServiceProvider.GetService<IUserManager>();

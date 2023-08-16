@@ -18,5 +18,12 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 
 namespace Telegram.Bot.Framework.Pipeline
 {
+    /// <summary>
+    /// ff
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="processObj"></param>
+    /// <param name="controller"></param>
+    /// <returns></returns>
     public delegate Task<T> PipelineDelegate<T>(T processObj, IPipelineController<T> controller);
 }

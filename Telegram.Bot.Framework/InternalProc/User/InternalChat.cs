@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Abstracts;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Services;
 using Telegram.Bot.Framework.Abstracts.User;
 using Telegram.Bot.Types;

@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
 namespace Telegram.Bot.Framework.Abstracts.User
 {
     /// <summary>
@@ -47,7 +40,14 @@ namespace Telegram.Bot.Framework.Abstracts.User
         /// <returns></returns>
         public object Get(object key);
 
-        public T Get<T>(object key, T defaultValue);    
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T Get<T>(object key, T defaultValue);
 
         /// <summary>
         /// 

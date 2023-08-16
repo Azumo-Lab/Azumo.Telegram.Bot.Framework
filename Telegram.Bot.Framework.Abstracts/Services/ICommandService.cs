@@ -14,23 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Services
 {
     /// <summary>
-    /// 
+    /// 一个指令服务
     /// </summary>
+    /// <remarks>用于管理指令</remarks>
     public interface ICommandService
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public BotCommandScope Scope { get; }
 
         public List<BotCommand> AllCommand { get; }
+
+        /// <summary>
+        /// 向Bot添加指令
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="botCommands"></param>
+        public void AddCommands(BotCommandScope scope, List<BotCommand> botCommands);
     }
 }

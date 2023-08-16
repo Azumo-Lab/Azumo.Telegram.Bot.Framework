@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.AccessControl;
+﻿using System.Diagnostics.CodeAnalysis;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.User;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts
@@ -178,7 +177,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// </summary>
         /// <param name="obj">要判断的对象</param>
         /// <returns>布尔值，Null为True，反之</returns>
-        public static bool IsNull([AllowNull]this object obj)
+        public static bool IsNull([AllowNull] this object obj)
         {
             return obj == null;
         }
@@ -188,7 +187,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// </summary>
         /// <param name="objs">要判断的对象</param>
         /// <returns>布尔值，数组有任意空元素为True，反之</returns>
-        public static bool HasAnyNull([AllowNull]params object[] objs)
+        public static bool HasAnyNull([AllowNull] params object[] objs)
         {
             if (objs.IsNull())
                 return true;
@@ -381,6 +380,11 @@ namespace Telegram.Bot.Framework.Abstracts
             {
 
             }
+        }
+
+        public static string? GetCallbackKey(this IChat chat)
+        {
+            return chat.Request.Update.CallbackQuery?.Data;
         }
     }
 }

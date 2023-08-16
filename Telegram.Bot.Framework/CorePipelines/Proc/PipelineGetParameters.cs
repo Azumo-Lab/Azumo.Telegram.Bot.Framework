@@ -29,8 +29,12 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 namespace Telegram.Bot.Framework.CorePipelines.Proc
 {
     /// <summary>
-    /// 
+    /// 获取参数
     /// </summary>
+    /// <remarks>
+    /// 用于获取一个请求中包含的参数，例如：
+    /// 指定方法中需要的是String类型的参数，则会获取Message的信息作为参数传递
+    /// </remarks>
     internal class PipelineGetParameters : IProcess<IChat>
     {
         private const string PARAMSKEY = nameof(PARAMSKEY);

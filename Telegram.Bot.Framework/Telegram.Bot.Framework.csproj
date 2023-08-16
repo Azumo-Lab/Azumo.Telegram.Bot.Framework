@@ -16,6 +16,7 @@
     <Title>Telegram.Bot.Framework</Title>
     <RepositoryUrl>https://github.com/Azumo-Lab/Telegram.Bot.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +39,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Pipeline\Telegram.Bot.Framework.Pipeline.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.Extensions.DependencyInjection" />
+    <Using Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
 
 </Project>
