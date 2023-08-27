@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "Telegram.Bot.Channel": {
-      "commandName": "Project"
-    }
-  }
-}
