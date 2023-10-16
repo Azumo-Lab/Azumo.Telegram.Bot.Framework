@@ -19,7 +19,7 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 namespace Telegram.Bot.Framework.Pipeline
 {
     /// <summary>
-    /// ff
+    /// 流水线委托
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="processObj"></param>

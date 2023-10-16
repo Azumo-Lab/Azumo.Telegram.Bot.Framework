@@ -32,16 +32,20 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull;
 
         /// <summary>
-        /// 设置下一道工序
-        /// </summary>
-        /// <param name="pipelineDelegate"></param>
-        internal void SetNext(PipelineDelegate<T> pipelineDelegate);
-
-        /// <summary>
         /// 获取执行路径
         /// </summary>
         /// <returns></returns>
         public string GetInvokePath();
+
+        /// <summary>
+        /// 下一道工序
+        /// </summary>
+        internal PipelineDelegate<T> NextPipeline { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string NextPipelineName { get; internal set; }
 
         #region 控制器控制
 

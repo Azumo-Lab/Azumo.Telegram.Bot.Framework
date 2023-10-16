@@ -19,7 +19,7 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 namespace Telegram.Bot.Framework.Pipeline
 {
     /// <summary>
-    /// 
+    /// 流水线创建工厂
     /// </summary>
     public static class PipelineFactory
     {

@@ -10,17 +10,33 @@ using Telegram.Bot.Framework.Reflections;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TelegramBuilder : ITelegramBotBuilder
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceCollection RuntimeService { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Dictionary<string, object> Arguments { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static ITelegramBotBuilder Create()
         {
             return new TelegramBuilder();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private TelegramBuilder()
         {
             RuntimeService = new ServiceCollection();
@@ -50,6 +66,11 @@ namespace Telegram.Bot.Framework
             InternalInstall.StartInstall();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public ITelegramBot Build()
         {
             string token = null;

@@ -44,10 +44,12 @@ namespace Telegram.Bot.Framework.Pipeline
 
             List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = new();
             foreach (IProcess<T> proc in procedures)
-                procs.Add(handle => (t, c) =>
+                procs.Add(handle => (model, controller) =>
                 {
-                    __Controller.SetNext(handle);
-                    return proc.Execute(t, c);
+                    controller.NextPipeline = handle;
+                    if (proc is IPipelineName pipelineName)
+                        controller.NextPipelineName = pipelineName.Name;
+                    return proc.Execute(model, controller);
                 });
 
             foreach (Func<PipelineDelegate<T>, PipelineDelegate<T>> item in procs.Reverse<Func<PipelineDelegate<T>, PipelineDelegate<T>>>())
@@ -55,7 +57,7 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 开始执行
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>

@@ -20,7 +20,7 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 namespace Telegram.Bot.Framework.Pipeline
 {
     /// <summary>
-    /// 
+    /// 内部实现的流水线控制器
     /// </summary>
     internal class InternalPipelineController<T> : IPipelineController<T>
     {
@@ -28,6 +28,32 @@ namespace Telegram.Bot.Framework.Pipeline
 
         private PipelineDelegate<T>? __Next;
         private IPipeline<T>? __NowPipeline;
+        private string? __Name;
+        private List<string> InvokePathList = new();
+
+        PipelineDelegate<T> IPipelineController<T>.NextPipeline
+        {
+            get
+            {
+                return __Next!;
+            }
+            set
+            {
+                __Next = value;
+                __NowPipeline = null!;
+            }
+        }
+        public string NextPipelineName
+        {
+            get
+            {
+                return __Name ?? "Unknow Pipeline";
+            }
+            set
+            {
+                __Name = value;
+            }
+        }
 
         /// <summary>
         /// 
@@ -41,8 +67,11 @@ namespace Telegram.Bot.Framework.Pipeline
 
         public string GetInvokePath()
         {
-            // TODO: 记录流水线的执行路径，用于调试
             StringBuilder stringBuilder = new();
+            foreach (string pipeline in InvokePathList)
+            {
+                stringBuilder.AppendLine(pipeline);
+            }
             return stringBuilder.ToString();
         }
 
@@ -54,6 +83,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <exception cref="NullReferenceException"></exception>
         public async Task<T> Next(T t)
         {
+            InvokePathList.Add(NextPipelineName);
             if (__NowPipeline != null)
                 return await __NowPipeline.Invoke(t);
             else if (__Next != null)
@@ -83,16 +113,6 @@ namespace Telegram.Bot.Framework.Pipeline
             if (__Pipelines.TryGetValue(pipelineName, out IPipeline<T>? val))
                 __NowPipeline = val;
             return await Next(t);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pipelineDelegate"></param>
-        void IPipelineController<T>.SetNext(PipelineDelegate<T> pipelineDelegate)
-        {
-            __Next = pipelineDelegate;
-            __NowPipeline = null!;
         }
     }
 }

@@ -19,7 +19,7 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 namespace Telegram.Bot.Framework.Pipeline
 {
     /// <summary>
-    /// 
+    /// 内部实现的流水线创建类
     /// </summary>
     internal class InternalPipelineBuilder<T> : IPipelineBuilder<T>
     {
@@ -27,8 +27,11 @@ namespace Telegram.Bot.Framework.Pipeline
         private readonly IPipelineController<T> __Controller;
 
         /// <summary>
-        /// 
+        /// 初始化
         /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
         public InternalPipelineBuilder()
         {
             __Controller = PipelineFactory.CreateIPipelineController<T>();
