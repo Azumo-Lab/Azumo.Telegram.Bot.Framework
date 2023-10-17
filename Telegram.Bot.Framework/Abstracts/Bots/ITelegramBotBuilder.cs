@@ -8,9 +8,7 @@ namespace Telegram.Bot.Framework.Abstracts.Bots
 {
     public interface ITelegramBotBuilder
     {
-        public IServiceCollection RuntimeService { get; }
-
-        public Dictionary<string, object> Arguments { get; }
+        public ITelegramBotBuilder AddTelegramPartCreator(ITelegramPartCreator telegramPartCreator);
 
         public ITelegramBot Build();
     }

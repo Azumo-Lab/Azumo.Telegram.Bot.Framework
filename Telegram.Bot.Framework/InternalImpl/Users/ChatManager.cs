@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Users
             {
                 chat = TGChat.GetChat(telegramBotClient, chatID, BotServiceProvider);
             }
-            chat.SetUpdate(update);
+            chat.CopyTo(update);
             return chat;
         }
     }

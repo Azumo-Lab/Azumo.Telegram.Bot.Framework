@@ -1,16 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Payments;
 
 namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// 一个扩展方法，用于扩展 <see cref="Update"/> 对象
+    /// </summary>
     internal static class Update_ExtensionMethods
     {
+        /// <summary>
+        /// 从 <see cref="Update"/> 中获取 <see cref="ChatId"/> 对象
+        /// </summary>
+        /// <param name="update">传入的 <see cref="Update"/> 对象</param>
+        /// <returns><see cref="ChatId"/> 对象</returns>
         public static ChatId GetChatID(this Update update)
         {
             switch (update.Type)
@@ -49,21 +66,25 @@ namespace Telegram.Bot.Framework
             return null;
         }
 
+        /// <summary>
+        /// 从 <see cref="Update"/> 中获取用户输入的指令信息
+        /// </summary>
+        /// <param name="update">传入的 <see cref="Update"/> 对象</param>
+        /// <returns>指令字符串</returns>
         public static string GetCommand(this Update update)
         {
-            if(update.Message == null || string.IsNullOrEmpty(update.Message.Text))
+            if (update.Message == null || string.IsNullOrEmpty(update.Message.Text))
                 return null;
             string command = update.Message.Text;
-            if (command.StartsWith("/"))
-                return command;
-            return null;
+            return command.StartsWith("/") ? command : null;
         }
 
         /// <summary>
-        /// 
+        /// 将一个 <see cref="Update"/> 中的内容，复制到另一个 <see cref="Update"/> 中
         /// </summary>
-        /// <param name="update"></param>
-        internal static void SetUpdate(this Update souce, Update target)
+        /// <param name="souce">想要进行复制的对象</param>
+        /// <param name="target">复制的目标对象</param>
+        internal static void CopyTo(this Update souce, Update target)
         {
             souce.Poll = target.Poll;
             souce.ChatMember = target.ChatMember;

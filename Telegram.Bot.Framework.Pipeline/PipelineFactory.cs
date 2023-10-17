@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 
 namespace Telegram.Bot.Framework.Pipeline
@@ -23,6 +25,14 @@ namespace Telegram.Bot.Framework.Pipeline
     /// </summary>
     public static class PipelineFactory
     {
+        internal static IServiceProvider ServiceProvider { get; }
+        static PipelineFactory()
+        {
+            ServiceCollection serviceDescriptors = new();
+            
+            ServiceProvider = serviceDescriptors.BuildServiceProvider();
+        }
+
         /// <summary>
         /// 
         /// </summary>

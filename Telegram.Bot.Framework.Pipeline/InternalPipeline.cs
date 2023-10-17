@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 
 namespace Telegram.Bot.Framework.Pipeline
@@ -34,6 +35,11 @@ namespace Telegram.Bot.Framework.Pipeline
         private readonly IPipelineController<T> __Controller;
 
         /// <summary>
+        /// 
+        /// </summary>
+        private readonly List<IPipelineFilter> pipelineFilters = PipelineFactory.ServiceProvider.GetServices<IPipelineFilter>().ToList();
+
+        /// <summary>
         /// 初始化，创建流水线
         /// </summary>
         /// <param name="procedures">流水线的处理工序</param>
@@ -46,9 +52,13 @@ namespace Telegram.Bot.Framework.Pipeline
             foreach (IProcess<T> proc in procedures)
                 procs.Add(handle => (model, controller) =>
                 {
-                    controller.NextPipeline = handle;
-                    if (proc is IPipelineName pipelineName)
-                        controller.NextPipelineName = pipelineName.Name;
+                    // TODO: 这部分逻辑比较复杂，稍后进行详细的解释
+                    foreach (IPipelineFilter filter in pipelineFilters)
+                    {
+                        (model, bool next) = filter.Execute(model, controller, proc, handle);
+                        if (!next)
+                            return Task.FromResult(model);
+                    }
                     return proc.Execute(model, controller);
                 });
 

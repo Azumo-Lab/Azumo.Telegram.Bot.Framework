@@ -24,13 +24,34 @@ namespace Telegram.Bot.Framework.Pipeline
     /// </summary>
     internal class InternalPipelineController<T> : IPipelineController<T>
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly Dictionary<object, IPipeline<T>> __Pipelines = new();
 
+        /// <summary>
+        /// 
+        /// </summary>
         private PipelineDelegate<T>? __Next;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private IPipeline<T>? __NowPipeline;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private string? __Name;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private List<string> InvokePathList = new();
 
+        /// <summary>
+        /// 
+        /// </summary>
         PipelineDelegate<T> IPipelineController<T>.NextPipeline
         {
             get
@@ -43,6 +64,10 @@ namespace Telegram.Bot.Framework.Pipeline
                 __NowPipeline = null!;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string NextPipelineName
         {
             get

@@ -14,18 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts;
-using Telegram.Bot.Types.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.Reflections
+namespace Telegram.Bot.Framework.Pipeline.Abstracts
 {
-    internal class BotCommand
+    public interface IPipelineFilter
     {
-        public string BotCommandName { get; set; }
-        public MessageType? MessageType { get; set; }
-
-        public Func<TelegramController, object[], Task> Command { get; set; }
-        public List<BotCommandParams> BotCommandParams { get; set; }
-        public Type ControllerType { get; set; }
+        /// <summary>
+        /// 执行处理任务
+        /// </summary>
+        /// <param name="t">任务处理的数据类型</param>
+        /// <param name="pipelineController">流水线控制器</param>
+        /// <returns>异步的处理后的数据</returns>
+        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcess<T> process, PipelineDelegate<T> nextHandle);
     }
 }

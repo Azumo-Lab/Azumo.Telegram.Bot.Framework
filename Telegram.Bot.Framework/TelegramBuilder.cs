@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstracts.Attributes;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.Helpers;
-using Telegram.Bot.Framework.Reflections;
 
 namespace Telegram.Bot.Framework
 {
@@ -18,12 +26,17 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 
         /// </summary>
-        public IServiceCollection RuntimeService { get; set; }
+        private readonly IServiceCollection __RuntimeService = new ServiceCollection();
 
         /// <summary>
         /// 
         /// </summary>
-        public Dictionary<string, object> Arguments { get; }
+        private readonly IServiceCollection __BuildServices = new ServiceCollection();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly List<ITelegramPartCreator> __BuildPartCreator = new();
 
         /// <summary>
         /// 
@@ -37,34 +50,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 
         /// </summary>
-        private TelegramBuilder()
-        {
-            RuntimeService = new ServiceCollection();
-            Arguments = new Dictionary<string, object>();
-
-            ReflectionHelper.AllTypes.Where(x => Attribute.IsDefined(x, typeof(DependencyInjectionAttribute)))
-                .Select(x => (x, (DependencyInjectionAttribute)Attribute.GetCustomAttribute(x, typeof(DependencyInjectionAttribute))))
-                .ToList()
-                .ForEach((x) =>
-                {
-                    switch (x.Item2.ServiceLifetime)
-                    {
-                        case ServiceLifetime.Singleton:
-                            RuntimeService.AddSingleton(x.Item2.ServiceType ?? x.x, x.x);
-                            break;
-                        case ServiceLifetime.Scoped:
-                            RuntimeService.AddScoped(x.Item2.ServiceType ?? x.x, x.x);
-                            break;
-                        case ServiceLifetime.Transient:
-                            RuntimeService.AddTransient(x.Item2.ServiceType ?? x.x, x.x);
-                            break;
-                        default:
-                            break;
-                    }
-                });
-
-            InternalInstall.StartInstall();
-        }
+        private TelegramBuilder() { }
 
         /// <summary>
         /// 
@@ -73,23 +59,24 @@ namespace Telegram.Bot.Framework
         /// <exception cref="Exception"></exception>
         public ITelegramBot Build()
         {
-            string token = null;
-            HttpClient proxy = null;
-            if (Arguments.TryGetValue("TOKEN", out object tokenObj))
-                token = tokenObj.ToString();
-            if (Arguments.TryGetValue("PROXY", out object proxyObj))
-                proxy = (HttpClient)proxyObj;
+            IServiceProvider buildService = __BuildServices.BuildServiceProvider();
+            foreach (ITelegramPartCreator telegramPartCreator in __BuildPartCreator)
+                telegramPartCreator.Build(__RuntimeService, buildService);
 
-            if (token == null)
-                throw new Exception($"{nameof(token)} = {token}");
-            RuntimeService.AddSingleton<ITelegramBotClient>(new TelegramBotClient(token, proxy));
-
-            RuntimeService.AddLogging();
-
-            RuntimeService.AddSingleton<ITelegramBot, TelegramBot>();
-
-            IServiceProvider serviceProvider = RuntimeService.BuildServiceProvider();
+            IServiceProvider serviceProvider = __RuntimeService.BuildServiceProvider();
             return serviceProvider.GetService<ITelegramBot>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramPartCreator"></param>
+        /// <returns></returns>
+        public ITelegramBotBuilder AddTelegramPartCreator(ITelegramPartCreator telegramPartCreator)
+        {
+            telegramPartCreator.AddBuildService(__BuildServices);
+            __BuildPartCreator.Add(telegramPartCreator);
+            return this;
         }
     }
 }

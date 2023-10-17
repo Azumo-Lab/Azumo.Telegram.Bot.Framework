@@ -1,4 +1,19 @@
-﻿using System.Linq.Expressions;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2023>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 using System.Reflection;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
@@ -8,7 +23,7 @@ namespace Telegram.Bot.Framework.Reflections
 {
     internal class InternalInstall
     {
-        private readonly static List<Type> AllTypes;
+        private static readonly List<Type> AllTypes;
 
         static InternalInstall()
         {
@@ -28,7 +43,7 @@ namespace Telegram.Bot.Framework.Reflections
 
         public static void Install(Type type)
         {
-            foreach (MethodInfo methodinfo in type.GetMethods( BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static))
+            foreach (MethodInfo methodinfo in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static))
             {
                 if (Attribute.GetCustomAttribute(methodinfo, typeof(BotCommandAttribute)) is BotCommandAttribute botCommandAttribute)
                 {
@@ -40,7 +55,7 @@ namespace Telegram.Bot.Framework.Reflections
                     ParameterInfo[] param = methodinfo.GetParameters();
                     if (param.Any())
                     {
-                        foreach(ParameterInfo paramInfo in param)
+                        foreach (ParameterInfo paramInfo in param)
                         {
                             botCommandParams.Add(new BotCommandParams
                             {
@@ -49,13 +64,13 @@ namespace Telegram.Bot.Framework.Reflections
                         }
                     }
 
-                    Func<TelegramController, object[], Task> func = (controller, objs) =>
+                    Task func(TelegramController controller, object[] objs)
                     {
                         if (objs == null || !objs.Any())
                             objs = Array.Empty<object>();
                         object result = methodinfo.Invoke(controller, objs);
                         return result as Task;
-                    };
+                    }
 
                     BotCommandRoute.AddBotCommand(new BotCommand
                     {
@@ -65,9 +80,9 @@ namespace Telegram.Bot.Framework.Reflections
                         MessageType = null,
                         ControllerType = type,
                     });
+                }
             }
-            }
-            
+
         }
     }
 }
