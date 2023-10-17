@@ -56,15 +56,20 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 添加一条流水线
         /// </summary>
-        /// <param name="pipelineName"></param>
-        /// <param name="pipeline"></param>
+        /// <typeparam name="PipelineNameType">流水线名称类型，可以是文本，数字，枚举</typeparam>
+        /// <param name="pipelineName">流水线名称</param>
+        /// <param name="pipeline">流水线类</param>
         public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull
         {
             __Pipelines.Add(pipelineName, pipeline);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string GetInvokePath()
         {
             StringBuilder stringBuilder = new();
@@ -76,9 +81,9 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 进行下一步的流水线处理操作
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="t">处理数据</param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
         public async Task<T> Next(T t)
@@ -93,10 +98,10 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 停止执行流水线
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t">处理数据</param>
+        /// <returns>直接返回处理数据</returns>
         public Task<T> Stop(T t)
         {
             return Task.FromResult(t);

@@ -29,15 +29,15 @@ namespace Telegram.Bot.Framework.Pipeline
         private readonly PipelineDelegate<T> __PipelineFuns = (t, c) => Task.FromResult(t);
 
         /// <summary>
-        /// 
+        /// 流水线控制器
         /// </summary>
         private readonly IPipelineController<T> __Controller;
 
         /// <summary>
         /// 初始化，创建流水线
         /// </summary>
-        /// <param name="pipelineName"></param>
-        /// <param name="procedures"></param>
+        /// <param name="procedures">流水线的处理工序</param>
+        /// <param name="pipelineController">控制器</param>
         public InternalPipeline(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
         {
             __Controller = pipelineController;
@@ -59,8 +59,8 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <summary>
         /// 开始执行
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj">处理数据</param>
+        /// <returns>流水线处理后数据</returns>
         public async Task<T> Invoke(T obj)
         {
             return await __PipelineFuns(obj, __Controller);
