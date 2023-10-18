@@ -30,6 +30,6 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         /// <param name="t">任务处理的数据类型</param>
         /// <param name="pipelineController">流水线控制器</param>
         /// <returns>异步的处理后的数据</returns>
-        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcess<T> process, PipelineDelegate<T> nextHandle);
+        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle);
     }
 }

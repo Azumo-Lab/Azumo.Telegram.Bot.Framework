@@ -6,7 +6,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controller
 {
     internal interface IControllerInvoker
     {
-        Task InvokeAsync(BotCommand command, TGChat tGChat);
+        Task InvokeAsync(BotCommand command, TGChat tGChat, IControllerParamManager controllerParamManager);
 
         BotCommand GetCommand(Update update);
     }

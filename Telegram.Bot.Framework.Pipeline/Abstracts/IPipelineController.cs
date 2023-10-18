@@ -24,6 +24,8 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// </remarks>
     public interface IPipelineController<T>
     {
+        public PipelineResultEnum PipelineResultEnum { get; set; }
+
         /// <summary>
         /// 添加一条流水线
         /// </summary>
@@ -54,14 +56,14 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public Task<T> Next(T t);
+        public Task<T> NextAsync(T t);
 
         /// <summary>
         /// 停止当前流水线并立刻返回值
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public Task<T> Stop(T t);
+        public Task<T> StopAsync(T t);
 
         /// <summary>
         /// 切换到指定流水线

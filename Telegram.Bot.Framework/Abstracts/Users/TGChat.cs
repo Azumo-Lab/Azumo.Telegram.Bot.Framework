@@ -5,7 +5,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
     /// <summary>
     /// 
     /// </summary>
-    public class TGChat : Update
+    public sealed class TGChat : Update
     {
         /// <summary>
         /// 
@@ -17,11 +17,26 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// </summary>
         public ITelegramBotClient BotClient { get; internal set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ISession Session { get; internal set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IServiceProvider UserService => __UserServiceScope.ServiceProvider;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly IServiceScope __UserServiceScope;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceScope"></param>
+        /// <param name="chatId"></param>
         private TGChat(IServiceScope serviceScope, ChatId chatId)
         {
             __UserServiceScope = serviceScope;
@@ -30,6 +45,13 @@ namespace Telegram.Bot.Framework.Abstracts.Users
             Session = UserService.GetService<ISession>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramBot"></param>
+        /// <param name="chatId"></param>
+        /// <param name="BotService"></param>
+        /// <returns></returns>
         public static TGChat GetChat(ITelegramBotClient telegramBot, ChatId chatId, IServiceProvider BotService)
         {
             TGChat chat = new(BotService.CreateScope(), chatId)

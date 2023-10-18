@@ -14,28 +14,51 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Pipeline.Abstracts
+using Telegram.Bot.Framework.Reflections;
+
+namespace Telegram.Bot.Framework.Abstracts.Controller
 {
     /// <summary>
-    /// 创建流水线控制器
+    /// 
     /// </summary>
-    public interface IPipelineBuilder<T>
+    public interface IControllerParamManager
     {
         /// <summary>
-        /// 添加工序
+        /// 
         /// </summary>
-        /// <param name="procedure"></param>
-        public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure);
+        internal BotCommand BotCommand { get; set; }
 
         /// <summary>
-        /// 将工序组装成流水线
+        /// 
         /// </summary>
-        public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull;
+        internal int Index { get; set; }
 
         /// <summary>
-        /// 创建流水线控制器
+        /// 
+        /// </summary>
+        internal ParamStauts ParamStauts { get; set; }
+
+        /// <summary>
+        /// 获得所有的参数
         /// </summary>
         /// <returns></returns>
-        public IPipelineController<T> BuilderPipelineController();
+        public object[] GetObjects();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        public void AddObject(object obj);
+
+        /// <summary>
+        /// 清除所有的数据
+        /// </summary>
+        public void Clear();
+    }
+
+    internal enum ParamStauts
+    {
+        Read,
+        Write
     }
 }

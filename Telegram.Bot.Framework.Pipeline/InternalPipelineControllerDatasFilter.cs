@@ -9,7 +9,7 @@ namespace Telegram.Bot.Framework.Pipeline
 {
     internal class InternalPipelineControllerDatasFilter : IPipelineFilter
     {
-        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcess<T> process, PipelineDelegate<T> nextHandle)
+        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle)
         {
             pipelineController.NextPipeline = nextHandle;
             if (process is IPipelineName pipelineName)

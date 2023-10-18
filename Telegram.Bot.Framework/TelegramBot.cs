@@ -50,6 +50,9 @@ namespace Telegram.Bot.Framework
         /// </summary>
         private bool __IsEnd;
 
+        /// <summary>
+        /// 项目的启动LOGO
+        /// </summary>
         private static string LOGO =
 @"
 ████████╗███████╗██╗     ███████╗ ██████╗ ██████╗  █████╗ ███╗   ███╗   ██████╗  ██████╗ ████████╗
@@ -68,7 +71,7 @@ namespace Telegram.Bot.Framework
 ";
 
         /// <summary>
-        /// 
+        /// 初始化
         /// </summary>
         /// <param name="ServiceProvider"></param>
         public TelegramBot(IServiceProvider ServiceProvider)
@@ -117,6 +120,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public async Task StartAsync()
         {
+            __log.LogInformation(LOGO);
             __log.LogInformation("Start...");
             ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
             telegramBot.StartReceiving(this);

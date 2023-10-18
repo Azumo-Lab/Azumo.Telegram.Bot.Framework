@@ -44,12 +44,12 @@ namespace Telegram.Bot.Framework.Pipeline
         /// </summary>
         /// <param name="procedures">流水线的处理工序</param>
         /// <param name="pipelineController">控制器</param>
-        public InternalPipeline(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
+        public InternalPipeline(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController)
         {
             __Controller = pipelineController;
 
             List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = new();
-            foreach (IProcess<T> proc in procedures)
+            foreach (IProcessAsync<T> proc in procedures)
                 procs.Add(handle => (model, controller) =>
                 {
                     // TODO: 这部分逻辑比较复杂，稍后进行详细的解释
@@ -59,7 +59,7 @@ namespace Telegram.Bot.Framework.Pipeline
                         if (!next)
                             return Task.FromResult(model);
                     }
-                    return proc.Execute(model, controller);
+                    return proc.ExecuteAsync(model, controller);
                 });
 
             foreach (Func<PipelineDelegate<T>, PipelineDelegate<T>> item in procs.Reverse<Func<PipelineDelegate<T>, PipelineDelegate<T>>>())

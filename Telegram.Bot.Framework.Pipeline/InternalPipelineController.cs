@@ -29,6 +29,8 @@ namespace Telegram.Bot.Framework.Pipeline
         /// </summary>
         private readonly Dictionary<object, IPipeline<T>> __Pipelines = new();
 
+        private object __DefaultKey;
+
         /// <summary>
         /// 
         /// </summary>
@@ -81,6 +83,11 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public PipelineResultEnum PipelineResultEnum { get; set; } = PipelineResultEnum.Success;
+
+        /// <summary>
         /// 添加一条流水线
         /// </summary>
         /// <typeparam name="PipelineNameType">流水线名称类型，可以是文本，数字，枚举</typeparam>
@@ -89,6 +96,7 @@ namespace Telegram.Bot.Framework.Pipeline
         public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull
         {
             __Pipelines.Add(pipelineName, pipeline);
+            __DefaultKey = pipelineName;
         }
 
         /// <summary>
@@ -111,8 +119,13 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <param name="t">处理数据</param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
-        public async Task<T> Next(T t)
+        public async Task<T> NextAsync(T t)
         {
+            if (__DefaultKey != null && __NowPipeline == null)
+            {
+                if (__Pipelines.TryGetValue(__DefaultKey, out IPipeline<T>? val))
+                    __NowPipeline = val;
+            }
             InvokePathList.Add(NextPipelineName);
             if (__NowPipeline != null)
                 return await __NowPipeline.Invoke(t);
@@ -127,7 +140,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// </summary>
         /// <param name="t">处理数据</param>
         /// <returns>直接返回处理数据</returns>
-        public Task<T> Stop(T t)
+        public Task<T> StopAsync(T t)
         {
             return Task.FromResult(t);
         }
@@ -142,7 +155,7 @@ namespace Telegram.Bot.Framework.Pipeline
         {
             if (__Pipelines.TryGetValue(pipelineName, out IPipeline<T>? val))
                 __NowPipeline = val;
-            return await Next(t);
+            return await NextAsync(t);
         }
     }
 }

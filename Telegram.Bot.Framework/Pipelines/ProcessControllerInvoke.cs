@@ -16,33 +16,67 @@
 
 using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
+using Telegram.Bot.Framework.Reflections;
 
 namespace Telegram.Bot.Framework.Pipelines
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ProcessControllerInvoke : IProcess<TGChat>
+    internal class ProcessControllerInvoke : IProcessAsync<TGChat>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IPipelineController<(TGChat, IControllerParamManager)> __ControllerParamManager;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ProcessControllerInvoke()
+        {
+            __ControllerParamManager = PipelineFactory.CreateIPipelineBuilder<(TGChat, IControllerParamManager)>()
+                .AddProcedure(new ProcessParams())
+                .CreatePipeline("PARAM")
+                .BuilderPipelineController();
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="t"></param>
         /// <param name="pipelineController"></param>
         /// <returns></returns>
-        public async Task<TGChat> Execute(TGChat t, IPipelineController<TGChat> pipelineController)
+        public async Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController)
         {
-            IControllerInvoker controllerInvoker = t.UserService.GetService<IControllerInvoker>();
             try
             {
-                await controllerInvoker.InvokeAsync(controllerInvoker.GetCommand(t), t);
+                IControllerInvoker controllerInvoker = t.UserService.GetService<IControllerInvoker>();
+                IControllerParamManager controllerParamManager = t.UserService.GetService<IControllerParamManager>();
+                BotCommand botCommand = controllerInvoker.GetCommand(t);
+                if (botCommand == null)
+                {
+                    if (controllerParamManager.BotCommand == null)
+                        await pipelineController.StopAsync(t);
+                }
+                else
+                {
+                    controllerParamManager.BotCommand = botCommand;
+                }
+                
+                (t, controllerParamManager) = await __ControllerParamManager.NextAsync((t, controllerParamManager));
+                if (__ControllerParamManager.PipelineResultEnum != PipelineResultEnum.Success)
+                    return await pipelineController.StopAsync(t);
+
+                await controllerInvoker.InvokeAsync(botCommand, t, controllerParamManager);
             }
             catch (Exception)
             {
 
             }
-            return await pipelineController.Next(t);
+            return await pipelineController.NextAsync(t);
         }
     }
 }

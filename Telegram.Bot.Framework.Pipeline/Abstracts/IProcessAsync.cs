@@ -23,7 +23,7 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// 流水线的一个处理任务
     /// </remarks>
     /// <typeparam name="T">要进行处理的类型</typeparam>
-    public interface IProcess<T>
+    public interface IProcessAsync<T>
     {
         /// <summary>
         /// 执行处理任务
@@ -31,6 +31,6 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         /// <param name="t">任务处理的数据类型</param>
         /// <param name="pipelineController">流水线控制器</param>
         /// <returns>异步的处理后的数据</returns>
-        public Task<T> Execute(T t, IPipelineController<T> pipelineController);
+        public Task<T> ExecuteAsync(T t, IPipelineController<T> pipelineController);
     }
 }

@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <param name="procedures"></param>
         /// <param name="pipelineController"></param>
         /// <returns></returns>
-        internal static IPipeline<T> CreateIPipeline<T>(IProcess<T>[] procedures, IPipelineController<T> pipelineController)
+        internal static IPipeline<T> CreateIPipeline<T>(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController)
         {
             return new InternalPipeline<T>(procedures, pipelineController);
         }

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.InternalImpl.Bots;
 
 namespace Telegram.Bot.Framework
 {
@@ -44,7 +45,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static ITelegramBotBuilder Create()
         {
-            return new TelegramBuilder();
+            return new TelegramBuilder().AddBasic();
         }
 
         /// <summary>
