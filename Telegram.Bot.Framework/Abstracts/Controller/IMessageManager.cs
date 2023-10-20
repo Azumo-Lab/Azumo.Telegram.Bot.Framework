@@ -14,16 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Types;
-using BotCommand = Telegram.Bot.Framework.Reflections.BotCommand;
-
 namespace Telegram.Bot.Framework.Abstracts.Controller
 {
-    internal interface IControllerInvoker
+    public interface IMessageManager
     {
-        Task InvokeAsync(BotCommand command, TGChat tGChat, IControllerParamManager controllerParamManager);
-
-        BotCommand GetCommand(Update update);
+        public Type GetMessage(Type type);
     }
 }

@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework.Reflections
             if (string.IsNullOrEmpty(BotCommand))
                 return null;
 
-            _ = __BotCommand.TryGetValue(BotCommand, out BotCommand botCommand);
+            _ = __BotCommand.TryGetValue(BotCommand.ToLower(), out BotCommand botCommand);
             return botCommand;
         }
         public static BotCommand GetBotCommand(MessageType type)

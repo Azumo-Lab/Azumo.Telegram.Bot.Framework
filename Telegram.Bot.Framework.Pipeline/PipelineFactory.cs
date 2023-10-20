@@ -29,9 +29,15 @@ namespace Telegram.Bot.Framework.Pipeline
         static PipelineFactory()
         {
             ServiceCollection serviceDescriptors = new();
-            
+
+            serviceDescriptors.AddSingleton<IPipelineFilter, PipelineFilter>();
+
+            ServiceAction(serviceDescriptors);
+
             ServiceProvider = serviceDescriptors.BuildServiceProvider();
         }
+
+        public static Action<IServiceCollection> ServiceAction { get; set; } = (coll) => { };
 
         /// <summary>
         /// 

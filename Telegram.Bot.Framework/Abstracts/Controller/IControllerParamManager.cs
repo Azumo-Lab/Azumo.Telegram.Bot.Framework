@@ -19,22 +19,22 @@ using Telegram.Bot.Framework.Reflections;
 namespace Telegram.Bot.Framework.Abstracts.Controller
 {
     /// <summary>
-    /// 
+    /// 参数管理控制器
     /// </summary>
     public interface IControllerParamManager
     {
         /// <summary>
-        /// 
+        /// 参数的指令
         /// </summary>
         internal BotCommand BotCommand { get; set; }
 
         /// <summary>
-        /// 
+        /// 指示第几个参数
         /// </summary>
         internal int Index { get; set; }
 
         /// <summary>
-        /// 
+        /// 参数的状态
         /// </summary>
         internal ParamStauts ParamStauts { get; set; }
 
@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controller
         public object[] GetObjects();
 
         /// <summary>
-        /// 
+        /// 添加结果
         /// </summary>
         /// <param name="obj"></param>
         public void AddObject(object obj);
@@ -56,6 +56,9 @@ namespace Telegram.Bot.Framework.Abstracts.Controller
         public void Clear();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     internal enum ParamStauts
     {
         Read,

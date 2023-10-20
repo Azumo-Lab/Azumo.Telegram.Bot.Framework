@@ -16,18 +16,19 @@
 
 using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Framework.InternalImpl.Controller.Messages;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Reflections;
 
 namespace Telegram.Bot.Framework.Pipelines
 {
     /// <summary>
-    /// 
+    /// 参数获取的一个处理
     /// </summary>
     internal class ProcessParams : IProcessAsync<(TGChat, IControllerParamManager)>
     {
         /// <summary>
-        /// 
+        /// 进行执行方法参数的获取
         /// </summary>
         /// <param name="t"></param>
         /// <param name="pipelineController"></param>
@@ -35,32 +36,55 @@ namespace Telegram.Bot.Framework.Pipelines
         /// <exception cref="Exception"></exception>
         public async Task<(TGChat, IControllerParamManager)> ExecuteAsync((TGChat, IControllerParamManager) t, IPipelineController<(TGChat, IControllerParamManager)> pipelineController)
         {
+            if (t.Item2.BotCommand.BotCommandParams.Count == 0)
+            {
+                t.Item2.Clear();
+                pipelineController.PipelineResultEnum = PipelineResultEnum.Success;
+                return await pipelineController.NextAsync(t);
+            }   
+            
             BotCommandParams botCommandParams = t.Item2.BotCommand.BotCommandParams[t.Item2.Index];
 
             switch (t.Item2.ParamStauts)
             {
                 case ParamStauts.Read:
-                    IMessage message = (IMessage)ActivatorUtilities.CreateInstance(t.Item1.UserService, botCommandParams.MessageType, Array.Empty<object>());
-                    await message.SendAsync(t.Item1);
+                    Type newMessageType = botCommandParams.MessageType;
+                    if (newMessageType == null)
+                    {
+                        IMessageManager messageManager = t.Item1.UserService.GetService<IMessageManager>();
+                        newMessageType = messageManager.GetMessage(botCommandParams.ParameterInfo.ParameterType);
+                        newMessageType ??= typeof(StringMessage);
+                    }
+                    IMessage message = (IMessage)ActivatorUtilities.CreateInstance(t.Item1.UserService, newMessageType, Array.Empty<object>());
+                    await message.SendAsync(t.Item1, botCommandParams.ParameterInfo);
                     t.Item2.ParamStauts = ParamStauts.Write;
+                    pipelineController.PipelineResultEnum = PipelineResultEnum.TryAgain;
                     return await pipelineController.StopAsync(t);
                 case ParamStauts.Write:
-                    Type newCatchType = null;
-                    if (botCommandParams.CatchType == null)
+                    Type newCatchType = botCommandParams.CatchType;
+                    if (newCatchType == null)
                     {
                         ICatchManager catchManager = t.Item1.UserService.GetService<ICatchManager>();
                         newCatchType = catchManager.GetCatch(botCommandParams.ParameterInfo.ParameterType);
                     }
                     ICatch mycatch = (ICatch)ActivatorUtilities.CreateInstance(t.Item1.UserService, newCatchType, Array.Empty<object>());
                     if (!mycatch.Catch(t.Item1, out object obj))
+                    {
+                        pipelineController.PipelineResultEnum = PipelineResultEnum.TryAgain;
                         return await pipelineController.StopAsync(t);
+                    }
 
                     t.Item2.AddObject(obj);
                     t.Item2.ParamStauts = ParamStauts.Read;
                     t.Item2.Index++;
                     if (t.Item2.Index >= t.Item2.BotCommand.BotCommandParams.Count)
+                    {
+                        pipelineController.PipelineResultEnum = PipelineResultEnum.Success;
                         return await pipelineController.NextAsync(t);
+                    }
+                        
 
+                    pipelineController.PipelineResultEnum = PipelineResultEnum.TryAgain;
                     return await pipelineController.StopAsync(t);
                 default:
                     throw new Exception($"t.Item2.ParamStauts: {t.Item2.ParamStauts}");

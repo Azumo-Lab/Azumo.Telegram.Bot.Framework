@@ -25,34 +25,32 @@ namespace Telegram.Bot.Framework.Pipeline
     internal class InternalPipelineController<T> : IPipelineController<T>
     {
         /// <summary>
-        /// 
+        /// 流水线字典
         /// </summary>
         private readonly Dictionary<object, IPipeline<T>> __Pipelines = new();
 
-        private object __DefaultKey;
-
         /// <summary>
-        /// 
+        /// 下一道工序
         /// </summary>
         private PipelineDelegate<T>? __Next;
 
         /// <summary>
-        /// 
+        /// 当前使用的流水线
         /// </summary>
         private IPipeline<T>? __NowPipeline;
 
         /// <summary>
-        /// 
+        /// 执行工序名称
         /// </summary>
         private string? __Name;
 
         /// <summary>
-        /// 
+        /// 流水线执行链
         /// </summary>
         private List<string> InvokePathList = new();
 
         /// <summary>
-        /// 
+        /// 下一个工序
         /// </summary>
         PipelineDelegate<T> IPipelineController<T>.NextPipeline
         {
@@ -68,7 +66,7 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 下一道工序的名称
         /// </summary>
         public string NextPipelineName
         {
@@ -83,7 +81,7 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 流水线执行结果
         /// </summary>
         public PipelineResultEnum PipelineResultEnum { get; set; } = PipelineResultEnum.Success;
 
@@ -96,7 +94,6 @@ namespace Telegram.Bot.Framework.Pipeline
         public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull
         {
             __Pipelines.Add(pipelineName, pipeline);
-            __DefaultKey = pipelineName;
         }
 
         /// <summary>
@@ -121,11 +118,6 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <exception cref="NullReferenceException"></exception>
         public async Task<T> NextAsync(T t)
         {
-            if (__DefaultKey != null && __NowPipeline == null)
-            {
-                if (__Pipelines.TryGetValue(__DefaultKey, out IPipeline<T>? val))
-                    __NowPipeline = val;
-            }
             InvokePathList.Add(NextPipelineName);
             if (__NowPipeline != null)
                 return await __NowPipeline.Invoke(t);
@@ -146,7 +138,7 @@ namespace Telegram.Bot.Framework.Pipeline
         }
 
         /// <summary>
-        /// 
+        /// 切换执行的流水线
         /// </summary>
         /// <param name="pipelineName"></param>
         /// <param name="t"></param>

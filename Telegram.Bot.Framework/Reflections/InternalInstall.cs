@@ -51,7 +51,7 @@ namespace Telegram.Bot.Framework.Reflections
                     if (string.IsNullOrEmpty(botcommand))
                         botcommand = $"/{methodinfo.Name.ToLower()}";
 
-                    List<BotCommandParams> botCommandParams = null;
+                    List<BotCommandParams> botCommandParams = new List<BotCommandParams>();
                     ParameterInfo[] param = methodinfo.GetParameters();
                     if (param.Any())
                     {

@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
         {
             if (proxyHost == null) throw new ArgumentNullException(nameof(proxyHost));
 
-            Uri uri = port.HasValue ? new Uri($"{proxyHost}:{port}") : new Uri(proxyHost);
+            string uri = port.HasValue ? $"{proxyHost}:{port}" : proxyHost;
             WebProxy webProxy = new(uri);
             if (!string.IsNullOrEmpty(username))
                 webProxy.Credentials = new NetworkCredential(username, password);
@@ -52,14 +52,36 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
 
     public static partial class TelegramBuilderExtensionMethods
     {
+        /// <summary>
+        /// 设置代理
+        /// </summary>
+        /// <param name="telegramBotBuilder"></param>
+        /// <param name="proxyHost"></param>
+        /// <param name="port"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static ITelegramBotBuilder AddProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null)
         {
             return telegramBotBuilder.AddTelegramPartCreator(new TelegramProxy(proxyHost, port, username, password));
         }
 
+        /// <summary>
+        /// 添加默认的Clash的代理地址
+        /// </summary>
+        /// <remarks>
+        /// Clash 默认的代理地址是<br></br>
+        /// <code>
+        /// 127.0.0.1:7890
+        /// </code>
+        /// 如果已经更改地址端口等默认信息<br/>
+        /// 请使用 <see cref="AddProxy(ITelegramBotBuilder, string, int?, string, string)"/>
+        /// </remarks>
+        /// <param name="telegramBotBuilder"></param>
+        /// <returns></returns>
         public static ITelegramBotBuilder AddClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
         {
-            return AddProxy(telegramBotBuilder, "127.0.0.1", 7890);
+            return AddProxy(telegramBotBuilder, "localhost", 7890);
         }
     }
 }

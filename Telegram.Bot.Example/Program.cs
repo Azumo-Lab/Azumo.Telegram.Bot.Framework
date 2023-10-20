@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,7 @@ namespace Telegram.Bot.Example
         [BotCommand("/Catch")]
         public async Task Test2(string str)
         {
+            Logger.LogInformation($"发送的消息 : {str}");
             await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"You Say {str}");
         }
     }

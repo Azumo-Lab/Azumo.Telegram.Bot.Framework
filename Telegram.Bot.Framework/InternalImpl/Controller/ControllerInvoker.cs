@@ -74,7 +74,6 @@ namespace Telegram.Bot.Framework.InternalImpl.Controller
             if (tGChat == null) return;
 
             TelegramController telegramController = (TelegramController)ActivatorUtilities.GetServiceOrCreateInstance(__ServiceProvider, command.ControllerType);
-
             try
             {
                 foreach (IControllerInvokeFilter controllerInvokeFilter in __ControllerInvokeFilters)

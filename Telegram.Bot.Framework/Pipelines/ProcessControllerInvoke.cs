@@ -59,14 +59,16 @@ namespace Telegram.Bot.Framework.Pipelines
                 if (botCommand == null)
                 {
                     if (controllerParamManager.BotCommand == null)
-                        await pipelineController.StopAsync(t);
+                        return await pipelineController.StopAsync(t);
+                    botCommand = controllerParamManager.BotCommand;
                 }
                 else
                 {
+                    controllerParamManager.Clear();
                     controllerParamManager.BotCommand = botCommand;
                 }
                 
-                (t, controllerParamManager) = await __ControllerParamManager.NextAsync((t, controllerParamManager));
+                (t, controllerParamManager) = await __ControllerParamManager.SwitchTo("PARAM", (t, controllerParamManager));
                 if (__ControllerParamManager.PipelineResultEnum != PipelineResultEnum.Success)
                     return await pipelineController.StopAsync(t);
 
