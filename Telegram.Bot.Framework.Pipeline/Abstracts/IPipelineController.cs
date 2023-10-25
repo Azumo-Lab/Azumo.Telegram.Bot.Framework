@@ -24,6 +24,9 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// </remarks>
     public interface IPipelineController<T>
     {
+        /// <summary>
+        /// 流水线执行结果
+        /// </summary>
         public PipelineResultEnum PipelineResultEnum { get; set; }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         internal PipelineDelegate<T> NextPipeline { get; set; }
 
         /// <summary>
-        /// 
+        /// 下一条工序名称
         /// </summary>
         public string NextPipelineName { get; internal set; }
 

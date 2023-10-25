@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
@@ -22,19 +23,31 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts
 {
-    internal class UserEnvironment
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class UserEnvironment : ITelegramService
     {
-        public static void Add(IServiceCollection services)
+        /// <summary>
+        /// 添加服务
+        /// </summary>
+        /// <param name="services"></param>
+        public void AddServices(IServiceCollection services)
         {
             _ = services.AddScoped(x =>
             {
                 return PipelineFactory.CreateIPipelineBuilder<TGChat>()
-                .AddProcedure(new ProcessControllerInvoke())
-                .CreatePipeline(UpdateType.Message)
-                .BuilderPipelineController();
+                    .AddProcedure(new ProcessControllerInvoke())
+                    .CreatePipeline(UpdateType.Message)
+                    .BuilderPipelineController();
             });
         }
 
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <param name="chat"></param>
+        /// <returns></returns>
         public static async Task InvokeAsync(TGChat chat)
         {
             IServiceProvider serviceProvider = chat.UserService;
@@ -43,5 +56,7 @@ namespace Telegram.Bot.Framework.Abstracts
 
             _ = await pipelineController.SwitchTo(chat.Type, chat);
         }
+
+        
     }
 }

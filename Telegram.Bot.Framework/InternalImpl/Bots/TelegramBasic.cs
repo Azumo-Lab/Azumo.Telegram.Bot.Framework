@@ -46,7 +46,10 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
             services.ScanTGService();
 
             InternalInstall.StartInstall();
-            UserEnvironment.Add(services);
+
+            List<ITelegramService> telegramServices = typeof(ITelegramService).FindTypeOf().Select(x => (ITelegramService)Activator.CreateInstance(x)).ToList();
+            foreach (ITelegramService item in telegramServices)
+                item.AddServices(services);
 
             // 添加Log
             services.AddLogging(option =>
