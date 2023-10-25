@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Helpers;
@@ -45,6 +46,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
             services.ScanTGService();
 
             InternalInstall.StartInstall();
+            UserEnvironment.Add(services);
 
             // 添加Log
             services.AddLogging(option =>

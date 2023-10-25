@@ -17,7 +17,7 @@
 namespace Telegram.Bot.Framework.Pipeline.Abstracts
 {
     /// <summary>
-    /// 创建流水线控制器
+    /// 创建流水线
     /// </summary>
     public interface IPipelineBuilder<T>
     {

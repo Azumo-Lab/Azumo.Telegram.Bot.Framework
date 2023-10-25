@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Pipeline;
@@ -26,9 +27,9 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 
+    /// 这个是一个机器人接口： <see cref="ITelegramBot"/> 接口的实现类
     /// </summary>
-    internal class TelegramBot : ITelegramBot, IUpdateHandler
+    internal class TelegramBot : ITelegramBot, IUpdateHandler, IDisposable
     {
         /// <summary>
         /// 
@@ -53,7 +54,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 项目的启动LOGO
         /// </summary>
-        private static string LOGO =
+        private static readonly string LOGO =
 @"
 ████████╗███████╗██╗     ███████╗ ██████╗ ██████╗  █████╗ ███╗   ███╗   ██████╗  ██████╗ ████████╗
 ╚══██╔══╝██╔════╝██║     ██╔════╝██╔════╝ ██╔══██╗██╔══██╗████╗ ████║   ██╔══██╗██╔═══██╗╚══██╔══╝
@@ -111,38 +112,53 @@ namespace Telegram.Bot.Framework
 
             TGChat chat = chatManager.Create(botClient, update, ServiceProvider);
 
-            _ = await pipelineController.SwitchTo(update.Type, chat);
+            await UserEnvironment.InvokeAsync(chat);
         }
 
         /// <summary>
-        /// 
+        /// 开始执行
         /// </summary>
         /// <returns></returns>
         public async Task StartAsync()
         {
             __log.LogInformation(LOGO);
-            __log.LogInformation("Start...");
-            ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
-            telegramBot.StartReceiving(this);
+            __log.LogInformation("启动中...");
 
-            User user = await telegramBot.GetMeAsync();
-            __log.LogInformation(message: $"@{user.Username} is Running...");
-
-            while (!__IsEnd)
+            try
             {
-                if (__IsEnd)
-                    await telegramBot.CloseAsync();
+                ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
+                telegramBot.StartReceiving(this);
+
+                User user = await telegramBot.GetMeAsync();
+                __log.LogInformation(message: $"用户 @{user.Username} 正在运行中...");
+
+                while (!__IsEnd)
+                {
+                    if (__IsEnd)
+                        await telegramBot.CloseAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                __log.LogError("程序启动发生致命错误");
+                __log.LogError(ex.ToString());
             }
         }
 
         /// <summary>
-        /// 
+        /// 停止执行
         /// </summary>
         /// <returns></returns>
         public Task StopAsync()
         {
             __IsEnd = true;
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            StopAsync().Wait();
+            (ServiceProvider as IDisposable)?.Dispose();
         }
     }
 }

@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 
 namespace Telegram.Bot.Framework.Pipeline
@@ -30,7 +29,7 @@ namespace Telegram.Bot.Framework.Pipeline
         {
             ServiceCollection serviceDescriptors = new();
 
-            serviceDescriptors.AddSingleton<IPipelineFilter, PipelineFilter>();
+            _ = serviceDescriptors.AddSingleton<IPipelineFilter, PipelineFilter>();
 
             ServiceAction(serviceDescriptors);
 
