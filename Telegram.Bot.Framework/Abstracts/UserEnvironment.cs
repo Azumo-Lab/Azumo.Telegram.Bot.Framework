@@ -14,11 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
@@ -31,7 +26,7 @@ namespace Telegram.Bot.Framework.Abstracts
     {
         public static void Add(IServiceCollection services)
         {
-            services.AddScoped(x =>
+            _ = services.AddScoped(x =>
             {
                 return PipelineFactory.CreateIPipelineBuilder<TGChat>()
                 .AddProcedure(new ProcessControllerInvoke())
@@ -40,12 +35,12 @@ namespace Telegram.Bot.Framework.Abstracts
             });
         }
 
-        public async static Task InvokeAsync(TGChat chat)
+        public static async Task InvokeAsync(TGChat chat)
         {
             IServiceProvider serviceProvider = chat.UserService;
 
             IPipelineController<TGChat> pipelineController = serviceProvider.GetService<IPipelineController<TGChat>>();
-           
+
             _ = await pipelineController.SwitchTo(chat.Type, chat);
         }
     }
