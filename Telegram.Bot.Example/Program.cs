@@ -23,6 +23,9 @@ namespace Telegram.Bot.Example
                 .Build();
 
             bot.StartAsync().Wait();
+
+            if (bot is IDisposable disposable)
+                disposable.Dispose();
         }
     }
 

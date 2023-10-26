@@ -28,6 +28,12 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure);
 
         /// <summary>
+        /// 添加工序
+        /// </summary>
+        /// <param name="procedure"></param>
+        public IPipelineBuilder<T> AddProcedure(string procedure);
+
+        /// <summary>
         /// 将工序组装成流水线
         /// </summary>
         public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull;

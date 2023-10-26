@@ -37,15 +37,23 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
             HttpClient proxy;
-            if ((proxy = builderService.GetService<HttpClient>()) != null)
-                _ = services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy));
-            else
-                _ = services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token));
+            _ = (proxy = builderService.GetService<HttpClient>()) != null
+                ? services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy))
+                : services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token));
         }
     }
 
     public static partial class TelegramBuilderExtensionMethods
     {
+        /// <summary>
+        /// 添加 Token
+        /// </summary>
+        /// <remarks>
+        /// 添加 BotFather 发行的机器人Token，没有Token，机器人将无法正常启动
+        /// </remarks>
+        /// <param name="builder"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static ITelegramBotBuilder AddToken(this ITelegramBotBuilder builder, string token)
         {
             return builder.AddTelegramPartCreator(new TelegramToken(token));

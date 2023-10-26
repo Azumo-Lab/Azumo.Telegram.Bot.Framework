@@ -25,6 +25,7 @@ namespace Telegram.Bot.Framework.Pipeline
     {
         private readonly List<IProcessAsync<T>> __Procedures = new();
         private readonly IPipelineController<T> __Controller;
+        private readonly List<Type>? __TypeList;
 
         /// <summary>
         /// 初始化
@@ -32,9 +33,10 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <remarks>
         /// 
         /// </remarks>
-        public InternalPipelineBuilder()
+        public InternalPipelineBuilder(List<Type>? TypeList = null)
         {
             __Controller = PipelineFactory.CreateIPipelineController<T>();
+            __TypeList = TypeList;
         }
 
         /// <summary>
@@ -46,6 +48,25 @@ namespace Telegram.Bot.Framework.Pipeline
         {
             __Procedures.Add(procedure);
             return this;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="procedure"></param>
+        /// <returns></returns>
+        public IPipelineBuilder<T> AddProcedure(string procedure)
+        {
+            if (__TypeList == null)
+                return this;
+            Type? type = __TypeList!.Where(x => x.Name == procedure).FirstOrDefault();
+            if (type == null)
+                return this;
+
+            if (Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync)
+                return this;
+
+            return AddProcedure(processAsync);
         }
 
         /// <summary>

@@ -127,6 +127,9 @@ namespace Telegram.Bot.Framework
             try
             {
                 ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
+                if (telegramBot == null)
+                    throw new NullReferenceException(nameof(telegramBot));
+
                 telegramBot.StartReceiving(this);
 
                 User user = await telegramBot.GetMeAsync();

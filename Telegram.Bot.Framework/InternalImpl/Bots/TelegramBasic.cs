@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts;
-using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Helpers;
 using Telegram.Bot.Framework.Reflections;
@@ -25,6 +23,9 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
     /// <summary>
     /// 进行框架运行所必须依赖的设置工作
     /// </summary>
+    /// <remarks>
+    /// 进行基础服务的设置和处理
+    /// </remarks>
     internal class TelegramBasic : ITelegramPartCreator
     {
         /// <summary>
@@ -43,7 +44,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
         /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            services.ScanTGService();
+            _ = services.ScanTGService();
 
             InternalInstall.StartInstall();
 
@@ -52,13 +53,13 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
                 item.AddServices(services);
 
             // 添加Log
-            services.AddLogging(option =>
+            _ = services.AddLogging(option =>
             {
-                option.AddConsole();
-                option.AddSimpleConsole();
+                _ = option.AddConsole();
+                _ = option.AddSimpleConsole();
             });
             // 添加 ITelegramBot
-            services.AddSingleton<ITelegramBot, TelegramBot>();
+            _ = services.AddSingleton<ITelegramBot, TelegramBot>();
         }
     }
 

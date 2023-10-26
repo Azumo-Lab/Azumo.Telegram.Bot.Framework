@@ -69,5 +69,10 @@ namespace Telegram.Bot.Framework.Pipeline
         {
             return new InternalPipelineBuilder<T>();
         }
+
+        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>(List<Type> TypeList)
+        {
+            return new InternalPipelineBuilder<T>(TypeList);
+        }
     }
 }

@@ -16,6 +16,7 @@
 
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Framework.Helpers;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Pipelines;
@@ -36,8 +37,8 @@ namespace Telegram.Bot.Framework.Abstracts
         {
             _ = services.AddScoped(x =>
             {
-                return PipelineFactory.CreateIPipelineBuilder<TGChat>()
-                    .AddProcedure(new ProcessControllerInvoke())
+                return PipelineFactory.CreateIPipelineBuilder<TGChat>(typeof(IProcessAsync<TGChat>).FindTypeOf())
+                    .AddProcedure(nameof(ProcessControllerInvoke))
                     .CreatePipeline(UpdateType.Message)
                     .BuilderPipelineController();
             });

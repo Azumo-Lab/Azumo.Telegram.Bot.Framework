@@ -19,6 +19,9 @@ namespace Telegram.Bot.Framework.Abstracts.Bots
     /// <summary>
     /// 可扩展的内容设置
     /// </summary>
+    /// <remarks>
+    /// 通过实现这个接口，来进行 <see cref="ITelegramBotBuilder"/> 接口的处理设置
+    /// </remarks>
     public interface ITelegramPartCreator
     {
         /// <summary>
