@@ -11,6 +11,6 @@ namespace Telegram.Bot.Framework.InternalImpl.Controller
     [DependencyInjection(ServiceLifetime.Scoped, typeof(IAuthenticate))]
     internal class Authenticate : IAuthenticate
     {
-        public string RoleName { get; set; }
+        public HashSet<string> RoleName { get; set; }
     }
 }

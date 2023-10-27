@@ -8,6 +8,6 @@ namespace Telegram.Bot.Framework.Abstracts.Controller
 {
     public interface IAuthenticate
     {
-        public string RoleName { get; set; }
+        public HashSet<string> RoleName { get; set; }
     }
 }

@@ -25,8 +25,10 @@ namespace Telegram.Bot.Framework.Pipelines
     /// <summary>
     /// 参数获取的一个处理
     /// </summary>
-    internal class ProcessParams : IProcessAsync<(TGChat, IControllerParamManager)>
+    internal class ProcessParams : IProcessAsync<(TGChat, IControllerParamManager)>, IPipelineName
     {
+        public string Name => "ProcessParams";
+
         /// <summary>
         /// 进行执行方法参数的获取
         /// </summary>
@@ -82,7 +84,6 @@ namespace Telegram.Bot.Framework.Pipelines
                         pipelineController.PipelineResultEnum = PipelineResultEnum.Success;
                         return await pipelineController.NextAsync(t);
                     }
-                        
 
                     pipelineController.PipelineResultEnum = PipelineResultEnum.TryAgain;
                     return await pipelineController.StopAsync(t);

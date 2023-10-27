@@ -18,6 +18,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
             if (password == "123456")
             {
                 Login("Admin");
+                await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "登陆成功，欢迎管理员");
             }
             await Task.CompletedTask;
         }

@@ -25,7 +25,7 @@ namespace Telegram.Bot.Framework.Pipelines
     /// <summary>
     /// 
     /// </summary>
-    internal class ProcessControllerInvoke : IProcessAsync<(TGChat tGChat, IControllerContext controllerContext)>
+    internal class ProcessControllerInvoke : IProcessAsync<(TGChat tGChat, IControllerContext controllerContext)>, IPipelineName
     {
         /// <summary>
         /// 
@@ -42,6 +42,8 @@ namespace Telegram.Bot.Framework.Pipelines
                 .CreatePipeline("PARAM")
                 .BuilderPipelineController();
         }
+
+        public string Name => "ProcessControllerInvoke";
 
         public async Task<(TGChat tGChat, IControllerContext controllerContext)> ExecuteAsync((TGChat tGChat, IControllerContext controllerContext) t, IPipelineController<(TGChat tGChat, IControllerContext controllerContext)> pipelineController)
         {

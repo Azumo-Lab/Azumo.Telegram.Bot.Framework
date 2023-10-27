@@ -66,7 +66,9 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <param name="roleName"></param>
         protected void Login(string roleName)
         {
-            Chat.Authenticate.RoleName = roleName;
+            if (Chat.Authenticate.RoleName == null)
+                Chat.Authenticate.RoleName = new HashSet<string>();
+            Chat.Authenticate.RoleName.Add(roleName);
         }
     }
 }
