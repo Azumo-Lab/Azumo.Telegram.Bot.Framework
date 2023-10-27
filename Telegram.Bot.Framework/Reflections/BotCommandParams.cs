@@ -18,10 +18,24 @@ using System.Reflection;
 
 namespace Telegram.Bot.Framework.Reflections
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class BotCommandParams
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ParameterInfo ParameterInfo { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Type MessageType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Type CatchType { get; set; }
     }
 }

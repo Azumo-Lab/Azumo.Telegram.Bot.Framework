@@ -20,10 +20,28 @@ using BotCommand = Telegram.Bot.Framework.Reflections.BotCommand;
 
 namespace Telegram.Bot.Framework.Abstracts.Controller
 {
+    /// <summary>
+    /// 控制器执行接口
+    /// </summary>
     internal interface IControllerInvoker
     {
+        /// <summary>
+        /// 执行 <see cref="TelegramController"/> 控制器
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="tGChat"></param>
+        /// <param name="controllerParamManager"></param>
+        /// <returns></returns>
         Task InvokeAsync(BotCommand command, TGChat tGChat, IControllerParamManager controllerParamManager);
 
+        /// <summary>
+        /// 获取指令
+        /// </summary>
+        /// <remarks>
+        /// 从本次请求中获取这次的指令
+        /// </remarks>
+        /// <param name="update">单次请求</param>
+        /// <returns>取得的指令</returns>
         BotCommand GetCommand(Update update);
     }
 }

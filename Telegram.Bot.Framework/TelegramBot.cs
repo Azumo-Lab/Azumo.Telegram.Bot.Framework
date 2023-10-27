@@ -139,6 +139,7 @@ namespace Telegram.Bot.Framework
                 {
                     if (__IsEnd)
                         await telegramBot.CloseAsync();
+                    await Task.Delay(500);
                 }
             }
             catch (Exception ex)

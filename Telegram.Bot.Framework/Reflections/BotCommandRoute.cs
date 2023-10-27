@@ -18,10 +18,19 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Reflections
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal static class BotCommandRoute
     {
         private static readonly Dictionary<string, BotCommand> __BotCommand = new();
         private static readonly Dictionary<MessageType, BotCommand> __MessageType = new();
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void AddBotCommand(BotCommand command)
         {
             if (command.MessageType == null)
@@ -40,6 +49,11 @@ namespace Telegram.Bot.Framework.Reflections
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="BotCommand"></param>
+        /// <returns></returns>
         public static BotCommand GetBotCommand(string BotCommand)
         {
             if (string.IsNullOrEmpty(BotCommand))
@@ -48,6 +62,12 @@ namespace Telegram.Bot.Framework.Reflections
             _ = __BotCommand.TryGetValue(BotCommand.ToLower(), out BotCommand botCommand);
             return botCommand;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static BotCommand GetBotCommand(MessageType type)
         {
             _ = __MessageType.TryGetValue(type, out BotCommand botCommand);

@@ -19,8 +19,17 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.Controller
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IMessage
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chat"></param>
+        /// <param name="parameterInfo"></param>
+        /// <returns></returns>
         public Task SendAsync(TGChat chat, ParameterInfo parameterInfo);
     }
 }

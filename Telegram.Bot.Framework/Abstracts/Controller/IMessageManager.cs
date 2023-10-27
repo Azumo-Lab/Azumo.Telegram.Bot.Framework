@@ -16,8 +16,16 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Controller
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IMessageManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public Type GetMessage(Type type);
     }
 }

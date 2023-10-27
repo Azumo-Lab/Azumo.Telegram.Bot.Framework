@@ -83,5 +83,23 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
         {
             return AddProxy(telegramBotBuilder, "localhost", 7890);
         }
+
+        /// <summary>
+        /// 添加默认的SS/SSR的代理地址
+        /// </summary>
+        /// <remarks>
+        /// SS/SSR 默认的代理地址是<br></br>
+        /// <code>
+        /// 127.0.0.1:1080
+        /// </code>
+        /// 如果已经更改地址端口等默认信息<br/>
+        /// 请使用 <see cref="AddProxy(ITelegramBotBuilder, string, int?, string, string)"/>
+        /// </remarks>
+        /// <param name="telegramBotBuilder"></param>
+        /// <returns></returns>
+        public static ITelegramBotBuilder AddSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
+        {
+            return AddProxy(telegramBotBuilder, "localhost", 1080);
+        }
     }
 }

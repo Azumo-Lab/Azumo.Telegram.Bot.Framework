@@ -26,7 +26,7 @@ using BotCommand = Telegram.Bot.Framework.Reflections.BotCommand;
 namespace Telegram.Bot.Framework.InternalImpl.Controller
 {
     /// <summary>
-    /// 
+    /// 控制器执行
     /// </summary>
     [DependencyInjection(ServiceLifetime.Scoped, typeof(IControllerInvoker))]
     internal class ControllerInvoker : IControllerInvoker
@@ -58,8 +58,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Controller
         /// <returns></returns>
         public BotCommand GetCommand(Update update)
         {
-            BotCommand command = BotCommandRoute.GetBotCommand(update.GetCommand());
-            return command;
+            return BotCommandRoute.GetBotCommand(update.GetCommand()) ?? BotCommandRoute.GetBotCommand(update.Message.Type);
         }
 
         /// <summary>

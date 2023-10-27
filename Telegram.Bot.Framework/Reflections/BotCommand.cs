@@ -19,13 +19,34 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Reflections
 {
+    /// <summary>
+    /// 一个指令Model
+    /// </summary>
     internal class BotCommand
     {
+        /// <summary>
+        /// Key 指令名称
+        /// </summary>
         public string BotCommandName { get; set; }
+
+        /// <summary>
+        /// Key 消息类型
+        /// </summary>
         public MessageType? MessageType { get; set; }
 
+        /// <summary>
+        /// 指令的执行委托
+        /// </summary>
         public Func<TelegramController, object[], Task> Command { get; set; }
+
+        /// <summary>
+        /// 指令的参数
+        /// </summary>
         public List<BotCommandParams> BotCommandParams { get; set; }
+
+        /// <summary>
+        /// 控制器的类型
+        /// </summary>
         public Type ControllerType { get; set; }
     }
 }

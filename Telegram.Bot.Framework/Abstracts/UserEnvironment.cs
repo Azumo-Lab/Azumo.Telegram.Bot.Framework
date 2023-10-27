@@ -57,7 +57,5 @@ namespace Telegram.Bot.Framework.Abstracts
 
             _ = await pipelineController.SwitchTo(chat.Type, chat);
         }
-
-        
     }
 }
