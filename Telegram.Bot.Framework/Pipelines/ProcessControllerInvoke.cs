@@ -18,14 +18,14 @@ using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
-using Telegram.Bot.Framework.Reflections;
+using BotCommand = Telegram.Bot.Framework.Reflections.BotCommand;
 
 namespace Telegram.Bot.Framework.Pipelines
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class ProcessControllerInvoke : IProcessAsync<TGChat>
+    internal class ProcessControllerInvoke : IProcessAsync<(TGChat tGChat, IControllerContext controllerContext)>
     {
         /// <summary>
         /// 
@@ -43,19 +43,13 @@ namespace Telegram.Bot.Framework.Pipelines
                 .BuilderPipelineController();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="t"></param>
-        /// <param name="pipelineController"></param>
-        /// <returns></returns>
-        public async Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController)
+        public async Task<(TGChat tGChat, IControllerContext controllerContext)> ExecuteAsync((TGChat tGChat, IControllerContext controllerContext) t, IPipelineController<(TGChat tGChat, IControllerContext controllerContext)> pipelineController)
         {
             try
             {
-                IControllerInvoker controllerInvoker = t.UserService.GetService<IControllerInvoker>();
-                IControllerParamManager controllerParamManager = t.UserService.GetService<IControllerParamManager>();
-                BotCommand botCommand = controllerInvoker.GetCommand(t);
+                IControllerInvoker controllerInvoker = t.tGChat.UserService.GetService<IControllerInvoker>();
+                IControllerParamManager controllerParamManager = t.tGChat.UserService.GetService<IControllerParamManager>();
+                BotCommand botCommand = t.controllerContext.BotCommand;
                 if (botCommand == null)
                 {
                     if (controllerParamManager.BotCommand == null)
@@ -67,12 +61,12 @@ namespace Telegram.Bot.Framework.Pipelines
                     controllerParamManager.Clear();
                     controllerParamManager.BotCommand = botCommand;
                 }
-                
-                (t, controllerParamManager) = await __ControllerParamManager.SwitchTo("PARAM", (t, controllerParamManager));
+
+                (t.tGChat, controllerParamManager) = await __ControllerParamManager.SwitchTo("PARAM", (t.tGChat, controllerParamManager));
                 if (__ControllerParamManager.PipelineResultEnum != PipelineResultEnum.Success)
                     return await pipelineController.StopAsync(t);
 
-                await controllerInvoker.InvokeAsync(botCommand, t, controllerParamManager);
+                await controllerInvoker.InvokeAsync(botCommand, t.tGChat, controllerParamManager);
             }
             catch (Exception)
             {

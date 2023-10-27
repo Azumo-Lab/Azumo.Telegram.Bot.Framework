@@ -48,5 +48,15 @@ namespace Telegram.Bot.Framework.Reflections
         /// 控制器的类型
         /// </summary>
         public Type ControllerType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<Attribute> MethodAttributes { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<Attribute> ControllerAttributes { get; set; }
     }
 }

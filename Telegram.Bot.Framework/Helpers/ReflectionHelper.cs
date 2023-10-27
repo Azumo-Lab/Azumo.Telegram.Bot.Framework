@@ -43,9 +43,7 @@ namespace Telegram.Bot.Framework.Helpers
         {
             Type type = obj is Type newType ? newType : obj.GetType();
 
-            string key = type.FullName + nameof(FindTypeOf);
-
-            return Cache(key, () => AllTypes.Where(type.IsAssignableFrom).Where(x => !x.IsInterface && !x.IsAbstract).ToList());
+            return Cache(CacheKey(type.FullName, nameof(FindTypeOf)), () => AllTypes.Where(type.IsAssignableFrom).Where(x => !x.IsInterface && !x.IsAbstract).ToList()) ?? new List<Type>();
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace Telegram.Bot.Framework.Helpers
         /// <returns></returns>
         public static List<T> FindAttribute<T>(this Type type) where T : Attribute
         {
-            return Cache(CacheKey(type.FullName, nameof(FindAttribute)), () => Attribute.GetCustomAttributes(type, typeof(T)).Select(x => (T)x).ToList());
+            return Cache(CacheKey(type.FullName, nameof(FindAttribute)), () => Attribute.GetCustomAttributes(type, typeof(T)).Select(x => (T)x).ToList()) ?? new List<T>();
         }
 
         /// <summary>
@@ -87,12 +85,15 @@ namespace Telegram.Bot.Framework.Helpers
                 result = cacheObj();
                 _ = __CacheObjDic.TryAdd(cacheKey, result);
             }
-            try
+            else
             {
-                result = (T)obj;
+                try
+                {
+                    result = (T)obj;
+                }
+                catch (Exception)
+                { }
             }
-            catch (Exception)
-            { }
             return result;
         }
 

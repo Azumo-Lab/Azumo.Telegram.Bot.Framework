@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Abstracts;
+using Telegram.Bot.Framework.Abstracts.Attributes;
+
+namespace Telegram.Bot.ChannelManager.Controllers
+{
+    public class LoginController : TelegramController
+    {
+        public LoginController() { }
+
+        [BotCommand("/Login")]
+        public async Task Log(string password)
+        {
+            if (password == "123456")
+            {
+                Login("Admin");
+            }
+            await Task.CompletedTask;
+        }
+    }
+}

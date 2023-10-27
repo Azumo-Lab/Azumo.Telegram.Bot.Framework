@@ -16,6 +16,7 @@
 
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
@@ -40,11 +41,6 @@ namespace Telegram.Bot.Framework
         /// 
         /// </summary>
         private readonly ILogger __log;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly IPipelineController<TGChat> pipelineController;
 
         /// <summary>
         /// 
@@ -80,11 +76,6 @@ namespace Telegram.Bot.Framework
             this.ServiceProvider = ServiceProvider;
 
             __log = this.ServiceProvider.GetService<ILogger<TelegramBot>>();
-
-            pipelineController = PipelineFactory.CreateIPipelineBuilder<TGChat>()
-                .AddProcedure(new ProcessControllerInvoke())
-                .CreatePipeline(UpdateType.Message)
-                .BuilderPipelineController();
         }
 
         /// <summary>

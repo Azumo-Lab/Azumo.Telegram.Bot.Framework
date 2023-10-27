@@ -79,6 +79,8 @@ namespace Telegram.Bot.Framework.Reflections
                         Command = func,
                         MessageType = null,
                         ControllerType = type,
+                        ControllerAttributes = Attribute.GetCustomAttributes(type)?.ToList() ?? new List<Attribute>(),
+                        MethodAttributes = Attribute.GetCustomAttributes(methodinfo)?.ToList() ?? new List<Attribute>(),
                     });
                 }
             }

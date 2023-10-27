@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Users
@@ -38,6 +39,8 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// </summary>
         public ISession Session { get; internal set; }
 
+        public IAuthenticate Authenticate { get; internal set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -59,6 +62,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
             ChatId = chatId;
 
             Session = UserService.GetService<ISession>();
+            Authenticate = UserService.GetService<IAuthenticate>();
         }
 
         /// <summary>

@@ -59,5 +59,14 @@ namespace Telegram.Bot.Framework.Abstracts
                 controllerParamManager.Clear();
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleName"></param>
+        protected void Login(string roleName)
+        {
+            Chat.Authenticate.RoleName = roleName;
+        }
     }
 }

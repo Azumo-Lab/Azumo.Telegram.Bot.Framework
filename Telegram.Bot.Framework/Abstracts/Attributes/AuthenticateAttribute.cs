@@ -16,20 +16,18 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Attributes
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class BotCommandAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+    public class AuthenticateAttribute : Attribute
     {
-        public string BotCommandName { get; }
-        public BotCommandAttribute(string BotCommandName)
+        public string RoleName { get; }
+        public AuthenticateAttribute(string role)
         {
-            BotCommandName = BotCommandName.ToLower();
-            if (!BotCommandName.StartsWith("/"))
-                BotCommandName = $"/{BotCommandName}";
-            this.BotCommandName = BotCommandName;
+            RoleName = role;
         }
-        public BotCommandAttribute()
+
+        public AuthenticateAttribute()
         {
-            BotCommandName = string.Empty;
+
         }
     }
 }

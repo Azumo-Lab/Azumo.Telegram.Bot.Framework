@@ -15,11 +15,13 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Helpers;
 using Telegram.Bot.Framework.Pipeline;
 using Telegram.Bot.Framework.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Pipelines;
+using Telegram.Bot.Framework.Reflections;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts
@@ -37,8 +39,9 @@ namespace Telegram.Bot.Framework.Abstracts
         {
             _ = services.AddScoped(x =>
             {
-                return PipelineFactory.CreateIPipelineBuilder<TGChat>(typeof(IProcessAsync<TGChat>).FindTypeOf())
-                    .AddProcedure(nameof(ProcessControllerInvoke))
+                return PipelineFactory.CreateIPipelineBuilder<(TGChat tGChat, IControllerContext controllerContext)>()
+                    .AddProcedure(new ProcessControllerAuthenticate())
+                    .AddProcedure(new ProcessControllerInvoke())
                     .CreatePipeline(UpdateType.Message)
                     .BuilderPipelineController();
             });
@@ -53,9 +56,16 @@ namespace Telegram.Bot.Framework.Abstracts
         {
             IServiceProvider serviceProvider = chat.UserService;
 
-            IPipelineController<TGChat> pipelineController = serviceProvider.GetService<IPipelineController<TGChat>>();
+            IControllerContext controllerContext = serviceProvider.GetService<IControllerContext>();
 
-            _ = await pipelineController.SwitchTo(chat.Type, chat);
+            // 获取指令
+            IControllerInvoker controllerInvoker = serviceProvider.GetService<IControllerInvoker>();
+            controllerContext.BotCommand = controllerInvoker.GetCommand(chat);
+
+            IPipelineController<(TGChat tGChat, IControllerContext controllerContext)> pipelineController
+                = serviceProvider.GetService<IPipelineController<(TGChat tGChat, IControllerContext controllerContext)>>();
+
+            _ = await pipelineController.SwitchTo(chat.Type, (chat, controllerContext));
         }
     }
 }
