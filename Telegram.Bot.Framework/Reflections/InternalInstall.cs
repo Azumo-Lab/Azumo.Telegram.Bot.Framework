@@ -17,7 +17,6 @@
 using System.Reflection;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
-using Telegram.Bot.Framework.Helpers;
 
 namespace Telegram.Bot.Framework.Reflections
 {
@@ -51,7 +50,7 @@ namespace Telegram.Bot.Framework.Reflections
                     if (string.IsNullOrEmpty(botcommand))
                         botcommand = $"/{methodinfo.Name.ToLower()}";
 
-                    List<BotCommandParams> botCommandParams = new List<BotCommandParams>();
+                    List<BotCommandParams> botCommandParams = new();
                     ParameterInfo[] param = methodinfo.GetParameters();
                     if (param.Any())
                     {

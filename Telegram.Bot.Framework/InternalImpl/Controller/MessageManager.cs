@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controller;
-using Telegram.Bot.Framework.Helpers;
+using Telegram.Bot.Framework.Reflections;
 
 namespace Telegram.Bot.Framework.InternalImpl.Controller
 {
