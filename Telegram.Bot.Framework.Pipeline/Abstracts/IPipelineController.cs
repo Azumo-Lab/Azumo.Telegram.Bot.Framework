@@ -24,23 +24,13 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
     /// </remarks>
     public interface IPipelineController<T>
     {
+
+        #region 流水线属性
+
         /// <summary>
         /// 流水线执行结果
         /// </summary>
         public PipelineResultEnum PipelineResultEnum { get; set; }
-
-        /// <summary>
-        /// 添加一条流水线
-        /// </summary>
-        /// <param name="pipelineName"></param>
-        /// <param name="pipeline"></param>
-        public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull;
-
-        /// <summary>
-        /// 获取执行路径
-        /// </summary>
-        /// <returns></returns>
-        public string GetInvokePath();
 
         /// <summary>
         /// 下一道工序
@@ -51,6 +41,19 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         /// 下一条工序名称
         /// </summary>
         public string NextPipelineName { get; internal set; }
+
+        #endregion
+
+        #region 流水线编辑
+
+        /// <summary>
+        /// 添加一条流水线
+        /// </summary>
+        /// <param name="pipelineName"></param>
+        /// <param name="pipeline"></param>
+        public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull;
+
+        #endregion
 
         #region 控制器控制
 
@@ -76,5 +79,11 @@ namespace Telegram.Bot.Framework.Pipeline.Abstracts
         public Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull;
 
         #endregion
+
+        /// <summary>
+        /// 获取执行路径
+        /// </summary>
+        /// <returns></returns>
+        public string GetInvokePath();
     }
 }
