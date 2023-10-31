@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.Pipeline
         {
             ServiceCollection serviceDescriptors = new();
 
-            _ = serviceDescriptors.AddSingleton<IPipelineFilter, PipelineFilter>();
+            _ = serviceDescriptors.AddSingleton<IPipelineFilter, InternalPipelineFilter>();
 
             ServiceAction(serviceDescriptors);
 
