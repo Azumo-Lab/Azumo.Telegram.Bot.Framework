@@ -18,8 +18,20 @@ using Telegram.Bot.Framework.Pipeline.Abstracts;
 
 namespace Telegram.Bot.Framework.Pipeline
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class InternalPipelineFilter : IPipelineFilter
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="pipelineController"></param>
+        /// <param name="process"></param>
+        /// <param name="nextHandle"></param>
+        /// <returns></returns>
         public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle)
         {
             pipelineController.NextPipeline = nextHandle;

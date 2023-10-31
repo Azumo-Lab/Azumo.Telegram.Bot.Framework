@@ -24,7 +24,14 @@ namespace Telegram.Bot.Framework.Pipeline
     /// </summary>
     public static class PipelineFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
         internal static IServiceProvider ServiceProvider { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         static PipelineFactory()
         {
             ServiceCollection serviceDescriptors = new();
@@ -36,6 +43,9 @@ namespace Telegram.Bot.Framework.Pipeline
             ServiceProvider = serviceDescriptors.BuildServiceProvider();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Action<IServiceCollection> ServiceAction { get; set; } = (coll) => { };
 
         /// <summary>
@@ -70,6 +80,12 @@ namespace Telegram.Bot.Framework.Pipeline
             return new InternalPipelineBuilder<T>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="TypeList"></param>
+        /// <returns></returns>
         public static IPipelineBuilder<T> CreateIPipelineBuilder<T>(List<Type> TypeList)
         {
             return new InternalPipelineBuilder<T>(TypeList);
