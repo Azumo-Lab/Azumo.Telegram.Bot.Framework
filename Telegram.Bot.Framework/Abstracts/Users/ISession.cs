@@ -18,6 +18,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
 {
     public interface ISession
     {
+        public string SessionID { get; }
         public void Set(string key, object value);
 
         public object Get(string key);

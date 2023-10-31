@@ -30,6 +30,8 @@ namespace Telegram.Bot.Framework.InternalImpl.Users
         /// </summary>
         private readonly Dictionary<string, object> __Val = new();
 
+        public string SessionID { get; } = Guid.NewGuid().ToString();
+
         /// <summary>
         /// 
         /// </summary>

@@ -17,7 +17,7 @@
 using Telegram.Bot.Framework.Abstracts.Controller;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
