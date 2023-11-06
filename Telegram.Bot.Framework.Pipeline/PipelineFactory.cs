@@ -25,7 +25,7 @@ namespace Telegram.Bot.Framework.Pipeline
     public static class PipelineFactory
     {
         /// <summary>
-        /// 
+        /// 内部实现
         /// </summary>
         internal static IServiceProvider ServiceProvider { get; }
 

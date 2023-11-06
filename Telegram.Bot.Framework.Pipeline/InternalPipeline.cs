@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework.Pipeline
         private readonly IPipelineController<T> __Controller;
 
         /// <summary>
-        /// 
+        /// 过滤器集合
         /// </summary>
         private readonly List<IPipelineFilter> pipelineFilters = PipelineFactory.ServiceProvider.GetServices<IPipelineFilter>().ToList();
 

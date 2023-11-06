@@ -21,9 +21,9 @@ namespace Telegram.Bot.Framework.Pipeline
     /// <summary>
     /// 流水线委托
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="processObj"></param>
-    /// <param name="controller"></param>
-    /// <returns></returns>
+    /// <typeparam name="T">处理类型</typeparam>
+    /// <param name="processObj">处理数据</param>
+    /// <param name="controller">控制器</param>
+    /// <returns>处理后数据</returns>
     public delegate Task<T> PipelineDelegate<T>(T processObj, IPipelineController<T> controller);
 }
