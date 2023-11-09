@@ -39,8 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Telegram.Bot.Framework.Pipeline\Telegram.Bot.Framework.Pipeline.csproj" />
-    <ProjectReference Include="..\Telegram.Bot.Framework.Reflections\Telegram.Bot.Framework.Reflections.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

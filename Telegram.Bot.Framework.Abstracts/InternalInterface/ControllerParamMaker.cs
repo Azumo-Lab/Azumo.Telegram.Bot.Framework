@@ -25,7 +25,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                 TypeForAttribute typeForAttribute = (TypeForAttribute)Attribute.GetCustomAttribute(item, typeof(TypeForAttribute))!;
                 __AllType.TryAdd(typeForAttribute.Type, item);
             }
-        } 
+        }
         public IControllerParam Make(Type paramType)
         {
             if(__AllType.TryGetValue(paramType, out Type? IControllerParamType))
