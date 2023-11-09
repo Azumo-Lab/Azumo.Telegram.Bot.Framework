@@ -16,8 +16,20 @@
 
 namespace Telegram.Bot.Framework.Interfaces
 {
+    /// <summary>
+    /// Bot执行前执行的任务接口
+    /// </summary>
+    /// <remarks>
+    /// 用于执行环境配置等
+    /// </remarks>
     public interface IStartExec
     {
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <param name="bot">Bot接口</param>
+        /// <param name="serviceProvider">服务</param>
+        /// <returns>异步执行</returns>
         public Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider);
     }
 }

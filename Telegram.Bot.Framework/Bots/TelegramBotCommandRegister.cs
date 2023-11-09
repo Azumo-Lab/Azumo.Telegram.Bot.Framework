@@ -55,7 +55,7 @@ namespace Telegram.Bot.Framework.Bots
     public static partial class TelegramBuilderExtensionMethods
     {
         /// <summary>
-        /// 添加基础的服务
+        /// 收集Bot内的指令，并注册到Telegram中
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
