@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
-    public interface IControllerParam
+    internal interface IControllerManager
     {
-        public IControllerParamSender? ParamSender { get; set; }
-
-        public Task SendMessage(TGChat tGChat);
-
-        public Task<object> CatchObjs(TGChat tGChat);
+        BotCommand GetCommand(TGChat tGChat);
     }
 }

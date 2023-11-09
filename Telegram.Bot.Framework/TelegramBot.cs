@@ -14,16 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.Abstracts.Controller;
-using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Framework.Pipeline;
-using Telegram.Bot.Framework.Pipeline.Abstracts;
-using Telegram.Bot.Framework.Pipelines;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
 {
@@ -67,6 +60,8 @@ namespace Telegram.Bot.Framework
 ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝                    
 ";
 
+        private readonly IUpdateHandler __UpdateHandler;
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -76,6 +71,7 @@ namespace Telegram.Bot.Framework
             this.ServiceProvider = ServiceProvider;
 
             __log = this.ServiceProvider.GetService<ILogger<TelegramBot>>();
+            __UpdateHandler = this.ServiceProvider.GetService<IUpdateHandler>();
         }
 
         /// <summary>
@@ -85,9 +81,9 @@ namespace Telegram.Bot.Framework
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            await __UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
         }
 
         /// <summary>
@@ -99,11 +95,7 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            IChatManager chatManager = ServiceProvider.GetService<IChatManager>();
-
-            TGChat chat = chatManager.Create(botClient, update, ServiceProvider);
-
-            await UserEnvironment.InvokeAsync(chat);
+            await __UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
         }
 
         /// <summary>

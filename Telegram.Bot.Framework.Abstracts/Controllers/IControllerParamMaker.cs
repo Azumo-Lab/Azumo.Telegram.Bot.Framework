@@ -2,6 +2,6 @@
 {
     internal interface IControllerParamMaker
     {
-        public IControllerParam Make(Type paramType);
+        public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender);
     }
 }

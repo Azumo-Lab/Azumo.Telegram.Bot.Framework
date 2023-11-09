@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Azumo.Reflection\Azumo.Reflection.csproj" />
     <ProjectReference Include="..\Core Components\Azumo.Pipeline\Azumo.Pipeline.csproj" />
+    <ProjectReference Include="..\Core Components\Azumo.Reflection\Azumo.Reflection.csproj" />
   </ItemGroup>
 
   <ItemGroup>

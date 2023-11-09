@@ -26,26 +26,37 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                 __AllType.TryAdd(typeForAttribute.Type, item);
             }
         }
-        public IControllerParam Make(Type paramType)
+        public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender)
         {
+            IControllerParam controllerParam;
             if(__AllType.TryGetValue(paramType, out Type? IControllerParamType))
             {
                 IControllerParamType ??= typeof(NullControllerParam);
-                return (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, Array.Empty<object>());
+                controllerParam = (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, Array.Empty<object>());
             }
-            return new NullControllerParam();
+            else
+            {
+                controllerParam = new NullControllerParam();
+            }
+
+            if (controllerParamSender != null)
+                controllerParam.ParamSender = controllerParamSender;
+
+            return controllerParam;
         }
 
         private class NullControllerParam : IControllerParam
         {
+            public IControllerParamSender? ParamSender { get; set; }
+
             public Task<object> CatchObjs(TGChat tGChat)
             {
                 return Task.FromResult<object>(null!);
             }
 
-            public Task SendMessage()
+            public async Task SendMessage(TGChat tGChat)
             {
-                return Task.CompletedTask;
+                await Task.CompletedTask;
             }
         }
     }

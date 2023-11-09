@@ -14,9 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.Reflections;
 
 namespace Telegram.Bot.Framework.InternalImpl.Bots
 {
@@ -44,14 +43,6 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
         /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            _ = services.ScanTGService();
-
-            InternalInstall.StartInstall();
-
-            List<ITelegramService> telegramServices = typeof(ITelegramService).FindTypeOf().Select(x => (ITelegramService)Activator.CreateInstance(x)).ToList();
-            foreach (ITelegramService item in telegramServices)
-                item.AddServices(services);
-
             // 添加Log
             _ = services.AddLogging(option =>
             {
@@ -72,6 +63,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
         /// <returns></returns>
         internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder)
         {
+            InstallEX.AddBasic(builder);
             return builder.AddTelegramPartCreator(new TelegramBasic());
         }
     }

@@ -34,5 +34,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         public MethodInfo MethodInfo { get; set; } = null!;
 
         public Type Controller { get; set; } = null!;
+
+        public List<IControllerParam> ControllerParams { get; set; } = new();
     }
 }

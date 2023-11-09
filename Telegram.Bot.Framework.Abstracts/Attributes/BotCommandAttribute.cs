@@ -1,4 +1,6 @@
-﻿namespace Telegram.Bot.Framework.Abstracts.Attributes
+﻿using Telegram.Bot.Types.Enums;
+
+namespace Telegram.Bot.Framework.Abstracts.Attributes
 {
     /// <summary>
     /// 
@@ -11,16 +13,23 @@
         /// </summary>
         public string BotCommandName { get; }
 
+        public MessageType? MessageType { get; }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="BotCommandName"></param>
-        public BotCommandAttribute(string BotCommandName)
+        public BotCommandAttribute(string BotCommandName) : this(null, BotCommandName) { }
+
+        public BotCommandAttribute(MessageType messageType) : this(messageType, string.Empty) { }
+
+        public BotCommandAttribute(MessageType? MessageType, string BotCommandName)
         {
             BotCommandName = BotCommandName.ToLower();
             if (!BotCommandName.StartsWith("/"))
                 BotCommandName = $"/{BotCommandName}";
-            this.BotCommandName = BotCommandName;
+            this.BotCommandName = BotCommandName.ToLower();
+
+            this.MessageType = MessageType;
         }
 
         /// <summary>
