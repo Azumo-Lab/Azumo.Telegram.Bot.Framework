@@ -43,6 +43,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
                 }
                 count++;
             }
+            stringBuilder.AppendLine("以上是全部内容.");
             await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, stringBuilder.ToString());
             stringBuilder.Clear();
         }
