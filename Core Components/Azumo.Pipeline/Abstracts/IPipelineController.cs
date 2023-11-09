@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts
 {
     /// <summary>
     /// 流水线管理控制器

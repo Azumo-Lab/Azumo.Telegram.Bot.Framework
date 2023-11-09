@@ -14,25 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts
 {
     /// <summary>
-    /// 流水线过滤器
+    /// 创建流水线
     /// </summary>
-    /// <remarks>
-    /// 一个流水线过滤器，通过此接口对流水线的数据，以及是否继续执行进行判断与处理
-    /// </remarks>
-    public interface IPipelineFilter
+    public interface IPipelineBuilder<T>
     {
         /// <summary>
-        /// 执行处理任务
+        /// 添加工序
         /// </summary>
-        /// <remarks>
-        /// 通过此接口对流水线的数据，以及是否继续执行进行判断与处理
-        /// </remarks>
-        /// <param name="t">任务处理的数据类型</param>
-        /// <param name="pipelineController">流水线控制器</param>
-        /// <returns>异步的处理后的数据</returns>
-        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle);
+        /// <param name="procedure"></param>
+        public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure);
+
+        /// <summary>
+        /// 添加工序
+        /// </summary>
+        /// <param name="procedure"></param>
+        public IPipelineBuilder<T> AddProcedure(string procedure);
+
+        /// <summary>
+        /// 将工序组装成流水线
+        /// </summary>
+        public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull;
+
+        /// <summary>
+        /// 创建流水线控制器
+        /// </summary>
+        /// <returns></returns>
+        public IPipelineController<T> BuilderPipelineController();
     }
 }

@@ -14,9 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Pipeline.Abstracts;
+using Azumo.Pipeline.Abstracts;
 
-namespace Telegram.Bot.Framework.Pipeline
+namespace Azumo.Pipeline
 {
     /// <summary>
     /// 内部实现的流水线创建类
@@ -63,10 +63,7 @@ namespace Telegram.Bot.Framework.Pipeline
             if (type == null)
                 return this;
 
-            if (Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync)
-                return this;
-
-            return AddProcedure(processAsync);
+            return Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync ? this : AddProcedure(processAsync);
         }
 
         /// <summary>

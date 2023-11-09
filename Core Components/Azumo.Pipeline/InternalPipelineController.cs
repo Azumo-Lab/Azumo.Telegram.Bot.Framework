@@ -14,10 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Pipeline.Abstracts;
 using System.Text;
-using Telegram.Bot.Framework.Pipeline.Abstracts;
 
-namespace Telegram.Bot.Framework.Pipeline
+namespace Azumo.Pipeline
 {
     /// <summary>
     /// 内部实现的流水线控制器
@@ -47,17 +47,14 @@ namespace Telegram.Bot.Framework.Pipeline
         /// <summary>
         /// 流水线执行链
         /// </summary>
-        private List<string> InvokePathList = new();
+        private readonly List<string> InvokePathList = new();
 
         /// <summary>
         /// 下一个工序
         /// </summary>
         PipelineDelegate<T> IPipelineController<T>.NextPipeline
         {
-            get
-            {
-                return __Next!;
-            }
+            get => __Next!;
             set
             {
                 __Next = value;
@@ -70,14 +67,8 @@ namespace Telegram.Bot.Framework.Pipeline
         /// </summary>
         public string NextPipelineName
         {
-            get
-            {
-                return __Name ?? "Unknow Pipeline";
-            }
-            set
-            {
-                __Name = value;
-            }
+            get => __Name ?? "Unknow Pipeline";
+            set => __Name = value;
         }
 
         /// <summary>
@@ -104,9 +95,7 @@ namespace Telegram.Bot.Framework.Pipeline
         {
             StringBuilder stringBuilder = new();
             foreach (string pipeline in InvokePathList)
-            {
-                stringBuilder.AppendLine(pipeline);
-            }
+                _ = stringBuilder.AppendLine(pipeline);
             return stringBuilder.ToString();
         }
 

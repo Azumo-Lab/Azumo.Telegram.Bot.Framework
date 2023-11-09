@@ -14,10 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Pipeline.Abstracts;
 
-namespace Telegram.Bot.Framework.Pipeline
+namespace Azumo.Pipeline
 {
     /// <summary>
     /// 流水线创建工厂

@@ -14,16 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Pipeline.Abstracts;
-
-namespace Telegram.Bot.Framework.Pipeline
+namespace Azumo.Pipeline.Abstracts
 {
     /// <summary>
-    /// 流水线委托
+    /// 一条流水线
     /// </summary>
-    /// <typeparam name="T">处理类型</typeparam>
-    /// <param name="processObj">处理数据</param>
-    /// <param name="controller">控制器</param>
-    /// <returns>处理后数据</returns>
-    public delegate Task<T> PipelineDelegate<T>(T processObj, IPipelineController<T> controller);
+    /// <remarks>
+    /// 一条流水线，泛型为流水线处理的数据类型
+    /// </remarks>
+    /// <typeparam name="T">流水线处理的数据类型</typeparam>
+    public interface IPipeline<T>
+    {
+        /// <summary>
+        /// 执行流水线
+        /// </summary>
+        /// <param name="obj">要进行处理的数据</param>
+        /// <returns>返回处理后的数据（异步）</returns>
+        public Task<T> Invoke(T obj);
+    }
 }

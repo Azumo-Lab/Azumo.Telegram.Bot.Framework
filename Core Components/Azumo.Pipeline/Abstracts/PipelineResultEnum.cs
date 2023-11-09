@@ -14,22 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts
 {
     /// <summary>
-    /// 一条流水线
+    /// 流水线处理结果
     /// </summary>
-    /// <remarks>
-    /// 一条流水线，泛型为流水线处理的数据类型
-    /// </remarks>
-    /// <typeparam name="T">流水线处理的数据类型</typeparam>
-    public interface IPipeline<T>
+    public enum PipelineResultEnum
     {
         /// <summary>
-        /// 执行流水线
+        /// 成功
         /// </summary>
-        /// <param name="obj">要进行处理的数据</param>
-        /// <returns>返回处理后的数据（异步）</returns>
-        public Task<T> Invoke(T obj);
+        Success,
+
+        /// <summary>
+        /// 失败
+        /// </summary>
+        Failure,
+
+        /// <summary>
+        /// 请重试
+        /// </summary>
+        TryAgain,
     }
 }
