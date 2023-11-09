@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.InternalImpl.Bots;
+using Telegram.Bot.Framework.Bots;
 
 namespace Telegram.Bot.Framework
 {

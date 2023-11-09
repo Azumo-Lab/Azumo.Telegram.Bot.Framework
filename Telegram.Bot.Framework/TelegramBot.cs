@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Interfaces;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
@@ -112,6 +113,10 @@ namespace Telegram.Bot.Framework
                 ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
                 if (telegramBot == null)
                     throw new NullReferenceException(nameof(telegramBot));
+
+                List<IStartExec> startExecs = ServiceProvider.GetServices<IStartExec>().ToList();
+                foreach (IStartExec execs in startExecs)
+                    await execs.Exec(telegramBot, ServiceProvider);
 
                 telegramBot.StartReceiving(this);
 

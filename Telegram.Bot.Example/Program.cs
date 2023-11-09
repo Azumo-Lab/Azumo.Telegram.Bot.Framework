@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.InternalImpl.Bots;
+using Telegram.Bot.Framework.Bots;
 
 namespace Telegram.Bot.Example
 {
@@ -28,7 +25,6 @@ namespace Telegram.Bot.Example
         }
     }
 
-    
     public class TestController : TelegramController
     {
         private int count;
@@ -37,14 +33,14 @@ namespace Telegram.Bot.Example
         public async Task Test()
         {
             await Chat.BotClient.SendChatActionAsync(Chat.ChatId, Types.Enums.ChatAction.Typing);
-            await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"第{count ++}次 Hello World !!");
+            _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"第{count++}次 Hello World !!");
         }
 
         [BotCommand("/Catch")]
         public async Task Test2(string str)
         {
             Logger.LogInformation($"发送的消息 : {str}");
-            await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"You Say {str}");
+            _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"You Say {str}");
         }
     }
 }

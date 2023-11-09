@@ -14,6 +14,9 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
         public string BotCommandName { get; }
 
         public MessageType? MessageType { get; }
+
+        public string Description { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -37,7 +40,7 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
         /// </summary>
         public BotCommandAttribute()
         {
-            BotCommandName = string.Empty;
+            BotCommandName = null!;
         }
     }
 }

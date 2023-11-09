@@ -48,5 +48,10 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                 return botCommand!;
             }
         }
+
+        public List<BotCommand> GetAllCommands()
+        {
+            return new List<BotCommand>(InternalCommands);
+        }
     }
 }

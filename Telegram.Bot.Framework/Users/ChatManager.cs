@@ -3,7 +3,7 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalImpl.Users
+namespace Telegram.Bot.Framework.Users
 {
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IChatManager))]
     internal class ChatManager : IChatManager
@@ -22,9 +22,7 @@ namespace Telegram.Bot.Framework.InternalImpl.Users
                 }
             }
             else
-            {
                 chat = TGChat.GetChat(telegramBotClient, chatID, BotServiceProvider);
-            }
             chat.CopyTo(update);
             return chat;
         }

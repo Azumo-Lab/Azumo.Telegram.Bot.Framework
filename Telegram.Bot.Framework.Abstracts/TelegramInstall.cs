@@ -1,12 +1,7 @@
 ﻿using Azumo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Controllers;
@@ -16,23 +11,23 @@ namespace Telegram.Bot.Framework.Abstracts
 {
     internal class TelegramInstall : ITelegramPartCreator
     {
-        public TelegramInstall() 
+        public TelegramInstall()
         {
-            
+
         }
         public void AddBuildService(IServiceCollection services)
         {
-            services.AddSingleton<IControllerParamMaker, ControllerParamMaker>();
+            _ = services.AddSingleton<IControllerParamMaker, ControllerParamMaker>();
             AzReflection<ITelegramService> reflection = AzReflection<ITelegramService>.Create();
             foreach (Type item in reflection.FindAllSubclass())
             {
-                services.AddSingleton(typeof(ITelegramService), item);
+                _ = services.AddSingleton(typeof(ITelegramService), item);
             }
         }
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            services.ScanService();
+            _ = services.ScanService();
 
             ControllerManager controllerManager = new();
 
@@ -47,13 +42,12 @@ namespace Telegram.Bot.Framework.Abstracts
                         BotCommandAttribute? botCommandAttribute = Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute;
                         controllerManager.InternalCommands.Add(new BotCommand
                         {
-                            BotCommandName = botCommandAttribute?.BotCommandName ?? string.Empty,
+                            BotCommandName = botCommandAttribute?.BotCommandName == null && botCommandAttribute?.MessageType == null ? $"/{Method.Name.ToLower()}" : botCommandAttribute?.BotCommandName ?? string.Empty,
+                            Description = botCommandAttribute?.Description ?? string.Empty,
                             Controller = Controller,
                             Func = (telegram, objs) =>
                             {
-                                if (Method.Invoke(telegram, objs) is Task task)
-                                    return task;
-                                return Task.CompletedTask;
+                                return Method.Invoke(telegram, objs) is Task task ? task : Task.CompletedTask;
                             },
                             MethodInfo = Method,
                             ControllerParams = Method.GetParameters().Select(p =>
@@ -61,7 +55,7 @@ namespace Telegram.Bot.Framework.Abstracts
                                 IControllerParamMaker controllerParamMaker = builderService.GetService<IControllerParamMaker>()!;
                                 if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.ControllerParamSenderType != null)
                                 {
-                                    IControllerParamSender controllerParamSender = ActivatorUtilities.CreateInstance<IControllerParamSender>(builderService, paramAttribute.ControllerParamSenderType, Array.Empty<object>());
+                                    IControllerParamSender controllerParamSender = (IControllerParamSender)ActivatorUtilities.CreateInstance(builderService, paramAttribute.ControllerParamSenderType, Array.Empty<object>());
                                     return controllerParamMaker.Make(p.ParameterType, controllerParamSender);
                                 }
                                 return controllerParamMaker.Make(p.ParameterType, null!);
@@ -78,7 +72,7 @@ namespace Telegram.Bot.Framework.Abstracts
                 RuntimeHelpers.PrepareMethod(item.MethodInfo.MethodHandle);
             }
 
-            services.AddSingleton<IControllerManager>(controllerManager);
+            _ = services.AddSingleton<IControllerManager>(controllerManager);
 
             foreach (ITelegramService service in builderService.GetServices<ITelegramService>())
             {

@@ -24,7 +24,7 @@ namespace Telegram.Bot.Framework.Abstracts
                 case Types.Enums.UpdateType.Unknown:
                     break;
                 case Types.Enums.UpdateType.Message:
-                    return update.Message.Chat.Id;
+                    return update.Message?.Chat?.Id!;
                 case Types.Enums.UpdateType.InlineQuery:
                     break;
                 case Types.Enums.UpdateType.ChosenInlineResult:

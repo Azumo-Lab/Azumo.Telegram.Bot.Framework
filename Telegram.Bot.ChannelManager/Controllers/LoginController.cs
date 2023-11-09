@@ -13,7 +13,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
     {
         public LoginController() { }
 
-        [BotCommand("/Login")]
+        [BotCommand("/Login", Description = "输入密码，进行登录")]
         public async Task Log(string password)
         {
             if (password == Secret.AdminPassword)

@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot.ChannelManager;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.InternalImpl.Bots;
+using Telegram.Bot.Framework.Bots;
 
 internal class Program
 {
@@ -12,6 +12,7 @@ internal class Program
 #if DEBUG
             .AddClashDefaultProxy()
 #endif
+            .RegisterBotCommand()
             .Build();
 
         Task task = telegramBot.StartAsync();

@@ -14,57 +14,49 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.InternalImpl.Bots
+namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
-    /// 进行框架运行所必须依赖的设置工作
+    /// 添加Token的设置
     /// </summary>
-    /// <remarks>
-    /// 进行基础服务的设置和处理
-    /// </remarks>
-    internal class TelegramBasic : ITelegramPartCreator
+    internal class TelegramToken : ITelegramPartCreator
     {
-        /// <summary>
-        /// 创建时服务
-        /// </summary>
-        /// <param name="services"></param>
+        private readonly string __Token;
+        public TelegramToken(string token)
+        {
+            __Token = token ?? throw new ArgumentNullException(nameof(token));
+        }
+
         public void AddBuildService(IServiceCollection services)
         {
 
         }
 
-        /// <summary>
-        /// 运行时服务
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            // 添加Log
-            _ = services.AddLogging(option =>
-            {
-                _ = option.AddConsole();
-                _ = option.AddSimpleConsole();
-            });
-            // 添加 ITelegramBot
-            _ = services.AddSingleton<ITelegramBot, TelegramBot>();
+            HttpClient proxy;
+            _ = (proxy = builderService.GetService<HttpClient>()) != null
+                ? services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy))
+                : services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token));
         }
     }
 
     public static partial class TelegramBuilderExtensionMethods
     {
         /// <summary>
-        /// 添加基础的服务
+        /// 添加 Token
         /// </summary>
+        /// <remarks>
+        /// 添加 BotFather 发行的机器人Token，没有Token，机器人将无法正常启动
+        /// </remarks>
         /// <param name="builder"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder)
+        public static ITelegramBotBuilder AddToken(this ITelegramBotBuilder builder, string token)
         {
-            InstallEX.AddBasic(builder);
-            return builder.AddTelegramPartCreator(new TelegramBasic());
+            return builder.AddTelegramPartCreator(new TelegramToken(token));
         }
     }
 }

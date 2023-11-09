@@ -14,37 +14,57 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.InternalImpl.Bots
+namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
-    /// 添加一个自定义的配置
+    /// 进行框架运行所必须依赖的设置工作
     /// </summary>
-    internal class TelegramServicesSetting : ITelegramPartCreator
+    /// <remarks>
+    /// 进行基础服务的设置和处理
+    /// </remarks>
+    internal class TelegramBasic : ITelegramPartCreator
     {
-        private readonly Action<IServiceCollection> __ServiceSettingAction;
-        public TelegramServicesSetting(Action<IServiceCollection> action)
-        {
-            __ServiceSettingAction = action;
-        }
-
+        /// <summary>
+        /// 创建时服务
+        /// </summary>
+        /// <param name="services"></param>
         public void AddBuildService(IServiceCollection services)
         {
 
         }
 
+        /// <summary>
+        /// 运行时服务
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            __ServiceSettingAction(services);
+            // 添加Log
+            _ = services.AddLogging(option =>
+            {
+                _ = option.AddConsole();
+                _ = option.AddSimpleConsole();
+            });
+            // 添加 ITelegramBot
+            _ = services.AddSingleton<ITelegramBot, TelegramBot>();
         }
     }
 
     public static partial class TelegramBuilderExtensionMethods
     {
-        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection> action)
+        /// <summary>
+        /// 添加基础的服务
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder)
         {
-            return telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
+            InstallEX.AddBasic(builder);
+            return builder.AddTelegramPartCreator(new TelegramBasic());
         }
     }
 }

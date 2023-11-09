@@ -21,11 +21,16 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
             set
             {
                 string botCommandName = value;
-                if (!botCommandName.StartsWith('/'))
-                    botCommandName = $"/{botCommandName}";
+                if (!string.IsNullOrEmpty(botCommandName))
+                {
+                    if (!botCommandName.StartsWith('/'))
+                        botCommandName = $"/{botCommandName}";
+                }
                 __BotCommandName = botCommandName;
             }
         }
+
+        public string Description { get; set; } = string.Empty;
 
         public MessageType MessageType { get; set; } = MessageType.Unknown;
 

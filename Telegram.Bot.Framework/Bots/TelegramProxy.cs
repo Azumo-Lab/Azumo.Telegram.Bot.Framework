@@ -17,7 +17,7 @@
 using System.Net;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.InternalImpl.Bots
+namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
     /// 添加代理设置

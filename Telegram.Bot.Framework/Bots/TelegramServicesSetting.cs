@@ -16,17 +16,17 @@
 
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.InternalImpl.Bots
+namespace Telegram.Bot.Framework.Bots
 {
     /// <summary>
-    /// 添加Token的设置
+    /// 添加一个自定义的配置
     /// </summary>
-    internal class TelegramToken : ITelegramPartCreator
+    internal class TelegramServicesSetting : ITelegramPartCreator
     {
-        private readonly string __Token;
-        public TelegramToken(string token)
+        private readonly Action<IServiceCollection> __ServiceSettingAction;
+        public TelegramServicesSetting(Action<IServiceCollection> action)
         {
-            __Token = token ?? throw new ArgumentNullException(nameof(token));
+            __ServiceSettingAction = action;
         }
 
         public void AddBuildService(IServiceCollection services)
@@ -36,27 +36,15 @@ namespace Telegram.Bot.Framework.InternalImpl.Bots
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            HttpClient proxy;
-            _ = (proxy = builderService.GetService<HttpClient>()) != null
-                ? services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy))
-                : services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token));
+            __ServiceSettingAction(services);
         }
     }
 
     public static partial class TelegramBuilderExtensionMethods
     {
-        /// <summary>
-        /// 添加 Token
-        /// </summary>
-        /// <remarks>
-        /// 添加 BotFather 发行的机器人Token，没有Token，机器人将无法正常启动
-        /// </remarks>
-        /// <param name="builder"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder AddToken(this ITelegramBotBuilder builder, string token)
+        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection> action)
         {
-            return builder.AddTelegramPartCreator(new TelegramToken(token));
+            return telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
         }
     }
 }

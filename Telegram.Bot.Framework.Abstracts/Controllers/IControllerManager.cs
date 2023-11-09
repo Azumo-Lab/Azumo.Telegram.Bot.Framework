@@ -8,8 +8,10 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
-    internal interface IControllerManager
+    public interface IControllerManager
     {
         BotCommand GetCommand(TGChat tGChat);
+
+        List<BotCommand> GetAllCommands();
     }
 }
