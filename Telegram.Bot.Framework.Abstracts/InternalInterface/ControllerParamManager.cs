@@ -1,4 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
@@ -14,10 +30,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
         private ResultEnum __NowResult = ResultEnum.NoStatus;
         public List<IControllerParam> ControllerParams
         {
-            get
-            {
-                return __ControllerParams;
-            }
+            get => __ControllerParams;
             set
             {
                 __ControllerParams = value;
@@ -52,7 +65,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                             __ControllerParamsCopy.RemoveAt(0);
                     }
                     __NowResult = ResultEnum.SendMessage;
-                    await NextParam(tGChat);
+                    _ = await NextParam(tGChat);
                     break;
                 case ResultEnum.SendMessage:
                     if (Now != null)
@@ -67,12 +80,12 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                         _params.Add(await Now.CatchObjs(tGChat));
                     }
                     __NowResult = ResultEnum.NextParam;
-                    await NextParam(tGChat);
+                    _ = await NextParam(tGChat);
                     break;
                 case ResultEnum.NextParam:
                 case ResultEnum.Finish:
                     __NowResult = ResultEnum.NoStatus;
-                    await NextParam(tGChat);
+                    _ = await NextParam(tGChat);
                     break;
                 default:
                     break;

@@ -1,10 +1,21 @@
-﻿using Azumo.Reflection;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Azumo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
@@ -16,20 +27,20 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
     {
         private readonly Dictionary<Type, Type> __AllType = new();
         private readonly IServiceProvider ServiceProvider;
-        public ControllerParamMaker(IServiceProvider serviceProvider) 
+        public ControllerParamMaker(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            AzAttribute<TypeForAttribute> azAttribute = new AzAttribute<TypeForAttribute>();
+            AzAttribute<TypeForAttribute> azAttribute = new();
             foreach (Type item in azAttribute.GetAllType())
             {
                 TypeForAttribute typeForAttribute = (TypeForAttribute)Attribute.GetCustomAttribute(item, typeof(TypeForAttribute))!;
-                __AllType.TryAdd(typeForAttribute.Type, item);
+                _ = __AllType.TryAdd(typeForAttribute.Type, item);
             }
         }
         public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender)
         {
             IControllerParam controllerParam;
-            if(__AllType.TryGetValue(paramType, out Type? IControllerParamType))
+            if (__AllType.TryGetValue(paramType, out Type? IControllerParamType))
             {
                 IControllerParamType ??= typeof(NullControllerParam);
                 controllerParam = (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, Array.Empty<object>());
