@@ -15,6 +15,10 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
 
         public Task<ResultEnum> NextParam(TGChat tGChat);
 
+        public BotCommand GetBotCommand();
+
+        public void SetBotCommand(BotCommand botCommand);
+
         public void Clear();
     }
 }

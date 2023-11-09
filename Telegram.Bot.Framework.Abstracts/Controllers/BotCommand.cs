@@ -20,9 +20,9 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
             }
             set
             {
-                string botCommandName = string.Empty;
-                if (!value.StartsWith('/'))
-                    botCommandName = $"/{value}";
+                string botCommandName = value;
+                if (!botCommandName.StartsWith('/'))
+                    botCommandName = $"/{botCommandName}";
                 __BotCommandName = botCommandName;
             }
         }

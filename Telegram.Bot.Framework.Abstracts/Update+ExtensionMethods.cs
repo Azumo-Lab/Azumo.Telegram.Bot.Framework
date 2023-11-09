@@ -73,7 +73,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// </summary>
         /// <param name="souce">想要进行复制的对象</param>
         /// <param name="target">复制的目标对象</param>
-        internal static void CopyTo(this Update souce, Update target)
+        public static void CopyTo(this Update souce, Update target)
         {
             souce.Poll = target.Poll;
             souce.ChatMember = target.ChatMember;

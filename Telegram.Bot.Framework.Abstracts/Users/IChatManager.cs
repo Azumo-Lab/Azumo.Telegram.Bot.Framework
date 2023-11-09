@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Users
 {
-    internal interface IChatManager
+    public interface IChatManager
     {
         /// <summary>
         /// 创建 <see cref="TGChat"/> 对象

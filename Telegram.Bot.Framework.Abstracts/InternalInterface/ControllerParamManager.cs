@@ -24,6 +24,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                 __ControllerParamsCopy = new List<IControllerParam>(value);
             }
         }
+        private BotCommand? __BotCommand;
 
         private readonly List<object> _params = new();
 
@@ -51,6 +52,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                             __ControllerParamsCopy.RemoveAt(0);
                     }
                     __NowResult = ResultEnum.SendMessage;
+                    await NextParam(tGChat);
                     break;
                 case ResultEnum.SendMessage:
                     if (Now != null)
@@ -65,6 +67,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
                         _params.Add(await Now.CatchObjs(tGChat));
                     }
                     __NowResult = ResultEnum.NextParam;
+                    await NextParam(tGChat);
                     break;
                 case ResultEnum.NextParam:
                 case ResultEnum.Finish:
@@ -83,6 +86,17 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
             ControllerParams = new();
             _params.Clear();
             __NowResult = ResultEnum.NoStatus;
+            __BotCommand = null;
+        }
+
+        public BotCommand GetBotCommand()
+        {
+            return __BotCommand!;
+        }
+
+        public void SetBotCommand(BotCommand botCommand)
+        {
+            __BotCommand = botCommand;
         }
     }
 }

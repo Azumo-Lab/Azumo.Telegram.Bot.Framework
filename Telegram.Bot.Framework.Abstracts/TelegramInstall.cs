@@ -23,6 +23,11 @@ namespace Telegram.Bot.Framework.Abstracts
         public void AddBuildService(IServiceCollection services)
         {
             services.AddSingleton<IControllerParamMaker, ControllerParamMaker>();
+            AzReflection<ITelegramService> reflection = AzReflection<ITelegramService>.Create();
+            foreach (Type item in reflection.FindAllSubclass())
+            {
+                services.AddSingleton(typeof(ITelegramService), item);
+            }
         }
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
@@ -39,9 +44,10 @@ namespace Telegram.Bot.Framework.Abstracts
                 {
                     if (Attribute.IsDefined(Method, typeof(BotCommandAttribute)))
                     {
+                        BotCommandAttribute? botCommandAttribute = Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute;
                         controllerManager.InternalCommands.Add(new BotCommand
                         {
-                            BotCommandName = (Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute)!.BotCommandName,
+                            BotCommandName = botCommandAttribute?.BotCommandName ?? string.Empty,
                             Controller = Controller,
                             Func = (telegram, objs) =>
                             {
@@ -60,7 +66,7 @@ namespace Telegram.Bot.Framework.Abstracts
                                 }
                                 return controllerParamMaker.Make(p.ParameterType, null!);
                             }).ToList(),
-                            MessageType = (Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute)!.MessageType ?? Types.Enums.MessageType.Unknown
+                            MessageType = botCommandAttribute?.MessageType ?? Types.Enums.MessageType.Unknown
                         });
                     }
                 }
@@ -73,6 +79,11 @@ namespace Telegram.Bot.Framework.Abstracts
             }
 
             services.AddSingleton<IControllerManager>(controllerManager);
+
+            foreach (ITelegramService service in builderService.GetServices<ITelegramService>())
+            {
+                service.AddServices(services);
+            }
         }
     }
 

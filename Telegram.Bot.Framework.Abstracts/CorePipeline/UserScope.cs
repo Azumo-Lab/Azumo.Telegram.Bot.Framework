@@ -30,6 +30,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
                     .CreateIPipelineBuilder<TGChat>()
                     .AddProcedure(new PipelineNull())
                     .CreatePipeline(UpdateType.Unknown)
+                    .AddProcedure(new PipelineControllerInvoke())
                     .CreatePipeline(UpdateType.Message)
                     .CreatePipeline(UpdateType.ChosenInlineResult)
                     .CreatePipeline(UpdateType.CallbackQuery)
