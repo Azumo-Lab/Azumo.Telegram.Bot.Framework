@@ -18,18 +18,44 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal interface IControllerParamManager
     {
+        /// <summary>
+        /// 要执行的参数获取接口
+        /// </summary>
         public List<IControllerParam> ControllerParams { get; set; }
 
+        /// <summary>
+        /// 获取参数
+        /// </summary>
+        /// <returns></returns>
         public object[] GetParams();
 
+        /// <summary>
+        /// 进行获取参数的执行
+        /// </summary>
+        /// <param name="tGChat"></param>
+        /// <returns></returns>
         public Task<ResultEnum> NextParam(TGChat tGChat);
 
+        /// <summary>
+        /// 获取命令
+        /// </summary>
+        /// <returns></returns>
         public BotCommand GetBotCommand();
 
+        /// <summary>
+        /// 设置命令
+        /// </summary>
+        /// <param name="botCommand"></param>
         public void SetBotCommand(BotCommand botCommand);
 
+        /// <summary>
+        /// 全部清理
+        /// </summary>
         public void Clear();
     }
 }

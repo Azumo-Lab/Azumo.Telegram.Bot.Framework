@@ -21,6 +21,9 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.InternalInterface
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [DependencyInjection(ServiceLifetime.Scoped, typeof(IControllerParamManager))]
     internal class ControllerParamManager : IControllerParamManager
     {
