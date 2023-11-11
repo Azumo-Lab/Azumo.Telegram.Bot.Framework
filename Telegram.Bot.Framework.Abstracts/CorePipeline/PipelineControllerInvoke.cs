@@ -28,6 +28,14 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
             IControllerManager controllerManager = t.UserService.GetRequiredService<IControllerManager>();
             BotCommand botCommand = controllerManager.GetCommand(t);
 
+            // 控制器执行的过滤器，可自定义的流程
+            foreach (IControllerFilter? item in t.UserService.GetServices<IControllerFilter>()?.ToList() ?? new List<IControllerFilter>())
+            {
+                bool result = await item.Execute(t, botCommand);
+                if (!result)
+                    await pipelineController.StopAsync(t);
+            }
+
             IControllerParamManager controllerParamManager = t.UserService.GetRequiredService<IControllerParamManager>();
             if (botCommand != null)
             {

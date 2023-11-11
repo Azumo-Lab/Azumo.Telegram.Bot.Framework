@@ -33,4 +33,46 @@ namespace Azumo.Pipeline.Abstracts
         /// <returns>异步的处理后的数据</returns>
         public Task<T> ExecuteAsync(T t, IPipelineController<T> pipelineController);
     }
+
+    /// <summary>
+    /// 处理任务
+    /// </summary>
+    /// <remarks>
+    /// 流水线的一个处理任务
+    /// </remarks>
+    /// <typeparam name="A"></typeparam>
+    /// <typeparam name="B"></typeparam>
+    public interface IProcessAsync<A, B>
+    {
+        /// <summary>
+        /// 执行处理任务
+        /// </summary>
+        /// <param name="t">任务处理的数据类型</param>
+        /// <param name="objb"></param>
+        /// <param name="pipelineController">流水线控制器</param>
+        /// <returns>异步的处理后的数据</returns>
+        public Task<A> ExecuteAsync(A t, ref B objb, IPipelineController<A> pipelineController);
+    }
+
+    /// <summary>
+    /// 处理任务
+    /// </summary>
+    /// <remarks>
+    /// 流水线的一个处理任务
+    /// </remarks>
+    /// <typeparam name="A"></typeparam>
+    /// <typeparam name="B"></typeparam>
+    /// <typeparam name="C"></typeparam>
+    public interface IProcessAsync<A, B, C>
+    {
+        /// <summary>
+        /// 执行处理任务
+        /// </summary>
+        /// <param name="t">任务处理的数据类型</param>
+        /// <param name="objb"></param>
+        /// <param name="objc"></param>
+        /// <param name="pipelineController">流水线控制器</param>
+        /// <returns>异步的处理后的数据</returns>
+        public Task<A> ExecuteAsync(A t, ref B objb, ref C objc, IPipelineController<A> pipelineController);
+    }
 }
