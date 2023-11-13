@@ -54,7 +54,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddToken(this ITelegramBotBuilder builder, string token)
+        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, string token)
         {
             return builder.AddTelegramPartCreator(new TelegramToken(token));
         }

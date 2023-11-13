@@ -14,7 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Interfaces;
 
@@ -57,8 +59,12 @@ namespace Telegram.Bot.Framework.Bots
         /// <summary>
         /// 收集Bot内的指令，并注册到Telegram中
         /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// 用于收集 <see cref="TelegramController"/> 中使用 <see cref="BotCommandAttribute"/> 的指令。
+        /// 并将相关信息注册到Telegram中。
+        /// </remarks>
+        /// <param name="builder">创建接口</param>
+        /// <returns>服务添加后的创建接口</returns>
         public static ITelegramBotBuilder RegisterBotCommand(this ITelegramBotBuilder builder)
         {
             return builder.AddTelegramPartCreator(new TelegramBotCommandRegister());

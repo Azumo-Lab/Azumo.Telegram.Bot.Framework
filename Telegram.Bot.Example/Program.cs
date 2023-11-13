@@ -14,8 +14,8 @@ namespace Telegram.Bot.Example
         public static void Main(string[] args)
         {
             ITelegramBot bot = TelegramBuilder.Create()
-                .AddToken("5148150974:AAGDN_JERKYpQKuNbMuBqekTZotEOf6mVtI")
-                .AddClashDefaultProxy()
+                .UseToken("5148150974:AAGDN_JERKYpQKuNbMuBqekTZotEOf6mVtI")
+                .UseClashDefaultProxy()
                 .Build();
 
             bot.StartAsync().Wait();

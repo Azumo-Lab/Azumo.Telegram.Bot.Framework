@@ -61,7 +61,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null)
+        public static ITelegramBotBuilder UseProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null)
         {
             return telegramBotBuilder.AddTelegramPartCreator(new TelegramProxy(proxyHost, port, username, password));
         }
@@ -75,13 +75,13 @@ namespace Telegram.Bot.Framework.Bots
         /// 127.0.0.1:7890
         /// </code>
         /// 如果已经更改地址端口等默认信息<br/>
-        /// 请使用 <see cref="AddProxy(ITelegramBotBuilder, string, int?, string, string)"/>
+        /// 请使用 <see cref="UseProxy(ITelegramBotBuilder, string, int?, string, string)"/>
         /// </remarks>
         /// <param name="telegramBotBuilder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
+        public static ITelegramBotBuilder UseClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
         {
-            return AddProxy(telegramBotBuilder, "localhost", 7890);
+            return UseProxy(telegramBotBuilder, "localhost", 7890);
         }
 
         /// <summary>
@@ -93,13 +93,13 @@ namespace Telegram.Bot.Framework.Bots
         /// 127.0.0.1:1080
         /// </code>
         /// 如果已经更改地址端口等默认信息<br/>
-        /// 请使用 <see cref="AddProxy(ITelegramBotBuilder, string, int?, string, string)"/>
+        /// 请使用 <see cref="UseProxy(ITelegramBotBuilder, string, int?, string, string)"/>
         /// </remarks>
         /// <param name="telegramBotBuilder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
+        public static ITelegramBotBuilder UseSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
         {
-            return AddProxy(telegramBotBuilder, "localhost", 1080);
+            return UseProxy(telegramBotBuilder, "localhost", 1080);
         }
     }
 }

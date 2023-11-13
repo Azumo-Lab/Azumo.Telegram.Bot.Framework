@@ -22,49 +22,61 @@ using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts.InternalInterface
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IControllerManager))]
     internal class ControllerManager : IControllerManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public List<BotCommand> InternalCommands { get; } = new();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Dictionary<string, BotCommand> __BotCommand = new();
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Dictionary<MessageType, BotCommand> __BotCommandMessageType = new();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tGChat"></param>
+        /// <returns></returns>
         public BotCommand GetCommand(TGChat tGChat)
         {
             string command;
             if ((command = tGChat.GetCommand()) != null)
             {
                 if (__BotCommand.TryGetValue(command, out BotCommand? botCommand))
-                {
                     return botCommand;
-                }
-
                 botCommand = InternalCommands.Where(x => x.BotCommandName == command).FirstOrDefault();
                 if (botCommand != null)
-                {
                     _ = __BotCommand.TryAdd(command, botCommand);
-                }
-
                 return botCommand!;
             }
             else
             {
                 MessageType type = tGChat.Message?.Type ?? MessageType.Unknown;
                 if (__BotCommandMessageType.TryGetValue(type, out BotCommand? botCommand))
-                {
                     return botCommand;
-                }
 
                 botCommand = InternalCommands.Where(x => x.MessageType == type).FirstOrDefault();
                 if (botCommand != null)
-                {
                     _ = __BotCommandMessageType.TryAdd(type, botCommand);
-                }
                 return botCommand!;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<BotCommand> GetAllCommands()
         {
             return new List<BotCommand>(InternalCommands);
