@@ -43,11 +43,12 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
+            Action<ILoggingBuilder> _LogAction = builderService.GetService<Action<ILoggingBuilder>>();
             // 添加Log
             _ = services.AddLogging(option =>
             {
-                _ = option.AddConsole();
                 _ = option.AddSimpleConsole();
+                _LogAction?.Invoke(option);
             });
             // 添加 ITelegramBot
             _ = services.AddSingleton<ITelegramBot, TelegramBot>();

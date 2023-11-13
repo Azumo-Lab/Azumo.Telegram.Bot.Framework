@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
 namespace Telegram.Bot.Framework.Bots
@@ -37,9 +38,10 @@ namespace Telegram.Bot.Framework.Bots
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
             HttpClient proxy;
-            _ = (proxy = builderService.GetService<HttpClient>()) != null
-                ? services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy))
-                : services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token));
+            if ((proxy = builderService.GetService<HttpClient>()) != null)
+                services.TryAddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy));
+            else
+                services.TryAddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token));
         }
     }
 

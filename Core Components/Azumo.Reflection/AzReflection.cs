@@ -24,6 +24,13 @@ namespace Azumo.Reflection
     /// </summary>
     public class AzReflection<T> : IDisposable
     {
+        public static T? Create(params object[] args)
+        {
+            if (args == null || args.Length == 0)
+                return (T?)Activator.CreateInstance(typeof(T));
+            else
+                return (T?)Activator.CreateInstance(typeof(T), args);
+        }
         /// <summary>
         /// 
         /// </summary>

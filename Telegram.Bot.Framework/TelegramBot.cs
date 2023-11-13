@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Interfaces;
 using Telegram.Bot.Polling;
@@ -110,19 +111,33 @@ namespace Telegram.Bot.Framework
 
             try
             {
+                // 获取 ITelegramBotClient 接口(基础环境)
                 ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
                 if (telegramBot == null)
                     throw new NullReferenceException(nameof(telegramBot));
 
+                // 在程序执行之前，开始执行任务
                 List<IStartExec> startExecs = ServiceProvider.GetServices<IStartExec>().ToList();
-                foreach (IStartExec execs in startExecs)
-                    await execs.Exec(telegramBot, ServiceProvider);
+                if (startExecs.Any())
+                {
+                    __log.LogInformation($"发现 {startExecs.Count} 个任务...开始执行");
+                    foreach (IStartExec execs in startExecs)
+                    {
+                        if (execs is IPipelineName pipelineName)
+                            __log.LogInformation($"当前正在执行 ‘{pipelineName.Name}’");
+                        await execs.Exec(telegramBot, ServiceProvider);
+                    }
+                    __log.LogInformation($"{startExecs.Count} 个任务执行完毕");
+                }
 
+                // 开始启动监听
                 telegramBot.StartReceiving(this);
 
+                // 获取机器人自己的用户名(作为一个连接测试)
                 User user = await telegramBot.GetMeAsync();
-                __log.LogInformation(message: $"用户 @{user.Username} 正在运行中...");
+                __log.LogInformation(message: $"机器人用户 @{user.Username} 正在运行中...");
 
+                // 死循环，一直等待
                 while (!__IsEnd)
                 {
                     if (__IsEnd)
