@@ -64,7 +64,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <returns></returns>
         internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder)
         {
-            InstallEX.AddBasic(builder);
+            _ = InstallEX.AddBasic(builder);
             return builder.AddTelegramPartCreator(new TelegramBasic());
         }
     }
