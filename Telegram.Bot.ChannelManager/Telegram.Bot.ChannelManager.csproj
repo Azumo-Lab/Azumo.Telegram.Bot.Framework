@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core Components\Azumo.ShellGenerate\Azumo.ShellGenerate.csproj" />
+    <ProjectReference Include="..\Core Components\Azumo.Utils\Azumo.Utils.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 

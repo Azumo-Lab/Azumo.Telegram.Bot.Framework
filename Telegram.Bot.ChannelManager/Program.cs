@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Azumo.ShellGenerate;
+using Azumo.ShellGenerate.Tokens;
+using Azumo.Utils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.ChannelManager;
@@ -23,52 +26,23 @@ internal class Program
         //        Task task = telegramBot.StartAsync();
         //        task.Wait();
 
-        Action<string> action = (aa) => 
-        { 
-            AA(ref aa);
-            BB(ref aa);
-        };
-        action(null!);
+        new TestShellGen().Invoke(null!);
     }
 
-    public static void AA(ref string str)
+    private class TestShellGen : Shell
     {
-        str = "STR";
-        Console.WriteLine(str);
-    }
-
-    public static void BB(ref string str) 
-    {
-        str += "Hello";
-        Console.WriteLine(str);
-    }
-}
-
-internal static class TestEX
-{
-    public static ITelegramBotBuilder PrintHelloWorld(this ITelegramBotBuilder builder)
-    {
-        builder.AddTelegramPartCreator(new PrintHelloWorldClass());
-        return builder;
-    }
-
-    private class PrintHelloWorldClass : IStartExec, ITelegramPartCreator
-    {
-        public void AddBuildService(IServiceCollection services)
+        protected override List<TokenBase> GenerateToken()
         {
-
+            Var hello = Token<Var>().SetName("Hello").SetValue("Hello World");
+            return
+            [
+                hello | Token<Echo>().Param(hello),
+            ];
         }
+    }
 
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-            services.AddSingleton<IStartExec>(this);
-        }
-
-        public Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider)
-        {
-            ILogger Logger = serviceProvider.GetService<ILogger<PrintHelloWorldClass>>()!;
-            Logger.LogInformation("Hello World !!!!");
-            return Task.CompletedTask;
-        }
+    private class TestOne
+    {
+        public string TestOneWWW { get; set; } = "WWE";
     }
 }
