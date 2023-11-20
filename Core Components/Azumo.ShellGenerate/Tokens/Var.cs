@@ -5,29 +5,18 @@ using System.Text;
 
 namespace Azumo.ShellGenerate.Tokens
 {
-    public class Var : TokenBase, IVar<Var>
+    public class Var : TokenBase
     {
-        public TokenBase Name { get; set; } = string.Empty;
-
-        public TokenBase Value { get; set; } = string.Empty;
+        private TokenBase Value { get; set; } = string.Empty;
 
         public override string Generate()
         {
-            if (string.IsNullOrEmpty(Value?.Generate()))
-                return $"${Name?.Generate()}";
-            else
-                return $"${Name?.Generate()}={Value?.Generate()}";
+            return $"{Value.Generate()}";
         }
 
-        public Var SetName(TokenBase name)
+        public override TokenBase Param(TokenBase token)
         {
-            Name = name;
-            return this;
-        }
-
-        public Var SetValue(TokenBase value)
-        {
-            Value = value;
+            Value = token;
             return this;
         }
     }

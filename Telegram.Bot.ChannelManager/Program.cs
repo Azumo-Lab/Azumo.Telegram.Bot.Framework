@@ -1,4 +1,5 @@
 ﻿using Azumo.ShellGenerate;
+using Azumo.ShellGenerate.Interfaces;
 using Azumo.ShellGenerate.Tokens;
 using Azumo.Utils;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,10 +34,14 @@ internal class Program
     {
         protected override List<TokenBase> GenerateToken()
         {
-            Var hello = Token<Var>().SetName("Hello").SetValue("Hello World");
+            TokenBase hello = Token<Var>().Param("Hello World").CreateRef("Hello");
+            TokenBase TestREf = (Token<Echo>().Param(hello) | Token<Echo>().Param("Test")).CreateRef("TestREf");
+
             return
             [
-                hello | Token<Echo>().Param(hello),
+                hello,
+                TestREf,
+                Token<Echo>().Param(TestREf)
             ];
         }
     }

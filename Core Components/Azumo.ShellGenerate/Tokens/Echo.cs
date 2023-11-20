@@ -5,15 +5,16 @@ using System.Text;
 
 namespace Azumo.ShellGenerate.Tokens
 {
-    public class Echo : TokenBase, IParam<Echo>
+    public class Echo : TokenBase
     {
         private TokenBase? PrintText;
+
         public override string Generate()
         {
             return $"echo {PrintText?.Generate() ?? string.Empty}";
         }
 
-        public Echo Param(TokenBase token)
+        public override TokenBase Param(TokenBase token)
         {
             PrintText = token;
             return this;

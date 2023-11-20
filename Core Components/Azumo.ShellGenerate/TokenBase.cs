@@ -1,11 +1,12 @@
-﻿using Azumo.ShellGenerate.Tokens;
+﻿using Azumo.ShellGenerate.Interfaces;
+using Azumo.ShellGenerate.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Azumo.ShellGenerate
 {
-    public abstract class TokenBase
+    public abstract class TokenBase : IRef, IParam
     {
         public static TokenBase operator |(TokenBase a, TokenBase b)
         {
@@ -14,7 +15,7 @@ namespace Azumo.ShellGenerate
 
         public static TokenBase operator &(TokenBase a, TokenBase b)
         {
-            return null!;
+            return a | b;
         }
 
         public static implicit operator TokenBase(string str)
@@ -22,6 +23,17 @@ namespace Azumo.ShellGenerate
             return new StringToken(str);
         }
 
+        public static implicit operator TokenBase(int i)
+        {
+            return new NumberToken(i);
+        }
+
+        public TokenBase CreateRef(string name)
+        {
+            return new RefToken(this, name);
+        }
+
         public abstract string Generate();
+        public abstract TokenBase Param(TokenBase token);
     }
 }

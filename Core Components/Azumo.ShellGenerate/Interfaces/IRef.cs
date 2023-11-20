@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Azumo.ShellGenerate.Interfaces
 {
-    public interface IVar<T>
+    public interface IRef
     {
-        public T SetName(TokenBase name);
+        public TokenBase CreateRef(string name);
 
-        public T SetValue(TokenBase value);
+        public string Generate();
     }
 }

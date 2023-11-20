@@ -18,5 +18,9 @@ namespace Azumo.ShellGenerate.Tokens
             return _value;
         }
 
+        public override TokenBase Param(TokenBase token)
+        {
+            return this;
+        }
     }
 }

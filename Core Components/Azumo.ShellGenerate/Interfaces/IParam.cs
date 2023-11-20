@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Azumo.ShellGenerate.Interfaces
 {
-    public interface IParam<T>
+    public interface IParam
     {
-        public T Param(TokenBase token);
+        public TokenBase Param(TokenBase token);
     }
 }

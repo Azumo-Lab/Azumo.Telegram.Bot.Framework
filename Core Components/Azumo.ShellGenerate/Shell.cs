@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azumo.ShellGenerate.Tokens;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -18,14 +19,15 @@ namespace Azumo.ShellGenerate
             foreach (TokenBase token in __Tokens)
             {
                 string tokenStr = token.Generate();
-                shellStr.Append(tokenStr);
+                shellStr.AppendLine(tokenStr);
             }
-            File.WriteAllText(outPath, shellStr.ToString());
+            Console.WriteLine(shellStr.ToString());
         }
 
         public T Token<T>() where T : TokenBase
         {
             return (T)Activator.CreateInstance(typeof(T));
         }
+
     }
 }
