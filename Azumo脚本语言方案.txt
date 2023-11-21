@@ -1,0 +1,66 @@
+import Galgame; //模块导入
+// 这是一个注释
+
+export TestModel; //将整个文件导出为指定模块，可以使用 import 进行导入
+
+// 声明一个类
+public class ClassTest
+{
+    // 声明一个类的方法
+    public void Load(string path)
+    {
+
+    }
+
+    // 进行运算符重载
+    // 运算符重载可以有返回值，也可以没有返回值
+    //public static operator overload ClassTest | (string a, string[] b)
+    //{
+    //}
+    public static operator overload void | (string a, string[] b)
+    {
+        //进行画面输出处理
+    }
+
+    public static operator overload void & (string a, string b)
+    {
+        print(a);
+        print(b);
+    }
+
+    // 一个有返回值的实例
+    public static operator overload ClassTest + (string a, string b)
+    {
+        return ClassTest:Test(a, b);
+    }
+
+    // 创造新的运算符
+    public static operator overload void ===(string a, string b)
+    {
+
+    }
+}
+
+// 方法声明
+void Test(string something)
+{
+    print("Hello");
+}
+Test();//调用方法
+
+rename ClassTest as 角色;//将类重命名
+
+//==========================================================
+
+角色 : Anzu, Azuki; //将类实例化
+
+Anzu->Load("站立.PNG");
+Anzu->Load("角色BGM.mp3");//方法调用
+
+Azuki->Load("躺.PNG");
+Azuki->Load("欢快BGM.mp3");
+
+Anzu | "你好\(@^0^@)/" | ["招手.PNG", "开心BGM.mp3"];   // 画面被输出了
+Anzu & "你好\(@^0^@)/" & "祝你幸福";    // 输出：你好\(@^0^@)/祝你幸福
+
+Anzu = Anzu + "你好" + "haha";  //Anzu变量被更新了
