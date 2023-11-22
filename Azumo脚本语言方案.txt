@@ -17,19 +17,24 @@ public class ClassTest
     //public static operator overload ClassTest | (string a, string[] b)
     //{
     //}
-    public static operator overload void | (string a, string[] b)
+    public static operator overload void | (ClassTest a, string[] b)
     {
         //进行画面输出处理
     }
 
-    public static operator overload void & (string a, string b)
+    public static operator overload void | (ClassTest a, string b)
+    {
+        //进行画面输出处理
+    }
+
+    public static operator overload void & (ClassTest a, string b)
     {
         print(a);
         print(b);
     }
 
     // 一个有返回值的实例
-    public static operator overload ClassTest + (string a, string b)
+    public static operator overload ClassTest + (ClassTest a, string b)
     {
         return ClassTest:Test(a, b);
     }
@@ -64,3 +69,7 @@ Anzu | "你好\(@^0^@)/" | ["招手.PNG", "开心BGM.mp3"];   // 画面被输出
 Anzu & "你好\(@^0^@)/" & "祝你幸福";    // 输出：你好\(@^0^@)/祝你幸福
 
 Anzu = Anzu + "你好" + "haha";  //Anzu变量被更新了
+
+Anzu | ["开心.PNG", "开心BGM.mp3"];
+
+Anzu | "开心！！";
