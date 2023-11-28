@@ -16,25 +16,30 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Reflection.Metadata.Ecma335;
 using Telegram.Bot.Framework.Abstracts.Controllers;
+using Telegram.Bot.Framework.Abstracts.InternalInterface;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.InlineQueryResults;
 
 namespace Telegram.Bot.Framework.Abstracts
 {
     /// <summary>
-    /// 
+    /// 控制器
     /// </summary>
     public abstract class TelegramController
     {
         /// <summary>
         /// 
         /// </summary>
-        protected TGChat? Chat { get; private set; }
+        protected TGChat Chat { get; private set; } = null!;
 
         /// <summary>
         /// 
         /// </summary>
-        protected ILogger? Logger { get; private set; }
+        protected ILogger Logger { get; private set; } = null!;
 
         /// <summary>
         /// 
@@ -60,6 +65,49 @@ namespace Telegram.Bot.Framework.Abstracts
             {
                 controllerParamManager.Clear();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected IMessageBuilder MessageBuilder()
+        {
+            return Chat.UserService.GetService<IMessageBuilder>()!;
+        } 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        protected async Task<Message> SendMessage(string message)
+        {
+            return await Chat!.BotClient.SendTextMessageAsync(Chat.ChatId, message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="imagePaths"></param>
+        /// <returns></returns>
+        protected async Task<Message[]> SendMediaGroup(string message, string[] imagePaths)
+        {
+            // 初始化
+            List<InputMediaPhoto> image = imagePaths.Select(path =>
+            {
+                InputMediaPhoto inputMediaPhoto = new(new InputFileStream(new FileStream(path, FileMode.Open), Path.GetFileName(path)));
+                return inputMediaPhoto;
+            }).ToList();
+
+            // 进行设定
+            image[0].Caption = message;
+            image[0].ParseMode = Types.Enums.ParseMode.Html;
+
+            // 发送
+            return await Chat!.BotClient.SendMediaGroupAsync(Chat.ChatId,
+                image);
         }
     }
 }

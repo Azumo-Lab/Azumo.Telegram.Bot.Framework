@@ -1,54 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Azumo.Utils
 {
     /// <summary>
-    /// 
+    /// 对象扩展方法工具
     /// </summary>
+    /// <remarks>
+    /// <see cref="object"/> 的扩展方法
+    /// </remarks>
     public static class Object_ExtensionMethods
     {
         /// <summary>
-        /// 
+        /// 将对象的数据复制到另一个对象实例中
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="t"></param>
-        /// <param name="target"></param>
+        /// <remarks>
+        /// 本方法，仅仅解析例如下面这样的数值复制
+        /// <code>
+        /// public string Text { get; set; }
+        /// </code>
+        /// 公开方法，且可实例化，如果有更多的要求，请使用其他方法
+        /// </remarks>
+        /// <typeparam name="T">进行复制的对象</typeparam>
+        /// <param name="t">复制元对象</param>
+        /// <param name="target">复制目标对象</param>
         public static void CopyTo<T>(this T t, T target) where T : class
         {
             Type tType = typeof(T);
-            if(!StaticCache<Type, PropertyInfo[]>.GetCache(tType, out PropertyInfo[] value))
-            {
-                value = tType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                StaticCache<Type, PropertyInfo[]>.SetCache(tType, value);
-            }
+            PropertyInfo[] value = StaticCache<string, PropertyInfo[]>.GetCache(tType.FullName, () => tType.GetProperties(BindingFlags.Instance | BindingFlags.Public));
 
-            foreach(PropertyInfo p in value)
+            foreach (PropertyInfo p in value)
                 p.SetValue(target, p.GetValue(t));
         }
 
         /// <summary>
-        /// 
+        /// 复制对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public static T Copy<T>(this T t) where T : class, new()
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <typeparam name="T">复制对象的类型</typeparam>
+        /// <param name="t">复制对象的实例</param>
+        /// <returns>返回复制的对象</returns>
+        public static T? Copy<T>(this T t) where T : class
         {
-            T newT = new T();
             Type tType = typeof(T);
-            if (!StaticCache<Type, PropertyInfo[]>.GetCache(tType, out PropertyInfo[] value))
+
+            object? newT;
+            try
             {
-                value = tType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                StaticCache<Type, PropertyInfo[]>.SetCache(tType, value);
+                newT = Activator.CreateInstance(tType);
+
+                PropertyInfo[] value = StaticCache<string, PropertyInfo[]>.GetCache(tType.FullName, () => tType.GetProperties(BindingFlags.Instance | BindingFlags.Public));
+
+                foreach (PropertyInfo p in value)
+                    p.SetValue(newT, p.GetValue(t));
+            }
+            catch (Exception)
+            {
+                throw;
             }
 
-            foreach (PropertyInfo p in value)
-                p.SetValue(newT, p.GetValue(t));
-
-            return newT;
+            return newT as T;
         }
 
         /// <summary>
@@ -57,9 +72,14 @@ namespace Azumo.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <param name="target"></param>
-        public static void DeepCopyTo<T>(this T t, T target) where T : class, new()
+        /// <param name="copyOption"></param>
+        /// <param name="bindingFlags"></param>
+        public static void DeepCopyTo<T>(this T t, T target, CopyOption copyOption = CopyOption.Default, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public) where T : class
         {
-            DeepCopy(t).CopyTo(target);
+            object? result = DeepCopy(t, copyOption, bindingFlags);
+            if (result == null)
+                return;
+            result.CopyTo(target);
         }
 
         /// <summary>
@@ -67,10 +87,13 @@ namespace Azumo.Utils
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
+        /// <param name="copyOption"></param>
+        /// <param name="bindingFlags"></param>
         /// <returns></returns>
-        public static T DeepCopy<T>(this T t) where T : class, new()
+        public static T? DeepCopy<T>(this T t, CopyOption copyOption = CopyOption.Default, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public) where T : class
         {
-            return (T)DeepCopy(t, t.GetType());
+            object? result = DeepCopy(t, typeof(T), copyOption, bindingFlags);
+            return result == null ? default : result as T;
         }
 
         /// <summary>
@@ -78,24 +101,101 @@ namespace Azumo.Utils
         /// </summary>
         /// <param name="t"></param>
         /// <param name="type"></param>
+        /// <param name="copyOption"></param>
+        /// <param name="bindingFlags"></param>
         /// <returns></returns>
-        public static object DeepCopy(this object t, Type type)
+        public static object? DeepCopy(this object t, Type type, CopyOption copyOption, BindingFlags bindingFlags)
         {
-            if (!StaticCache<Type, PropertyInfo[]>.GetCache(type, out PropertyInfo[] value))
+            object? newT = null;
+            try
             {
-                value = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-                StaticCache<Type, PropertyInfo[]>.SetCache(type, value);
+                newT = Activator.CreateInstance(type);
+            }
+            catch (Exception)
+            {
+                return newT;
             }
 
-            object newT = Activator.CreateInstance(type);
+            List<FieldInfo> fields = new List<FieldInfo>();
+            List<PropertyInfo> properties = new List<PropertyInfo>();
 
-            foreach (PropertyInfo p in value)
+            string fieldInfoKey = $"{type.FullName}.{nameof(fieldInfoKey)}";
+            string propertyInfoKey = $"{type.FullName}.{nameof(propertyInfoKey)}";
+
+            switch (copyOption)
+            {
+                case CopyOption.Fields:
+                    GetFieldInfo(fieldInfoKey, out fields, type, bindingFlags);
+                    break;
+                case CopyOption.Fields | CopyOption.Properties:
+                    GetFieldInfo(fieldInfoKey, out fields, type, bindingFlags);
+                    GetPropertyInfo(propertyInfoKey, out properties, type, bindingFlags);
+                    break;
+                default:
+                    GetPropertyInfo(propertyInfoKey, out properties, type, bindingFlags);
+                    break;
+            }
+
+            foreach (PropertyInfo p in properties ?? new List<PropertyInfo>())
                 if (Type.GetTypeCode(p.PropertyType) == TypeCode.Object)
-                    p.SetValue(newT, p.GetValue(t).DeepCopy(p.PropertyType));
+                    p.SetValue(newT, p.GetValue(t).DeepCopy(p.PropertyType, copyOption, bindingFlags));
                 else
                     p.SetValue(newT, p.GetValue(t));
 
+            foreach (FieldInfo f in fields ?? new List<FieldInfo>())
+                if (Type.GetTypeCode(f.FieldType) == TypeCode.Object)
+                    f.SetValue(newT, f.GetValue(t).DeepCopy(f.FieldType, copyOption, bindingFlags));
+                else
+                    f.SetValue(newT, f.GetValue(t));
+
             return newT;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="KeyType"></typeparam>
+        /// <param name="keyType"></param>
+        /// <param name="valueType"></param>
+        /// <param name="type"></param>
+        /// <param name="bindingFlags"></param>
+        private static void GetFieldInfo<KeyType>(KeyType keyType, out List<FieldInfo> valueType, Type type, BindingFlags bindingFlags)
+        {
+            valueType = StaticCache<KeyType, List<FieldInfo>>.GetCache(keyType, () => type.GetFields(bindingFlags).ToList());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="KeyType"></typeparam>
+        /// <param name="keyType"></param>
+        /// <param name="valueType"></param>
+        /// <param name="type"></param>
+        /// <param name="bindingFlags"></param>
+        private static void GetPropertyInfo<KeyType>(KeyType keyType, out List<PropertyInfo> valueType, Type type, BindingFlags bindingFlags)
+        {
+            valueType = StaticCache<KeyType, List<PropertyInfo>>.GetCache(keyType, () => type.GetProperties(bindingFlags).ToList());
+        }
+    }
+
+    /// <summary>
+    /// 复制选项
+    /// </summary>
+    public enum CopyOption
+    {
+        /// <summary>
+        /// 默认的选项
+        /// </summary>
+        Default = 1,
+
+        /// <summary>
+        /// 属性
+        /// </summary>
+        Properties = 2,
+
+        /// <summary>
+        /// 字段
+        /// </summary>
+        Fields = 4,
     }
 }

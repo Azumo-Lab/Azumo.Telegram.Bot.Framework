@@ -38,7 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Utils", "Core Compone
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.ShellGenerate", "Core Components\Azumo.ShellGenerate\Azumo.ShellGenerate.csproj", "{5A2440B2-6921-408C-88CB-C45E0A9E487B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azumo.Lang", "Azumo.Lang\Azumo.Lang.csproj", "{6B89C613-5076-40BE-A3BB-50D0A8341C9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Lang", "Azumo.Lang\Azumo.Lang.csproj", "{6B89C613-5076-40BE-A3BB-50D0A8341C9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyChannel", "MyChannel\MyChannel.csproj", "{F392F812-0C4A-450D-A7B3-B89EB297C258}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{6B89C613-5076-40BE-A3BB-50D0A8341C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B89C613-5076-40BE-A3BB-50D0A8341C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B89C613-5076-40BE-A3BB-50D0A8341C9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F392F812-0C4A-450D-A7B3-B89EB297C258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F392F812-0C4A-450D-A7B3-B89EB297C258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F392F812-0C4A-450D-A7B3-B89EB297C258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F392F812-0C4A-450D-A7B3-B89EB297C258}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{22972926-4C32-4155-938A-58398A0324BC} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
 		{5A2440B2-6921-408C-88CB-C45E0A9E487B} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
 		{6B89C613-5076-40BE-A3BB-50D0A8341C9F} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
+		{F392F812-0C4A-450D-A7B3-B89EB297C258} = {7E91FAE0-7BC5-4617-8423-B710F5D331E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}
