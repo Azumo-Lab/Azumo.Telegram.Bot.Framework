@@ -71,7 +71,7 @@ namespace Telegram.Bot.Framework.Abstracts
                                 IControllerParamMaker controllerParamMaker = builderService.GetService<IControllerParamMaker>()!;
                                 if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.ControllerParamSenderType != null)
                                 {
-                                    IControllerParamSender controllerParamSender = (IControllerParamSender)ActivatorUtilities.CreateInstance(builderService, paramAttribute.ControllerParamSenderType, Array.Empty<object>());
+                                    IControllerParamSender controllerParamSender = (IControllerParamSender)ActivatorUtilities.CreateInstance(builderService, paramAttribute.ControllerParamSenderType, []);
                                     return controllerParamMaker.Make(p.ParameterType, controllerParamSender);
                                 }
                                 return controllerParamMaker.Make(p.ParameterType, null!);

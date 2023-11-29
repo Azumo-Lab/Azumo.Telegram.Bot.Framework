@@ -34,7 +34,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
 <pre><code class=""language-python"">pre-formatted fixed-width code block written in the Python programming language</code></pre>
 #123
 ";
-            string messageHtml = MessageBuilder()
+            string messageHtml = GetMessageBuilder()
                 .Add((BaseMessage)"测试" | "Test" | new URLMessage("https://www.baidu.com", "百度"))
                 .Add(new NewLineMessage())
                 .Add(new HashTagMessage("测试标签"))
@@ -43,7 +43,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
                 .Add(new URLMessage("https://www.baidu.com", "百度"))
                 .Add(new PreMessage("这是一个测试，点击可以复制"))
                 .Build();
-            await SendMediaGroup(messageHtml, 
+            _ = await SendMediaGroup(messageHtml, 
                 [
                     "C:\\Users\\ko--o\\OneDrive\\iCloud网盘\\Downloads\\头像\\1580359284346.JPG",
                     "C:\\Users\\ko--o\\OneDrive\\iCloud网盘\\Downloads\\头像\\1580187599750.JPG"

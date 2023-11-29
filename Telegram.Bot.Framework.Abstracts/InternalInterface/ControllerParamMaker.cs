@@ -25,7 +25,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IControllerParamMaker))]
     internal class ControllerParamMaker : IControllerParamMaker
     {
-        private readonly Dictionary<Type, Type> __AllType = new();
+        private readonly Dictionary<Type, Type> __AllType = [];
         private readonly IServiceProvider ServiceProvider;
         public ControllerParamMaker(IServiceProvider serviceProvider)
         {

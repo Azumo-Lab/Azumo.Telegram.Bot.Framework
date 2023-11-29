@@ -11,7 +11,7 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.InternalInterface
 {
-    [DependencyInjection(ServiceLifetime.Scoped, typeof(IMessageBuilder))]
+    [DependencyInjection(ServiceLifetime.Transient, typeof(IMessageBuilder))]
     internal class MessageBuilder : IMessageBuilder
     {
         private readonly List<IMessageContent> _Content = [];
