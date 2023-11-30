@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Users
@@ -42,6 +43,11 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <summary>
         /// 
         /// </summary>
+        public IAuthenticate Authenticate { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly IServiceScope __UserServiceScope;
 
         /// <summary>
@@ -53,6 +59,8 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         {
             __UserServiceScope = serviceScope;
             ChatId = chatId;
+
+            Authenticate = UserService.GetRequiredService<IAuthenticate>();
         }
 
         /// <summary>

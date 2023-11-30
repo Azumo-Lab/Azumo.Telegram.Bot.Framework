@@ -14,37 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Attributes
+using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Users;
+
+namespace Telegram.Bot.Framework.Users
 {
     /// <summary>
-    /// 用于权限认证的标签
+    /// 
     /// </summary>
-    /// <remarks>
-    /// 这个标签可以用于权限认证
-    /// </remarks>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
-    public class AuthenticateAttribute : Attribute
+    internal class Authenticate<T> : IAuthenticate<T> where T : Enum
     {
         /// <summary>
-        /// 角色名称
+        /// 
         /// </summary>
-        public HashSet<Enum> RoleName { get; }
+        public HashSet<T> RoleName { get; } = [];
 
         /// <summary>
-        /// 有参数的初始化
+        /// 
         /// </summary>
-        /// <param name="role"></param>
-        public AuthenticateAttribute(params Enum[] role)
+        /// <param name="tGChat"></param>
+        /// <param name="authenticateAttribute"></param>
+        /// <returns></returns>
+        public bool IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute)
         {
-            RoleName = new HashSet<Enum>(role);
-        }
-
-        /// <summary>
-        /// 无参数的初始化
-        /// </summary>
-        public AuthenticateAttribute()
-        {
-            RoleName = [];
+            bool result = false;
+            foreach (T roleName in RoleName)
+                if (!(result = authenticateAttribute.RoleName.Contains(roleName)))
+                    continue;
+            return result;
         }
     }
 }

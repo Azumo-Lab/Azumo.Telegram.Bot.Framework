@@ -14,37 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Attributes
-{
-    /// <summary>
-    /// 用于权限认证的标签
-    /// </summary>
-    /// <remarks>
-    /// 这个标签可以用于权限认证
-    /// </remarks>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
-    public class AuthenticateAttribute : Attribute
-    {
-        /// <summary>
-        /// 角色名称
-        /// </summary>
-        public HashSet<Enum> RoleName { get; }
+using Telegram.Bot.Framework.Abstracts.Bots;
 
-        /// <summary>
-        /// 有参数的初始化
-        /// </summary>
-        /// <param name="role"></param>
-        public AuthenticateAttribute(params Enum[] role)
+namespace Telegram.Bot.Framework.Bots
+{
+    internal class TelegramAuthenticate<T> : ITelegramPartCreator where T : Enum
+    {
+        public TelegramAuthenticate()
         {
-            RoleName = new HashSet<Enum>(role);
+
         }
 
-        /// <summary>
-        /// 无参数的初始化
-        /// </summary>
-        public AuthenticateAttribute()
+        public void AddBuildService(IServiceCollection services)
         {
-            RoleName = [];
+            
+        }
+
+        public void Build(IServiceCollection services, IServiceProvider builderService)
+        {
+            
+        }
+    }
+
+    public static partial class TelegramBuilderExtensionMethods
+    {
+        public static ITelegramBotBuilder AddAuthenticate<T>(this ITelegramBotBuilder builder, T roleKey) where T : Enum
+        {
+            return builder.AddTelegramPartCreator(new TelegramAuthenticate<T>());
         }
     }
 }

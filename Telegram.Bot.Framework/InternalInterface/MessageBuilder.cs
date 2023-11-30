@@ -14,16 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
-using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalInterface
 {
@@ -41,7 +35,7 @@ namespace Telegram.Bot.Framework.InternalInterface
         {
             StringBuilder builder = new();
             foreach (IMessageContent content in _Content)
-                builder.AppendLine(content.Build());
+                _ = builder.AppendLine(content.Build());
             return builder.ToString();
         }
     }
@@ -93,13 +87,10 @@ namespace Telegram.Bot.Framework.InternalInterface
 
     public class HashTagMessage(string tag) : IMessageContent
     {
-        private string __Tag = HtmlEncoder.Default.Encode(tag);
+        private readonly string __Tag = HtmlEncoder.Default.Encode(tag);
         public string Build()
         {
-            if (__Tag.StartsWith('#'))
-                return $"<a>{__Tag}</a>";
-            else
-                return $"<a>#{__Tag}</a>";
+            return __Tag.StartsWith('#') ? $"<a>{__Tag}</a>" : $"<a>#{__Tag}</a>";
         }
     }
 
@@ -161,10 +152,10 @@ namespace Telegram.Bot.Framework.InternalInterface
         {
             StringBuilder stringBuilder = new();
             if (string.IsNullOrEmpty(url))
-                stringBuilder.Append($"<a");
+                _ = stringBuilder.Append($"<a");
             else
-                stringBuilder.Append($"<a href=\"{url}\"");
-            stringBuilder.Append($">{__Text}</a>");
+                _ = stringBuilder.Append($"<a href=\"{url}\"");
+            _ = stringBuilder.Append($">{__Text}</a>");
             return stringBuilder.ToString();
         }
     }

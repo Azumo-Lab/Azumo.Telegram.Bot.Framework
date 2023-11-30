@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Reflection;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
@@ -47,6 +48,8 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
 
         public Type Controller { get; set; } = null!;
 
-        public List<IControllerParam> ControllerParams { get; set; } = new();
+        public List<IControllerParam> ControllerParams { get; set; } = [];
+
+        public AuthenticateAttribute AuthenticateAttribute { get; set; } = null!;
     }
 }
