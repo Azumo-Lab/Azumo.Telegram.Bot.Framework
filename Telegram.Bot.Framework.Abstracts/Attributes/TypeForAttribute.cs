@@ -16,13 +16,19 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Attributes
 {
+    /// <summary>
+    /// 这个类对应的类型
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="type"></param>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class TypeForAttribute : Attribute
+    public class TypeForAttribute(Type type) : Attribute
     {
-        public Type Type { get; }
-        public TypeForAttribute(Type type)
-        {
-            Type = type;
-        }
+        /// <summary>
+        /// 对应的类型
+        /// </summary>
+        public Type Type { get; } = type;
     }
 }

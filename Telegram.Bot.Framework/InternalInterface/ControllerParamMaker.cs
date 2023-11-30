@@ -20,7 +20,7 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface
 {
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IControllerParamMaker))]
     internal class ControllerParamMaker : IControllerParamMaker

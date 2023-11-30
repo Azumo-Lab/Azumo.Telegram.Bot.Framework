@@ -16,7 +16,7 @@
 
 using Azumo.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Bots;
-using Telegram.Bot.Framework.Interfaces;
+using Telegram.Bot.Framework.Abstracts.Exec;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 

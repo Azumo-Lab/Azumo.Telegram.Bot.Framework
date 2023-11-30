@@ -14,12 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface
 {
     /// <summary>
     /// 
@@ -28,8 +27,8 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
     internal class ControllerParamManager : IControllerParamManager
     {
         private IControllerParam? Now = null!;
-        private List<IControllerParam> __ControllerParamsCopy = new();
-        private List<IControllerParam> __ControllerParams = new();
+        private List<IControllerParam> __ControllerParamsCopy = [];
+        private List<IControllerParam> __ControllerParams = [];
         private ResultEnum __NowResult = ResultEnum.NoStatus;
         public List<IControllerParam> ControllerParams
         {
@@ -42,7 +41,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
         }
         private BotCommand? __BotCommand;
 
-        private readonly List<object> _params = new();
+        private readonly List<object> _params = [];
 
         public object[] GetParams()
         {
@@ -99,7 +98,7 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
         public void Clear()
         {
             Now = null;
-            ControllerParams = new();
+            ControllerParams = [];
             _params.Clear();
             __NowResult = ResultEnum.NoStatus;
             __BotCommand = null;

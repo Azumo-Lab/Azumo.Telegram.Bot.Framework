@@ -16,9 +16,15 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Attributes
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [AttributeUsage(AttributeTargets.Parameter)]
     public class ParamAttribute : Attribute
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public Type? ControllerParamSenderType { get; set; }
     }
 }

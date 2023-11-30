@@ -16,18 +16,35 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Attributes
 {
+    /// <summary>
+    /// 用于权限认证的标签
+    /// </summary>
+    /// <remarks>
+    /// 这个标签可以用于权限认证
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     public class AuthenticateAttribute : Attribute
     {
+        /// <summary>
+        /// 角色名称
+        /// </summary>
         public HashSet<string> RoleName { get; }
+
+        /// <summary>
+        /// 有参数的初始化
+        /// </summary>
+        /// <param name="role"></param>
         public AuthenticateAttribute(params string[] role)
         {
             RoleName = new HashSet<string>(role);
         }
 
+        /// <summary>
+        /// 无参数的初始化
+        /// </summary>
         public AuthenticateAttribute()
         {
-            RoleName = new HashSet<string>();
+            RoleName = [];
         }
     }
 }

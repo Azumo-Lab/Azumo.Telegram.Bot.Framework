@@ -21,7 +21,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
     /// <summary>
     /// 
     /// </summary>
-    internal interface IControllerParamManager
+    public interface IControllerParamManager
     {
         /// <summary>
         /// 要执行的参数获取接口

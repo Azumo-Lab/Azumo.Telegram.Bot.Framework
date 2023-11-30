@@ -14,29 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts.Controllers;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
 {
-    internal abstract class BaseControllerParam : IControllerParam
+    [TypeFor(typeof(string))]
+    internal class StringParams : BaseControllerParam
     {
-        public IControllerParamSender? ParamSender { get; set; }
-
-        public abstract Task<object> CatchObjs(TGChat tGChat);
-
-        public async Task SendMessage(TGChat tGChat)
+        public override async Task<object> CatchObjs(TGChat tGChat)
         {
-            await (ParamSender ?? new NullControllerParamSender()).Send(tGChat.BotClient, tGChat.ChatId);
-        }
-    }
-
-    internal class NullControllerParamSender : IControllerParamSender
-    {
-        public async Task Send(ITelegramBotClient botClient, ChatId chatId)
-        {
-            _ = await botClient.SendTextMessageAsync(chatId, "请输入参数");
+            return await Task.FromResult<object>(tGChat.Message?.Text ?? string.Empty);
         }
     }
 }

@@ -14,14 +14,47 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Reflection;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts
+namespace Telegram.Bot.Framework
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    internal static class IServiceCollection_ExtensionMethods
+    {
+        public static IServiceCollection ScanService(this IServiceCollection services)
+        {
+            AzReflectionHelper.GetAllTypes().Where(x => Attribute.IsDefined(x, typeof(DependencyInjectionAttribute)))
+                .Select(x => (x, (DependencyInjectionAttribute)Attribute.GetCustomAttribute(x, typeof(DependencyInjectionAttribute))!))
+                .ToList()
+                .ForEach((x) =>
+                {
+                    switch (x.Item2.ServiceLifetime)
+                    {
+                        case ServiceLifetime.Singleton:
+                            _ = services.AddSingleton(x.Item2.ServiceType ?? x.x, x.x);
+                            break;
+                        case ServiceLifetime.Scoped:
+                            _ = services.AddScoped(x.Item2.ServiceType ?? x.x, x.x);
+                            break;
+                        case ServiceLifetime.Transient:
+                            _ = services.AddTransient(x.Item2.ServiceType ?? x.x, x.x);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            return services;
+        }
+    }
+
     /// <summary>
     /// 一个扩展方法，用于扩展 <see cref="Update"/> 对象
     /// </summary>
-    public static class Update_ExtensionMethods
+    internal static class Update_ExtensionMethods
     {
         /// <summary>
         /// 从 <see cref="Update"/> 中获取 <see cref="ChatId"/> 对象

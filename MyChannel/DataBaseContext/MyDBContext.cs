@@ -15,6 +15,8 @@ namespace MyChannel.DataBaseContext
         /// </summary>
         public DbSet<ImageInfo> Images { get; set; }
 
+        public DbSet<UserInfo> Users { get; set; }
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             base.ConfigureConventions(configurationBuilder);

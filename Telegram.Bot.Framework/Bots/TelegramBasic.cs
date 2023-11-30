@@ -14,8 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Reflection;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts;
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Abstracts.Controllers;
+using Telegram.Bot.Framework.InternalInterface;
 
 namespace Telegram.Bot.Framework.Bots
 {
@@ -55,6 +61,78 @@ namespace Telegram.Bot.Framework.Bots
         }
     }
 
+    internal class TelegramInstall : ITelegramPartCreator
+    {
+        public TelegramInstall()
+        {
+
+        }
+        public void AddBuildService(IServiceCollection services)
+        {
+            _ = services.AddSingleton<IControllerParamMaker, ControllerParamMaker>();
+            AzReflection<ITelegramService> reflection = AzReflection<ITelegramService>.Create();
+            foreach (Type item in reflection.FindAllSubclass())
+            {
+                _ = services.AddSingleton(typeof(ITelegramService), item);
+            }
+        }
+
+        public void Build(IServiceCollection services, IServiceProvider builderService)
+        {
+            _ = services.ScanService();
+
+            ControllerManager controllerManager = new();
+
+            AzReflection<TelegramController> azReflection = AzReflection<TelegramController>.Create();
+            foreach (Type Controller in azReflection.FindAllSubclass())
+            {
+                MethodInfo[] methodInfos = Controller.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                foreach (MethodInfo Method in methodInfos)
+                {
+                    if (Attribute.IsDefined(Method, typeof(BotCommandAttribute)))
+                    {
+                        BotCommandAttribute? botCommandAttribute = Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute;
+                        controllerManager.InternalCommands.Add(new BotCommand
+                        {
+                            BotCommandName = botCommandAttribute?.BotCommandName == null && botCommandAttribute?.MessageType == null ? $"/{Method.Name.ToLower()}" : botCommandAttribute?.BotCommandName ?? string.Empty,
+                            Description = botCommandAttribute?.Description ?? string.Empty,
+                            Controller = Controller,
+                            Func = (telegram, objs) =>
+                            {
+                                return Method.Invoke(telegram, objs) is Task task ? task : Task.CompletedTask;
+                            },
+                            MethodInfo = Method,
+                            ControllerParams = Method.GetParameters().Select(p =>
+                            {
+                                IControllerParamMaker controllerParamMaker = builderService.GetService<IControllerParamMaker>()!;
+                                if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.ControllerParamSenderType != null)
+                                {
+                                    IControllerParamSender controllerParamSender = (IControllerParamSender)ActivatorUtilities.CreateInstance(builderService, paramAttribute.ControllerParamSenderType, []);
+                                    return controllerParamMaker.Make(p.ParameterType, controllerParamSender);
+                                }
+                                return controllerParamMaker.Make(p.ParameterType, null!);
+                            }).ToList(),
+                            MessageType = botCommandAttribute?.MessageType ?? Types.Enums.MessageType.Unknown
+                        });
+                    }
+                }
+            }
+
+            foreach (BotCommand item in controllerManager.InternalCommands)
+            {
+                RuntimeHelpers.PrepareDelegate(item.Func);
+                RuntimeHelpers.PrepareMethod(item.MethodInfo.MethodHandle);
+            }
+
+            _ = services.AddSingleton<IControllerManager>(controllerManager);
+
+            foreach (ITelegramService service in builderService.GetServices<ITelegramService>())
+            {
+                service.AddServices(services);
+            }
+        }
+    }
+
     public static partial class TelegramBuilderExtensionMethods
     {
         /// <summary>
@@ -64,8 +142,9 @@ namespace Telegram.Bot.Framework.Bots
         /// <returns></returns>
         internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder)
         {
-            _ = InstallEX.AddBasic(builder);
-            return builder.AddTelegramPartCreator(new TelegramBasic());
+            return builder
+                .AddTelegramPartCreator(new TelegramInstall())
+                .AddTelegramPartCreator(new TelegramBasic());
         }
     }
 }

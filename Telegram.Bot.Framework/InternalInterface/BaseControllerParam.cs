@@ -14,22 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Interfaces
+using Telegram.Bot.Framework.Abstracts.Controllers;
+using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Types;
+
+namespace Telegram.Bot.Framework.InternalInterface
 {
-    /// <summary>
-    /// Bot执行前执行的任务接口
-    /// </summary>
-    /// <remarks>
-    /// 用于执行环境配置等
-    /// </remarks>
-    public interface IStartExec
+    internal abstract class BaseControllerParam : IControllerParam
     {
-        /// <summary>
-        /// 开始执行
-        /// </summary>
-        /// <param name="bot">Bot接口</param>
-        /// <param name="serviceProvider">服务</param>
-        /// <returns>异步执行</returns>
-        public Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider);
+        public IControllerParamSender? ParamSender { get; set; }
+
+        public abstract Task<object> CatchObjs(TGChat tGChat);
+
+        public async Task SendMessage(TGChat tGChat)
+        {
+            await (ParamSender ?? new NullControllerParamSender()).Send(tGChat.BotClient, tGChat.ChatId);
+        }
+    }
+
+    internal class NullControllerParamSender : IControllerParamSender
+    {
+        public async Task Send(ITelegramBotClient botClient, ChatId chatId)
+        {
+            _ = await botClient.SendTextMessageAsync(chatId, "请输入参数");
+        }
     }
 }

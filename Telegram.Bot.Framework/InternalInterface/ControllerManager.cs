@@ -14,13 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstracts.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface
 {
     /// <summary>
     /// 
@@ -31,17 +31,17 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
         /// <summary>
         /// 
         /// </summary>
-        public List<BotCommand> InternalCommands { get; } = new();
+        public List<BotCommand> InternalCommands { get; } = [];
 
         /// <summary>
         /// 
         /// </summary>
-        public Dictionary<string, BotCommand> __BotCommand = new();
+        public Dictionary<string, BotCommand> __BotCommand = [];
 
         /// <summary>
         /// 
         /// </summary>
-        public Dictionary<MessageType, BotCommand> __BotCommandMessageType = new();
+        public Dictionary<MessageType, BotCommand> __BotCommandMessageType = [];
 
         /// <summary>
         /// 

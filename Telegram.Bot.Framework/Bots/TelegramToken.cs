@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
@@ -24,19 +25,31 @@ namespace Telegram.Bot.Framework.Bots
     /// </summary>
     internal class TelegramToken : ITelegramPartCreator
     {
-        private readonly string __Token;
+        private string __Token;
+        private readonly Func<IConfiguration, string> __TokenFunc;
         public TelegramToken(string token)
         {
             __Token = token ?? throw new ArgumentNullException(nameof(token));
         }
 
+        public TelegramToken(Func<IConfiguration, string > configuration)
+        {
+            __TokenFunc = configuration;
+        }
+
         public void AddBuildService(IServiceCollection services)
         {
-
+            if (__Token == null)
+            {
+                const string AppSettingPath = "appsetting.json";
+                if (File.Exists(AppSettingPath))
+                    services.TryAddSingleton<IConfiguration>(new ConfigurationBuilder().AddJsonFile(AppSettingPath).Build());
+            }
         }
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
+            __Token ??= __TokenFunc(builderService.GetService<IConfiguration>());
             HttpClient proxy;
             if ((proxy = builderService.GetService<HttpClient>()) != null)
                 services.TryAddSingleton<ITelegramBotClient>(new TelegramBotClient(__Token, proxy));
@@ -59,6 +72,11 @@ namespace Telegram.Bot.Framework.Bots
         public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, string token)
         {
             return builder.AddTelegramPartCreator(new TelegramToken(token));
+        }
+
+        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, Func<IConfiguration, string> tokenFunc)
+        {
+            return builder.AddTelegramPartCreator()
         }
     }
 }

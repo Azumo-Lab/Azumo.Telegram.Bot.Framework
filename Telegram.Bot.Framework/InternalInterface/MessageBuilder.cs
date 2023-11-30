@@ -1,4 +1,20 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +25,7 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface
 {
     [DependencyInjection(ServiceLifetime.Transient, typeof(IMessageBuilder))]
     internal class MessageBuilder : IMessageBuilder
@@ -38,6 +54,14 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
         }
     }
 
+    internal class ConcatMessageWithSpace(BaseMessage a, BaseMessage b) : BaseMessage
+    {
+        public override string Build()
+        {
+            return $"{a.Build()} {b.Build()}";
+        }
+    }
+
     public abstract class BaseMessage : IMessageContent
     {
         public abstract string Build();
@@ -47,7 +71,12 @@ namespace Telegram.Bot.Framework.Abstracts.InternalInterface
             return new StringMessage(str);
         }
 
-        public static  BaseMessage operator | (BaseMessage baseMessage, BaseMessage other)
+        public static BaseMessage operator |(BaseMessage baseMessage, BaseMessage other)
+        {
+            return new ConcatMessage(baseMessage, other);
+        }
+
+        public static BaseMessage operator &(BaseMessage baseMessage, BaseMessage other)
         {
             return new ConcatMessage(baseMessage, other);
         }
