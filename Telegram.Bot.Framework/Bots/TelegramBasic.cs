@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Azumo.Reflection;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts;
@@ -31,6 +32,7 @@ namespace Telegram.Bot.Framework.Bots
     /// <remarks>
     /// 进行基础服务的设置和处理
     /// </remarks>
+    [DebuggerDisplay("框架基础服务")]
     internal class TelegramBasic : ITelegramPartCreator
     {
         /// <summary>
@@ -53,14 +55,17 @@ namespace Telegram.Bot.Framework.Bots
             // 添加Log
             _ = services.AddLogging(option =>
             {
-                _ = option.AddSimpleConsole();
-                _LogAction?.Invoke(option);
+                if (_LogAction == null)
+                    option.AddSimpleConsole();
+                else
+                    _LogAction?.Invoke(option);
             });
             // 添加 ITelegramBot
             _ = services.AddSingleton<ITelegramBot, TelegramBot>();
         }
     }
 
+    [DebuggerDisplay("基础框架安装搜索服务")]
     internal class TelegramInstall : ITelegramPartCreator
     {
         public TelegramInstall()

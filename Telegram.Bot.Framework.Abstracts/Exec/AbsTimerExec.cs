@@ -1,4 +1,20 @@
-﻿using Timer = System.Timers.Timer;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Timer = System.Timers.Timer;
 
 namespace Telegram.Bot.Framework.Abstracts.Exec
 {
@@ -6,32 +22,32 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
     /// 定时任务
     /// </summary>
     /// <remarks>
-    /// 
+    /// 实现了 <see cref="IExec"/> 接口的定时任务抽象类
     /// </remarks>
     public abstract class AbsTimerExec : IExec
     {
         /// <summary>
-        /// 
+        /// 定时任务的计时器
         /// </summary>
         private static readonly Timer __Timer = new(TimeSpan.FromSeconds(60));
 
         /// <summary>
-        /// 
+        /// 定时任务执行时间
         /// </summary>
         protected virtual TimeSpan TimeSpan { get; set; } = TimeSpan.FromSeconds(60);
 
         /// <summary>
-        /// 
+        /// 上次执行时间
         /// </summary>
         private DateTime __ExecTime = DateTime.MinValue;
 
         /// <summary>
-        /// 
+        /// 下次执行时间
         /// </summary>
         private DateTime __NextTime = DateTime.MinValue;
 
         /// <summary>
-        /// 
+        /// 静态初始化
         /// </summary>
         static AbsTimerExec()
         {
@@ -39,7 +55,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         }
 
         /// <summary>
-        /// 
+        /// 初始化
         /// </summary>
         public AbsTimerExec()
         {
@@ -48,7 +64,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         }
 
         /// <summary>
-        /// 
+        /// 执行定时任务
         /// </summary>
         /// <returns></returns>
         public Task Execute()
@@ -58,7 +74,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         }
 
         /// <summary>
-        /// 
+        /// 定期执行的定时任务
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -74,7 +90,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         }
 
         /// <summary>
-        /// 
+        /// 实现的抽象定时任务
         /// </summary>
         /// <returns></returns>
         protected abstract Task Exec();

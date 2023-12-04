@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
 using System.Net;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
@@ -22,12 +23,34 @@ namespace Telegram.Bot.Framework.Bots
     /// <summary>
     /// 添加代理设置
     /// </summary>
+    [DebuggerDisplay("设置代理：地址：{__ProxyHost}，端口：{__Port}，用户名：{__Username}，密码：{__Password}")]
     internal class TelegramProxy : ITelegramPartCreator
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly HttpClient __HttpClient;
+
+        /// <summary>
+        /// gg
+        /// </summary>
+        private readonly string __ProxyHost, __Port, __Username, __Password = string.Empty;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="proxyHost"></param>
+        /// <param name="port"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
         public TelegramProxy(string proxyHost, int? port = null, string username = null, string password = null)
         {
-            if (proxyHost == null) throw new ArgumentNullException(nameof(proxyHost));
+            ArgumentException.ThrowIfNullOrEmpty(proxyHost, nameof(proxyHost));
+
+            __ProxyHost = proxyHost;
+            __Port = port?.ToString() ?? string.Empty;
+            __Username = username ?? string.Empty;
+            __Password = password ?? string.Empty;
 
             string uri = port.HasValue ? $"{proxyHost}:{port}" : proxyHost;
             WebProxy webProxy = new(uri);

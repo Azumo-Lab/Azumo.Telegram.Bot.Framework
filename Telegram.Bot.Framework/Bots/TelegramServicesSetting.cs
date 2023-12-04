@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
 namespace Telegram.Bot.Framework.Bots
@@ -21,6 +22,7 @@ namespace Telegram.Bot.Framework.Bots
     /// <summary>
     /// 添加一个自定义的配置
     /// </summary>
+    [DebuggerDisplay("添加自定义服务注册")]
     internal class TelegramServicesSetting : ITelegramPartCreator
     {
         private readonly Action<IServiceCollection> __ServiceSettingAction;

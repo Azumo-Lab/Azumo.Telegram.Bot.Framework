@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
@@ -22,6 +23,7 @@ using Telegram.Bot.Framework.Abstracts.Exec;
 
 namespace Telegram.Bot.Framework.Bots
 {
+    [DebuggerDisplay("自动注册Bot指令服务")]
     internal class TelegramBotCommandRegister : ITelegramPartCreator
     {
         public void AddBuildService(IServiceCollection services)

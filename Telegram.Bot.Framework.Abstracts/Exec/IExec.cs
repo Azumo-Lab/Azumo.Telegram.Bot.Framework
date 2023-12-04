@@ -16,8 +16,15 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Exec
 {
+    /// <summary>
+    /// 任务执行
+    /// </summary>
     public interface IExec
     {
+        /// <summary>
+        /// 执行任务
+        /// </summary>
+        /// <returns>异步任务</returns>
         public Task Execute();
     }
 }

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Azumo.Pipeline.Abstracts;
+using System.Diagnostics;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Exec;
 using Telegram.Bot.Polling;
@@ -25,10 +26,16 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 这个是一个机器人接口： <see cref="ITelegramBot"/> 接口的实现类
     /// </summary>
+    [DebuggerDisplay("机器人：@{__BotUsername}")]
     internal class TelegramBot : ITelegramBot, IUpdateHandler, IDisposable
     {
         /// <summary>
         /// 
+        /// </summary>
+        private string __BotUsername;
+
+        /// <summary>
+        /// 机器人的服务
         /// </summary>
         private readonly IServiceProvider ServiceProvider;
 
@@ -62,6 +69,9 @@ namespace Telegram.Bot.Framework
 ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝                    
 ";
 
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly IUpdateHandler __UpdateHandler;
 
         /// <summary>
@@ -118,9 +128,9 @@ namespace Telegram.Bot.Framework
 
                 // 在程序执行之前，开始执行任务
                 List<IStartExec> startExecs = ServiceProvider.GetServices<IStartExec>().ToList();
-                if (startExecs.Any())
+                if (startExecs.Count != 0)
                 {
-                    __log.LogInformation($"发现 {startExecs.Count} 个任务...开始执行");
+                    __log.LogInformation("发现 {A0} 个任务...开始执行", startExecs.Count);
                     foreach (IStartExec execs in startExecs)
                     {
                         if (execs is IPipelineName pipelineName)
@@ -135,6 +145,7 @@ namespace Telegram.Bot.Framework
 
                 // 获取机器人自己的用户名(作为一个连接测试)
                 User user = await telegramBot.GetMeAsync();
+                __BotUsername = user.Username;
                 __log.LogInformation(message: $"机器人用户 @{user.Username} 正在运行中...");
 
                 // 死循环，一直等待

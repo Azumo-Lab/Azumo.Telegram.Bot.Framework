@@ -14,17 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
+    /// <summary>
+    /// 控制器过滤器
+    /// </summary>
+    /// <remarks>
+    /// 在控制器执行之前进行执行的过滤器
+    /// </remarks>
     public interface IControllerFilter
     {
+        /// <summary>
+        /// 开始执行过滤器
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="tGChat"></param>
+        /// <param name="botCommand"></param>
+        /// <returns></returns>
         public Task<bool> Execute(TGChat tGChat, BotCommand botCommand);
     }
 }

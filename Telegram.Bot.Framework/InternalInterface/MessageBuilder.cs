@@ -21,6 +21,9 @@ using Telegram.Bot.Framework.Abstracts.Controllers;
 
 namespace Telegram.Bot.Framework.InternalInterface
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [DependencyInjection(ServiceLifetime.Transient, typeof(IMessageBuilder))]
     internal class MessageBuilder : IMessageBuilder
     {
@@ -40,7 +43,12 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
-    internal class ConcatMessage(BaseMessage a, BaseMessage b) : BaseMessage
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    internal class ConcatMessage(IMessageContent a, IMessageContent b) : BaseMessage
     {
         public override string Build()
         {
@@ -48,6 +56,11 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
     internal class ConcatMessageWithSpace(BaseMessage a, BaseMessage b) : BaseMessage
     {
         public override string Build()
@@ -56,6 +69,9 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class BaseMessage : IMessageContent
     {
         public abstract string Build();
@@ -65,17 +81,31 @@ namespace Telegram.Bot.Framework.InternalInterface
             return new StringMessage(str);
         }
 
-        public static BaseMessage operator |(BaseMessage baseMessage, BaseMessage other)
+        public static IMessageContent operator |(BaseMessage baseMessage, BaseMessage other)
         {
             return new ConcatMessage(baseMessage, other);
         }
 
-        public static BaseMessage operator &(BaseMessage baseMessage, BaseMessage other)
+        public static IMessageContent operator |(string baseMessage, BaseMessage other)
+        {
+            return new ConcatMessage((BaseMessage)baseMessage, other);
+        }
+
+        public static IMessageContent operator |(IMessageContent baseMessage, BaseMessage other)
+        {
+            return new ConcatMessage(baseMessage, other);
+        }
+
+        public static IMessageContent operator |(BaseMessage baseMessage, IMessageContent other)
         {
             return new ConcatMessage(baseMessage, other);
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="str"></param>
     public class StringMessage(string str) : BaseMessage
     {
         private readonly string __Str = HtmlEncoder.Default.Encode(str);
@@ -85,15 +115,25 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tag"></param>
     public class HashTagMessage(string tag) : IMessageContent
     {
         private readonly string __Tag = HtmlEncoder.Default.Encode(tag);
         public string Build()
         {
-            return __Tag.StartsWith('#') ? $"<a>{__Tag}</a>" : $"<a>#{__Tag}</a>";
+            return (__Tag.StartsWith('#') ?
+                new URLMessage(null, __Tag) :
+                new URLMessage(null, $"#{__Tag}")).Build();
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
     public class BoldMessage(string message) : IMessageContent
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
@@ -104,6 +144,10 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
     public class ItalicMessage(string message) : IMessageContent
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
@@ -114,6 +158,10 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
     public class UnderlineMessage(string message) : IMessageContent
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
@@ -124,6 +172,10 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
     public class StrikethroughMessage(string message) : IMessageContent
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
@@ -134,6 +186,10 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
     public class SpoilerMessage(string message) : IMessageContent
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
@@ -144,6 +200,11 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="text"></param>
     public class URLMessage(string url, string text) : BaseMessage
     {
         private readonly string __Text = HtmlEncoder.Default.Encode(text);
@@ -151,15 +212,16 @@ namespace Telegram.Bot.Framework.InternalInterface
         public override string Build()
         {
             StringBuilder stringBuilder = new();
-            if (string.IsNullOrEmpty(url))
-                _ = stringBuilder.Append($"<a");
-            else
-                _ = stringBuilder.Append($"<a href=\"{url}\"");
+            _ = string.IsNullOrEmpty(url) ? stringBuilder.Append($"<a") : stringBuilder.Append($"<a href=\"{url}\"");
             _ = stringBuilder.Append($">{__Text}</a>");
             return stringBuilder.ToString();
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="code"></param>
     public class CodeMessage(string code) : IMessageContent
     {
         private readonly string __Code = HtmlEncoder.Default.Encode(code);
@@ -170,10 +232,13 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
     public class PreMessage(string message) : IMessageContent
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
-
 
         public string Build()
         {
@@ -181,6 +246,9 @@ namespace Telegram.Bot.Framework.InternalInterface
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class NewLineMessage() : IMessageContent
     {
         public string Build()

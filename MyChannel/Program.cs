@@ -14,7 +14,7 @@ namespace MyChannel
         static void Main(string[] args)
         {
             ITelegramBot telegramBot = TelegramBuilder.Create()
-                .UseToken("")
+                .UseToken(x => x.GetSection("Token").Value)
                 .UseClashDefaultProxy()
                 .AddServices(serviceCollection =>
                 {
@@ -23,6 +23,9 @@ namespace MyChannel
                     serviceCollection.AddSingleton<IStartExec, StartService>();
                     serviceCollection.AddSingleton<IExec, TimeingService>();
                 })
+                .AddConfiguration("C:\\Users\\ko--o\\Desktop\\test.json")
+                .RegisterBotCommand()
+                .AddSimpleConsole()
                 .Build();
 
             Task botTask = telegramBot.StartAsync();

@@ -22,12 +22,12 @@ namespace Telegram.Bot.Framework.Users
     /// <summary>
     /// 
     /// </summary>
-    internal class Authenticate<T> : IAuthenticate<T> where T : Enum
+    internal class Authenticate<T> : IAuthenticate where T : Enum
     {
         /// <summary>
         /// 
         /// </summary>
-        public HashSet<T> RoleName { get; } = [];
+        public HashSet<Enum> RoleName { get; } = [];
 
         /// <summary>
         /// 
