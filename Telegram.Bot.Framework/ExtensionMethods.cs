@@ -61,7 +61,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="update">传入的 <see cref="Update"/> 对象</param>
         /// <returns><see cref="ChatId"/> 对象</returns>
-        public static ChatId? GetChatID(this Update update)
+        public static ChatId GetChatID(this Update update)
         {
             switch (update.Type)
             {

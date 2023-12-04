@@ -70,11 +70,11 @@ namespace Telegram.Bot.Framework.Bots
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
             // 获取Token
-            IConfiguration configuration = builderService.GetService<IConfiguration>() 
-                ?? throw new NullReferenceException($"未找到配置文件，请在构建Bot的时候，" +
+            IConfiguration configuration = builderService.GetService<IConfiguration>();
+            __Token ??= __TokenFunc?.Invoke(configuration ?? 
+                throw new NullReferenceException($"未找到配置文件，请在构建Bot的时候，" +
                 $"调用 {nameof(ITelegramBotBuilder)} 接口的" +
-                $" {nameof(TelegramBuilderExtensionMethods.AddConfiguration)} 扩展方法来添加配置文件");
-            __Token ??= __TokenFunc?.Invoke(configuration);
+                $" {nameof(TelegramBuilderExtensionMethods.AddConfiguration)} 扩展方法来添加配置文件"));
 
             // 检查Token
             if (string.IsNullOrEmpty(__Token))

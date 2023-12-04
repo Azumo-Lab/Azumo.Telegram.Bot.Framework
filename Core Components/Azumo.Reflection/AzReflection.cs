@@ -121,9 +121,9 @@ namespace Azumo.Reflection
             return $"{typeFullName}.{methodName}";
         }
 
-        private static T Cache<T>(string cacheKey, Func<T> cacheObj)
+        private static CacheType Cache<CacheType>(string cacheKey, Func<CacheType> cacheObj)
         {
-            T? result = default;
+            CacheType? result = default;
             if (!__CacheObjDic.TryGetValue(cacheKey, out object? obj))
             {
                 result = cacheObj();
@@ -133,7 +133,7 @@ namespace Azumo.Reflection
             {
                 try
                 {
-                    result = (T)obj;
+                    result = (CacheType)obj;
                 }
                 catch (Exception)
                 { }

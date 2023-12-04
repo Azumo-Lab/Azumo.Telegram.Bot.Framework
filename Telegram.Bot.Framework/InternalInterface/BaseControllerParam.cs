@@ -22,7 +22,7 @@ namespace Telegram.Bot.Framework.InternalInterface
 {
     internal abstract class BaseControllerParam : IControllerParam
     {
-        public IControllerParamSender? ParamSender { get; set; }
+        public IControllerParamSender ParamSender { get; set; }
 
         public abstract Task<object> CatchObjs(TGChat tGChat);
 

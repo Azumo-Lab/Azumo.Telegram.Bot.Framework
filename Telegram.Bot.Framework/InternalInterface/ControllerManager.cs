@@ -53,7 +53,7 @@ namespace Telegram.Bot.Framework.InternalInterface
             string command;
             if ((command = tGChat.GetCommand()) != null)
             {
-                if (__BotCommand.TryGetValue(command, out BotCommand? botCommand))
+                if (__BotCommand.TryGetValue(command, out BotCommand botCommand))
                     return botCommand;
                 botCommand = InternalCommands.Where(x => x.BotCommandName == command).FirstOrDefault();
                 if (botCommand != null)
@@ -63,7 +63,7 @@ namespace Telegram.Bot.Framework.InternalInterface
             else
             {
                 MessageType type = tGChat.Message?.Type ?? MessageType.Unknown;
-                if (__BotCommandMessageType.TryGetValue(type, out BotCommand? botCommand))
+                if (__BotCommandMessageType.TryGetValue(type, out BotCommand botCommand))
                     return botCommand;
 
                 botCommand = InternalCommands.Where(x => x.MessageType == type).FirstOrDefault();

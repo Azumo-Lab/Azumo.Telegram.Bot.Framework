@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.InternalInterface
         public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender)
         {
             IControllerParam controllerParam;
-            if (__AllType.TryGetValue(paramType, out Type? IControllerParamType))
+            if (__AllType.TryGetValue(paramType, out Type IControllerParamType))
             {
                 IControllerParamType ??= typeof(NullControllerParam);
                 controllerParam = (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, Array.Empty<object>());
@@ -58,7 +58,7 @@ namespace Telegram.Bot.Framework.InternalInterface
 
         private class NullControllerParam : IControllerParam
         {
-            public IControllerParamSender? ParamSender { get; set; }
+            public IControllerParamSender ParamSender { get; set; }
 
             public Task<object> CatchObjs(TGChat tGChat)
             {

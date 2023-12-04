@@ -44,6 +44,12 @@ namespace Telegram.Bot.Framework.Bots
 
     public static partial class TelegramBuilderExtensionMethods
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramBotBuilder"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection> action)
         {
             return telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));

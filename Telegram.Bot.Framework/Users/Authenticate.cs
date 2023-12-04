@@ -22,7 +22,8 @@ namespace Telegram.Bot.Framework.Users
     /// <summary>
     /// 
     /// </summary>
-    internal class Authenticate<T> : IAuthenticate where T : Enum
+    [DependencyInjection(ServiceLifetime.Scoped, typeof(IAuthenticate))]
+    internal class Authenticate : IAuthenticate
     {
         /// <summary>
         /// 
@@ -35,13 +36,13 @@ namespace Telegram.Bot.Framework.Users
         /// <param name="tGChat"></param>
         /// <param name="authenticateAttribute"></param>
         /// <returns></returns>
-        public bool IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute)
+        public Task<bool> IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute)
         {
             bool result = false;
-            foreach (T roleName in RoleName)
+            foreach (Enum roleName in RoleName)
                 if (!(result = authenticateAttribute.RoleName.Contains(roleName)))
                     continue;
-            return result;
+            return Task.FromResult(result);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace Telegram.Bot.Framework.Bots
             _ = services.AddLogging(option =>
             {
                 if (_LogAction == null)
-                    option.AddSimpleConsole();
+                    _ = option.AddSimpleConsole();
                 else
                     _LogAction?.Invoke(option);
             });
@@ -96,7 +96,7 @@ namespace Telegram.Bot.Framework.Bots
                 {
                     if (Attribute.IsDefined(Method, typeof(BotCommandAttribute)))
                     {
-                        BotCommandAttribute? botCommandAttribute = Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute;
+                        BotCommandAttribute botCommandAttribute = Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute;
                         controllerManager.InternalCommands.Add(new BotCommand
                         {
                             BotCommandName = botCommandAttribute?.BotCommandName == null && botCommandAttribute?.MessageType == null ? $"/{Method.Name.ToLower()}" : botCommandAttribute?.BotCommandName ?? string.Empty,

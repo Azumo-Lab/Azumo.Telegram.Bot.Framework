@@ -33,7 +33,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <summary>
         /// 
         /// </summary>
-        public ITelegramBotClient BotClient { get; internal set; }
+        public ITelegramBotClient BotClient { get; internal set; } = null!;
 
         /// <summary>
         /// 

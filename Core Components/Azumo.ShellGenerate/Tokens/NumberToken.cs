@@ -21,7 +21,7 @@ namespace Azumo.ShellGenerate.Tokens
 
         public override string Generate()
         {
-            return _value.ToString();
+            return _value.ToString()!;
         }
 
         public override TokenBase Param(TokenBase token)

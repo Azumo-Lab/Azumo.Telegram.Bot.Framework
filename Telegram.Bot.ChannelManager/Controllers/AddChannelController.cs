@@ -15,12 +15,16 @@ namespace Telegram.Bot.ChannelManager.Controllers
         public async Task Test()
         {
             string messageHtml = GetMessageBuilder()
-                .Add((BaseMessage)"测试" | "Test" | new URLMessage("https://www.baidu.com", "百度"))
+                .Add(new BoldMessage("测试") | new URLMessage("https://www.baidu.com", "百度") | (BaseMessage)"连接测试")
                 .Add(new NewLineMessage())
-                .Add(new HashTagMessage("测试标签"))
+                .Add("测试 Test" & new URLMessage("https://www.baidu.com", "点击直达百度"))
+                .Add(new NewLineMessage())
+                .Add(new HashTagMessage("测试标签") & new HashTagMessage("TAG"))
                 .Add(new NewLineMessage())
                 .Add(new SpoilerMessage("这是隐藏起来的内容"))
+                .Add(new NewLineMessage())
                 .Add(new URLMessage("https://www.baidu.com", "百度"))
+                .Add(new NewLineMessage())
                 .Add(new PreMessage("这是一个测试，点击可以复制"))
                 .Build();
             _ = await SendMediaGroup(messageHtml,

@@ -24,9 +24,9 @@ namespace Azumo.ShellGenerate
             Console.WriteLine(shellStr.ToString());
         }
 
-        public T Token<T>() where T : TokenBase
+        public static T Token<T>() where T : TokenBase
         {
-            return (T)Activator.CreateInstance(typeof(T));
+            return (T)Activator.CreateInstance(typeof(T))!;
         }
 
     }

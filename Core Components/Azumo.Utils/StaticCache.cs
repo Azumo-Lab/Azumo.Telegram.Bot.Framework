@@ -12,12 +12,12 @@ namespace Azumo.Utils
     /// </remarks>
     /// <typeparam name="K">缓存数据的Key值类型</typeparam>
     /// <typeparam name="V">要进行缓存的数据类型</typeparam>
-    public static class StaticCache<K, V>
+    public static class StaticCache<K, V> where K : notnull
     {
         /// <summary>
         /// 缓存数据的字典
         /// </summary>
-        private static readonly Dictionary<K, V> __Cache = new Dictionary<K, V>();
+        private static readonly Dictionary<K, V> __Cache = [];
 
         /// <summary>
         /// 设置缓存的数据
@@ -35,7 +35,7 @@ namespace Azumo.Utils
         /// <param name="key">缓存数据的Key</param>
         /// <param name="v">要取得的缓存数据</param>
         /// <returns>返回是否能够成功取得数据</returns>
-        public static bool GetCache(K key, out V v)
+        public static bool GetCache(K key, out V? v)
         {
             return __Cache.TryGetValue(key, out v);
         }
@@ -51,15 +51,14 @@ namespace Azumo.Utils
         /// <returns>返回取得的数据</returns>
         public static V GetCache(K key, Func<V> func)
         {
-            if (!GetCache(key, out V value))
+            if (!GetCache(key, out V? value))
             {
-                if (func == null)
-                    throw new ArgumentNullException(nameof(func));
+                ArgumentNullException.ThrowIfNull(func);
 
                 value = func();
                 SetCache(key, value);
             }
-            return value;
+            return value!;
         }
 
         /// <summary>

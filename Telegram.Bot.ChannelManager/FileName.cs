@@ -36,21 +36,21 @@ namespace Telegram.Bot.ChannelManager
 
     public class 动作
     {
-        public static IAction 翻转 { get; }
+        public static IAction 翻转 { get; } = null!;
 
-        public static IAction 消失 { get; }
+        public static IAction 消失 { get; } = null!;
     }
 
     public class 等待
     {
         public static IAction 按秒等待(int s)
         {
-            return null;
+            return null!;
         }
 
         public static IAction 按分等待(int s)
         {
-            return null;
+            return null!;
         }
     }
 

@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     [DependencyInjection(ServiceLifetime.Scoped, typeof(IControllerParamManager))]
     internal class ControllerParamManager : IControllerParamManager
     {
-        private IControllerParam? Now = null!;
+        private IControllerParam Now = null!;
         private List<IControllerParam> __ControllerParamsCopy = [];
         private List<IControllerParam> __ControllerParams = [];
         private ResultEnum __NowResult = ResultEnum.NoStatus;
@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.InternalInterface
                 __ControllerParamsCopy = new List<IControllerParam>(value);
             }
         }
-        private BotCommand? __BotCommand;
+        private BotCommand __BotCommand;
 
         private readonly List<object> _params = [];
 
