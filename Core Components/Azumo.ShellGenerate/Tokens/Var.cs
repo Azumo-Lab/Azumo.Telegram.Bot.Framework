@@ -1,9 +1,4 @@
-﻿using Azumo.ShellGenerate.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Azumo.ShellGenerate.Tokens
+﻿namespace Azumo.ShellGenerate.Tokens
 {
     public class Var : TokenBase
     {

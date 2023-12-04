@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
@@ -31,7 +30,7 @@ namespace Telegram.Bot.Framework.Users
         /// <summary>
         /// 用于缓存 <see cref="TGChat"/> 对象
         /// </summary>
-        private readonly Dictionary<ChatId, TGChat> __Chats = new();
+        private readonly Dictionary<ChatId, TGChat> __Chats = [];
 
         /// <summary>
         /// 创建或取得 <see cref="TGChat"/> 对象

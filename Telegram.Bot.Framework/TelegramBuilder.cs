@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 添加的可扩展内容接口 <see cref="ITelegramPartCreator"/>
         /// </summary>
-        private readonly List<ITelegramPartCreator> __BuildPartCreator = new();
+        private readonly List<ITelegramPartCreator> __BuildPartCreator = [];
 
         /// <summary>
         /// 开始创建 <see cref="ITelegramBotBuilder"/> 接口

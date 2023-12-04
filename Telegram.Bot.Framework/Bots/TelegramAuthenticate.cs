@@ -27,12 +27,12 @@ namespace Telegram.Bot.Framework.Bots
 
         public void AddBuildService(IServiceCollection services)
         {
-            
+
         }
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            
+
         }
     }
 

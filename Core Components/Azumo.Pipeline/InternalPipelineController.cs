@@ -27,7 +27,7 @@ namespace Azumo.Pipeline
         /// <summary>
         /// 流水线字典
         /// </summary>
-        private readonly Dictionary<object, IPipeline<T>> __Pipelines = new();
+        private readonly Dictionary<object, IPipeline<T>> __Pipelines = [];
 
         /// <summary>
         /// 下一道工序
@@ -47,7 +47,7 @@ namespace Azumo.Pipeline
         /// <summary>
         /// 流水线执行链
         /// </summary>
-        private readonly List<string> InvokePathList = new();
+        private readonly List<string> InvokePathList = [];
 
         /// <summary>
         /// 下一个工序

@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types;
-
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+﻿namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     public interface IMessageBuilder
     {

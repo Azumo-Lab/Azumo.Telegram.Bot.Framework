@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Telegram.Bot.ChannelManager
+﻿namespace Telegram.Bot.ChannelManager
 {
     internal class 角色
     {
@@ -26,7 +20,7 @@ namespace Telegram.Bot.ChannelManager
         public static void Test()
         {
             角色 角色Anzu = new();
-            角色Anzu = 角色Anzu 
+            角色Anzu = 角色Anzu
                 | "笑着活下去" | ["笑.PNG", "悲情BGM.mp3"]
                 | 动作.翻转 | 等待.按秒等待(5)
                 | "再见了" | ["欢乐颂.MP3"]

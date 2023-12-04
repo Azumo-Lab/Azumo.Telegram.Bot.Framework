@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Users

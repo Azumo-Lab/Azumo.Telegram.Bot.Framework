@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
 
 namespace Azumo.Utils
 {
@@ -74,7 +74,7 @@ namespace Azumo.Utils
             bool hasErr = false;
             try
             {
-                using (StreamWriter streamWriter = new StreamWriter(new FileStream(filePath, FileMode.OpenOrCreate)))
+                using (StreamWriter streamWriter = new(new FileStream(filePath, FileMode.OpenOrCreate)))
                 {
                     streamWriter.Write(str);
                 }
@@ -117,9 +117,9 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static List<string> ListFiles(this string str, string searchPattern = "*.*", SearchOption searchOption = SearchOption.AllDirectories)
         {
-            List<string> strings = new List<string>();
+            List<string> strings = [];
             if (Directory.Exists(str))
-                strings = Directory.GetFiles(str, searchPattern, searchOption)?.ToList() ?? new List<string>();
+                strings = Directory.GetFiles(str, searchPattern, searchOption)?.ToList() ?? [];
             return strings;
         }
 

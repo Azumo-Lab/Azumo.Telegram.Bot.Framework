@@ -96,7 +96,7 @@ namespace Azumo.Lang
             /// <summary>
             /// 
             /// </summary>
-            public EOLToken() : base(-1) 
+            public EOLToken() : base(-1)
             {
                 Value = Environment.NewLine;
             }

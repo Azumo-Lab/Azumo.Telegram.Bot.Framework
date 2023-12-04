@@ -1,8 +1,5 @@
 ﻿using Azumo.ShellGenerate.Interfaces;
 using Azumo.ShellGenerate.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Azumo.ShellGenerate
 {

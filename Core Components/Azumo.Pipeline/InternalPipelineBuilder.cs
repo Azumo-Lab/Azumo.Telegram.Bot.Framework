@@ -23,7 +23,7 @@ namespace Azumo.Pipeline
     /// </summary>
     internal class InternalPipelineBuilder<T> : IPipelineBuilder<T>
     {
-        private readonly List<IProcessAsync<T>> __Procedures = new();
+        private readonly List<IProcessAsync<T>> __Procedures = [];
         private readonly IPipelineController<T> __Controller;
         private readonly List<Type>? __TypeList;
 
@@ -60,10 +60,7 @@ namespace Azumo.Pipeline
             if (__TypeList == null)
                 return this;
             Type? type = __TypeList!.Where(x => x.Name == procedure).FirstOrDefault();
-            if (type == null)
-                return this;
-
-            return Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync ? this : AddProcedure(processAsync);
+            return type == null ? this : Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync ? this : AddProcedure(processAsync);
         }
 
         /// <summary>

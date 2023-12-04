@@ -26,10 +26,7 @@ namespace Azumo.Reflection
     {
         public static T? Create(params object[] args)
         {
-            if (args == null || args.Length == 0)
-                return (T?)Activator.CreateInstance(typeof(T));
-            else
-                return (T?)Activator.CreateInstance(typeof(T), args);
+            return args == null || args.Length == 0 ? (T?)Activator.CreateInstance(typeof(T)) : (T?)Activator.CreateInstance(typeof(T), args);
         }
         /// <summary>
         /// 
@@ -114,7 +111,7 @@ namespace Azumo.Reflection
 
         #region 保存缓存
 
-        private static readonly Dictionary<string, object> __CacheObjDic = new();
+        private static readonly Dictionary<string, object> __CacheObjDic = [];
 
         private static string CacheKey(string typeFullName, string methodName)
         {

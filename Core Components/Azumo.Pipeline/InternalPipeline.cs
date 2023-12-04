@@ -48,7 +48,7 @@ namespace Azumo.Pipeline
         {
             __Controller = pipelineController;
 
-            List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = new();
+            List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = [];
             foreach (IProcessAsync<T> proc in procedures)
                 procs.Add(handle => (model, controller) =>
                 {

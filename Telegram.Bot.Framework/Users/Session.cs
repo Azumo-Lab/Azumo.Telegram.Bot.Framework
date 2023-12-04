@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.Users
         /// <summary>
         /// 
         /// </summary>
-        private readonly Dictionary<string, object> __Val = new();
+        private readonly Dictionary<string, object> __Val = [];
 
         public string SessionID { get; } = Guid.NewGuid().ToString();
 

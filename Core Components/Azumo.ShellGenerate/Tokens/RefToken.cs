@@ -1,10 +1,4 @@
-﻿using Azumo.ShellGenerate.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-
-namespace Azumo.ShellGenerate.Tokens
+﻿namespace Azumo.ShellGenerate.Tokens
 {
     internal class RefToken : TokenBase
     {

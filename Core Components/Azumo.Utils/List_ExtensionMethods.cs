@@ -27,7 +27,7 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static List<object> ToObjectList(this IEnumerator values)
         {
-            List<object> list = new List<object>();
+            List<object> list = [];
             while (values.MoveNext())
                 list.Add(values.Current);
             return list;
@@ -52,7 +52,7 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static List<T> ToList<T>(this IEnumerator values)
         {
-            List<T> list = new List<T>();
+            List<T> list = [];
             try
             {
                 while (values.MoveNext())
