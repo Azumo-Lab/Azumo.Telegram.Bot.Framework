@@ -18,7 +18,7 @@ namespace Telegram.Bot.Framework.Controllers
         /// <returns></returns>
         public virtual async Task<bool> Execute(TGChat tGChat, BotCommand botCommand)
         {
-            if (botCommand.AuthenticateAttribute == null)
+            if (botCommand?.AuthenticateAttribute == null)
                 return true;
 
             AuthenticationCode authenticationCode;

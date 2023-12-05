@@ -12,6 +12,8 @@ namespace MyChannel.DataBaseContext
 
         public DbSet<UserInfo> Users { get; set; }
 
+        public DbSet<FileIDInfos> FileIDs { get; set; }
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             base.ConfigureConventions(configurationBuilder);

@@ -20,13 +20,13 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalInterface
 {
-    internal abstract class BaseControllerParam : IControllerParam
+    public abstract class BaseControllerParam : IControllerParam
     {
-        public IControllerParamSender ParamSender { get; set; }
+        public virtual IControllerParamSender ParamSender { get; set; }
 
         public abstract Task<object> CatchObjs(TGChat tGChat);
 
-        public async Task SendMessage(TGChat tGChat)
+        public virtual async Task SendMessage(TGChat tGChat)
         {
             await (ParamSender ?? new NullControllerParamSender()).Send(tGChat.BotClient, tGChat.ChatId);
         }

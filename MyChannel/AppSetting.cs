@@ -11,9 +11,9 @@
         public string? Token { get; set; }
 
         /// <summary>
-        /// 图片相关的设置
+        /// 文件相关的设置
         /// </summary>
-        public ImageSetting? ImageSetting { get; set; }
+        public FileSetting? FileSetting { get; set; }
 
         /// <summary>
         /// Log的相关设置
@@ -29,7 +29,7 @@
     /// <summary>
     /// 
     /// </summary>
-    internal class ImageSetting
+    internal class FileSetting
     {
         /// <summary>
         /// Bot从网络下载的图片路径
@@ -42,7 +42,7 @@
         /// <remarks>
         /// 这一类图片会用JSON文件保存其中的图片ID信息
         /// </remarks>
-        public string? TelegramImageIDPath { get; set; }
+        public string? TelegramJsonIDPath { get; set; }
     }
 
     internal class LogSetting
