@@ -3,7 +3,7 @@ using MyChannel.DataBaseContext.DBModels;
 
 namespace MyChannel.DataBaseContext
 {
-    internal class MyDBContext(DbContextOptions<DbContext> options) : DbContext(options)
+    internal class MyDBContext(DbContextOptions<MyDBContext> options) : DbContext(options)
     {
         /// <summary>
         /// 

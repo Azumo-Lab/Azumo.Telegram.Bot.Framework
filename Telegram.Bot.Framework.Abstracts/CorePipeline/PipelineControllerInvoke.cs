@@ -21,10 +21,20 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.CorePipeline
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class PipelineControllerInvoke : IProcessAsync<TGChat>
     {
+        /// <summary>
+        /// 开始执行控制器流程
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="pipelineController"></param>
+        /// <returns></returns>
         public async Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController)
         {
+            // 获取必要的数据
             IControllerManager controllerManager = t.UserService.GetRequiredService<IControllerManager>();
             BotCommand botCommand = controllerManager.GetCommand(t);
 
@@ -36,6 +46,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
                     _ = await pipelineController.StopAsync(t);
             }
 
+            // 获取参数
             IControllerParamManager controllerParamManager = t.UserService.GetRequiredService<IControllerParamManager>();
             if (botCommand != null)
             {
@@ -51,16 +62,16 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
             if (botCommand == null)
                 return await pipelineController.StopAsync(t);
 
+            // 执行控制器
             try
             {
                 TelegramController telegramController = (TelegramController)ActivatorUtilities.CreateInstance(t.UserService, botCommand!.Controller, []);
                 await telegramController.ControllerInvokeAsync(t, botCommand.Func, controllerParamManager);
             }
             catch (Exception)
-            {
+            { }
 
-            }
-
+            // 执行下一个
             return await pipelineController.NextAsync(t);
         }
     }

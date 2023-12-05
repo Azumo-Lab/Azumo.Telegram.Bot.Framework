@@ -25,8 +25,8 @@ namespace Telegram.Bot.Framework.Bots
     [DebuggerDisplay("添加自定义服务注册")]
     internal class TelegramServicesSetting : ITelegramPartCreator
     {
-        private readonly Action<IServiceCollection> __ServiceSettingAction;
-        public TelegramServicesSetting(Action<IServiceCollection> action)
+        private readonly Action<IServiceCollection, IServiceProvider> __ServiceSettingAction;
+        public TelegramServicesSetting(Action<IServiceCollection, IServiceProvider> action)
         {
             __ServiceSettingAction = action;
         }
@@ -38,7 +38,7 @@ namespace Telegram.Bot.Framework.Bots
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            __ServiceSettingAction(services);
+            __ServiceSettingAction(services, builderService);
         }
     }
 
@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="telegramBotBuilder"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection> action)
+        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection, IServiceProvider> action)
         {
             return telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
         }

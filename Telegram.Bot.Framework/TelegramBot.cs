@@ -148,6 +148,10 @@ namespace Telegram.Bot.Framework
                 __BotUsername = user.Username;
                 __log.LogInformation(message: $"机器人用户 @{user.Username} 正在运行中...");
 
+                List<IExec> exec = ServiceProvider.GetServices<IExec>().ToList();
+                foreach (IExec item in exec)
+                    _ = item.Execute().ConfigureAwait(false);
+
                 // 死循环，一直等待
                 while (!__IsEnd)
                 {

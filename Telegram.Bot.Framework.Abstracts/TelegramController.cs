@@ -73,7 +73,7 @@ namespace Telegram.Bot.Framework.Abstracts
         }
 
         /// <summary>
-        /// 
+        /// 发送文本消息
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -84,31 +84,82 @@ namespace Telegram.Bot.Framework.Abstracts
         }
 
         /// <summary>
-        /// 
+        /// 用户登录
+        /// </summary>
+        /// <returns></returns>
+        protected Task UserSignIn()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 用户注册
+        /// </summary>
+        /// <returns></returns>
+        protected Task UserSignUp()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 用户登出
+        /// </summary>
+        /// <returns></returns>
+        protected Task UserSignOut()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 屏蔽用户
+        /// </summary>
+        /// <returns></returns>
+        protected Task UserBlock()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 删除用户相关信息
+        /// </summary>
+        /// <returns></returns>
+        protected Task UserDeleteInfo()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 发送附带图片组的消息
         /// </summary>
         /// <param name="message"></param>
         /// <param name="imagePaths"></param>
         /// <returns></returns>
-        protected async Task<Message[]?> SendMediaGroup(string message, string[] imagePaths)
+        protected async Task<Message[]?> SendMediaGroup(string message, string[] imagePathOrID)
         {
-            // 初始化
-            List<InputMediaPhoto> images = imagePaths
-                .Select(path =>
-                {
-                    if (!System.IO.File.Exists(path))
-                        return null!;
-                    InputMediaPhoto inputMediaPhoto = new(new InputFileStream(new FileStream(path, FileMode.Open), Path.GetFileName(path)));
-                    return inputMediaPhoto;
-                })
-                .Where(x => x != null)
-                .ToList();
-
-            if (images.Count == 0)
+            if (imagePathOrID == null || imagePathOrID.Length == 0)
                 return null!;
 
+            // 初始化
+            List<InputMediaPhoto> images = imagePathOrID
+                .Select(PathOrID =>
+                {
+                    InputMediaPhoto inputMediaPhoto;
+                    if (!System.IO.File.Exists(PathOrID) && !Path.HasExtension(PathOrID))
+                        // 文件不存在且没有扩展名，视作文件ID
+                        inputMediaPhoto = new(new InputFileId(PathOrID));
+                    else
+                        // 否则，是为文件
+                        inputMediaPhoto = new(new InputFileStream(new FileStream(PathOrID, FileMode.Open), Path.GetFileName(PathOrID)));
+                    return inputMediaPhoto;
+                })
+                .ToList();
+
             // 进行设定
-            images[0].Caption = message;
-            images[0].ParseMode = Types.Enums.ParseMode.Html;
+            if (!string.IsNullOrEmpty(message))
+            {
+                images[0].Caption = message;
+                images[0].ParseMode = Types.Enums.ParseMode.Html;
+            }
 
             try
             {
@@ -129,11 +180,52 @@ namespace Telegram.Bot.Framework.Abstracts
                         continue;
 
                     Stream? stream = inputFileStream?.Content;
-                    if (stream == null)
-                        continue;
-
                     stream?.Dispose();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="PathOrID"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        protected async Task<Message?> SendFile(string message, string PathOrID, string fileName = "")
+        {
+            if(string.IsNullOrEmpty(PathOrID))
+                return null!;
+
+            InputFile inputFile;
+            if (!System.IO.File.Exists(PathOrID))
+            {
+                inputFile = new InputFileId(PathOrID);
+            }
+            else
+            {
+                string name;
+                if (string.IsNullOrEmpty(fileName))
+                    name = Path.GetFileName(PathOrID);
+                else
+                    name = string.IsNullOrEmpty(Path.GetExtension(fileName)) ?
+                        $"{fileName}{Path.GetExtension(PathOrID)}" : fileName;
+                inputFile = new InputFileStream(new FileStream(PathOrID, FileMode.Open), name);
+            }
+
+            try
+            {
+                return await Chat.BotClient.SendDocumentAsync(Chat.ChatId, inputFile,
+                    caption: message, parseMode: Types.Enums.ParseMode.Html);
+            }
+            catch (Exception)
+            {
+                return null!;
+            }
+            finally
+            {
+                if (inputFile is InputFileStream stream)
+                    stream?.Content?.Dispose();
             }
         }
     }

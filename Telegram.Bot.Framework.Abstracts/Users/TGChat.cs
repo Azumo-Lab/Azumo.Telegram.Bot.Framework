@@ -32,6 +32,11 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <summary>
         /// 
         /// </summary>
+        public long UserID { get; internal set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public ITelegramBotClient BotClient { get; internal set; } = null!;
 
         /// <summary>

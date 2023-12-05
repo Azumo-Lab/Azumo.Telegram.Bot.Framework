@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MyChannel.DataBaseContext;
 using MyChannel.DataBaseContext.DBModels;
 using Telegram.Bot;
@@ -14,37 +15,28 @@ namespace MyChannel.Services
     {
         public async Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider)
         {
-            IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            AppSetting appSetting = (AppSetting)configuration.GetValue(typeof(AppSetting), nameof(AppSetting))!;
-
+            AppSetting appSetting = serviceProvider.GetRequiredService<AppSetting>();
             if (appSetting == null)
                 return;
+
+            ILogger<StartService> logger = serviceProvider.GetService<ILogger<StartService>>()!;
 
             using (IServiceScope serviceScope = serviceProvider.CreateScope())
             {
                 MyDBContext dBContext = serviceScope.ServiceProvider.GetRequiredService<MyDBContext>();
 
                 // 创建数据库
-                if (!dBContext.Database.EnsureCreated())
-                    return;
-
-                DirectoryInfo sendImagePathDir;
-                string? sendImagePath = appSetting.ImagesInfo?.SendImagePath;
-                if (!string.IsNullOrEmpty(sendImagePath))
-                    sendImagePathDir = Directory.CreateDirectory(sendImagePath);
-
-                DirectoryInfo imagePathDir;
-                string? imagePath = appSetting.ImagesInfo?.ImagePath;
-                if (!string.IsNullOrEmpty(imagePath))
-                    imagePathDir = Directory.CreateDirectory(imagePath);
-
-                _ = dBContext.Images.Add(new ImageInfo
+                if (dBContext.Database.EnsureCreated())
                 {
-
-                });
-
-                _ = await dBContext.SaveChangesAsync();
+                    logger.LogInformation("创建数据库");
+                }
+                else
+                {
+                    logger.LogInformation("数据库已存在");
+                }
             }
+
+            await Task.CompletedTask;
         }
     }
 }

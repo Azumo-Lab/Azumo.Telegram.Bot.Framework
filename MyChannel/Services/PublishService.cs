@@ -12,8 +12,8 @@ namespace MyChannel.Services
     /// 
     /// </summary>
     /// <param name="ServiceProvider"></param>
-    [DebuggerDisplay($"服务：{nameof(TimeingService)}, 处理间隔：{{TimeSpan}}")]
-    internal class TimeingService(IServiceProvider ServiceProvider) : AbsTimerExec
+    [DebuggerDisplay($"服务：{nameof(PublishService)}, 处理间隔：{{TimeSpan}}")]
+    internal class PublishService(IServiceProvider ServiceProvider) : AbsTimedTasks
     {
         /// <summary>
         /// 
@@ -45,8 +45,8 @@ namespace MyChannel.Services
 
                 MyDBContext context = serviceScope.ServiceProvider.GetRequiredService<MyDBContext>();
                 List<MessageInfo> messageInfos = Get<MessageInfo>(context);
-                foreach (MessageInfo messageInfo in messageInfos)
-                    _ = await telegramBotClient.EditMessageTextAsync(messageInfo.ChatID, messageInfo.MessageID, messageInfo.HtmlContent ?? string.Empty, ParseMode.Html);
+                //foreach (MessageInfo messageInfo in messageInfos)
+                //    _ = await telegramBotClient.EditMessageTextAsync(messageInfo.ChatID, messageInfo.MessageID, messageInfo.HtmlContent ?? string.Empty, ParseMode.Html);
             }
         }
     }

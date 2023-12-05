@@ -24,7 +24,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
     /// <remarks>
     /// 实现了 <see cref="IExec"/> 接口的定时任务抽象类
     /// </remarks>
-    public abstract class AbsTimerExec : IExec
+    public abstract class AbsTimedTasks : IExec
     {
         /// <summary>
         /// 定时任务的计时器
@@ -49,7 +49,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         /// <summary>
         /// 静态初始化
         /// </summary>
-        static AbsTimerExec()
+        static AbsTimedTasks()
         {
             __Timer.Start();
         }
@@ -57,7 +57,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         /// <summary>
         /// 初始化
         /// </summary>
-        public AbsTimerExec()
+        public AbsTimedTasks()
         {
             __ExecTime = DateTime.Now;
             __NextTime = DateTime.Now + TimeSpan;

@@ -27,11 +27,9 @@ namespace Telegram.Bot.ChannelManager.Controllers
                 .Add(new NewLineMessage())
                 .Add(new PreMessage("这是一个测试，点击可以复制"))
                 .Build();
-            _ = await SendMediaGroup(messageHtml,
-                [
-                    "C:\\Users\\ko--o\\OneDrive\\iCloud网盘\\Downloads\\头像\\1580359284346.JPG",
-                    "C:\\Users\\ko--o\\OneDrive\\iCloud网盘\\Downloads\\头像\\1580187599750.JPG"
-                ]);
+            var message = await SendFile(messageHtml,
+                "C:\\Users\\ko--o\\OneDrive\\iCloud网盘\\Downloads\\头像\\1580359284346.JPG"
+                , "珍藏头像001");
         }
 
         [BotCommand("/AddChannel", Description = "说Hello")]

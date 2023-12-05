@@ -20,9 +20,9 @@ using Telegram.Bot.Framework.Abstracts.Bots;
 namespace Telegram.Bot.Framework.Bots
 {
     [DebuggerDisplay("安装自定义Log")]
-    internal class TelegramLogger(Action<ILoggingBuilder> action) : ITelegramPartCreator
+    internal class TelegramLogger(Action<ILoggingBuilder, IServiceProvider> action) : ITelegramPartCreator
     {
-        private readonly Action<ILoggingBuilder> _LogAction = action;
+        private readonly Action<ILoggingBuilder, IServiceProvider> _LogAction = action;
 
         public void AddBuildService(IServiceCollection services)
         {
@@ -42,7 +42,7 @@ namespace Telegram.Bot.Framework.Bots
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddLogger(this ITelegramBotBuilder builder, Action<ILoggingBuilder> action)
+        public static ITelegramBotBuilder AddLogger(this ITelegramBotBuilder builder, Action<ILoggingBuilder, IServiceProvider> action)
         {
             return builder.AddTelegramPartCreator(new TelegramLogger(action));
         }
@@ -54,7 +54,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <returns></returns>
         public static ITelegramBotBuilder AddSimpleConsole(this ITelegramBotBuilder builder)
         {
-            return builder.AddTelegramPartCreator(new TelegramLogger((logbuilder) => logbuilder.AddSimpleConsole())); ;
+            return builder.AddTelegramPartCreator(new TelegramLogger((logbuilder, service) => logbuilder.AddSimpleConsole())); ;
         }
     }
 }

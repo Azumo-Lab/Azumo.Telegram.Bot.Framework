@@ -33,15 +33,26 @@ namespace Telegram.Bot.Framework.Bots
         /// </summary>
         private readonly string __SettingPath = settingPath;
 
+        private Type _type = null!;
+        public void SetModel<T>()
+        {
+            _type = typeof(T);
+        }
+
         public void AddBuildService(IServiceCollection services)
         {
             _ = services.RemoveAll<IConfiguration>();
-            services.TryAddSingleton<IConfiguration>(new ConfigurationBuilder().AddJsonFile(__SettingPath).Build());
+            IConfigurationRoot configurationBuilder = new ConfigurationBuilder().AddJsonFile(__SettingPath).Build();
+            services.AddSingleton<IConfiguration>(configurationBuilder);
+            services.AddSingleton(_type, configurationBuilder.Get(_type));
         }
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            _ = services.AddSingleton(builderService.GetRequiredService<IConfiguration>());
+            IConfiguration configuration = builderService.GetRequiredService<IConfiguration>();
+            _ = services.AddSingleton(configuration);
+            if (_type != null)
+                services.AddSingleton(_type, builderService.GetService(_type));
         }
     }
 
@@ -59,6 +70,25 @@ namespace Telegram.Bot.Framework.Bots
         public static ITelegramBotBuilder AddConfiguration(this ITelegramBotBuilder builder, string appSettingPath)
         {
             return builder.AddTelegramPartCreator(new TelegramConfiguration(appSettingPath));
+        }
+
+        public static ITelegramBotBuilder AddConfiguration<T>(this ITelegramBotBuilder builder, string appSettingPath)
+        {
+            TelegramConfiguration telegramConfiguration = new(appSettingPath);
+            telegramConfiguration.SetModel<T>();
+            return builder.AddTelegramPartCreator(telegramConfiguration);
+        }
+
+        public static ITelegramBotBuilder AddConfiguration<T>(this ITelegramBotBuilder builder)
+        {
+            TelegramConfiguration telegramConfiguration = new("appsetting.json");
+            telegramConfiguration.SetModel<T>();
+            return builder.AddTelegramPartCreator(telegramConfiguration);
+        }
+
+        public static ITelegramBotBuilder AddConfiguration(this ITelegramBotBuilder builder)
+        {
+            return builder.AddTelegramPartCreator(new TelegramConfiguration("appsetting.json"));
         }
     }
 }

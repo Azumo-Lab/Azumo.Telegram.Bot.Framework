@@ -100,6 +100,49 @@ namespace Telegram.Bot.Framework
         }
 
         /// <summary>
+        /// 从 <see cref="Update"/> 中获取 <see cref="ChatId"/> 对象
+        /// </summary>
+        /// <param name="update">传入的 <see cref="Update"/> 对象</param>
+        /// <returns><see cref="ChatId"/> 对象</returns>
+        public static long? GetUserID(this Update update)
+        {
+            switch (update.Type)
+            {
+                case Types.Enums.UpdateType.Unknown:
+                    break;
+                case Types.Enums.UpdateType.Message:
+                    return update.Message?.From?.Id!;
+                case Types.Enums.UpdateType.InlineQuery:
+                    return update.InlineQuery?.From?.Id!;
+                case Types.Enums.UpdateType.ChosenInlineResult:
+                    return update.ChosenInlineResult?.From?.Id!;
+                case Types.Enums.UpdateType.CallbackQuery:
+                    return update.CallbackQuery?.From?.Id!;
+                case Types.Enums.UpdateType.EditedMessage:
+                    return update.EditedMessage?.From?.Id!;
+                case Types.Enums.UpdateType.ChannelPost:
+                    return update.ChannelPost?.From?.Id!;
+                case Types.Enums.UpdateType.EditedChannelPost:
+                    return update.EditedChannelPost?.From?.Id!;
+                case Types.Enums.UpdateType.ShippingQuery:
+                    return update.ShippingQuery?.From?.Id!;
+                case Types.Enums.UpdateType.PreCheckoutQuery:
+                    return update.PreCheckoutQuery?.From?.Id!;
+                case Types.Enums.UpdateType.Poll:
+                    break;
+                case Types.Enums.UpdateType.PollAnswer:
+                    return update.PollAnswer.User.Id;
+                case Types.Enums.UpdateType.MyChatMember:
+                    return update.MyChatMember.From?.Id;
+                case Types.Enums.UpdateType.ChatMember:
+                    return update.ChatMember.From?.Id;
+                case Types.Enums.UpdateType.ChatJoinRequest:
+                    return update.ChatJoinRequest.From?.Id;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 从 <see cref="Update"/> 中获取用户输入的指令信息
         /// </summary>
         /// <param name="update">传入的 <see cref="Update"/> 对象</param>

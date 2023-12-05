@@ -51,14 +51,15 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            Action<ILoggingBuilder> _LogAction = builderService.GetService<Action<ILoggingBuilder>>();
+            IEnumerable<Action<ILoggingBuilder, IServiceProvider>> _LogActions = builderService.GetServices<Action<ILoggingBuilder, IServiceProvider>>();
             // 添加Log
             _ = services.AddLogging(option =>
             {
-                if (_LogAction == null)
+                if (_LogActions == null || !_LogActions.Any())
                     _ = option.AddSimpleConsole();
                 else
-                    _LogAction?.Invoke(option);
+                    foreach (Action<ILoggingBuilder, IServiceProvider> item in _LogActions)
+                        item.Invoke(option, builderService);
             });
             // 添加 ITelegramBot
             _ = services.AddSingleton<ITelegramBot, TelegramBot>();
