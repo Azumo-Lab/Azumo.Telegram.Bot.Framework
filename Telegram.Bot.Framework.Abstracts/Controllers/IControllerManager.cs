@@ -18,10 +18,22 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IControllerManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tGChat"></param>
+        /// <returns></returns>
         BotCommand GetCommand(TGChat tGChat);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         List<BotCommand> GetAllCommands();
     }
 }

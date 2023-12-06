@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MyChannel.Controllers;
@@ -8,63 +9,73 @@ using NLog;
 using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
+using System.Net.Http.Headers;
+using System.Net;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstracts.Exec;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Bots;
+using System.Text;
 
 namespace MyChannel
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var argDic = GetArgs(args);
-            var hasConfig = argDic.TryGetValue("-config", out var configJsonPath);
+            var username = "";
+            var password = "";
 
-            var telegramBotBuilder = TelegramBuilder.Create().UseToken<AppSetting>(x => x.Token)
-                .UseClashDefaultProxy()
-                .AddServices((serviceCollection, buildService) =>
-                {
-                    var appSetting = buildService.GetService<AppSetting>()!;
+            var yandere = new Yandere();
+            await yandere.Login(username, password);
+            //await yandere.SearchImage();
+            await yandere.Download();
+            //var argDic = GetArgs(args);
+            //var hasConfig = argDic.TryGetValue("-config", out var configJsonPath);
 
-                    _ = serviceCollection.AddDbContext<MyDBContext>(option =>
-                    {
-                        _ = option.EnableServiceProviderCaching();
-                        _ = option.UseSqlite(appSetting.DatabaseSetting!.ConnectionString);
-                    });
+            //var telegramBotBuilder = TelegramBuilder.Create().UseToken<AppSetting>(x => x.Token)
+            //    .UseClashDefaultProxy()
+            //    .AddServices((serviceCollection, buildService) =>
+            //    {
+            //        var appSetting = buildService.GetService<AppSetting>()!;
 
-                    _ = serviceCollection.AddSingleton<IStartExec, StartService>();
-                    _ = serviceCollection.AddSingleton<IExec, PublishService>();
-                    _ = serviceCollection.AddSingleton<IExec, ScheduledService>();
+            //        _ = serviceCollection.AddDbContext<MyDBContext>(option =>
+            //        {
+            //            _ = option.EnableServiceProviderCaching();
+            //            _ = option.UseSqlite(appSetting.DatabaseSetting!.ConnectionString);
+            //        });
 
-                    _ = serviceCollection.RemoveAll<IAuthenticate>();
-                    _ = serviceCollection.AddScoped<IAuthenticate, BlockUserAuth>();
-                });
+            //        _ = serviceCollection.AddSingleton<IStartExec, StartService>();
+            //        _ = serviceCollection.AddSingleton<IExec, PublishService>();
+            //        _ = serviceCollection.AddSingleton<IExec, ScheduledService>();
 
-            if (hasConfig)
-                _ = telegramBotBuilder.AddConfiguration<AppSetting>(configJsonPath);
+            //        _ = serviceCollection.RemoveAll<IAuthenticate>();
+            //        _ = serviceCollection.AddScoped<IAuthenticate, BlockUserAuth>();
+            //    });
 
-            var telegramBot = telegramBotBuilder.RegisterBotCommand()
-                .AddSimpleConsole()
-                .AddLogger((logbuilder, buildService) =>
-                {
-                    var appSetting = buildService.GetService<AppSetting>()!;
+            //if (hasConfig)
+            //    _ = telegramBotBuilder.AddConfiguration<AppSetting>(configJsonPath);
 
-                    LoggingConfiguration setting = new();
-                    setting.AddTarget(new FileTarget
-                    {
-                        Name = "FileLog",
-                        AutoFlush = true,
-                        FileName = Path.Combine(appSetting.LogSetting!.LogPath!, "${date:format=yyyy-MM-dd}.log")
-                    });
-                    setting.AddRule(LogLevel.Info, LogLevel.Fatal, "FileLog");
-                    _ = logbuilder.AddNLog(setting);
-                })
-                .Build();
+            //var telegramBot = telegramBotBuilder.RegisterBotCommand()
+            //    .AddSimpleConsole()
+            //    .AddLogger((logbuilder, buildService) =>
+            //    {
+            //        var appSetting = buildService.GetService<AppSetting>()!;
 
-            var botTask = telegramBot.StartAsync();
-            botTask.Wait();
+            //        LoggingConfiguration setting = new();
+            //        setting.AddTarget(new FileTarget
+            //        {
+            //            Name = "FileLog",
+            //            AutoFlush = true,
+            //            FileName = Path.Combine(appSetting.LogSetting!.LogPath!, "${date:format=yyyy-MM-dd}.log")
+            //        });
+            //        setting.AddRule(LogLevel.Info, LogLevel.Fatal, "FileLog");
+            //        _ = logbuilder.AddNLog(setting);
+            //    })
+            //    .Build();
+
+            //var botTask = telegramBot.StartAsync();
+            //botTask.Wait();
         }
 
         private static Dictionary<string, string> GetArgs(params string[] args)
