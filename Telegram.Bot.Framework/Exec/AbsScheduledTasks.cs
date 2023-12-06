@@ -1,22 +1,7 @@
-﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
-//
-//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+﻿using Telegram.Bot.Framework.Abstracts.Exec;
 using Timer = System.Timers.Timer;
 
-namespace Telegram.Bot.Framework.Abstracts.Exec
+namespace Telegram.Bot.Framework.Exec
 {
     public abstract class AbsScheduledTasks : IExec
     {
@@ -58,10 +43,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         /// <summary>
         /// 静态初始化，全局计时器启动
         /// </summary>
-        static AbsScheduledTasks()
-        {
-            __Timer.Start();
-        }
+        static AbsScheduledTasks() => __Timer.Start();
 
         /// <summary>
         /// 开始执行
@@ -78,7 +60,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
             __Timer.Elapsed += new System.Timers.ElapsedEventHandler((obj, e) =>
             {
                 if (DateTime.Now >= __NextTime)
-                    Exec();
+                    _ = Exec();
                 else
                     return;
                 __NextTime = NextInvokeTime();
@@ -92,21 +74,23 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         /// <returns></returns>
         protected virtual DateTime NextInvokeTime()
         {
-            DateTime next = Scheduled.First();
-            DateTime result;
-            if (DayLoop)
-                result = next.AddDays(1);
-            else if (WeekLoop)
-                result = next.AddDays(7);
-            else if (MonthLoop)
-                result = next.AddMonths(1);
-            else if (YearLoop)
-                result = next.AddYears(1);
-            else
-                result = next;
-            Scheduled.Add(result);
+            var next = Scheduled.First();
+            Scheduled.Add(AddDateTime(next));
             Scheduled.RemoveAt(0);
             return next;
+        }
+
+        private DateTime AddDateTime(DateTime next)
+        {
+            var result = DayLoop ? next.AddDays(1) : WeekLoop ? next.AddDays(7) : MonthLoop ? next.AddMonths(1) : YearLoop ? next.AddYears(1) : next;
+            return result;
+        }
+
+        protected void SetSchedule(DateTime dateTime)
+        {
+            if (DateTime.Now >= dateTime)
+                dateTime = AddDateTime(dateTime);
+            Scheduled.Add(dateTime);
         }
 
         /// <summary>

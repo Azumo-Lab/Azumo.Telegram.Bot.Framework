@@ -2,19 +2,10 @@
 {
     public class StringCommand
     {
-        public static implicit operator StringCommand(string s)
-        {
-            return new StringCommand();
-        }
+        public static implicit operator StringCommand(string s) => new();
 
-        public static StringCommand operator |(string a, StringCommand b)
-        {
-            return new StringCommand();
-        }
+        public static StringCommand operator |(string a, StringCommand b) => new();
 
-        public static StringCommand operator &(StringCommand a, StringCommand b)
-        {
-            return null!;
-        }
+        public static StringCommand operator &(StringCommand a, StringCommand b) => null!;
     }
 }

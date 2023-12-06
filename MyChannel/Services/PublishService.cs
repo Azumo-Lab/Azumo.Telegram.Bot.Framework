@@ -3,8 +3,7 @@ using MyChannel.DataBaseContext;
 using MyChannel.DataBaseContext.DBModels;
 using System.Diagnostics;
 using Telegram.Bot;
-using Telegram.Bot.Framework.Abstracts.Exec;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Framework.Exec;
 
 namespace MyChannel.Services
 {
@@ -24,30 +23,26 @@ namespace MyChannel.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        protected override async Task Exec()
-        {
-            await DataBaseUpdate();
-        }
+        protected override Task Exec() => DataBaseUpdate();
 
         /// <summary>
         /// 数据库的定期更新
         /// </summary>
-        private async Task DataBaseUpdate()
+        private Task DataBaseUpdate()
         {
-            static List<T> Get<T>(MyDBContext context) where T : DBBase
-            {
-                return context.Set<T>().Where(x => x.WaitingForUpdate).ToList();
-            }
+            static List<T> Get<T>(MyDBContext context) where T : DBBase => context.Set<T>().Where(x => x.WaitingForUpdate).ToList();
 
-            using (IServiceScope serviceScope = ServiceProvider.CreateScope())
+            using (var serviceScope = ServiceProvider.CreateScope())
             {
-                ITelegramBotClient telegramBotClient = serviceScope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+                var telegramBotClient = serviceScope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
 
-                MyDBContext context = serviceScope.ServiceProvider.GetRequiredService<MyDBContext>();
-                List<MessageInfo> messageInfos = Get<MessageInfo>(context);
+                var context = serviceScope.ServiceProvider.GetRequiredService<MyDBContext>();
+                var messageInfos = Get<MessageInfo>(context);
                 //foreach (MessageInfo messageInfo in messageInfos)
                 //    _ = await telegramBotClient.EditMessageTextAsync(messageInfo.ChatID, messageInfo.MessageID, messageInfo.HtmlContent ?? string.Empty, ParseMode.Html);
             }
+
+            return Task.CompletedTask;
         }
     }
 }

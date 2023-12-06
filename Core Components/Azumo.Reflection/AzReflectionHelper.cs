@@ -19,9 +19,6 @@ namespace Azumo.Reflection
     public static class AzReflectionHelper
     {
         private static readonly List<Type> __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
-        public static List<Type> GetAllTypes()
-        {
-            return __AllTypes;
-        }
+        public static List<Type> GetAllTypes() => __AllTypes;
     }
 }

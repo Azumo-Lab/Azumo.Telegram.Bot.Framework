@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework.InternalInterface
         public string Build()
         {
             StringBuilder builder = new();
-            foreach (IMessageContent content in _Content)
+            foreach (var content in _Content)
                 _ = builder.AppendLine(content.Build());
             return builder.ToString();
         }
@@ -50,10 +50,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     /// <param name="b"></param>
     internal class ConcatMessage(IMessageContent a, IMessageContent b) : BaseMessage
     {
-        public override string Build()
-        {
-            return $"{a.Build()}{b.Build()}";
-        }
+        public override string Build() => $"{a.Build()}{b.Build()}";
     }
 
     /// <summary>
@@ -63,10 +60,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     /// <param name="b"></param>
     internal class SpaceConcatMessage(IMessageContent a, IMessageContent b) : BaseMessage
     {
-        public override string Build()
-        {
-            return $"{a.Build()} {b.Build()}";
-        }
+        public override string Build() => $"{a.Build()} {b.Build()}";
     }
 
     /// <summary>
@@ -76,10 +70,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     /// <param name="b"></param>
     internal class ConcatMessageWithSpace(BaseMessage a, BaseMessage b) : BaseMessage
     {
-        public override string Build()
-        {
-            return $"{a.Build()} {b.Build()}";
-        }
+        public override string Build() => $"{a.Build()} {b.Build()}";
     }
 
     /// <summary>
@@ -89,50 +80,23 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         public abstract string Build();
 
-        public static implicit operator BaseMessage(string str)
-        {
-            return new StringMessage(str);
-        }
+        public static implicit operator BaseMessage(string str) => new StringMessage(str);
 
-        public static IMessageContent operator |(BaseMessage baseMessage, BaseMessage other)
-        {
-            return (IMessageContent)baseMessage | other;
-        }
+        public static IMessageContent operator |(BaseMessage baseMessage, BaseMessage other) => (IMessageContent)baseMessage | other;
 
-        public static IMessageContent operator |(string baseMessage, BaseMessage other)
-        {
-            return (BaseMessage)baseMessage | other;
-        }
+        public static IMessageContent operator |(string baseMessage, BaseMessage other) => (BaseMessage)baseMessage | other;
 
-        public static IMessageContent operator |(IMessageContent baseMessage, BaseMessage other)
-        {
-            return new ConcatMessage(baseMessage, other);
-        }
+        public static IMessageContent operator |(IMessageContent baseMessage, BaseMessage other) => new ConcatMessage(baseMessage, other);
 
-        public static IMessageContent operator |(BaseMessage baseMessage, IMessageContent other)
-        {
-            return new ConcatMessage(baseMessage, other);
-        }
+        public static IMessageContent operator |(BaseMessage baseMessage, IMessageContent other) => new ConcatMessage(baseMessage, other);
 
-        public static IMessageContent operator &(BaseMessage baseMessage, BaseMessage other)
-        {
-            return (IMessageContent)baseMessage & other;
-        }
+        public static IMessageContent operator &(BaseMessage baseMessage, BaseMessage other) => (IMessageContent)baseMessage & other;
 
-        public static IMessageContent operator &(string baseMessage, BaseMessage other)
-        {
-            return (BaseMessage)baseMessage & other;
-        }
+        public static IMessageContent operator &(string baseMessage, BaseMessage other) => (BaseMessage)baseMessage & other;
 
-        public static IMessageContent operator &(IMessageContent baseMessage, BaseMessage other)
-        {
-            return new SpaceConcatMessage(baseMessage, other);
-        }
+        public static IMessageContent operator &(IMessageContent baseMessage, BaseMessage other) => new SpaceConcatMessage(baseMessage, other);
 
-        public static IMessageContent operator &(BaseMessage baseMessage, IMessageContent other)
-        {
-            return new SpaceConcatMessage(baseMessage, other);
-        }
+        public static IMessageContent operator &(BaseMessage baseMessage, IMessageContent other) => new SpaceConcatMessage(baseMessage, other);
     }
 
     /// <summary>
@@ -142,10 +106,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     public class StringMessage(string str) : BaseMessage
     {
         private readonly string __Str = HtmlEncoder.Default.Encode(str);
-        public override string Build()
-        {
-            return $"{__Str}";
-        }
+        public override string Build() => $"{__Str}";
     }
 
     /// <summary>
@@ -155,12 +116,9 @@ namespace Telegram.Bot.Framework.InternalInterface
     public class HashTagMessage(string tag) : BaseMessage
     {
         private readonly string __Tag = tag;
-        public override string Build()
-        {
-            return (__Tag.StartsWith('#') ?
+        public override string Build() => (__Tag.StartsWith('#') ?
                 new URLMessage(null, __Tag) :
                 new URLMessage(null, $"#{__Tag}")).Build();
-        }
     }
 
     /// <summary>
@@ -171,10 +129,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
 
-        public override string Build()
-        {
-            return $"<b>{__Message}</b>";
-        }
+        public override string Build() => $"<b>{__Message}</b>";
     }
 
     /// <summary>
@@ -185,10 +140,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
 
-        public override string Build()
-        {
-            return $"<i>{__Message}</i>";
-        }
+        public override string Build() => $"<i>{__Message}</i>";
     }
 
     /// <summary>
@@ -199,10 +151,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
 
-        public override string Build()
-        {
-            return $"<u>{__Message}</u>";
-        }
+        public override string Build() => $"<u>{__Message}</u>";
     }
 
     /// <summary>
@@ -213,10 +162,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
 
-        public override string Build()
-        {
-            return $"<s>{__Message}</s>";
-        }
+        public override string Build() => $"<s>{__Message}</s>";
     }
 
     /// <summary>
@@ -227,10 +173,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
 
-        public override string Build()
-        {
-            return $"<span class=\"tg-spoiler\">{__Message}</span>";
-        }
+        public override string Build() => $"<span class=\"tg-spoiler\">{__Message}</span>";
     }
 
     /// <summary>
@@ -259,10 +202,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Code = HtmlEncoder.Default.Encode(code);
 
-        public override string Build()
-        {
-            return $"<code>{__Code}</code>";
-        }
+        public override string Build() => $"<code>{__Code}</code>";
     }
 
     /// <summary>
@@ -273,10 +213,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     {
         private readonly string __Message = HtmlEncoder.Default.Encode(message);
 
-        public override string Build()
-        {
-            return $"<pre>{__Message}</pre>";
-        }
+        public override string Build() => $"<pre>{__Message}</pre>";
     }
 
     /// <summary>
@@ -284,9 +221,6 @@ namespace Telegram.Bot.Framework.InternalInterface
     /// </summary>
     public class NewLineMessage() : BaseMessage
     {
-        public override string Build()
-        {
-            return string.Empty;
-        }
+        public override string Build() => string.Empty;
     }
 }

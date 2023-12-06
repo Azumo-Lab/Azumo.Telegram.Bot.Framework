@@ -46,10 +46,7 @@ namespace Telegram.Bot.Framework
         /// 创建 <see cref="ITelegramPartCreator"/> 接口时候，会添加一个Bot执行的基础服务
         /// </remarks>
         /// <returns>添加基础服务后的 <see cref="ITelegramBotBuilder"/> 接口</returns>
-        public static ITelegramBotBuilder Create()
-        {
-            return new TelegramBuilder().AddBasic();
-        }
+        public static ITelegramBotBuilder Create() => new TelegramBuilder().AddBasic();
 
         /// <summary>
         /// 初始化，不对外暴露
@@ -66,7 +63,7 @@ namespace Telegram.Bot.Framework
         public ITelegramBot Build()
         {
             IServiceProvider buildService = __BuildServices.BuildServiceProvider();
-            foreach (ITelegramPartCreator telegramPartCreator in __BuildPartCreator)
+            foreach (var telegramPartCreator in __BuildPartCreator)
                 telegramPartCreator.Build(__RuntimeService, buildService);
 
             IServiceProvider serviceProvider = __RuntimeService.BuildServiceProvider();

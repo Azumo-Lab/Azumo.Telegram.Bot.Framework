@@ -24,10 +24,7 @@ namespace Telegram.Bot.Framework.Bots
     {
         private readonly Action<ILoggingBuilder, IServiceProvider> _LogAction = action;
 
-        public void AddBuildService(IServiceCollection services)
-        {
-            _ = services.AddSingleton(_LogAction);
-        }
+        public void AddBuildService(IServiceCollection services) => _ = services.AddSingleton(_LogAction);
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
@@ -42,10 +39,7 @@ namespace Telegram.Bot.Framework.Bots
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddLogger(this ITelegramBotBuilder builder, Action<ILoggingBuilder, IServiceProvider> action)
-        {
-            return builder.AddTelegramPartCreator(new TelegramLogger(action));
-        }
+        public static ITelegramBotBuilder AddLogger(this ITelegramBotBuilder builder, Action<ILoggingBuilder, IServiceProvider> action) => builder.AddTelegramPartCreator(new TelegramLogger(action));
 
         /// <summary>
         /// 

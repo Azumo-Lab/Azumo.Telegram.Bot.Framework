@@ -24,10 +24,7 @@ namespace Azumo.Utils
         /// </summary>
         /// <param name="key">缓存数据的Key</param>
         /// <param name="value">要缓存的数据</param>
-        public static void SetCache(K key, V value)
-        {
-            __Cache.Add(key, value);
-        }
+        public static void SetCache(K key, V value) => __Cache.Add(key, value);
 
         /// <summary>
         /// 获取指定缓存的数据
@@ -35,10 +32,7 @@ namespace Azumo.Utils
         /// <param name="key">缓存数据的Key</param>
         /// <param name="v">要取得的缓存数据</param>
         /// <returns>返回是否能够成功取得数据</returns>
-        public static bool GetCache(K key, out V? v)
-        {
-            return __Cache.TryGetValue(key, out v);
-        }
+        public static bool GetCache(K key, out V? v) => __Cache.TryGetValue(key, out v);
 
         /// <summary>
         /// 获取指定的缓存数据
@@ -51,7 +45,7 @@ namespace Azumo.Utils
         /// <returns>返回取得的数据</returns>
         public static V GetCache(K key, Func<V> func)
         {
-            if (!GetCache(key, out V? value))
+            if (!GetCache(key, out var value))
             {
                 ArgumentNullException.ThrowIfNull(func);
 
@@ -66,17 +60,11 @@ namespace Azumo.Utils
         /// </summary>
         /// <param name="key">缓存数据的Key</param>
         /// <returns>返回是否成功删除数据</returns>
-        public static bool Remove(K key)
-        {
-            return __Cache.Remove(key);
-        }
+        public static bool Remove(K key) => __Cache.Remove(key);
 
         /// <summary>
         /// 清空所有数据
         /// </summary>
-        public static void Clear()
-        {
-            __Cache.Clear();
-        }
+        public static void Clear() => __Cache.Clear();
     }
 }

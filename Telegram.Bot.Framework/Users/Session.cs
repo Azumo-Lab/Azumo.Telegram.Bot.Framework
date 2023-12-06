@@ -37,40 +37,28 @@ namespace Telegram.Bot.Framework.Users
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public object Get(string key)
-        {
-            return TryGetValue(key, out object value) ? value : null;
-        }
+        public object Get(string key) => TryGetValue(key, out var value) ? value : null;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public bool HasVal(string key)
-        {
-            return __Val.ContainsKey(key);
-        }
+        public bool HasVal(string key) => __Val.ContainsKey(key);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public bool Remove(string key)
-        {
-            return __Val.Remove(key);
-        }
+        public bool Remove(string key) => __Val.Remove(key);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void Set(string key, object value)
-        {
-            _ = __Val.TryAdd(key, value);
-        }
+        public void Set(string key, object value) => _ = __Val.TryAdd(key, value);
 
         /// <summary>
         /// 
@@ -78,9 +66,6 @@ namespace Telegram.Bot.Framework.Users
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public bool TryGetValue(string key, out object value)
-        {
-            return __Val.TryGetValue(key, out value);
-        }
+        public bool TryGetValue(string key, out object value) => __Val.TryGetValue(key, out value);
     }
 }

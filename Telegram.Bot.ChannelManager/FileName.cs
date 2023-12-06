@@ -2,20 +2,11 @@
 {
     internal class 角色
     {
-        public static 角色 operator |(角色 a, string aa)
-        {
-            return new 角色();
-        }
+        public static 角色 operator |(角色 a, string aa) => new();
 
-        public static 角色 operator |(角色 a, string[] aa)
-        {
-            return new 角色();
-        }
+        public static 角色 operator |(角色 a, string[] aa) => new();
 
-        public static 角色 operator |(角色 a, IAction aa)
-        {
-            return new 角色();
-        }
+        public static 角色 operator |(角色 a, IAction aa) => new();
 
         public static void Test()
         {
@@ -37,15 +28,9 @@
 
     public class 等待
     {
-        public static IAction 按秒等待(int s)
-        {
-            return null!;
-        }
+        public static IAction 按秒等待(int s) => null!;
 
-        public static IAction 按分等待(int s)
-        {
-            return null!;
-        }
+        public static IAction 按分等待(int s) => null!;
     }
 
     public interface IAction

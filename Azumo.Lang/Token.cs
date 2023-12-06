@@ -31,15 +31,9 @@ namespace Azumo.Lang
         /// 
         /// </summary>
         /// <param name="Line"></param>
-        protected Token(int Line)
-        {
-            this.Line = Line;
-        }
+        protected Token(int Line) => this.Line = Line;
 
-        public override string ToString()
-        {
-            return $"Token : ";
-        }
+        public override string ToString() => $"Token : ";
 
         #region 运算符重载
 
@@ -49,10 +43,7 @@ namespace Azumo.Lang
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Token operator |(Token a, Token b)
-        {
-            return EOF;
-        }
+        public static Token operator |(Token a, Token b) => EOF;
 
         /// <summary>
         /// 
@@ -60,10 +51,7 @@ namespace Azumo.Lang
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Token operator &(Token a, Token b)
-        {
-            return EOL;
-        }
+        public static Token operator &(Token a, Token b) => EOL;
         #endregion
 
         #region 内置的类 (EOL 和 EOF)
@@ -82,10 +70,7 @@ namespace Azumo.Lang
             /// 
             /// </summary>
             /// <returns></returns>
-            public override string ToString()
-            {
-                return $"{base.ToString()}End Of File Token";
-            }
+            public override string ToString() => $"{base.ToString()}End Of File Token";
         }
 
         /// <summary>
@@ -96,19 +81,13 @@ namespace Azumo.Lang
             /// <summary>
             /// 
             /// </summary>
-            public EOLToken() : base(-1)
-            {
-                Value = Environment.NewLine;
-            }
+            public EOLToken() : base(-1) => Value = Environment.NewLine;
 
             /// <summary>
             /// 
             /// </summary>
             /// <returns></returns>
-            public override string ToString()
-            {
-                return $"{base.ToString()}End Of Line Token";
-            }
+            public override string ToString() => $"{base.ToString()}End Of Line Token";
         }
 
         #endregion

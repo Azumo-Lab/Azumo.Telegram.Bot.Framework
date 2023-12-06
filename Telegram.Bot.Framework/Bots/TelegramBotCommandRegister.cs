@@ -31,25 +31,19 @@ namespace Telegram.Bot.Framework.Bots
 
         }
 
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-            _ = services.AddSingleton<IStartExec, RegisterBotCommand>();
-        }
+        public void Build(IServiceCollection services, IServiceProvider builderService) => _ = services.AddSingleton<IStartExec, RegisterBotCommand>();
 
         private class RegisterBotCommand : IStartExec
         {
             public async Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider)
             {
-                using (IServiceScope serviceScope = serviceProvider.CreateScope())
+                using (var serviceScope = serviceProvider.CreateScope())
                 {
-                    IControllerManager controllerManager = serviceScope.ServiceProvider.GetRequiredService<IControllerManager>();
-                    await bot.SetMyCommandsAsync(controllerManager.GetAllCommands().Select(x =>
+                    var controllerManager = serviceScope.ServiceProvider.GetRequiredService<IControllerManager>();
+                    await bot.SetMyCommandsAsync(controllerManager.GetAllCommands().Select(x => new Types.BotCommand()
                     {
-                        return new Types.BotCommand()
-                        {
-                            Command = x.BotCommandName,
-                            Description = x.Description,
-                        };
+                        Command = x.BotCommandName,
+                        Description = x.Description,
                     }).ToList());
                 }
             }
@@ -67,9 +61,6 @@ namespace Telegram.Bot.Framework.Bots
         /// </remarks>
         /// <param name="builder">创建接口</param>
         /// <returns>服务添加后的创建接口</returns>
-        public static ITelegramBotBuilder RegisterBotCommand(this ITelegramBotBuilder builder)
-        {
-            return builder.AddTelegramPartCreator(new TelegramBotCommandRegister());
-        }
+        public static ITelegramBotBuilder RegisterBotCommand(this ITelegramBotBuilder builder) => builder.AddTelegramPartCreator(new TelegramBotCommandRegister());
     }
 }

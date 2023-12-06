@@ -14,9 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Exec;
 using Timer = System.Timers.Timer;
 
-namespace Telegram.Bot.Framework.Abstracts.Exec
+namespace Telegram.Bot.Framework.Exec
 {
     /// <summary>
     /// 定时任务
@@ -49,10 +50,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         /// <summary>
         /// 静态初始化
         /// </summary>
-        static AbsTimedTasks()
-        {
-            __Timer.Start();
-        }
+        static AbsTimedTasks() => __Timer.Start();
 
         /// <summary>
         /// 初始化
@@ -80,7 +78,7 @@ namespace Telegram.Bot.Framework.Abstracts.Exec
         /// <param name="e"></param>
         private void ExecuteElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             if (now > __ExecTime && now > __NextTime)
             {
                 __ExecTime = now;

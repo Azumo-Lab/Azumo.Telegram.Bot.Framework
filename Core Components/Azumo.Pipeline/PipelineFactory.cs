@@ -55,30 +55,21 @@ namespace Azumo.Pipeline
         /// <param name="procedures"></param>
         /// <param name="pipelineController"></param>
         /// <returns></returns>
-        internal static IPipeline<T> CreateIPipeline<T>(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController)
-        {
-            return new InternalPipeline<T>(procedures, pipelineController);
-        }
+        internal static IPipeline<T> CreateIPipeline<T>(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController) => new InternalPipeline<T>(procedures, pipelineController);
 
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        internal static IPipelineController<T> CreateIPipelineController<T>()
-        {
-            return new InternalPipelineController<T>();
-        }
+        internal static IPipelineController<T> CreateIPipelineController<T>() => new InternalPipelineController<T>();
 
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>()
-        {
-            return new InternalPipelineBuilder<T>();
-        }
+        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>() => new InternalPipelineBuilder<T>();
 
         /// <summary>
         /// 
@@ -86,9 +77,6 @@ namespace Azumo.Pipeline
         /// <typeparam name="T"></typeparam>
         /// <param name="TypeList"></param>
         /// <returns></returns>
-        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>(List<Type> TypeList)
-        {
-            return new InternalPipelineBuilder<T>(TypeList);
-        }
+        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>(List<Type> TypeList) => new InternalPipelineBuilder<T>(TypeList);
     }
 }

@@ -15,10 +15,7 @@ namespace Azumo.Utils
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static List<object> ToObjectList(this IEnumerable values)
-        {
-            return values.Cast<object>().ToList();
-        }
+        public static List<object> ToObjectList(this IEnumerable values) => values.Cast<object>().ToList();
 
         /// <summary>
         /// 
@@ -39,10 +36,7 @@ namespace Azumo.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this IEnumerable values)
-        {
-            return values.Cast<T>().ToList();
-        }
+        public static List<T> ToList<T>(this IEnumerable values) => values.Cast<T>().ToList();
 
         /// <summary>
         /// 

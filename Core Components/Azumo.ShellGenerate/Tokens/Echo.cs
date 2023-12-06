@@ -4,10 +4,7 @@
     {
         private TokenBase? PrintText;
 
-        public override string Generate()
-        {
-            return $"echo {PrintText?.Generate() ?? string.Empty}";
-        }
+        public override string Generate() => $"echo {PrintText?.Generate() ?? string.Empty}";
 
         public override TokenBase Param(TokenBase token)
         {

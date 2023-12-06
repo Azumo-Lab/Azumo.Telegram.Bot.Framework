@@ -93,10 +93,7 @@ namespace Telegram.Bot.Framework
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-        {
-            await __UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
-        }
+        public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) => await __UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
 
         /// <summary>
         /// 
@@ -105,10 +102,7 @@ namespace Telegram.Bot.Framework
         /// <param name="update"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            await __UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
-        }
+        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken) => await __UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
 
         /// <summary>
         /// 开始执行
@@ -122,16 +116,16 @@ namespace Telegram.Bot.Framework
             try
             {
                 // 获取 ITelegramBotClient 接口(基础环境)
-                ITelegramBotClient telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
+                var telegramBot = ServiceProvider.GetService<ITelegramBotClient>();
                 if (telegramBot == null)
                     throw new NullReferenceException(nameof(telegramBot));
 
                 // 在程序执行之前，开始执行任务
-                List<IStartExec> startExecs = ServiceProvider.GetServices<IStartExec>().ToList();
+                var startExecs = ServiceProvider.GetServices<IStartExec>().ToList();
                 if (startExecs.Count != 0)
                 {
                     __log.LogInformation("发现 {A0} 个任务...开始执行", startExecs.Count);
-                    foreach (IStartExec execs in startExecs)
+                    foreach (var execs in startExecs)
                     {
                         if (execs is IPipelineName pipelineName)
                             __log.LogInformation($"当前正在执行 ‘{pipelineName.Name}’");
@@ -144,12 +138,12 @@ namespace Telegram.Bot.Framework
                 telegramBot.StartReceiving(this);
 
                 // 获取机器人自己的用户名(作为一个连接测试)
-                User user = await telegramBot.GetMeAsync();
+                var user = await telegramBot.GetMeAsync();
                 __BotUsername = user.Username;
                 __log.LogInformation(message: $"机器人用户 @{user.Username} 正在运行中...");
 
-                List<IExec> exec = ServiceProvider.GetServices<IExec>().ToList();
-                foreach (IExec item in exec)
+                var exec = ServiceProvider.GetServices<IExec>().ToList();
+                foreach (var item in exec)
                     _ = item.Execute().ConfigureAwait(false);
 
                 // 死循环，一直等待

@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.Bots
             __Username = username ?? string.Empty;
             __Password = password ?? string.Empty;
 
-            string uri = port.HasValue ? $"{proxyHost}:{port}" : proxyHost;
+            var uri = port.HasValue ? $"{proxyHost}:{port}" : proxyHost;
             WebProxy webProxy = new(uri);
             if (!string.IsNullOrEmpty(username))
                 webProxy.Credentials = new NetworkCredential(username, password);
@@ -62,10 +62,7 @@ namespace Telegram.Bot.Framework.Bots
             );
         }
 
-        public void AddBuildService(IServiceCollection services)
-        {
-            _ = services.AddSingleton(__HttpClient);
-        }
+        public void AddBuildService(IServiceCollection services) => _ = services.AddSingleton(__HttpClient);
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
@@ -84,10 +81,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null)
-        {
-            return telegramBotBuilder.AddTelegramPartCreator(new TelegramProxy(proxyHost, port, username, password));
-        }
+        public static ITelegramBotBuilder UseProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null) => telegramBotBuilder.AddTelegramPartCreator(new TelegramProxy(proxyHost, port, username, password));
 
         /// <summary>
         /// 添加默认的Clash的代理地址
@@ -102,10 +96,7 @@ namespace Telegram.Bot.Framework.Bots
         /// </remarks>
         /// <param name="telegramBotBuilder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
-        {
-            return UseProxy(telegramBotBuilder, "localhost", 7890);
-        }
+        public static ITelegramBotBuilder UseClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder) => UseProxy(telegramBotBuilder, "localhost", 7890);
 
         /// <summary>
         /// 添加默认的SS/SSR的代理地址
@@ -120,9 +111,6 @@ namespace Telegram.Bot.Framework.Bots
         /// </remarks>
         /// <param name="telegramBotBuilder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder)
-        {
-            return UseProxy(telegramBotBuilder, "localhost", 1080);
-        }
+        public static ITelegramBotBuilder UseSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder) => UseProxy(telegramBotBuilder, "localhost", 1080);
     }
 }

@@ -27,17 +27,8 @@ namespace Azumo.Reflection
         /// <summary>
         /// 
         /// </summary>
-        static AzAttribute()
-        {
-            __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
-        }
+        static AzAttribute() => __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
-        public List<Type> GetAllType()
-        {
-            return __AllTypes.Where(x =>
-            {
-                return Attribute.IsDefined(x, typeof(T));
-            }).ToList();
-        }
+        public List<Type> GetAllType() => __AllTypes.Where(x => Attribute.IsDefined(x, typeof(T))).ToList();
     }
 }

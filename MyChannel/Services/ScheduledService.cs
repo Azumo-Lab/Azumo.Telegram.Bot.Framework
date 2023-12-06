@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Telegram.Bot.Framework.Abstracts.Exec;
+using Telegram.Bot.Framework.Exec;
 
 namespace MyChannel.Services
 {
@@ -15,27 +15,19 @@ namespace MyChannel.Services
 
             DayLoop = true;
 
-            DateTime time = DateTime.Today;
+            var time = DateTime.Today;
 
-            AddTime(time.AddHours(8));     // 早上8点
-            AddTime(time.AddHours(12));    // 中午12点
-            AddTime(time.AddHours(19));    // 晚上7点
-            AddTime(time.AddHours(20));    // 晚上8点
-            AddTime(time.AddHours(22));    // 晚上10点
-            AddTime(time.AddHours(23));    // 晚上11点
-        }
-
-        private void AddTime(DateTime dateTime)
-        {
-            if (dateTime > DateTime.Now)
-                Scheduled.Add(dateTime);
-            else if (dateTime < DateTime.Now)
-                Scheduled.Add(dateTime.AddDays(1));
+            SetSchedule(time.AddHours(8));     // 早上8点
+            SetSchedule(time.AddHours(12));    // 中午12点
+            SetSchedule(time.AddHours(19));    // 晚上7点
+            SetSchedule(time.AddHours(20));    // 晚上8点
+            SetSchedule(time.AddHours(22));    // 晚上10点
+            SetSchedule(time.AddHours(23));    // 晚上11点
         }
 
         protected override DateTime NextInvokeTime()
         {
-            DateTime nextTime = base.NextInvokeTime();
+            var nextTime = base.NextInvokeTime();
             _logger.LogInformation("下一次计划任务执行时间：{A0}", nextTime.ToString("yyyy 年 MM 月 dd 日 HH:mm:ss"));
             return nextTime;
         }

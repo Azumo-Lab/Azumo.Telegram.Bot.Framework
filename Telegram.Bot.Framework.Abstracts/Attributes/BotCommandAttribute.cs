@@ -69,9 +69,6 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
         /// <summary>
         /// 
         /// </summary>
-        public BotCommandAttribute()
-        {
-            BotCommandName = null!;
-        }
+        public BotCommandAttribute() => BotCommandName = null!;
     }
 }

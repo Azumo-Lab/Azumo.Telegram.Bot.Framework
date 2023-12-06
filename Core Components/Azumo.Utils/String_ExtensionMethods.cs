@@ -19,7 +19,7 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static bool WriteTo(this string str, TextWriter writer)
         {
-            bool hasErr = false;
+            var hasErr = false;
             try
             {
                 writer.Write(str);
@@ -37,10 +37,7 @@ namespace Azumo.Utils
         /// <param name="str"></param>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public static bool WriteTo(this string str, Stream stream)
-        {
-            return WriteTo(str, stream, Encoding.UTF8);
-        }
+        public static bool WriteTo(this string str, Stream stream) => WriteTo(str, stream, Encoding.UTF8);
 
         /// <summary>
         /// 
@@ -51,7 +48,7 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static bool WriteTo(this string str, Stream stream, Encoding encoding)
         {
-            bool hasErr = false;
+            var hasErr = false;
             try
             {
                 stream.Write(encoding.GetBytes(str));
@@ -71,7 +68,7 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static bool WriteTo(this string str, string filePath)
         {
-            bool hasErr = false;
+            var hasErr = false;
             try
             {
                 using (StreamWriter streamWriter = new(new FileStream(filePath, FileMode.OpenOrCreate)))
@@ -129,10 +126,7 @@ namespace Azumo.Utils
         /// <param name="str"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string AppendTo(this string str, string value)
-        {
-            return string.Concat(value, str);
-        }
+        public static string AppendTo(this string str, string value) => string.Concat(value, str);
 
         /// <summary>
         /// 
@@ -140,10 +134,7 @@ namespace Azumo.Utils
         /// <param name="str"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string AppendTo(this string str, ref string value)
-        {
-            return value = string.Concat(value, str);
-        }
+        public static string AppendTo(this string str, ref string value) => value = string.Concat(value, str);
 
         /// <summary>
         /// 
@@ -151,9 +142,6 @@ namespace Azumo.Utils
         /// <param name="str"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string Append(this string str, string value)
-        {
-            return string.Concat(str, value);
-        }
+        public static string Append(this string str, string value) => string.Concat(str, value);
     }
 }

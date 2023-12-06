@@ -16,17 +16,50 @@
 
 namespace Telegram.Bot.Framework.Abstracts.Users
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ISession
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string SessionID { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void Set(string key, object value);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public object Get(string key);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool Remove(string key);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool HasVal(string key);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public bool TryGetValue(string key, out object value);
     }
 }

@@ -49,9 +49,6 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
         /// 
         /// </summary>
         /// <param name="ServiceLifetime"></param>
-        public DependencyInjectionAttribute(ServiceLifetime ServiceLifetime)
-        {
-            this.ServiceLifetime = ServiceLifetime;
-        }
+        public DependencyInjectionAttribute(ServiceLifetime ServiceLifetime) => this.ServiceLifetime = ServiceLifetime;
     }
 }

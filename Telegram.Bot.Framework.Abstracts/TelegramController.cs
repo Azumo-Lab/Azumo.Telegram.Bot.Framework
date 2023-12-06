@@ -67,66 +67,45 @@ namespace Telegram.Bot.Framework.Abstracts
         /// 
         /// </summary>
         /// <returns></returns>
-        protected IMessageBuilder GetMessageBuilder()
-        {
-            return Chat.UserService.GetService<IMessageBuilder>()!;
-        }
+        protected IMessageBuilder GetMessageBuilder() => Chat.UserService.GetService<IMessageBuilder>()!;
 
         /// <summary>
         /// 发送文本消息
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected async Task<Message> SendMessage(string message)
-        {
-            return await Chat!.BotClient
+        protected async Task<Message> SendMessage(string message) => await Chat!.BotClient
                 .SendTextMessageAsync(Chat.ChatId, message, parseMode: Types.Enums.ParseMode.Html);
-        }
 
         /// <summary>
         /// 用户登录
         /// </summary>
         /// <returns></returns>
-        protected Task UserSignIn()
-        {
-            return Task.CompletedTask;
-        }
+        protected static Task UserSignIn() => Task.CompletedTask;
 
         /// <summary>
         /// 用户注册
         /// </summary>
         /// <returns></returns>
-        protected Task UserSignUp()
-        {
-            return Task.CompletedTask;
-        }
+        protected static Task UserSignUp() => Task.CompletedTask;
 
         /// <summary>
         /// 用户登出
         /// </summary>
         /// <returns></returns>
-        protected Task UserSignOut()
-        {
-            return Task.CompletedTask;
-        }
+        protected static Task UserSignOut() => Task.CompletedTask;
 
         /// <summary>
         /// 屏蔽用户
         /// </summary>
         /// <returns></returns>
-        protected Task UserBlock()
-        {
-            return Task.CompletedTask;
-        }
+        protected static Task UserBlock() => Task.CompletedTask;
 
         /// <summary>
         /// 删除用户相关信息
         /// </summary>
         /// <returns></returns>
-        protected Task UserDeleteInfo()
-        {
-            return Task.CompletedTask;
-        }
+        protected static Task UserDeleteInfo() => Task.CompletedTask;
 
         /// <summary>
         /// 发送附带图片组的消息
@@ -140,7 +119,7 @@ namespace Telegram.Bot.Framework.Abstracts
                 return null!;
 
             // 初始化
-            List<InputMediaPhoto> images = imagePathOrID
+            var images = imagePathOrID
                 .Select(PathOrID =>
                 {
                     InputMediaPhoto inputMediaPhoto;
@@ -174,12 +153,12 @@ namespace Telegram.Bot.Framework.Abstracts
             finally
             {
                 // 关闭文件流
-                foreach (InputMediaPhoto item in images)
+                foreach (var item in images)
                 {
                     if (item.Media is not InputFileStream inputFileStream)
                         continue;
 
-                    Stream? stream = inputFileStream?.Content;
+                    var stream = inputFileStream?.Content;
                     stream?.Dispose();
                 }
             }
@@ -194,7 +173,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <returns></returns>
         protected async Task<Message?> SendFile(string message, string PathOrID, string fileName = "")
         {
-            if(string.IsNullOrEmpty(PathOrID))
+            if (string.IsNullOrEmpty(PathOrID))
                 return null!;
 
             InputFile inputFile;
@@ -204,11 +183,9 @@ namespace Telegram.Bot.Framework.Abstracts
             }
             else
             {
-                string name;
-                if (string.IsNullOrEmpty(fileName))
-                    name = Path.GetFileName(PathOrID);
-                else
-                    name = string.IsNullOrEmpty(Path.GetExtension(fileName)) ?
+                var name = string.IsNullOrEmpty(fileName)
+                    ? Path.GetFileName(PathOrID)
+                    : string.IsNullOrEmpty(Path.GetExtension(fileName)) ?
                         $"{fileName}{Path.GetExtension(PathOrID)}" : fileName;
                 inputFile = new InputFileStream(new FileStream(PathOrID, FileMode.Open), name);
             }

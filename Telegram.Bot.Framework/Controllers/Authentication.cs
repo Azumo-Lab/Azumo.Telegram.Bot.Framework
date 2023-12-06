@@ -22,20 +22,20 @@ namespace Telegram.Bot.Framework.Controllers
                 return true;
 
             AuthenticationCode authenticationCode;
-            IAuthenticate authenticate = tGChat.Authenticate;
+            var authenticate = tGChat.Authenticate;
             if (authenticate == null || authenticate.RoleName.Count == 0)
             {
                 authenticationCode = AuthenticationCode.NeedToLogIn;
             }
             else
             {
-                AuthenticateAttribute authenticateAttribute = botCommand.AuthenticateAttribute;
-                bool flag = await tGChat.Authenticate.IsAuthenticated(tGChat, authenticateAttribute);
+                var authenticateAttribute = botCommand.AuthenticateAttribute;
+                var flag = await tGChat.Authenticate.IsAuthenticated(tGChat, authenticateAttribute);
                 authenticationCode = flag ? AuthenticationCode.Success : AuthenticationCode.PermissionDenied;
             }
 
             // 后续动作（不等待执行完成）
-            IAuthenticationAction authenticationAction = tGChat.UserService.GetService<IAuthenticationAction>();
+            var authenticationAction = tGChat.UserService.GetService<IAuthenticationAction>();
             _ = (authenticationAction?.InvokeAction(authenticationCode, tGChat, botCommand).ConfigureAwait(false));
 
             // 返回结果（不等待上述动作执行完成）

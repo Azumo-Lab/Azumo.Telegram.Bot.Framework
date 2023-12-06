@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
-using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Bots;
 
 namespace Telegram.Bot.Example
@@ -13,7 +12,7 @@ namespace Telegram.Bot.Example
     {
         public static void Main(string[] args)
         {
-            ITelegramBot bot = TelegramBuilder.Create()
+            var bot = TelegramBuilder.Create()
                 .UseToken("5148150974:AAGDN_JERKYpQKuNbMuBqekTZotEOf6mVtI")
                 .UseClashDefaultProxy()
                 .Build();

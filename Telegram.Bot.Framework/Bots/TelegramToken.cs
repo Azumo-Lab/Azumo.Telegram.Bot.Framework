@@ -44,20 +44,14 @@ namespace Telegram.Bot.Framework.Bots
         /// </summary>
         /// <param name="token"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TelegramToken(string token)
-        {
-            __Token = token ?? throw new ArgumentNullException(nameof(token));
-        }
+        public TelegramToken(string token) => __Token = token ?? throw new ArgumentNullException(nameof(token));
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="configuration"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public TelegramToken(Func<IConfiguration, string> configuration)
-        {
-            __TokenFunc = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        }
+        public TelegramToken(Func<IConfiguration, string> configuration) => __TokenFunc = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
         public virtual void AddBuildService(IServiceCollection services)
         {
@@ -72,7 +66,7 @@ namespace Telegram.Bot.Framework.Bots
         public virtual void Build(IServiceCollection services, IServiceProvider builderService)
         {
             // 获取Token
-            IConfiguration configuration = builderService.GetService<IConfiguration>();
+            var configuration = builderService.GetService<IConfiguration>();
             __Token ??= __TokenFunc?.Invoke(configuration ??
                 throw new NullReferenceException($"未找到配置文件，请在构建Bot的时候，" +
                 $"调用 {nameof(ITelegramBotBuilder)} 接口的" +
@@ -114,11 +108,10 @@ namespace Telegram.Bot.Framework.Bots
         {
             ArgumentNullException.ThrowIfNull(__TokenFunc);
 
-            SettingType settingType = builderService.GetService<SettingType>();
-            if (settingType != null)
-                __Token = __TokenFunc.Invoke(settingType);
-            else
-                throw new NullReferenceException($"请使用 {nameof(TelegramBuilderExtensionMethods.AddConfiguration)} 方法添加配置文件后使用本方法");
+            var settingType = builderService.GetService<SettingType>();
+            __Token = settingType != null
+                ? __TokenFunc.Invoke(settingType)
+                : throw new NullReferenceException($"请使用 {nameof(TelegramBuilderExtensionMethods.AddConfiguration)} 方法添加配置文件后使用本方法");
             base.Build(services, builderService);
         }
     }
@@ -134,10 +127,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, string token)
-        {
-            return builder.AddTelegramPartCreator(new TelegramToken(token));
-        }
+        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, string token) => builder.AddTelegramPartCreator(new TelegramToken(token));
 
         /// <summary>
         /// 添加 Token
@@ -149,10 +139,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="tokenFunc"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, Func<IConfiguration, string> tokenFunc)
-        {
-            return builder.AddTelegramPartCreator(new TelegramToken(tokenFunc));
-        }
+        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, Func<IConfiguration, string> tokenFunc) => builder.AddTelegramPartCreator(new TelegramToken(tokenFunc));
 
         /// <summary>
         /// 添加 Token
@@ -167,9 +154,6 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="tokenFunc"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseToken<SettingType>(this ITelegramBotBuilder builder, Func<SettingType, string> tokenFunc)
-        {
-            return builder.AddTelegramPartCreator(new TelegramToken<SettingType>(tokenFunc));
-        }
+        public static ITelegramBotBuilder UseToken<SettingType>(this ITelegramBotBuilder builder, Func<SettingType, string> tokenFunc) => builder.AddTelegramPartCreator(new TelegramToken<SettingType>(tokenFunc));
     }
 }

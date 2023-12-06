@@ -14,18 +14,15 @@ namespace Azumo.ShellGenerate
         {
             __Tokens.AddRange(GenerateToken());
             StringBuilder shellStr = new();
-            foreach (TokenBase token in __Tokens)
+            foreach (var token in __Tokens)
             {
-                string tokenStr = token.Generate();
+                var tokenStr = token.Generate();
                 _ = shellStr.AppendLine(tokenStr);
             }
             Console.WriteLine(shellStr.ToString());
         }
 
-        public static T Token<T>() where T : TokenBase
-        {
-            return (T)Activator.CreateInstance(typeof(T))!;
-        }
+        public static T Token<T>() where T : TokenBase => (T)Activator.CreateInstance(typeof(T))!;
 
     }
 }

@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MyChannel.DataBaseContext;
-using MyChannel.DataBaseContext.DBModels;
 using Telegram.Bot;
 using Telegram.Bot.Framework.Abstracts.Exec;
 
@@ -15,15 +13,15 @@ namespace MyChannel.Services
     {
         public async Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider)
         {
-            AppSetting appSetting = serviceProvider.GetRequiredService<AppSetting>();
+            var appSetting = serviceProvider.GetRequiredService<AppSetting>();
             if (appSetting == null)
                 return;
 
-            ILogger<StartService> logger = serviceProvider.GetService<ILogger<StartService>>()!;
+            var logger = serviceProvider.GetService<ILogger<StartService>>()!;
 
-            using (IServiceScope serviceScope = serviceProvider.CreateScope())
+            using (var serviceScope = serviceProvider.CreateScope())
             {
-                MyDBContext dBContext = serviceScope.ServiceProvider.GetRequiredService<MyDBContext>();
+                var dBContext = serviceScope.ServiceProvider.GetRequiredService<MyDBContext>();
 
                 // 创建数据库
                 if (dBContext.Database.EnsureCreated())

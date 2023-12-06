@@ -45,9 +45,6 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="roleKey"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddAuthenticate<T>(this ITelegramBotBuilder builder, T roleKey) where T : Enum
-        {
-            return builder.AddTelegramPartCreator(new TelegramAuthenticate<T>());
-        }
+        public static ITelegramBotBuilder AddAuthenticate<T>(this ITelegramBotBuilder builder, T roleKey) where T : Enum => builder.AddTelegramPartCreator(new TelegramAuthenticate<T>());
     }
 }

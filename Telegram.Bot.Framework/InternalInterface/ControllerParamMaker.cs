@@ -30,19 +30,19 @@ namespace Telegram.Bot.Framework.InternalInterface
         {
             ServiceProvider = serviceProvider;
             AzAttribute<TypeForAttribute> azAttribute = new();
-            foreach (Type item in azAttribute.GetAllType())
+            foreach (var item in azAttribute.GetAllType())
             {
-                TypeForAttribute typeForAttribute = (TypeForAttribute)Attribute.GetCustomAttribute(item, typeof(TypeForAttribute))!;
+                var typeForAttribute = (TypeForAttribute)Attribute.GetCustomAttribute(item, typeof(TypeForAttribute))!;
                 _ = __AllType.TryAdd(typeForAttribute.Type, item);
             }
         }
         public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender)
         {
             IControllerParam controllerParam;
-            if (__AllType.TryGetValue(paramType, out Type IControllerParamType))
+            if (__AllType.TryGetValue(paramType, out var IControllerParamType))
             {
                 IControllerParamType ??= typeof(NullControllerParam);
-                controllerParam = (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, Array.Empty<object>());
+                controllerParam = (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, []);
             }
             else
             {
@@ -59,15 +59,9 @@ namespace Telegram.Bot.Framework.InternalInterface
         {
             public IControllerParamSender ParamSender { get; set; }
 
-            public Task<object> CatchObjs(TGChat tGChat)
-            {
-                return Task.FromResult<object>(null!);
-            }
+            public Task<object> CatchObjs(TGChat tGChat) => Task.FromResult<object>(null!);
 
-            public async Task SendMessage(TGChat tGChat)
-            {
-                await Task.CompletedTask;
-            }
+            public async Task SendMessage(TGChat tGChat) => await Task.CompletedTask;
         }
     }
 }

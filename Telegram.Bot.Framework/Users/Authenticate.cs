@@ -38,8 +38,8 @@ namespace Telegram.Bot.Framework.Users
         /// <returns></returns>
         public Task<bool> IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute)
         {
-            bool result = false;
-            foreach (Enum roleName in RoleName)
+            var result = false;
+            foreach (var roleName in RoleName)
                 if (!(result = authenticateAttribute.RoleName.Contains(roleName)))
                     continue;
             return Task.FromResult(result);

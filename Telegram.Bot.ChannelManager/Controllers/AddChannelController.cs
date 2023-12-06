@@ -14,7 +14,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
         [BotCommand("/Test", Description = "测试用")]
         public async Task Test()
         {
-            string messageHtml = GetMessageBuilder()
+            var messageHtml = GetMessageBuilder()
                 .Add(new BoldMessage("测试") | new URLMessage("https://www.baidu.com", "百度") | (BaseMessage)"连接测试")
                 .Add(new NewLineMessage())
                 .Add("测试 Test" & new URLMessage("https://www.baidu.com", "点击直达百度"))
@@ -27,16 +27,13 @@ namespace Telegram.Bot.ChannelManager.Controllers
                 .Add(new NewLineMessage())
                 .Add(new PreMessage("这是一个测试，点击可以复制"))
                 .Build();
-            var message = await SendFile(messageHtml,
+            _ = await SendFile(messageHtml,
                 "C:\\Users\\ko--o\\OneDrive\\iCloud网盘\\Downloads\\头像\\1580359284346.JPG"
                 , "珍藏头像001");
         }
 
         [BotCommand("/AddChannel", Description = "说Hello")]
-        public async Task AddChannel()
-        {
-            _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "Hello Admin");
-        }
+        public async Task AddChannel() => _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "Hello Admin");
 
         [BotCommand("/ListFile", Description = "罗列出指定路径下的文件")]
         public async Task ListFile([Param(ControllerParamSenderType = typeof(Sender))] string Path)
@@ -46,10 +43,10 @@ namespace Telegram.Bot.ChannelManager.Controllers
                 _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "路径不是有效路径");
                 return;
             }
-            string[] paths = Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories);
+            var paths = Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories);
             StringBuilder stringBuilder = new();
-            int count = 0;
-            foreach (string path in paths)
+            var count = 0;
+            foreach (var path in paths)
             {
                 _ = stringBuilder.AppendLine(path);
                 if (count >= 10)
@@ -68,9 +65,6 @@ namespace Telegram.Bot.ChannelManager.Controllers
 
     public class Sender : IControllerParamSender
     {
-        public async Task Send(ITelegramBotClient botClient, ChatId chatId)
-        {
-            _ = await botClient.SendTextMessageAsync(chatId, "请输入路径：");
-        }
+        public async Task Send(ITelegramBotClient botClient, ChatId chatId) => _ = await botClient.SendTextMessageAsync(chatId, "请输入路径：");
     }
 }

@@ -11,14 +11,8 @@
             BToken = b;
         }
 
-        public override string Generate()
-        {
-            return $"{AToken.Generate()} | {BToken.Generate()}";
-        }
+        public override string Generate() => $"{AToken.Generate()} | {BToken.Generate()}";
 
-        public override TokenBase Param(TokenBase token)
-        {
-            return this;
-        }
+        public override TokenBase Param(TokenBase token) => this;
     }
 }

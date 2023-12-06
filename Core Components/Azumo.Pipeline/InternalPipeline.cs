@@ -49,20 +49,20 @@ namespace Azumo.Pipeline
             __Controller = pipelineController;
 
             List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = [];
-            foreach (IProcessAsync<T> proc in procedures)
+            foreach (var proc in procedures)
                 procs.Add(handle => (model, controller) =>
                 {
                     // TODO: 这部分逻辑比较复杂，稍后进行详细的解释
-                    foreach (IPipelineFilter filter in pipelineFilters)
+                    foreach (var filter in pipelineFilters)
                     {
-                        (model, bool next) = filter.Execute(model, controller, proc, handle);
+                        (model, var next) = filter.Execute(model, controller, proc, handle);
                         if (!next)
                             return Task.FromResult(model);
                     }
                     return proc.ExecuteAsync(model, controller);
                 });
 
-            foreach (Func<PipelineDelegate<T>, PipelineDelegate<T>> item in procs.Reverse<Func<PipelineDelegate<T>, PipelineDelegate<T>>>())
+            foreach (var item in procs.Reverse<Func<PipelineDelegate<T>, PipelineDelegate<T>>>())
                 __PipelineFuns = item(__PipelineFuns);
         }
 
@@ -71,9 +71,6 @@ namespace Azumo.Pipeline
         /// </summary>
         /// <param name="obj">处理数据</param>
         /// <returns>流水线处理后数据</returns>
-        public async Task<T> Invoke(T obj)
-        {
-            return await __PipelineFuns(obj, __Controller);
-        }
+        public async Task<T> Invoke(T obj) => await __PipelineFuns(obj, __Controller);
     }
 }

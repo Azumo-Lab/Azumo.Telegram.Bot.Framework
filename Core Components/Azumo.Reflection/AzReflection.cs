@@ -24,10 +24,7 @@ namespace Azumo.Reflection
     /// </summary>
     public class AzReflection<T> : IDisposable
     {
-        public static T? Create(params object[] args)
-        {
-            return args == null || args.Length == 0 ? (T?)Activator.CreateInstance(typeof(T)) : (T?)Activator.CreateInstance(typeof(T), args);
-        }
+        public static T? Create(params object[] args) => args == null || args.Length == 0 ? (T?)Activator.CreateInstance(typeof(T)) : (T?)Activator.CreateInstance(typeof(T), args);
         /// <summary>
         /// 
         /// </summary>
@@ -41,38 +38,26 @@ namespace Azumo.Reflection
         /// <summary>
         /// 
         /// </summary>
-        static AzReflection()
-        {
-            __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
-        }
+        static AzReflection() => __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="type"></param>
-        private AzReflection(Type type)
-        {
-            __Type = type;
-        }
+        private AzReflection(Type type) => __Type = type;
 
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static AzReflection<T> Create()
-        {
-            return new AzReflection<T>(typeof(T));
-        }
+        public static AzReflection<T> Create() => new(typeof(T));
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<Type> FindAllSubclass()
-        {
-            return Cache(CacheKey(__Type.FullName!, nameof(FindAllSubclass)), () => __AllTypes.Where(__Type.IsAssignableFrom).Where(x => !x.IsInterface && !x.IsAbstract).ToList());
-        }
+        public List<Type> FindAllSubclass() => Cache(CacheKey(__Type.FullName!, nameof(FindAllSubclass)), () => __AllTypes.Where(__Type.IsAssignableFrom).Where(x => !x.IsInterface && !x.IsAbstract).ToList());
 
         /// <summary>
         /// 
@@ -80,18 +65,12 @@ namespace Azumo.Reflection
         /// <returns></returns>
         public List<Func<T, object[], object?>> GetFuncMethods()
         {
-            List<Func<T, object[], object?>> funcs = Cache(CacheKey(__Type.FullName!, nameof(GetFuncMethods)), () =>
-            {
-                return GetMethods().Select<MethodInfo, Func<T, object[], object?>>(x =>
+            var funcs = Cache(CacheKey(__Type.FullName!, nameof(GetFuncMethods)), () => GetMethods().Select<MethodInfo, Func<T, object[], object?>>(x =>
                 {
                     RuntimeHelpers.PrepareMethod(x.MethodHandle);
-                    return (t, param) =>
-                    {
-                        return x.Invoke(t, param);
-                    };
-                }).ToList();
-            });
-            foreach (Func<T, object[], object?> func in funcs)
+                    return (t, param) => x.Invoke(t, param);
+                }).ToList());
+            foreach (var func in funcs)
                 RuntimeHelpers.PrepareDelegate(func);
             return funcs;
         }
@@ -102,10 +81,7 @@ namespace Azumo.Reflection
         /// <returns></returns>
         public List<MethodInfo> GetMethods()
         {
-            MethodInfo[] methods = Cache(CacheKey(__Type.FullName!, nameof(GetMethods)), () =>
-            {
-                return __Type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            });
+            var methods = Cache(CacheKey(__Type.FullName!, nameof(GetMethods)), () => __Type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static));
             return (methods ?? Array.Empty<MethodInfo>()).ToList();
         }
 
@@ -113,15 +89,12 @@ namespace Azumo.Reflection
 
         private static readonly Dictionary<string, object> __CacheObjDic = [];
 
-        private static string CacheKey(string typeFullName, string methodName)
-        {
-            return $"{typeFullName}.{methodName}";
-        }
+        private static string CacheKey(string typeFullName, string methodName) => $"{typeFullName}.{methodName}";
 
         private static CacheType Cache<CacheType>(string cacheKey, Func<CacheType> cacheObj)
         {
             CacheType? result = default;
-            if (!__CacheObjDic.TryGetValue(cacheKey, out object? obj))
+            if (!__CacheObjDic.TryGetValue(cacheKey, out var obj))
             {
                 result = cacheObj();
                 _ = __CacheObjDic.TryAdd(cacheKey, result!);

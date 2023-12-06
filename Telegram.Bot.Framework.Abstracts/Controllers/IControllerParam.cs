@@ -18,12 +18,28 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IControllerParam
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IControllerParamSender? ParamSender { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tGChat"></param>
+        /// <returns></returns>
         public Task SendMessage(TGChat tGChat);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tGChat"></param>
+        /// <returns></returns>
         public Task<object> CatchObjs(TGChat tGChat);
     }
 }

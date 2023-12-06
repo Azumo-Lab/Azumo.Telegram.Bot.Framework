@@ -26,20 +26,14 @@ namespace Telegram.Bot.Framework.Bots
     internal class TelegramServicesSetting : ITelegramPartCreator
     {
         private readonly Action<IServiceCollection, IServiceProvider> __ServiceSettingAction;
-        public TelegramServicesSetting(Action<IServiceCollection, IServiceProvider> action)
-        {
-            __ServiceSettingAction = action;
-        }
+        public TelegramServicesSetting(Action<IServiceCollection, IServiceProvider> action) => __ServiceSettingAction = action;
 
         public void AddBuildService(IServiceCollection services)
         {
 
         }
 
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-            __ServiceSettingAction(services, builderService);
-        }
+        public void Build(IServiceCollection services, IServiceProvider builderService) => __ServiceSettingAction(services, builderService);
     }
 
     public static partial class TelegramBuilderExtensionMethods
@@ -50,9 +44,6 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="telegramBotBuilder"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection, IServiceProvider> action)
-        {
-            return telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
-        }
+        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection, IServiceProvider> action) => telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
     }
 }

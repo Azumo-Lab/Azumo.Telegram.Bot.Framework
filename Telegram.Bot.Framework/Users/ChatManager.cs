@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework.Users
         /// <returns><see cref="TGChat"/> 对象</returns>
         public TGChat Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider)
         {
-            ChatId chatID = update.GetChatID();
+            var chatID = update.GetChatID();
             TGChat chat;
             if (chatID != null)
             {

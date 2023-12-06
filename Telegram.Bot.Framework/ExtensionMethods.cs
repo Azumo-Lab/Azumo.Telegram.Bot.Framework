@@ -151,7 +151,7 @@ namespace Telegram.Bot.Framework
         {
             if (update.Message == null || string.IsNullOrEmpty(update.Message.Text))
                 return null!;
-            string command = update.Message.Text;
+            var command = update.Message.Text;
             return command.StartsWith("/") ? command.ToLower() : null!;
         }
 

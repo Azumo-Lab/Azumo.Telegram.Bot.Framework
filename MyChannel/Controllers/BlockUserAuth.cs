@@ -16,11 +16,11 @@ namespace MyChannel.Controllers
         {
             if (RoleName.Count == 0)
             {
-                UserInfo? userInfo = await __Context.Users.Where(x => x.ChatID == tGChat.ChatId).FirstOrDefaultAsync();
+                var userInfo = await __Context.Users.Where(x => x.ChatID == tGChat.ChatId).FirstOrDefaultAsync();
                 if (userInfo == null || userInfo.Blocked)
                     _ = RoleName.Add(AuthEnum.NONE);
             }
-            foreach (Enum role in RoleName)
+            foreach (var role in RoleName)
                 if (authenticateAttribute.RoleName.Contains(role))
                     return true;
             return false;

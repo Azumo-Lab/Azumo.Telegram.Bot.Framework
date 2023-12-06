@@ -43,10 +43,7 @@ namespace Telegram.Bot.Framework.InternalInterface
 
         private readonly List<object> _params = [];
 
-        public object[] GetParams()
-        {
-            return _params.ToArray();
-        }
+        public object[] GetParams() => _params.ToArray();
 
         public async Task<ResultEnum> NextParam(TGChat tGChat)
         {
@@ -104,14 +101,8 @@ namespace Telegram.Bot.Framework.InternalInterface
             __BotCommand = null;
         }
 
-        public BotCommand GetBotCommand()
-        {
-            return __BotCommand!;
-        }
+        public BotCommand GetBotCommand() => __BotCommand!;
 
-        public void SetBotCommand(BotCommand botCommand)
-        {
-            __BotCommand = botCommand;
-        }
+        public void SetBotCommand(BotCommand botCommand) => __BotCommand = botCommand;
     }
 }

@@ -59,7 +59,7 @@ namespace Azumo.Pipeline
         {
             if (__TypeList == null)
                 return this;
-            Type? type = __TypeList!.Where(x => x.Name == procedure).FirstOrDefault();
+            var type = __TypeList!.Where(x => x.Name == procedure).FirstOrDefault();
             return type == null ? this : Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync ? this : AddProcedure(processAsync);
         }
 
@@ -67,10 +67,7 @@ namespace Azumo.Pipeline
         /// 
         /// </summary>
         /// <returns></returns>
-        public IPipelineController<T> BuilderPipelineController()
-        {
-            return __Controller;
-        }
+        public IPipelineController<T> BuilderPipelineController() => __Controller;
 
         /// <summary>
         /// 

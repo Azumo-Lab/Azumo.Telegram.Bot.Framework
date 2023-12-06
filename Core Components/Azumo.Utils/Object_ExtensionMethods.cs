@@ -28,10 +28,10 @@ namespace Azumo.Utils
         /// <param name="target">复制目标对象</param>
         public static void CopyTo<T>(this T t, T target) where T : class
         {
-            Type tType = typeof(T);
-            PropertyInfo[] value = StaticCache<string, PropertyInfo[]>.GetCache(tType.FullName!, () => tType.GetProperties(BindingFlags.Instance | BindingFlags.Public));
+            var tType = typeof(T);
+            var value = StaticCache<string, PropertyInfo[]>.GetCache(tType.FullName!, () => tType.GetProperties(BindingFlags.Instance | BindingFlags.Public));
 
-            foreach (PropertyInfo p in value)
+            foreach (var p in value)
                 p.SetValue(target, p.GetValue(t));
         }
 
@@ -46,16 +46,16 @@ namespace Azumo.Utils
         /// <returns>返回复制的对象</returns>
         public static T? Copy<T>(this T t) where T : class
         {
-            Type tType = typeof(T);
+            var tType = typeof(T);
 
             object? newT;
             try
             {
                 newT = Activator.CreateInstance(tType);
 
-                PropertyInfo[] value = StaticCache<string, PropertyInfo[]>.GetCache(tType.FullName!, () => tType.GetProperties(BindingFlags.Instance | BindingFlags.Public));
+                var value = StaticCache<string, PropertyInfo[]>.GetCache(tType.FullName!, () => tType.GetProperties(BindingFlags.Instance | BindingFlags.Public));
 
-                foreach (PropertyInfo p in value)
+                foreach (var p in value)
                     p.SetValue(newT, p.GetValue(t));
             }
             catch (Exception)
@@ -92,7 +92,7 @@ namespace Azumo.Utils
         /// <returns></returns>
         public static T? DeepCopy<T>(this T t, CopyOption copyOption = CopyOption.Default, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public) where T : class
         {
-            object? result = DeepCopy(t, typeof(T), copyOption, bindingFlags);
+            var result = DeepCopy(t, typeof(T), copyOption, bindingFlags);
             return result == null ? default : result as T;
         }
 
@@ -136,13 +136,13 @@ namespace Azumo.Utils
                     break;
             }
 
-            foreach (PropertyInfo p in properties ?? [])
+            foreach (var p in properties ?? [])
                 if (Type.GetTypeCode(p.PropertyType) == TypeCode.Object)
                     p.SetValue(newT, p.GetValue(t)?.DeepCopy(p.PropertyType, copyOption, bindingFlags));
                 else
                     p.SetValue(newT, p.GetValue(t));
 
-            foreach (FieldInfo f in fields ?? [])
+            foreach (var f in fields ?? [])
                 if (Type.GetTypeCode(f.FieldType) == TypeCode.Object)
                     f.SetValue(newT, f.GetValue(t)?.DeepCopy(f.FieldType, copyOption, bindingFlags));
                 else
@@ -159,10 +159,7 @@ namespace Azumo.Utils
         /// <param name="valueType"></param>
         /// <param name="type"></param>
         /// <param name="bindingFlags"></param>
-        private static void GetFieldInfo<KeyType>(KeyType keyType, out List<FieldInfo> valueType, Type type, BindingFlags bindingFlags) where KeyType : notnull
-        {
-            valueType = StaticCache<KeyType, List<FieldInfo>>.GetCache(keyType, () => type.GetFields(bindingFlags).ToList());
-        }
+        private static void GetFieldInfo<KeyType>(KeyType keyType, out List<FieldInfo> valueType, Type type, BindingFlags bindingFlags) where KeyType : notnull => valueType = StaticCache<KeyType, List<FieldInfo>>.GetCache(keyType, () => type.GetFields(bindingFlags).ToList());
 
         /// <summary>
         /// 
@@ -172,10 +169,7 @@ namespace Azumo.Utils
         /// <param name="valueType"></param>
         /// <param name="type"></param>
         /// <param name="bindingFlags"></param>
-        private static void GetPropertyInfo<KeyType>(KeyType keyType, out List<PropertyInfo> valueType, Type type, BindingFlags bindingFlags) where KeyType : notnull
-        {
-            valueType = StaticCache<KeyType, List<PropertyInfo>>.GetCache(keyType, () => type.GetProperties(bindingFlags).ToList());
-        }
+        private static void GetPropertyInfo<KeyType>(KeyType keyType, out List<PropertyInfo> valueType, Type type, BindingFlags bindingFlags) where KeyType : notnull => valueType = StaticCache<KeyType, List<PropertyInfo>>.GetCache(keyType, () => type.GetProperties(bindingFlags).ToList());
     }
 
     /// <summary>

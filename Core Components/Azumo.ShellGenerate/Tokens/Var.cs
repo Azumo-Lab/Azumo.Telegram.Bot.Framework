@@ -4,10 +4,7 @@
     {
         private TokenBase Value { get; set; } = string.Empty;
 
-        public override string Generate()
-        {
-            return $"{Value.Generate()}";
-        }
+        public override string Generate() => $"{Value.Generate()}";
 
         public override TokenBase Param(TokenBase token)
         {

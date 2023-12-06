@@ -82,10 +82,7 @@ namespace Azumo.Pipeline
         /// <typeparam name="PipelineNameType">流水线名称类型，可以是文本，数字，枚举</typeparam>
         /// <param name="pipelineName">流水线名称</param>
         /// <param name="pipeline">流水线类</param>
-        public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull
-        {
-            __Pipelines.Add(pipelineName, pipeline);
-        }
+        public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull => __Pipelines.Add(pipelineName, pipeline);
 
         /// <summary>
         /// 
@@ -94,7 +91,7 @@ namespace Azumo.Pipeline
         public string GetInvokePath()
         {
             StringBuilder stringBuilder = new();
-            foreach (string pipeline in InvokePathList)
+            foreach (var pipeline in InvokePathList)
                 _ = stringBuilder.AppendLine(pipeline);
             return stringBuilder.ToString();
         }
@@ -121,10 +118,7 @@ namespace Azumo.Pipeline
         /// </summary>
         /// <param name="t">处理数据</param>
         /// <returns>直接返回处理数据</returns>
-        public Task<T> StopAsync(T t)
-        {
-            return Task.FromResult(t);
-        }
+        public Task<T> StopAsync(T t) => Task.FromResult(t);
 
         /// <summary>
         /// 切换执行的流水线
@@ -134,7 +128,7 @@ namespace Azumo.Pipeline
         /// <returns></returns>
         public async Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull
         {
-            if (__Pipelines.TryGetValue(pipelineName, out IPipeline<T>? val))
+            if (__Pipelines.TryGetValue(pipelineName, out var val))
                 __NowPipeline = val;
             return await NextAsync(t);
         }

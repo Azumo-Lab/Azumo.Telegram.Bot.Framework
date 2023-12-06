@@ -18,6 +18,9 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Users
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IChatManager
     {
         /// <summary>

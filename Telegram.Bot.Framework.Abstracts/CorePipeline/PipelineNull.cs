@@ -30,10 +30,8 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         /// <param name="t">传入参数</param>
         /// <param name="pipelineController">控制器</param>
         /// <returns>直接对传入参数进行返回</returns>
-        public Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController)
-        {
+        public Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController) =>
             // 结束处理
-            return pipelineController.StopAsync(t);
-        }
+            pipelineController.StopAsync(t);
     }
 }

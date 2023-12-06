@@ -26,17 +26,11 @@ namespace Telegram.Bot.Framework.InternalInterface
 
         public abstract Task<object> CatchObjs(TGChat tGChat);
 
-        public virtual async Task SendMessage(TGChat tGChat)
-        {
-            await (ParamSender ?? new NullControllerParamSender()).Send(tGChat.BotClient, tGChat.ChatId);
-        }
+        public virtual async Task SendMessage(TGChat tGChat) => await (ParamSender ?? new NullControllerParamSender()).Send(tGChat.BotClient, tGChat.ChatId);
     }
 
     internal class NullControllerParamSender : IControllerParamSender
     {
-        public async Task Send(ITelegramBotClient botClient, ChatId chatId)
-        {
-            _ = await botClient.SendTextMessageAsync(chatId, "请输入参数");
-        }
+        public async Task Send(ITelegramBotClient botClient, ChatId chatId) => _ = await botClient.SendTextMessageAsync(chatId, "请输入参数");
     }
 }

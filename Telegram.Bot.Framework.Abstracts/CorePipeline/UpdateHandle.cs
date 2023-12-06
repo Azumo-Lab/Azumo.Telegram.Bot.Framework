@@ -67,9 +67,9 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         /// <exception cref="NotImplementedException"></exception>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            IChatManager chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
+            var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
 
-            TGChat tGChat = chatManager.Create(botClient, update, __ServiceProvider);
+            var tGChat = chatManager.Create(botClient, update, __ServiceProvider);
 
             await UserScope.Invoke(tGChat);
         }

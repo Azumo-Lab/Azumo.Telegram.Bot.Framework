@@ -34,25 +34,22 @@ namespace Telegram.Bot.Framework.Bots
         private readonly string __SettingPath = settingPath;
 
         private Type _type = null!;
-        public void SetModel<T>()
-        {
-            _type = typeof(T);
-        }
+        public void SetModel<T>() => _type = typeof(T);
 
         public void AddBuildService(IServiceCollection services)
         {
             _ = services.RemoveAll<IConfiguration>();
-            IConfigurationRoot configurationBuilder = new ConfigurationBuilder().AddJsonFile(__SettingPath).Build();
-            services.AddSingleton<IConfiguration>(configurationBuilder);
-            services.AddSingleton(_type, configurationBuilder.Get(_type));
+            var configurationBuilder = new ConfigurationBuilder().AddJsonFile(__SettingPath).Build();
+            _ = services.AddSingleton<IConfiguration>(configurationBuilder);
+            _ = services.AddSingleton(_type, configurationBuilder.Get(_type));
         }
 
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-            IConfiguration configuration = builderService.GetRequiredService<IConfiguration>();
+            var configuration = builderService.GetRequiredService<IConfiguration>();
             _ = services.AddSingleton(configuration);
             if (_type != null)
-                services.AddSingleton(_type, builderService.GetService(_type));
+                _ = services.AddSingleton(_type, builderService.GetService(_type));
         }
     }
 
@@ -67,10 +64,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="appSettingPath"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddConfiguration(this ITelegramBotBuilder builder, string appSettingPath)
-        {
-            return builder.AddTelegramPartCreator(new TelegramConfiguration(appSettingPath));
-        }
+        public static ITelegramBotBuilder AddConfiguration(this ITelegramBotBuilder builder, string appSettingPath) => builder.AddTelegramPartCreator(new TelegramConfiguration(appSettingPath));
 
         public static ITelegramBotBuilder AddConfiguration<T>(this ITelegramBotBuilder builder, string appSettingPath)
         {
@@ -86,9 +80,6 @@ namespace Telegram.Bot.Framework.Bots
             return builder.AddTelegramPartCreator(telegramConfiguration);
         }
 
-        public static ITelegramBotBuilder AddConfiguration(this ITelegramBotBuilder builder)
-        {
-            return builder.AddTelegramPartCreator(new TelegramConfiguration("appsetting.json"));
-        }
+        public static ITelegramBotBuilder AddConfiguration(this ITelegramBotBuilder builder) => builder.AddTelegramPartCreator(new TelegramConfiguration("appsetting.json"));
     }
 }
