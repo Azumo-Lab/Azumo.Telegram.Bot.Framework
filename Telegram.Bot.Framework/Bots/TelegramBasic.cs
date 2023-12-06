@@ -108,12 +108,12 @@ namespace Telegram.Bot.Framework.Bots
                             ControllerParams = Method.GetParameters().Select(p =>
                             {
                                 var controllerParamMaker = builderService.GetService<IControllerParamMaker>()!;
-                                if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.ControllerParamSenderType != null)
+                                if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.Sender != null)
                                 {
-                                    var controllerParamSender = (IControllerParamSender)ActivatorUtilities.CreateInstance(builderService, paramAttribute.ControllerParamSenderType, []);
-                                    return controllerParamMaker.Make(p.ParameterType, controllerParamSender);
+                                    var controllerParamSender = ActivatorUtilities.CreateInstance(builderService, paramAttribute.Sender, []) as IControllerParamSender;
+                                    return controllerParamMaker.Make(p, controllerParamSender);
                                 }
-                                return controllerParamMaker.Make(p.ParameterType, null!);
+                                return controllerParamMaker.Make(p, null!);
                             }).ToList(),
                             MessageType = botCommandAttribute?.MessageType ?? Types.Enums.MessageType.Unknown
                         });

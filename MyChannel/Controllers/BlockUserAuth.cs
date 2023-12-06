@@ -16,7 +16,7 @@ namespace MyChannel.Controllers
         {
             if (RoleName.Count == 0)
             {
-                var userInfo = await __Context.Users.Where(x => x.ChatID == tGChat.ChatId).FirstOrDefaultAsync();
+                var userInfo = await __Context.UserInfoEntity.Where(x => x.ChatID == tGChat.ChatId).FirstOrDefaultAsync();
                 if (userInfo == null || userInfo.Blocked)
                     _ = RoleName.Add(AuthEnum.NONE);
             }

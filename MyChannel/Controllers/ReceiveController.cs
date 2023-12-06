@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MyChannel.DataBaseContext;
+using MyChannel.DataBaseContext.DBModels;
 using MyChannel.Senders;
 using System.Text.Json;
 using Telegram.Bot.Framework.Abstracts;
@@ -17,7 +18,7 @@ namespace MyChannel.Controllers
         private readonly AppSetting appSetting = serviceProvider.GetRequiredService<AppSetting>();
 
         [BotCommand("Receive", Description = "发送文件")]
-        public async Task Receive([Param(ControllerParamSenderType = typeof(DocumentSender))] Document document)
+        public async Task Receive([Param(Sender = typeof(DocumentSender), Name = "需要上传的文件")] Document document)
         {
             if (document == null)
             {
@@ -31,7 +32,7 @@ namespace MyChannel.Controllers
 
             logger.LogInformation("接收到文件, 文件保存路径: {A0}", filePath);
 
-            _ = dBContext.FileIDs.Add(new DataBaseContext.DBModels.FileIDInfos
+            _ = dBContext.FileIDInfoEntity.Add(new FileIDInfoEntity
             {
                 JSONPath = filePath,
                 UpdateTime = DateTime.Now,

@@ -36,7 +36,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
         public async Task AddChannel() => _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "Hello Admin");
 
         [BotCommand("/ListFile", Description = "罗列出指定路径下的文件")]
-        public async Task ListFile([Param(ControllerParamSenderType = typeof(Sender))] string Path)
+        public async Task ListFile([Param(Sender = typeof(Sender))] string Path)
         {
             if (!Directory.Exists(Path))
             {
@@ -65,6 +65,6 @@ namespace Telegram.Bot.ChannelManager.Controllers
 
     public class Sender : IControllerParamSender
     {
-        public async Task Send(ITelegramBotClient botClient, ChatId chatId) => _ = await botClient.SendTextMessageAsync(chatId, "请输入路径：");
+        public async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute) => _ = await botClient.SendTextMessageAsync(chatId, "请输入路径：");
     }
 }

@@ -14,23 +14,31 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalInterface
 {
-    public abstract class BaseControllerParam : IControllerParam
+    public abstract class BaseControllerParam : IControllerParam, IControllerParamSender
     {
         public virtual IControllerParamSender ParamSender { get; set; }
+        public ParamAttribute ParamAttribute { get; set; }
+
+        public BaseControllerParam()
+        {
+            if (this is IControllerParamSender sender)
+                ParamSender = sender;
+        }
 
         public abstract Task<object> CatchObjs(TGChat tGChat);
 
-        public virtual async Task SendMessage(TGChat tGChat) => await (ParamSender ?? new NullControllerParamSender()).Send(tGChat.BotClient, tGChat.ChatId);
-    }
-
-    internal class NullControllerParamSender : IControllerParamSender
-    {
-        public async Task Send(ITelegramBotClient botClient, ChatId chatId) => _ = await botClient.SendTextMessageAsync(chatId, "请输入参数");
+        public virtual async Task SendMessage(TGChat tGChat, ParamAttribute paramAttribute) => await (ParamSender ?? this).Send(tGChat.BotClient, tGChat.ChatId, paramAttribute);
+        public virtual async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute)
+        {
+            var name = paramAttribute?.Name ?? string.Empty;
+            _ = await botClient.SendTextMessageAsync(chatId, $"请输入参数{name}的值");
+        }
     }
 }

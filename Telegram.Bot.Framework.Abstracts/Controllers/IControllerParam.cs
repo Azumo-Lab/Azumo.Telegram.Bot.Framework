@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
@@ -26,6 +27,11 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <summary>
         /// 
         /// </summary>
+        public ParamAttribute ParamAttribute { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public IControllerParamSender? ParamSender { get; set; }
 
         /// <summary>
@@ -33,7 +39,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// </summary>
         /// <param name="tGChat"></param>
         /// <returns></returns>
-        public Task SendMessage(TGChat tGChat);
+        public Task SendMessage(TGChat tGChat, ParamAttribute paramAttribute);
 
         /// <summary>
         /// 

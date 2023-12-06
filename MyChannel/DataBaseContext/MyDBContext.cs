@@ -5,14 +5,17 @@ namespace MyChannel.DataBaseContext
 {
     internal class MyDBContext(DbContextOptions<MyDBContext> options) : DbContext(options)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public DbSet<ImageInfo> Images { get; set; }
+        public DbSet<UserInfoEntity> UserInfoEntity { get; set; }
 
-        public DbSet<UserInfo> Users { get; set; }
+        public DbSet<FileIDInfoEntity> FileIDInfoEntity { get; set; }
 
-        public DbSet<FileIDInfos> FileIDs { get; set; }
+        public DbSet<ChannelInfoEntity> ChannelInfoEntity { get; set; }
+
+        public DbSet<MessageInfoEntity> MessageInfoEntity { get; set; }
+
+        public DbSet<HashTagInfoEntity> HashTagInfoEntity { get; set; }
+
+        public DbSet<GroupInfoEntity> GroupInfoEntity { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder) => base.ConfigureConventions(configurationBuilder);
 

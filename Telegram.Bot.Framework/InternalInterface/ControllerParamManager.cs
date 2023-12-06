@@ -69,7 +69,7 @@ namespace Telegram.Bot.Framework.InternalInterface
                 case ResultEnum.SendMessage:
                     if (Now != null)
                     {
-                        await Now.SendMessage(tGChat);
+                        await Now.SendMessage(tGChat, Now.ParamAttribute);
                     }
                     __NowResult = ResultEnum.ReceiveParameters;
                     break;

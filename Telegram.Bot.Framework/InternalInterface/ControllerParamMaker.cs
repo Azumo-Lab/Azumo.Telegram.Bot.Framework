@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Azumo.Reflection;
+using System.Reflection;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
@@ -36,10 +37,10 @@ namespace Telegram.Bot.Framework.InternalInterface
                 _ = __AllType.TryAdd(typeForAttribute.Type, item);
             }
         }
-        public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender)
+        public IControllerParam Make(ParameterInfo parameterInfo, IControllerParamSender controllerParamSender)
         {
             IControllerParam controllerParam;
-            if (__AllType.TryGetValue(paramType, out var IControllerParamType))
+            if (__AllType.TryGetValue(parameterInfo.ParameterType, out var IControllerParamType))
             {
                 IControllerParamType ??= typeof(NullControllerParam);
                 controllerParam = (IControllerParam)ActivatorUtilities.CreateInstance(ServiceProvider, IControllerParamType, []);
@@ -51,17 +52,41 @@ namespace Telegram.Bot.Framework.InternalInterface
 
             if (controllerParamSender != null)
                 controllerParam.ParamSender = controllerParamSender;
+            if (Attribute.GetCustomAttribute(parameterInfo, typeof(ParamAttribute)) is ParamAttribute attribute)
+                controllerParam.ParamAttribute = attribute;
 
             return controllerParam;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private class NullControllerParam : IControllerParam
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public IControllerParamSender ParamSender { get; set; }
 
-            public Task<object> CatchObjs(TGChat tGChat) => Task.FromResult<object>(null!);
+            /// <summary>
+            /// 
+            /// </summary>
+            public ParamAttribute ParamAttribute { get; set; }
 
-            public async Task SendMessage(TGChat tGChat) => await Task.CompletedTask;
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="tGChat"></param>
+            /// <returns></returns>
+            public Task<object> CatchObjs(TGChat tGChat) => Task.FromResult<object>(null!);
+            
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="tGChat"></param>
+            /// <param name="paramAttribute"></param>
+            /// <returns></returns>
+            public Task SendMessage(TGChat tGChat, ParamAttribute paramAttribute) => Task.CompletedTask;
         }
     }
 }

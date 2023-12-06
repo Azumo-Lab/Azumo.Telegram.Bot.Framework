@@ -12,7 +12,7 @@ namespace MyChannel.Controllers
         [BotCommand("Admin", Description = "设定管理员用户")]
         public async Task Admin(string adminUsername, string adminPassword)
         {
-            _ = __MyDBContext.Users.Where(x => x.AuthEnum == AuthEnum.Admin).Any();
+            _ = __MyDBContext.UserInfoEntity.Where(x => x.AuthEnum == AuthEnum.Admin).Any();
             await Task.CompletedTask;
         }
     }

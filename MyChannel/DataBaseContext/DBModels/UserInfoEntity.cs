@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    internal class UserInfo : DBBase
+    internal class UserInfoEntity : DBBase
     {
         /// <summary>
         /// 用户ChatID

@@ -14,10 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Reflection;
+
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IControllerParamMaker
     {
-        public IControllerParam Make(Type paramType, IControllerParamSender controllerParamSender);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameterInfo"></param>
+        /// <param name="controllerParamSender"></param>
+        /// <returns></returns>
+        public IControllerParam Make(ParameterInfo parameterInfo, IControllerParamSender controllerParamSender);
     }
 }

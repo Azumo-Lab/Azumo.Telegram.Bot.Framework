@@ -26,22 +26,16 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
     /// <summary>
     /// 
     /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="serviceProvider"></param>
+    /// <param name="logger"></param>
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IUpdateHandler))]
-    internal class UpdateHandle : IUpdateHandler
+    internal class UpdateHandle(IServiceProvider serviceProvider, ILogger<UpdateHandle> logger) : IUpdateHandler
     {
-        private readonly IServiceProvider __ServiceProvider;
-        private readonly ILogger<UpdateHandle> __Logger;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="logger"></param>
-        public UpdateHandle(IServiceProvider serviceProvider, ILogger<UpdateHandle> logger)
-        {
-            __ServiceProvider = serviceProvider;
-            __Logger = logger;
-        }
+        private readonly IServiceProvider __ServiceProvider = serviceProvider;
+        private readonly ILogger<UpdateHandle> __Logger = logger;
 
         /// <summary>
         /// 

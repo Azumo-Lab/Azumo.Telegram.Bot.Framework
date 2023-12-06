@@ -14,12 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     public interface IControllerParamSender
     {
-        Task Send(ITelegramBotClient botClient, ChatId chatId);
+        Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute);
     }
 }

@@ -15,12 +15,14 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
 {
     [TypeFor(typeof(string))]
-    internal class StringParams : BaseControllerParam
+    internal class StringParams : BaseControllerParam, IControllerParamSender
     {
         public override async Task<object> CatchObjs(TGChat tGChat) => await Task.FromResult<object>(tGChat.Message?.Text ?? string.Empty);
     }
