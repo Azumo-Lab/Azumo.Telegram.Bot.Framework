@@ -23,13 +23,15 @@ namespace MyChannel
     {
         private static async Task Main(string[] args)
         {
-            var username = "";
-            var password = "";
+            var username = "rrbccgct";
+            var password = "HPCDMXjtH9h_*gmxpT2z2Cjyi46*T2bYGPFB3BMZWAop3HAEjh3CHR9mq6M9!4kCu@c2nK7mDqFUwTs83E_zmus_ep3ZcCyWhrrr";
 
-            var yandere = new Yandere();
-            await yandere.Login(username, password);
-            //await yandere.SearchImage();
-            await yandere.Download();
+            using (var yandere = new PublishService.Yandere())
+            {
+                await yandere.Login(username, password);
+                //await yandere.SearchImage();
+                await yandere.Download();
+            }
             //var argDic = GetArgs(args);
             //var hasConfig = argDic.TryGetValue("-config", out var configJsonPath);
 
