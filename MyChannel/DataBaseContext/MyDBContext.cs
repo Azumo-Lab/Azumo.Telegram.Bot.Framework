@@ -17,6 +17,10 @@ namespace MyChannel.DataBaseContext
 
         public DbSet<GroupInfoEntity> GroupInfoEntity { get; set; }
 
+        public DbSet<ImageInfoEntity> ImageInfoEntity { get; set; }
+
+        public DbSet<YandereSpiderEntity> YandereSpiderEntity { get;set; }
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder) => base.ConfigureConventions(configurationBuilder);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => base.OnConfiguring(optionsBuilder);

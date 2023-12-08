@@ -16,6 +16,7 @@ using Telegram.Bot.Framework.Abstracts.Exec;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Bots;
 using System.Text;
+using MyChannel.Services.Spiders;
 
 namespace MyChannel
 {
@@ -23,13 +24,16 @@ namespace MyChannel
     {
         private static async Task Main(string[] args)
         {
-            var username = "rrbccgct";
-            var password = "HPCDMXjtH9h_*gmxpT2z2Cjyi46*T2bYGPFB3BMZWAop3HAEjh3CHR9mq6M9!4kCu@c2nK7mDqFUwTs83E_zmus_ep3ZcCyWhrrr";
+            var sender = new HttpClient();
+            var html = await (await sender.GetAsync("https://yande.re/post/show/1127314")).Content.ReadAsStringAsync();
 
-            using (var yandere = new PublishService.Yandere())
+            var username = "rrbccgct";
+            var password = "o6PB@R.st4FXu@PDwwgwNdtUW";
+
+            using (var yandere = new YandereSpider())
             {
                 await yandere.Login(username, password);
-                //await yandere.SearchImage();
+                await yandere.SearchImage(Count: 5, Page: 1);
                 await yandere.Download();
             }
             //var argDic = GetArgs(args);

@@ -18,7 +18,7 @@ namespace MyChannel.DataBaseContext.DBModels
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        public DateTime UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 是否等待更新

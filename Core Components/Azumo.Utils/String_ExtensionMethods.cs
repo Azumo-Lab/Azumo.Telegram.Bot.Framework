@@ -87,6 +87,19 @@ namespace Azumo.Utils
         /// 
         /// </summary>
         /// <param name="str"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static string ReturnFilePathWriteTo(this string str, string filePath)
+        {
+            if (WriteTo(str, filePath))
+                return filePath;
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
         /// <param name="fileInfo"></param>
         /// <returns></returns>
         public static bool ReadToFileInfo(this string str, out FileInfo? fileInfo)
