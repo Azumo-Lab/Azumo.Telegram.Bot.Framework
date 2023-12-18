@@ -1,11 +1,14 @@
 ﻿using Azumo.Utils;
 using HtmlAgilityPack;
 using MyChannel.DataBaseContext.DBModels;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -65,21 +68,10 @@ namespace MyChannel.Services.Spiders
             {
                 var cookieList = __CookieContainer.GetAllCookies().Cast<Cookie>().ToList();
                 var json = JsonSerializer.Serialize(cookieList);
-                File.WriteAllText("COOKIE_LIST", json);
+                File.WriteAllText(COOKIE_LIST, json);
                 __HttpClient.Dispose();
                 GC.SuppressFinalize(this);
             }
-        }
-        public class SearchOption
-        {
-            public const string ParentMode = nameof(ParentMode);
-            public const string NULLMode = nameof(NULLMode);
-
-            public string? URL { get; set; }
-            public int? Count { get; set; }
-            public int? Page { get; set; }
-            public string? ParentID { get; set; }
-            public string? SearchMode { get; set; } = NULLMode;
         }
 
         private readonly CookieHttpClient __CookieHttpClient;
@@ -89,8 +81,6 @@ namespace MyChannel.Services.Spiders
         private readonly DirectoryInfo PreviewImageDir;
 
         private readonly JsonSerializerOptions jsonSerializerOptions;
-
-        public bool HasCookie { get; }
 
         public YandereSpider(string? proxy = null)
         {
@@ -103,7 +93,7 @@ namespace MyChannel.Services.Spiders
             __CookieHttpClient = new CookieHttpClient(proxy);
 
             // 文件夹
-            JsonDir = new DirectoryInfo("");
+            JsonDir = new DirectoryInfo("C:\\Users\\ko--o\\Desktop\\IMAGE");
             ImageDir = JsonDir.CreateSubdirectory(nameof(ImageDir));
             PreviewImageDir = JsonDir.CreateSubdirectory(nameof(PreviewImageDir));
         }
@@ -116,7 +106,7 @@ namespace MyChannel.Services.Spiders
         /// <returns></returns>
         public async Task<bool> Login(string username, string password)
         {
-            if (HasCookie)
+            if (__CookieHttpClient.HasCookie)
                 return true;
 
             var httpResponseMessage = await __CookieHttpClient.Send(http => http.GetAsync("https://yande.re/user/login"));
@@ -148,331 +138,286 @@ namespace MyChannel.Services.Spiders
         }
 
         /// <summary>
-        /// 罗列图片信息
+        /// 
         /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
         /// <returns></returns>
-        [SuppressMessage("Performance", "SYSLIB1045:转换为“GeneratedRegexAttribute”。", Justification = "<挂起>")]
-        public async Task SearchImage(SearchOption searchOption)
+        public async Task<List<YandereJsonImageInfo>> ListImage(int limit = 10, int? page = null)
         {
-            switch (searchOption.SearchMode)
-            {
-                case SearchOption.NULLMode:
-                    searchOption.URL = $"https://yande.re/post?page={searchOption.Page ?? 1}";
-                    break;
-                case SearchOption.ParentMode:
-                    searchOption.URL = $"https://yande.re/post?tags=parent:{searchOption.ParentID ?? string.Empty}";
-                    break;
-                default:
-                    break;
-            }
-            var PageMessage = await __CookieHttpClient.Send(sender => sender.GetAsync(searchOption.URL));
-            var PageMessageHtml = await PageMessage.Content.ReadAsStringAsync();
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append($"https://yande.re/post.json?limit={limit}");
+            if (page != null)
+                stringBuilder.Append($"&page={page}");
 
-            var HtmlDoc = new HtmlDocument();
-            HtmlDoc.LoadHtml(PageMessageHtml);
+            return await ListJson<YandereJsonImageInfo>(stringBuilder.ToString());
+        }
 
-            var Mode = string.Empty;
-            const string Mode_Parent = nameof(Mode_Parent);//母图模式
+        public async Task<List<T>> ListJson<T>(string url)
+        {
+            var postMessage = await __CookieHttpClient.Send(http => http.GetAsync(url));
 
-            string Parent_ID = null!;
+            if (!postMessage.IsSuccessStatusCode)
+                return null!;
 
-            Match match;
-            if ((match = Regex.Match(HttpUtility.UrlDecode(SearchURL), "post\\?tags=parent:(\\d*)")).Success)
-            {
-                Mode = Mode_Parent;
-                Parent_ID = match.Groups[1].Value;
-            }
+            var postMessageJson = await postMessage.Content.ReadAsStringAsync();
 
-            var resMessage = await ReSend(() => httpClient.GetAsync(SearchURL));
-            var postHtml = await resMessage.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(postMessageJson))
+                return null!;
 
-            var htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(postHtml);
+            var yandereJsonImageInfo = JsonSerializer.Deserialize<List<T>>(postMessageJson);
+            return yandereJsonImageInfo!;
+        }
 
-            var list = htmlDoc.DocumentNode.SelectNodes("//ul[@id='post-list-posts']//child::li").Take(Count).ToList();
+        public async Task<List<YandereJsonImageInfo>> ListImageParent(int imageID)
+        {
+            var url = $"https://yande.re/post.json?tags=parent:{imageID}";
 
-            YandeImage ParentImage = null!;
-            foreach (var node in list)
-            {
-                var link = $"https://yande.re{node.SelectSingleNode($"{node.XPath}//a[@class='thumb']").GetAttributeValue("href", string.Empty)}";
-                var previewLink = node.SelectSingleNode($"{node.XPath}//img[@class='preview']").GetAttributeValue("src", string.Empty);
+            return await ListJson<YandereJsonImageInfo>(url);
+        }
 
-                var directoryInfo = IMAGE.CreateSubdirectory(Path.GetFileName(link));
-                if (directoryInfo.Name == Parent_ID)
-                {
-                    ParentImage = JsonSerializer.Deserialize<YandeImage>(File.ReadAllText(Path.Combine(directoryInfo.FullName, $"{nameof(YandeImage)}.JSON")))!;
-                    ParentImage.ChildID = [];
-                }
+        public async Task<List<YandereJsonPoolInfo>> ListPool(int poolID)
+        {
+            var url = $"https://yande.re/pool/show.json?id={poolID}";
 
-                if (directoryInfo.GetFiles($"{nameof(YandeImage)}.JSON", SearchOption.TopDirectoryOnly).Length != 0)
-                    continue;
+            return await ListJson<YandereJsonPoolInfo>(url);
+        }
 
-                string previewImagePath;
-                using (var stream = new FileStream(previewImagePath = Path.Combine(directoryInfo.FullName, $"preview{Path.GetExtension(previewLink)}"), FileMode.OpenOrCreate))
-                {
-                    var downloadStream = await (await ReSend(() => httpClient.GetAsync(previewLink))).Content.ReadAsStreamAsync();
-                    await downloadStream.CopyToAsync(stream);
-                }
+        public async Task<List<YandereJsonPoolInfo>> ListPool(string? query = null, int? page = null) 
+        {
+            var url = "https://yande.re/pool.json?";
+            if(query != null)
+                url += $"&query={query}";
+            if (page != null)
+                url += $"&page={page}";
 
-                var yandeImage = new YandeImage()
-                {
-                    DirPath = directoryInfo.FullName,
-                    URL = link,
-                    PreviewImagePath = previewImagePath,
-                    PreviewImageURL = previewLink,
-                    ParentID = Parent_ID,
-                };
+            return await ListJson<YandereJsonPoolInfo>(url);
+        }
 
-                if (ParentImage != null)
-                {
-                    ParentImage.ChildID!.Add(directoryInfo.Name);
-                }
+        public async Task<List<YandereJsonTagInfo>> ListTag(int? limit = null, int? page = null, int? id = null, string? name = null)
+        {
+            var url = "https://yande.re/tag.json?";
+            if (limit != null)
+                url += $"&limit={limit}";
+            if (page != null)
+                url += $"&page={page}";
+            if (id != null)
+                url += $"&id={id}";
+            if (name != null)
+                url += $"&name={name}";
 
-                File.WriteAllText(Path.Combine(directoryInfo.FullName, $"{nameof(YandeImage)}.JSON"), JsonSerializer.Serialize(yandeImage, jsonSerializerOptions));
-            }
+            return await ListJson<YandereJsonTagInfo>(url);
         }
 
         /// <summary>
-        /// 下载图片，以及相关的信息
+        /// 罗列图片信息
         /// </summary>
         /// <returns></returns>
-        [SuppressMessage("Performance", "SYSLIB1045:转换为“GeneratedRegexAttribute”。", Justification = "<挂起>")]
-        public async Task<List<YandeImage>> Download()
+        public async Task SearchImage()
         {
-            List<YandeImage> yandeImages = [];
-            foreach (var item in IMAGE.GetDirectories())
+            var list = await ListImage(5) ?? [];
+            foreach (var item in list)
             {
-                var infoFile = item.GetFiles($"{nameof(YandeImage)}.JSON", SearchOption.TopDirectoryOnly).FirstOrDefault();
-
-                StreamReader? jsonFileStream;
-                var yandeImage = JsonSerializer.Deserialize<YandeImage>((jsonFileStream = infoFile?.OpenText())?.ReadToEnd() ?? string.Empty) ?? new YandeImage();
-                jsonFileStream?.Dispose();
-
-                try
-                {
-                    if (yandeImage.OK)
-                        continue;
-
-                    if (yandeImage.Errors.Count != 0)
-                        continue;
-
-                    // 等待1秒，防止触发反爬虫机制
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-
-                    var html = await (await ReSend(() => httpClient.GetAsync(yandeImage.URL))).Content.ReadAsStringAsync();
-                    var htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(html);
-
-                    // 添加HTML文件
-                    yandeImage.FileName_Path.ReplaceAdd("HTML", html.ReturnFilePathWriteTo(Path.Combine(item.FullName, $"IMAGE Time {DateTime.Now:yyyy-MM-dd HH-mm-ss}.HTML")));
-
-                    var downloadNode = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='sidebar']//*[text()='Options']//parent::div");
-                    var htmlNode = downloadNode.SelectNodes($"{downloadNode.XPath}//a")
-                        .Where(x => Regex.IsMatch(x.InnerText, "download", RegexOptions.IgnoreCase))
-                        .Select(x =>
-                        {
-                            var match = Regex.Match(x.InnerText, "Download.*?\\(\\s*(.*)(MB|KB)\\s*(JPG|JPEG|PNG|BMP|TIF)\\s*\\)", RegexOptions.IgnoreCase);
-                            if (match.Success)
-                                if (decimal.TryParse(match.Groups[1].Value, out var mb))
-                                    return match.Groups[2].Value.Trim().Equals("KB", StringComparison.CurrentCultureIgnoreCase) ? (mb / 1000, x) : (mb, x);
-                            return (0!, null!);
-                        })
-                        .Where(x => x.x != null)
-                        .OrderBy(x => x.Item1)
-                        .Select(x => x.x)
-                        .FirstOrDefault();
-
-                    // 添加图片下载连接
-                    yandeImage.DownloadURL = htmlNode?.GetAttributeValue("href", string.Empty) ?? string.Empty;
-
-                    if (string.IsNullOrEmpty(yandeImage.DownloadURL))
-                    {
-                        yandeImage.Errors.Add("未能找到下载连接，请检查HTML文件");
-                        continue;
-                    }
-
-                    // 获取母图信息，子图信息，Pool信息
-                    var statusNoticeList = htmlDoc.DocumentNode.SelectNodes("//div[@class='status-notice']").ToList();
-                    var child = statusNoticeList.Where(x => Regex.IsMatch(x.InnerHtml, "this\\s*post\\s*has\\s*.*?child\\s*posts")).FirstOrDefault();
-                    if (child != null && string.IsNullOrEmpty(child.GetAttributeValue("style", string.Empty)))
-                    {
-                        var childListPage = child.SelectNodes($"{child.XPath}//a").Where(x => x.GetAttributeValue("href", string.Empty).StartsWith("/post?tags")).FirstOrDefault();
-                        var url = $"https://yande.re{childListPage?.GetAttributeValue("href", string.Empty)}";
-                        await SearchImage(SearchURL: url);
-                    }
-
-                    // 获取TAG
-                    var tagNode = htmlDoc.DocumentNode.SelectSingleNode("//ul[@id='tag-sidebar']");
-                    foreach (var tag in tagNode.SelectNodes($"{tagNode.XPath}//li").ToList())
-                    {
-                        var tagContent = tag.SelectNodes($"{tag.XPath}//a")
-                            .Select(x =>
-                            {
-                                var tagStr = HttpUtility.UrlDecode(x.GetAttributeValue("href", string.Empty)).Replace("/post?tags=", string.Empty).Replace('\0', ' ');
-                                return (tagStr, x);
-                            })
-                            .Where(x => x.tagStr == x.x.InnerText || x.tagStr.Replace('_', ' ') == x.x.InnerText)
-                            .Select(x => x.x)
-                            .FirstOrDefault();
-                        yandeImage.Tags.Add(new TagInfo
-                        {
-                            TagName = tagContent?.InnerText ?? string.Empty,
-                            TagTypeStr = tag.GetAttributeValue("class", string.Empty)
-                        });
-                    }
-
-                    // 获取信息
-                    var info = htmlDoc.DocumentNode.SelectSingleNode("//div[@id='stats']//ul");
-                    if (info != null)
-                    {
-                        var infoList = info.SelectNodes($"{info.XPath}//li").ToList();
-                        var imageInfo = new ImageInfo
-                        {
-                            ID = (infoList.Select(x => Regex.Match(x.InnerText, "Id:\\s*(\\d*)")).Where(x => x.Success).Select(x => x.Groups[1].Value).FirstOrDefault() ?? string.Empty).Trim(),
-                            Size = infoList.Select(x => Regex.Match(x.InnerText, "Size:\\s*(\\d*)x(\\d*)")).Where(x => x.Success).Select(x =>
-                            {
-                                _ = int.TryParse(x.Groups[1].Value, out var X);
-                                _ = int.TryParse(x.Groups[2].Value, out var Y);
-                                return new Size(X, Y);
-                            }).FirstOrDefault(),
-                            Rank = infoList.Select(x => Regex.Match(x.InnerText, "Rating:\\s*(.*)")).Where(x => x.Success).Select(x =>
-                            {
-                                return x.Groups[1].Value.ToLower() switch
-                                {
-                                    "safe" => YandereImageRankEntity.Green,
-                                    "questionable" => YandereImageRankEntity.Yellow,
-                                    "explicit" => YandereImageRankEntity.Red,
-                                    _ => YandereImageRankEntity.None,
-                                };
-                            }).FirstOrDefault(),
-                        };
-                        yandeImage.ImageInfo = imageInfo;
-                    }
-
-                    // 下载图片
-                    string ImagePath;
-                    var fileName = HttpUtility.UrlDecode(Path.GetFileName(yandeImage.DownloadURL)).Replace('\0', ' ');
-                    using (var filestream = new FileStream(ImagePath = Path.Combine(item.FullName, fileName), FileMode.OpenOrCreate))
-                    {
-                        // 等待1秒，防止触发反爬虫机制
-                        await Task.Delay(TimeSpan.FromSeconds(1));
-                        await (await (await ReSend(() => httpClient.GetAsync(yandeImage.DownloadURL))).Content.ReadAsStreamAsync()).CopyToAsync(filestream);
-                    }
-                    yandeImage.ImagePath = ImagePath;
-                    yandeImage.OK = true;
-
-                    yandeImages.Add(yandeImage);
-                }
-                catch (Exception ex)
-                {
-                    yandeImage.Errors.Add(ex.ToString());
-                }
-                finally
-                {
-                    File.WriteAllText(Path.Combine(item.FullName, $"{nameof(YandeImage)}.JSON"), JsonSerializer.Serialize(yandeImage, jsonSerializerOptions));
-                }
+                await Download(item.FileURL!);
             }
-            return yandeImages;
+        }
+
+        public async Task Download(string imageURL)
+        {
+            var resMessage = await __CookieHttpClient.Send(http => http.GetAsync(imageURL));
+
+            var FileName = System.IO.Path.GetFileName(HttpUtility.UrlDecode(imageURL));
+            var Path = System.IO.Path.Combine(ImageDir.FullName, FileName);
+
+            using (var fileStream = new FileStream(Path, FileMode.OpenOrCreate))
+            {
+                await (await resMessage.Content.ReadAsStreamAsync()).CopyToAsync(fileStream);
+            }
         }
 
         public void Dispose() => __CookieHttpClient.Dispose();
     }
 
-    public class YandeImage
+    public class YandereJsonImageInfo
     {
         /// <summary>
-        /// 文件夹路径
+        /// 图片的 ID
         /// </summary>
-        public string? DirPath { get; set; }
-
-        /// <summary>
-        /// 图片详细URL路径
-        /// </summary>
-        public string? URL { get; set; }
-
-        /// <summary>
-        /// 图片下载连接
-        /// </summary>
-        public string? DownloadURL { get; set; }
-
-        /// <summary>
-        /// 图片的Tag信息
-        /// </summary>
-        public List<TagInfo> Tags { get; set; } = [];
-
-        /// <summary>
-        /// 图像的信息
-        /// </summary>
-        public ImageInfo? ImageInfo { get; set; }
-
-        /// <summary>
-        /// 预览图像下载路径
-        /// </summary>
-        public string? PreviewImageURL { get; set; }
-
-        /// <summary>
-        /// 预览图像路径
-        /// </summary>
-        public string? PreviewImagePath { get; set; }
-
-        /// <summary>
-        /// 图片路径
-        /// </summary>
-        public string? ImagePath { get; set; }
-
-        /// <summary>
-        /// 错误信息
-        /// </summary>
-        public List<string> Errors { get; set; } = [];
-
-        /// <summary>
-        /// 文件名称：文件路径
-        /// </summary>
-        public Dictionary<string, string> FileName_Path { get; set; } = [];
-
-        public string? ParentID { get; set; }
-
-        public List<string>? ChildID { get; set; }
-
-        /// <summary>
-        /// 是否处理完成
-        /// </summary>
-        public bool OK { get; set; }
-    }
-
-    public class TagInfo
-    {
-        /// <summary>
-        /// Tag 的名称
-        /// </summary>
-        public string? TagName { get; set; }
-
-        /// <summary>
-        /// Tag 的类型
-        /// </summary>
-        public string? TagTypeStr { get; set; }
+        [JsonPropertyName("id")]
+        public int ID { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public YandereImageTagType TagType => (TagTypeStr?.ToLower() ?? string.Empty) switch
-        {
-            "tag-type-general" => YandereImageTagType.General,
-            "tag-type-artist" => YandereImageTagType.Artist,
-            "tag-type-copyright" => YandereImageTagType.Copyright,
-            "tag-type-character" => YandereImageTagType.Character,
-            "tag-type-circle" => YandereImageTagType.Circle,
-            "tag-type-faults" => YandereImageTagType.Faults,
-            _ => YandereImageTagType.NONE,
-        };
+        [JsonPropertyName("tags")]
+        public string? Tags { get; set; }
+
+        [JsonPropertyName("created_at")]
+        public int Created { get; set; }
+
+        [JsonPropertyName("updated_at")]
+        public int Updated { get; set; }
+
+        [JsonPropertyName("creator_id")]
+        public int? CreatorID { get; set; }
+
+        [JsonPropertyName("approver_id")]
+        public int? ApproverID { get; set; }
+
+        [JsonPropertyName("author")]
+        public string? Author { get; set; }
+
+        [JsonPropertyName("change")]
+        public int? Change { get; set; }
+
+        [JsonPropertyName("source")]
+        public string? Source { get; set; }
+
+        [JsonPropertyName("md5")]
+        public string? MD5 { get; set; }
+
+        [JsonPropertyName("file_size")]
+        public long FileSize { get; set; }
+
+        [JsonPropertyName("file_ext")]
+        public string? FileExt { get; set; }
+
+        [JsonPropertyName("file_url")]
+        public string? FileURL { get; set; }
+
+        [JsonPropertyName("is_shown_in_index")]
+        public bool IsShownInIndex { get; set; }
+
+        [JsonPropertyName("preview_url")]
+        public string? PreviewURL { get; set; }
+
+        [JsonPropertyName("preview_width")]
+        public int PreviewWidth { get; set; }
+
+        [JsonPropertyName("preview_height")]
+        public int PrevireHeight { get; set; }
+
+        [JsonPropertyName("actual_preview_width")]
+        public int ActualPreviewWidth { get; set; }
+
+        [JsonPropertyName("actual_preview_height")]
+        public int ActualPreviewHeight { get; set; }
+
+        [JsonPropertyName("sample_url")]
+        public string? SampleUrl { get; set; }
+
+        [JsonPropertyName("sample_width")]
+        public int SampleWidth { get; set; }
+
+        [JsonPropertyName("sample_height")]
+        public int SampleHeight { get; set; }
+
+        [JsonPropertyName("sample_file_size")]
+        public long SampleFileSize { get; set; }
+
+        [JsonPropertyName("jpeg_url")]
+        public string? JpegURL { get; set; }
+
+        [JsonPropertyName("jpeg_width")]
+        public int JpegWidth { get; set; }
+
+        [JsonPropertyName("jpeg_height")]
+        public int JpegHeight { get; set; }
+
+        [JsonPropertyName("jpeg_file_size")]
+        public long JpegFileSize { get; set; }
+
+        [JsonPropertyName("rating")]
+        public string? Rating { get; set; }
+
+        [JsonPropertyName("is_rating_locked")]
+        public bool IsRatingLocked { get; set; }
+
+        [JsonPropertyName("has_children")]
+        public bool HasChildren { get; set; }
+
+        [JsonPropertyName("parent_id")]
+        public int? ParentID { get; set; }
+
+        [JsonPropertyName("status")]
+        public string? Status { get; set; }
+
+        [JsonPropertyName("is_pending")]
+        public bool IsPending { get; set; }
+
+        [JsonPropertyName("width")]
+        public int Width { get; set; }
+
+        [JsonPropertyName("height")]
+        public int Height { get; set; }
+
+        [JsonPropertyName("is_held")]
+        public bool IsHeld { get; set; }
+
+        [JsonPropertyName("frames_pending_string")]
+        public string? FramesPendingString { get; set; }
+        //frames_pending
+        [JsonPropertyName("frames_string")]
+        public string? FramesString { get; set; }
+        //frames
+        [JsonPropertyName("is_note_locked")]
+        public bool IsNoteLocked { get; set; }
+
+        [JsonPropertyName("last_noted_at")]
+        public int LastNotedAt { get; set; }
+
+        [JsonPropertyName("last_commented_at")]
+        public int LastCommentedAt { get; set; }
     }
 
-    public class ImageInfo
+    public class YandereJsonTagInfo
     {
-        public string? ID { get; set; }
+        [JsonPropertyName("id")]
+        public int ID { get; set; }
 
-        public Size? Size { get; set; }
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
 
-        public YandereImageRankEntity Rank { get; set; } = YandereImageRankEntity.None;
+        [JsonPropertyName("count")]
+        public int Count { get; set; }
+
+        [JsonPropertyName("type")]
+        public YandereImageTagType Type { get; set; }
+
+        [JsonPropertyName("ambiguous")]
+        public bool Ambiguous { get; set; }
+    }
+
+    public class YandereJsonPoolInfo
+    {
+        [JsonPropertyName("id")]
+        public int ID { get; set; }
+
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+
+        [JsonConverter(typeof(DateTime))]
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonConverter(typeof(DateTime))]
+        [JsonPropertyName("updated_at")]
+        public DateTime UpdateAt { get; set; }
+
+        [JsonPropertyName("user_id")]
+        public int UserID { get; set; }
+
+        [JsonPropertyName("is_public")]
+        public bool IsPublic { get; set; }
+
+        [JsonPropertyName("post_count")]
+        public int PostCount { get; set; }
+
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [JsonPropertyName("posts")]
+        public List<YandereJsonImageInfo> Posts { get; set; } = [];
+    
     }
 }

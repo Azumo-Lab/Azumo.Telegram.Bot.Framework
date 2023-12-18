@@ -33,8 +33,7 @@ namespace MyChannel
             using (var yandere = new YandereSpider())
             {
                 await yandere.Login(username, password);
-                await yandere.SearchImage(Count: 5, Page: 1);
-                await yandere.Download();
+                await yandere.SearchImage();
             }
             //var argDic = GetArgs(args);
             //var hasConfig = argDic.TryGetValue("-config", out var configJsonPath);

@@ -175,7 +175,7 @@ namespace MyChannel.DataBaseContext.DBModels
 
     public enum YandereImageTagType
     {
-        NONE = 0,
+        NONE = 10000,
         /// <summary>
         /// 艺术家
         /// </summary>
@@ -183,15 +183,15 @@ namespace MyChannel.DataBaseContext.DBModels
         /// <summary>
         /// 作品
         /// </summary>
-        Copyright = 2,
+        Copyright = 3,
         /// <summary>
         /// 角色标签
         /// </summary>
-        Character = 3,
+        Character = 4,
         /// <summary>
         /// 普通标签
         /// </summary>
-        General = 4,
+        General = 0,
         /// <summary>
         /// 团体社团
         /// </summary>

@@ -61,48 +61,50 @@ namespace MyChannel.Services
 
         private async Task Spider()
         {
-            List<YandeImage> images = null!;
-            var yandere = new YandereSpider();
-            if (await yandere.Login("", ""))
-            {
-                await yandere.SearchImage();
-                images = await yandere.Download();
-            }
-            if (images == null)
-                return;
-            using (var scopeService = ServiceProvider.CreateAsyncScope())
-            {
-                var dBContext = scopeService.ServiceProvider.GetRequiredService<MyDBContext>();
-                foreach (var image in images)
-                {
-                    dBContext.YandereSpiderEntity.Add(new YandereSpiderEntity
-                    {
-                        DirPath = image.DirPath,
-                        HTMLPath = image.FileName_Path.GetValueOrDefault("HTML", string.Empty),
-                        ImageID = image.ImageInfo?.ID,
-                        ImageSize = new YandereImageSizeEntity
-                        {
-                            Height = image.ImageInfo?.Size?.Height ?? 0,
-                            Width = image.ImageInfo?.Size?.Width ?? 0,
-                        },
-                        Tags = image.Tags?.Select(x => new YandereTagsEntity
-                        {
-                            TagName = x.TagName,
-                            TagTypeStr = x.TagTypeStr,
-                            YandereImageTagType = x.TagType,
-                        })?.ToList(),
-                        HTMLURL = image.URL,
-                        ImagePath = image.ImagePath,
-                        ImageURL = image.URL,
-                        PreviewImagePath = image.PreviewImagePath,
-                        PreviewImageURL = image.PreviewImageURL,
-                        Json = JsonSerializer.Serialize(image),
-                        JsonPath = Directory.GetFiles(image.DirPath ?? Path.GetFullPath("/"), "*.JSON", SearchOption.TopDirectoryOnly).FirstOrDefault(),
-                        ImageRank = image.ImageInfo?.Rank,
-                    });
-                }
-                await dBContext.SaveChangesAsync();
-            }
+            //List<YandeImage> images = null!;
+            //var yandere = new YandereSpider();
+            //if (await yandere.Login("", ""))
+            //{
+            //    await yandere.SearchImage();
+            //    images = await yandere.Download();
+            //}
+            //if (images == null)
+            //    return;
+            //using (var scopeService = ServiceProvider.CreateAsyncScope())
+            //{
+            //    var dBContext = scopeService.ServiceProvider.GetRequiredService<MyDBContext>();
+            //    foreach (var image in images)
+            //    {
+            //        dBContext.YandereSpiderEntity.Add(new YandereSpiderEntity
+            //        {
+            //            DirPath = image.DirPath,
+            //            HTMLPath = image.FileName_Path.GetValueOrDefault("HTML", string.Empty),
+            //            ImageID = image.ImageInfo?.ID,
+            //            ImageSize = new YandereImageSizeEntity
+            //            {
+            //                Height = image.ImageInfo?.Size?.Height ?? 0,
+            //                Width = image.ImageInfo?.Size?.Width ?? 0,
+            //            },
+            //            Tags = image.Tags?.Select(x => new YandereTagsEntity
+            //            {
+            //                TagName = x.TagName,
+            //                TagTypeStr = x.TagTypeStr,
+            //                YandereImageTagType = x.TagType,
+            //            })?.ToList(),
+            //            HTMLURL = image.URL,
+            //            ImagePath = image.ImagePath,
+            //            ImageURL = image.URL,
+            //            PreviewImagePath = image.PreviewImagePath,
+            //            PreviewImageURL = image.PreviewImageURL,
+            //            Json = JsonSerializer.Serialize(image),
+            //            JsonPath = Directory.GetFiles(image.DirPath ?? Path.GetFullPath("/"), "*.JSON", SearchOption.TopDirectoryOnly).FirstOrDefault(),
+            //            ImageRank = image.ImageInfo?.Rank,
+            //        });
+            //    }
+            //    await dBContext.SaveChangesAsync();
+            //}
+
+            await Task.CompletedTask;
         }
     }
 }
