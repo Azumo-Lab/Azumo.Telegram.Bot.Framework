@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void Set(string key, object value);
+        public bool Set(string key, object value);
 
         /// <summary>
         /// 
