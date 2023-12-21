@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Core Components\Azumo.Pipeline\Azumo.Pipeline.csproj" />
     <ProjectReference Include="..\Core Components\Azumo.Reflection\Azumo.Reflection.csproj" />
-    <ProjectReference Include="..\Core Components\Azumo.Utils\Azumo.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
