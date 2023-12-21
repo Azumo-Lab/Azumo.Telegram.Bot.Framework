@@ -1,15 +1,9 @@
-﻿using Azumo.Utils;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using MyChannel.DataBaseContext.DBModels;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using System.Web;
 
 namespace MyChannel.Services.Spiders
@@ -53,7 +47,7 @@ namespace MyChannel.Services.Spiders
 
             public Task<T> Send<T>(Func<HttpClient, Task<T>> SenderFunc)
             {
-                ReSendTag:
+            ReSendTag:
                 try
                 {
                     return SenderFunc(__HttpClient);
@@ -146,9 +140,9 @@ namespace MyChannel.Services.Spiders
         public async Task<List<YandereJsonImageInfo>> ListImage(int limit = 10, int? page = null)
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append($"https://yande.re/post.json?limit={limit}");
+            _ = stringBuilder.Append($"https://yande.re/post.json?limit={limit}");
             if (page != null)
-                stringBuilder.Append($"&page={page}");
+                _ = stringBuilder.Append($"&page={page}");
 
             return await ListJson<YandereJsonImageInfo>(stringBuilder.ToString());
         }
@@ -183,10 +177,10 @@ namespace MyChannel.Services.Spiders
             return await ListJson<YandereJsonPoolInfo>(url);
         }
 
-        public async Task<List<YandereJsonPoolInfo>> ListPool(string? query = null, int? page = null) 
+        public async Task<List<YandereJsonPoolInfo>> ListPool(string? query = null, int? page = null)
         {
             var url = "https://yande.re/pool.json?";
-            if(query != null)
+            if (query != null)
                 url += $"&query={query}";
             if (page != null)
                 url += $"&page={page}";
@@ -418,6 +412,6 @@ namespace MyChannel.Services.Spiders
 
         [JsonPropertyName("posts")]
         public List<YandereJsonImageInfo> Posts { get; set; } = [];
-    
+
     }
 }
