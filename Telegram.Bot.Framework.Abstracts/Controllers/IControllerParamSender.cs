@@ -19,8 +19,18 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
+    /// <summary>
+    /// 向用户发送参数提示信息
+    /// </summary>
     public interface IControllerParamSender
     {
+        /// <summary>
+        /// 发送参数提示信息
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="chatId"></param>
+        /// <param name="paramAttribute"></param>
+        /// <returns></returns>
         Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute);
     }
 }

@@ -16,6 +16,7 @@
 
 using Azumo.Reflection;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts;
@@ -87,6 +88,14 @@ namespace Telegram.Bot.Framework.Bots
         {
             _ = services.ScanService();
 
+            services.AddSingleton<IControllerManager>(service =>
+            {
+                if (service == null)
+                {
+
+                }
+                return new ControllerManager();
+            });
             ControllerManager controllerManager = new();
 
             var azReflection = AzReflection<TelegramController>.Create();

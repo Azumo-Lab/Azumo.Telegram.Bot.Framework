@@ -100,7 +100,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加普通的文本
     /// </summary>
     /// <param name="str"></param>
     public class StringMessage(string str) : BaseMessage
@@ -110,7 +110,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加一个Hash Tag标签
     /// </summary>
     /// <param name="tag"></param>
     public class HashTagMessage(string tag) : BaseMessage
@@ -122,7 +122,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 对文字加粗
     /// </summary>
     /// <param name="message"></param>
     public class BoldMessage(string message) : BaseMessage
@@ -133,7 +133,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加斜体
     /// </summary>
     /// <param name="message"></param>
     public class ItalicMessage(string message) : BaseMessage
@@ -144,7 +144,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加下划线
     /// </summary>
     /// <param name="message"></param>
     public class UnderlineMessage(string message) : BaseMessage
@@ -166,7 +166,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加一个隐藏消息
     /// </summary>
     /// <param name="message"></param>
     public class SpoilerMessage(string message) : BaseMessage
@@ -177,7 +177,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加URL类型消息
     /// </summary>
     /// <param name="url"></param>
     /// <param name="text"></param>
@@ -195,7 +195,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加代码类型消息
     /// </summary>
     /// <param name="code"></param>
     public class CodeMessage(string code) : BaseMessage
@@ -217,7 +217,7 @@ namespace Telegram.Bot.Framework.InternalInterface
     }
 
     /// <summary>
-    /// 
+    /// 添加新的一行
     /// </summary>
     public class NewLineMessage() : BaseMessage
     {

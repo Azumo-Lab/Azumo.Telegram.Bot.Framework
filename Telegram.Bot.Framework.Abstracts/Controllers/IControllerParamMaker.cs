@@ -19,12 +19,12 @@ using System.Reflection;
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     /// <summary>
-    /// 
+    /// 通过指定的参数类型，获取 <see cref="IControllerParam"/> 的实例
     /// </summary>
     public interface IControllerParamMaker
     {
         /// <summary>
-        /// 
+        /// 获取实例
         /// </summary>
         /// <param name="parameterInfo"></param>
         /// <param name="controllerParamSender"></param>
