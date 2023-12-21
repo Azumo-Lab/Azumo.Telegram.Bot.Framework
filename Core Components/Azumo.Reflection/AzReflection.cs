@@ -82,7 +82,7 @@ namespace Azumo.Reflection
         public List<MethodInfo> GetMethods()
         {
             var methods = Cache(CacheKey(__Type.FullName!, nameof(GetMethods)), () => __Type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static));
-            return (methods ?? Array.Empty<MethodInfo>()).ToList();
+            return [.. (methods ?? [])];
         }
 
         #region 保存缓存
