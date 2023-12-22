@@ -14,8 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Polling;
@@ -62,8 +64,16 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
-            var tGChat = chatManager.Create(botClient, update, __ServiceProvider);
-            await UserScope.Invoke(tGChat);
+            var telegramUserChatContext = chatManager.Create(botClient, update, __ServiceProvider);
+            try
+            {
+                var pipelineController = telegramUserChatContext.UserScopeService.GetRequiredService<IPipelineController<TelegramUserChatContext>>();
+                _ = await pipelineController.SwitchTo(telegramUserChatContext.Type, telegramUserChatContext);
+            }
+            catch (Exception ex)
+            {
+                __Logger.LogError(ex, "发生错误");
+            }
         }
     }
 }

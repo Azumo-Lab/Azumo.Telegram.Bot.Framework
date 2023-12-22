@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
@@ -44,6 +45,31 @@ namespace Telegram.Bot.Framework.Abstracts
         #endregion
 
         #region 对缓存接口 ISession 进行扩展
+        private static readonly string BOT_COMMAND_NAME = Guid.NewGuid().ToString();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public static Controllers.BotCommand? GetBotCommand(this ISession session) => 
+            session.Get<Controllers.BotCommand>(BOT_COMMAND_NAME);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="command"></param>
+        public static void SetBotCommand(this ISession session, Controllers.BotCommand command) => 
+            _ = session.Set(BOT_COMMAND_NAME, command);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        public static void RemoveBotCommand(this ISession session) =>
+            _ = session.Remove(BOT_COMMAND_NAME);
+
         /// <summary>
         /// 设置字符串类型数据
         /// </summary>

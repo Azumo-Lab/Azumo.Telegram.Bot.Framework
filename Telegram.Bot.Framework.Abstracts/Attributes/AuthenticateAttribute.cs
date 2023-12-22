@@ -28,13 +28,13 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
         /// <summary>
         /// 角色名称
         /// </summary>
-        public HashSet<Enum> RoleName { get; }
+        public HashSet<object> RoleName { get; }
 
         /// <summary>
         /// 有参数的初始化
         /// </summary>
         /// <param name="role"></param>
-        public AuthenticateAttribute(params Enum[] role) => RoleName = new HashSet<Enum>(role);
+        public AuthenticateAttribute(params object[] role) => RoleName = new HashSet<object>(role);
 
         /// <summary>
         /// 无参数的初始化

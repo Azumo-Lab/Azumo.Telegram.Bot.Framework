@@ -19,9 +19,16 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.Users
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
     [DependencyInjection(ServiceLifetime.Scoped, typeof(IUserServices))]
     internal class MyUserServices(IServiceProvider serviceProvider) : IUserServices
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public IAuthenticate UserAuthenticate { get; } = serviceProvider.GetService<IAuthenticate>();
     }
 }

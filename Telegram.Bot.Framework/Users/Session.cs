@@ -58,7 +58,13 @@ namespace Telegram.Bot.Framework.Users
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public bool Set(string key, object value) => __Val.TryAdd(key, value);
+        public bool Set(string key, object value)
+        {
+            bool result;
+            if (result = !__Val.TryAdd(key, value))
+                __Val[key] = value;
+            return result;
+        }
 
         /// <summary>
         /// 

@@ -79,6 +79,8 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// </summary>
         public IUserServices UserServices { get; }
 
+        public ISession Session { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -101,6 +103,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
 
             UserServices = UserScopeService.GetRequiredService<IUserServices>();
             BotClient = UserScopeService.GetRequiredService<ITelegramBotClient>();
+            Session = UserScopeService.GetRequiredService<ISession>();
         }
 
         /// <summary>
@@ -113,6 +116,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         public static TelegramUserChatContext GetChat(User user, IServiceProvider BotService) =>
             new(BotService, user);
 
+        #region Dispose相关的方法
         private void Dispose(bool disposing)
         {
             if (!__DisposedValue)
@@ -142,5 +146,6 @@ namespace Telegram.Bot.Framework.Abstracts.Users
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+        #endregion
     }
 }

@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <param name="func"></param>
         /// <param name="controllerParamManager"></param>
         /// <returns></returns>
-        internal async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<TelegramController, object[], Task> func, IControllerParamManager controllerParamManager)
+        public async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<TelegramController, object[], Task> func, IControllerParamManager controllerParamManager)
         {
             this.Chat = Chat;
             Logger = this.Chat.UserScopeService.GetRequiredService<ILogger<TelegramController>>();

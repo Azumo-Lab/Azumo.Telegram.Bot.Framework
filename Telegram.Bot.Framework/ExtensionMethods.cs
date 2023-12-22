@@ -28,20 +28,26 @@ namespace Telegram.Bot.Framework
         public static IServiceCollection ScanService(this IServiceCollection services)
         {
             AzReflectionHelper.GetAllTypes().Where(x => Attribute.IsDefined(x, typeof(DependencyInjectionAttribute)))
-                .Select(x => (x, (DependencyInjectionAttribute)Attribute.GetCustomAttribute(x, typeof(DependencyInjectionAttribute))!))
+                .Select(type => (type , (DependencyInjectionAttribute)Attribute.GetCustomAttribute(type, typeof(DependencyInjectionAttribute))!))
                 .ToList()
                 .ForEach((x) =>
                 {
+                    Type ServiceType;
+                    if ((ServiceType = x.Item2.ServiceType) == null)
+                    {
+                        var interfaceList = ServiceType.GetInterfaces().ToList();
+                        ServiceType = interfaceList.Count == 1 ? interfaceList[0] : x.type;
+                    }
                     switch (x.Item2.ServiceLifetime)
                     {
                         case ServiceLifetime.Singleton:
-                            _ = services.AddSingleton(x.Item2.ServiceType ?? x.x, x.x);
+                            _ = services.AddSingleton(ServiceType, x.type);
                             break;
                         case ServiceLifetime.Scoped:
-                            _ = services.AddScoped(x.Item2.ServiceType ?? x.x, x.x);
+                            _ = services.AddScoped(ServiceType, x.type);
                             break;
                         case ServiceLifetime.Transient:
-                            _ = services.AddTransient(x.Item2.ServiceType ?? x.x, x.x);
+                            _ = services.AddTransient(ServiceType, x.type);
                             break;
                         default:
                             break;
