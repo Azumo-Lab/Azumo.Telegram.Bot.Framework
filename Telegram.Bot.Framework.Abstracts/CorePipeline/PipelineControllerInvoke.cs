@@ -43,7 +43,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
             {
                 var result = await item.Execute(chat, botCommand);
                 if (!result)
-                    _ = await pipelineController.StopAsync(chat);
+                    return await pipelineController.StopAsync(chat);
             }
 
             // 获取参数
