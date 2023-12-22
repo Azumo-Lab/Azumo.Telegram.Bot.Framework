@@ -62,9 +62,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
-
             var tGChat = chatManager.Create(botClient, update, __ServiceProvider);
-
             await UserScope.Invoke(tGChat);
         }
     }

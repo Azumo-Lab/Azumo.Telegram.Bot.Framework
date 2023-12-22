@@ -35,6 +35,6 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <param name="tGChat"></param>
         /// <param name="botCommand"></param>
         /// <returns></returns>
-        public Task<bool> Execute(TGChat tGChat, BotCommand botCommand);
+        public Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand);
     }
 }

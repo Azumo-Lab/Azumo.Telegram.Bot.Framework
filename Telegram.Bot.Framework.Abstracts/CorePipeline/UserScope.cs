@@ -27,15 +27,15 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
     [DependencyInjection(ServiceLifetime.Singleton, typeof(ITelegramService))]
     internal class UserScope : ITelegramService
     {
-        public static async Task Invoke(TGChat tGChat)
+        public static async Task Invoke(TelegramUserChatContext tGChat)
         {
-            var pipelineController = tGChat.UserService.GetRequiredService<IPipelineController<TGChat>>();
+            var pipelineController = tGChat.UserScopeService.GetRequiredService<IPipelineController<TelegramUserChatContext>>();
             _ = await pipelineController.SwitchTo(tGChat.Type, tGChat);
         }
 
         public void AddServices(IServiceCollection services) =>
             _ = services.AddScoped(x => PipelineFactory
-                .CreateIPipelineBuilder<TGChat>()
+                .CreateIPipelineBuilder<TelegramUserChatContext>()
                 .AddProcedure(new PipelineNull())
                 .CreatePipeline(UpdateType.Unknown)
                 .AddProcedure(new PipelineControllerInvoke())

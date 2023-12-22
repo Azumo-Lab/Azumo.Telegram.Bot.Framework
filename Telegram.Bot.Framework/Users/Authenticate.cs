@@ -36,7 +36,7 @@ namespace Telegram.Bot.Framework.Users
         /// <param name="tGChat"></param>
         /// <param name="authenticateAttribute"></param>
         /// <returns></returns>
-        public Task<bool> IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute)
+        public Task<bool> IsAuthenticated(TelegramUserChatContext tGChat, AuthenticateAttribute authenticateAttribute)
         {
             var result = false;
             foreach (var roleName in RoleName)

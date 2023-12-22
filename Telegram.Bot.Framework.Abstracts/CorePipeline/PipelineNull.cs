@@ -22,7 +22,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
     /// <summary>
     /// 不进行任何处理
     /// </summary>
-    internal class PipelineNull : IProcessAsync<TGChat>
+    internal class PipelineNull : IProcessAsync<TelegramUserChatContext>
     {
         /// <summary>
         /// 不进行任何处理
@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         /// <param name="t">传入参数</param>
         /// <param name="pipelineController">控制器</param>
         /// <returns>直接对传入参数进行返回</returns>
-        public Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController) =>
+        public Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext t, IPipelineController<TelegramUserChatContext> pipelineController) =>
             // 结束处理
             pipelineController.StopAsync(t);
     }

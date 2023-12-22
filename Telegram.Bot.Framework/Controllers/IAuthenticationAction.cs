@@ -18,6 +18,6 @@ namespace Telegram.Bot.Framework.Controllers
         /// <param name="tGChat"></param>
         /// <param name="botCommand"></param>
         /// <returns></returns>
-        public Task InvokeAction(AuthenticationCode authenticationCode, TGChat tGChat, BotCommand botCommand);
+        public Task InvokeAction(AuthenticationCode authenticationCode, TelegramUserChatContext tGChat, BotCommand botCommand);
     }
 }

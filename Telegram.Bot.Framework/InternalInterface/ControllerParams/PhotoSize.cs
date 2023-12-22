@@ -7,7 +7,7 @@ namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
     [TypeFor(typeof(PhotoSize))]
     internal class PhotoSizeParams : BaseControllerParam
     {
-        public override Task<object> CatchObjs(TGChat tGChat) => Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault());
+        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) => Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault());
 
         public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute)
         {

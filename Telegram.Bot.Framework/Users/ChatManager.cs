@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
@@ -21,42 +22,43 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Users
 {
     /// <summary>
-    /// 用于管理 <see cref="TGChat"/> 对象的管理服务，实现了 <see cref="IChatManager"/> 接口。<br></br>
+    /// 用于管理 <see cref="TelegramUserChatContext"/> 对象的管理服务，实现了 <see cref="IChatManager"/> 接口。<br></br>
     /// 拥有 <see cref="DependencyInjectionAttribute"/> 标签，可以自动注册服务
     /// </summary>
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IChatManager))]
     internal class ChatManager : IChatManager
     {
         /// <summary>
-        /// 用于缓存 <see cref="TGChat"/> 对象
+        /// 用于缓存 <see cref="TelegramUserChatContext"/> 对象
         /// </summary>
-        private readonly Dictionary<ChatId, TGChat> __Chats = [];
+        private readonly Dictionary<ChatId, TelegramUserChatContext> __Chats = [];
 
         /// <summary>
-        /// 创建或取得 <see cref="TGChat"/> 对象
+        /// 创建或取得 <see cref="TelegramUserChatContext"/> 对象
         /// </summary>
         /// <remarks>
-        /// 当缓存中没有指定用户的数据时，将创建一个新的 <see cref="TGChat"/> 对象，
-        /// 如果缓存中已经有了 <see cref="TGChat"/> 对象，则从缓存中取出，并更新值
+        /// 当缓存中没有指定用户的数据时，将创建一个新的 <see cref="TelegramUserChatContext"/> 对象，
+        /// 如果缓存中已经有了 <see cref="TelegramUserChatContext"/> 对象，则从缓存中取出，并更新值
         /// </remarks>
         /// <param name="telegramBotClient">机器人接口</param>
         /// <param name="update">更新数据</param>
         /// <param name="BotServiceProvider">Bot级别的服务</param>
-        /// <returns><see cref="TGChat"/> 对象</returns>
-        public TGChat Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider)
+        /// <returns><see cref="TelegramUserChatContext"/> 对象</returns>
+        public TelegramUserChatContext Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider)
         {
-            var chatID = update.GetChatID();
-            TGChat chat;
-            if (chatID != null)
+            var User = update.GetRequestUser();
+            var UserID = User?.Id;
+            TelegramUserChatContext chat;
+            if (UserID != null)
             {
-                if (!__Chats.TryGetValue(chatID, out chat))
+                if (!__Chats.TryGetValue(UserID, out chat))
                 {
-                    chat = TGChat.GetChat(telegramBotClient, chatID, BotServiceProvider);
-                    __Chats.Add(chatID, chat);
+                    chat = TelegramUserChatContext.GetChat(User, BotServiceProvider);
+                    __Chats.Add(UserID, chat);
                 }
             }
             else
-                chat = TGChat.GetChat(telegramBotClient, chatID, BotServiceProvider);
+                throw new NullReferenceException();
             chat.CopyTo(update);
             return chat;
         }

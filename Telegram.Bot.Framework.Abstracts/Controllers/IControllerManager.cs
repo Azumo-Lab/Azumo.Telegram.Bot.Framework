@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// </summary>
         /// <param name="tGChat"></param>
         /// <returns></returns>
-        BotCommand GetCommand(TGChat tGChat);
+        BotCommand GetCommand(TelegramUserChatContext tGChat);
 
         /// <summary>
         /// 

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.CompilerServices;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Users
@@ -22,50 +23,84 @@ namespace Telegram.Bot.Framework.Abstracts.Users
     /// <summary>
     /// 
     /// </summary>
-    public sealed class TGChat : Update, IDisposable
+    public sealed partial class TelegramUserChatContext : Update, IDisposable
     {
         /// <summary>
-        /// 
+        /// 本次请求的ChatID
         /// </summary>
-        public ChatId ChatId { get; internal set; }
+        public ChatId? RequestChatID => RequestChat?.Id;
+
+        /// <summary>
+        /// 用户的ChatID
+        /// </summary>
+        public ChatId UserChatID
+        {
+            get
+            {
+                __CacheUserChatID ??= new ChatId(User.Id);
+                return __CacheUserChatID;
+            }
+        }
+
+        /// <summary>
+        /// 本次请求的Chat
+        /// </summary>
+        public Chat? RequestChat => Extensions.GetRequestChat(this);
+
+        /// <summary>
+        /// 用户的Chat
+        /// </summary>
+        public Chat UserChat
+        {
+            get 
+            {
+                __CacheUserChat ??= BotClient.GetChatAsync(UserChatID).Result;
+                return __CacheUserChat;
+            }
+        }
+
+        /// <summary>
+        /// 用户
+        /// </summary>
+        public User User { get; }
+
+        /// <summary>
+        /// 机器人客户端接口
+        /// </summary>
+        public ITelegramBotClient BotClient { get; }
+
+        /// <summary>
+        /// 用户范围服务提供
+        /// </summary>
+        public IServiceProvider UserScopeService => __UserServiceScope.ServiceProvider;
+
+        /// <summary>
+        /// 用户服务
+        /// </summary>
+        public IUserServices UserServices { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public long UserID { get; internal set; }
+        private readonly AsyncServiceScope __UserServiceScope;
 
         /// <summary>
         /// 
         /// </summary>
-        public ITelegramBotClient BotClient { get; internal set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IServiceProvider UserService => __UserServiceScope.ServiceProvider;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IAuthenticate Authenticate { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly IServiceScope __UserServiceScope;
-        private bool disposedValue;
+        private bool __DisposedValue;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="serviceScope"></param>
         /// <param name="chatId"></param>
-        private TGChat(IServiceScope serviceScope, ChatId chatId)
+        private TelegramUserChatContext(IServiceProvider service, User user)
         {
-            __UserServiceScope = serviceScope;
-            ChatId = chatId;
+            User = user;
+            __UserServiceScope = service.CreateAsyncScope();
 
-            Authenticate = UserService.GetRequiredService<IAuthenticate>();
+            UserServices = UserScopeService.GetRequiredService<IUserServices>();
+            BotClient = UserScopeService.GetRequiredService<ITelegramBotClient>();
         }
 
         /// <summary>
@@ -75,28 +110,22 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <param name="chatId"></param>
         /// <param name="BotService"></param>
         /// <returns></returns>
-        public static TGChat GetChat(ITelegramBotClient telegramBot, ChatId chatId, IServiceProvider BotService)
-        {
-            TGChat chat = new(BotService.CreateScope(), chatId)
-            {
-                BotClient = telegramBot,
-            };
-            return chat;
-        }
+        public static TelegramUserChatContext GetChat(User user, IServiceProvider BotService) =>
+            new(BotService, user);
 
         private void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!__DisposedValue)
             {
                 if (disposing)
                 {
                     // TODO: 释放托管状态(托管对象)
-                    __UserServiceScope?.Dispose();
+                    __UserServiceScope.Dispose();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并重写终结器
                 // TODO: 将大型字段设置为 null
-                disposedValue = true;
+                __DisposedValue = true;
             }
         }
 

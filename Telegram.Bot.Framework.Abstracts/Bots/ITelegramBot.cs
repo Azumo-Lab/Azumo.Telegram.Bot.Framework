@@ -22,6 +22,11 @@ namespace Telegram.Bot.Framework.Abstracts.Bots
     public interface ITelegramBot
     {
         /// <summary>
+        /// 机器人的服务
+        /// </summary>
+        public IServiceProvider ServiceProvider { get; }
+
+        /// <summary>
         /// 启动
         /// </summary>
         /// <returns></returns>

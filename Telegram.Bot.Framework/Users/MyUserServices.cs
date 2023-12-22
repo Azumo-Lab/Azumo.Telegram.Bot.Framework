@@ -14,22 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Types;
+using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.Users
+namespace Telegram.Bot.Framework.Users
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IChatManager
+    [DependencyInjection(ServiceLifetime.Scoped, typeof(IUserServices))]
+    internal class MyUserServices(IServiceProvider serviceProvider) : IUserServices
     {
-        /// <summary>
-        /// 创建 <see cref="TelegramUserChatContext"/> 对象
-        /// </summary>
-        /// <param name="telegramBotClient"></param>
-        /// <param name="update"></param>
-        /// <param name="BotServiceProvider"></param>
-        /// <returns></returns>
-        public TelegramUserChatContext Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider);
+        public IAuthenticate UserAuthenticate { get; } = serviceProvider.GetService<IAuthenticate>();
     }
 }

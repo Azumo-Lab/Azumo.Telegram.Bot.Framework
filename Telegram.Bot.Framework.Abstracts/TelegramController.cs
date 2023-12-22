@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <summary>
         /// 
         /// </summary>
-        protected TGChat Chat { get; private set; } = null!;
+        protected TelegramUserChatContext Chat { get; private set; } = null!;
 
         /// <summary>
         /// 
@@ -44,10 +44,10 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <param name="func"></param>
         /// <param name="controllerParamManager"></param>
         /// <returns></returns>
-        internal async Task ControllerInvokeAsync(TGChat Chat, Func<TelegramController, object[], Task> func, IControllerParamManager controllerParamManager)
+        internal async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<TelegramController, object[], Task> func, IControllerParamManager controllerParamManager)
         {
             this.Chat = Chat;
-            Logger = this.Chat.UserService.GetRequiredService<ILogger<TelegramController>>();
+            Logger = this.Chat.UserScopeService.GetRequiredService<ILogger<TelegramController>>();
             try
             {
                 if (func(this, controllerParamManager.GetParams() ?? []) is Task task)
@@ -67,7 +67,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// 
         /// </summary>
         /// <returns></returns>
-        protected IMessageBuilder GetMessageBuilder() => Chat.UserService.GetService<IMessageBuilder>()!;
+        protected IMessageBuilder GetMessageBuilder() => Chat.UserScopeService.GetService<IMessageBuilder>()!;
 
         /// <summary>
         /// 发送文本消息
@@ -75,7 +75,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <param name="message"></param>
         /// <returns></returns>
         protected async Task<Message> SendMessage(string message) => await Chat!.BotClient
-                .SendTextMessageAsync(Chat.ChatId, message, parseMode: Types.Enums.ParseMode.Html);
+                .SendTextMessageAsync(Chat.UserChatID, message, parseMode: Types.Enums.ParseMode.Html);
 
         /// <summary>
         /// 用户登录
@@ -143,7 +143,7 @@ namespace Telegram.Bot.Framework.Abstracts
             try
             {
                 // 发送
-                return await Chat!.BotClient.SendMediaGroupAsync(Chat.ChatId,
+                return await Chat!.BotClient.SendMediaGroupAsync(Chat.UserChatID,
                     images);
             }
             catch (Exception)
@@ -192,7 +192,7 @@ namespace Telegram.Bot.Framework.Abstracts
 
             try
             {
-                return await Chat.BotClient.SendDocumentAsync(Chat.ChatId, inputFile,
+                return await Chat.BotClient.SendDocumentAsync(Chat.UserChatID, inputFile,
                     caption: message, parseMode: Types.Enums.ParseMode.Html);
             }
             catch (Exception)

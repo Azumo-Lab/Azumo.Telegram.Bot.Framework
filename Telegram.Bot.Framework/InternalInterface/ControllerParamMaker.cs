@@ -78,7 +78,7 @@ namespace Telegram.Bot.Framework.InternalInterface
             /// </summary>
             /// <param name="tGChat"></param>
             /// <returns></returns>
-            public Task<object> CatchObjs(TGChat tGChat) => Task.FromResult<object>(null!);
+            public Task<object> CatchObjs(TelegramUserChatContext tGChat) => Task.FromResult<object>(null!);
             
             /// <summary>
             /// 
@@ -86,7 +86,7 @@ namespace Telegram.Bot.Framework.InternalInterface
             /// <param name="tGChat"></param>
             /// <param name="paramAttribute"></param>
             /// <returns></returns>
-            public Task SendMessage(TGChat tGChat, ParamAttribute paramAttribute) => Task.CompletedTask;
+            public Task SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute) => Task.CompletedTask;
         }
     }
 }

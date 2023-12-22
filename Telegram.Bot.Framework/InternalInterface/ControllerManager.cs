@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework.InternalInterface
         /// </summary>
         /// <param name="tGChat"></param>
         /// <returns></returns>
-        public BotCommand GetCommand(TGChat tGChat)
+        public BotCommand GetCommand(TelegramUserChatContext tGChat)
         {
             string command;
             if ((command = tGChat.GetCommand()) != null)

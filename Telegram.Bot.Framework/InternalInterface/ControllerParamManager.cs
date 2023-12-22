@@ -45,7 +45,7 @@ namespace Telegram.Bot.Framework.InternalInterface
 
         public object[] GetParams() => _params.ToArray();
 
-        public async Task<ResultEnum> NextParam(TGChat tGChat)
+        public async Task<ResultEnum> NextParam(TelegramUserChatContext tGChat)
         {
             switch (__NowResult)
             {

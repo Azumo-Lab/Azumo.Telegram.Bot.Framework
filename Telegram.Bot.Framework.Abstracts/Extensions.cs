@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts
 {
@@ -62,7 +63,7 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <param name="session"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetString(this ISession session, string key) => 
+        public static string GetString(this ISession session, string key) =>
             (session.Get(key) as string) ?? string.Empty;
 
         /// <summary>
@@ -72,11 +73,65 @@ namespace Telegram.Bot.Framework.Abstracts
         /// <param name="session"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static T? Get<T>(this ISession session, string key) 
+        public static T? Get<T>(this ISession session, string key)
         {
             object result;
             return (result = session.Get(key)) != null && result is T tResult ? tResult : default;
         }
+        #endregion
+
+        #region Update 的扩展方法
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static User? GetRequestUser(this Update update) => update.Type switch
+        {
+            Types.Enums.UpdateType.Unknown => null,
+            Types.Enums.UpdateType.Message => update.Message?.From,
+            Types.Enums.UpdateType.InlineQuery => null,
+            Types.Enums.UpdateType.ChosenInlineResult => null,
+            Types.Enums.UpdateType.CallbackQuery => null,
+            Types.Enums.UpdateType.EditedMessage => update.EditedMessage?.From,
+            Types.Enums.UpdateType.ChannelPost => update.ChannelPost?.From,
+            Types.Enums.UpdateType.EditedChannelPost => update.EditedChannelPost?.From,
+            Types.Enums.UpdateType.ShippingQuery => null,
+            Types.Enums.UpdateType.PreCheckoutQuery => null,
+            Types.Enums.UpdateType.Poll => null,
+            Types.Enums.UpdateType.PollAnswer => null,
+            Types.Enums.UpdateType.MyChatMember => update.MyChatMember?.From,
+            Types.Enums.UpdateType.ChatMember => update.ChatMember?.From,
+            Types.Enums.UpdateType.ChatJoinRequest => update.ChatJoinRequest?.From,
+            _ => throw new NotImplementedException(),
+        };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public static Chat? GetRequestChat(this Update update) => update.Type switch
+        {
+            Types.Enums.UpdateType.Unknown => null,
+            Types.Enums.UpdateType.Message => update.Message?.Chat,
+            Types.Enums.UpdateType.InlineQuery => null,
+            Types.Enums.UpdateType.ChosenInlineResult => null,
+            Types.Enums.UpdateType.CallbackQuery => null,
+            Types.Enums.UpdateType.EditedMessage => update.EditedMessage?.Chat,
+            Types.Enums.UpdateType.ChannelPost => update.ChannelPost?.Chat,
+            Types.Enums.UpdateType.EditedChannelPost => update.EditedChannelPost?.Chat,
+            Types.Enums.UpdateType.ShippingQuery => null,
+            Types.Enums.UpdateType.PreCheckoutQuery => null,
+            Types.Enums.UpdateType.Poll => null,
+            Types.Enums.UpdateType.PollAnswer => null,
+            Types.Enums.UpdateType.MyChatMember => update.MyChatMember?.Chat,
+            Types.Enums.UpdateType.ChatMember => update.ChatMember?.Chat,
+            Types.Enums.UpdateType.ChatJoinRequest => update.ChatJoinRequest?.Chat,
+            _ => throw new NotImplementedException(),
+        };
         #endregion
     }
 }

@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// </summary>
         /// <param name="tGChat"></param>
         /// <returns></returns>
-        public Task<ResultEnum> NextParam(TGChat tGChat);
+        public Task<ResultEnum> NextParam(TelegramUserChatContext tGChat);
 
         /// <summary>
         /// 获取命令

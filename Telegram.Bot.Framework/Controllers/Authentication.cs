@@ -16,13 +16,13 @@ namespace Telegram.Bot.Framework.Controllers
         /// <param name="tGChat"></param>
         /// <param name="botCommand"></param>
         /// <returns></returns>
-        public virtual async Task<bool> Execute(TGChat tGChat, BotCommand botCommand)
+        public virtual async Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand)
         {
             if (botCommand?.AuthenticateAttribute == null)
                 return true;
 
             AuthenticationCode authenticationCode;
-            var authenticate = tGChat.Authenticate;
+            var authenticate = tGChat.UserServices.UserAuthenticate;
             if (authenticate == null || authenticate.RoleName.Count == 0)
             {
                 authenticationCode = AuthenticationCode.NeedToLogIn;
@@ -30,12 +30,12 @@ namespace Telegram.Bot.Framework.Controllers
             else
             {
                 var authenticateAttribute = botCommand.AuthenticateAttribute;
-                var flag = await tGChat.Authenticate.IsAuthenticated(tGChat, authenticateAttribute);
+                var flag = await tGChat.UserServices.UserAuthenticate.IsAuthenticated(tGChat, authenticateAttribute);
                 authenticationCode = flag ? AuthenticationCode.Success : AuthenticationCode.PermissionDenied;
             }
 
             // 后续动作（不等待执行完成）
-            var authenticationAction = tGChat.UserService.GetService<IAuthenticationAction>();
+            var authenticationAction = tGChat.UserScopeService.GetService<IAuthenticationAction>();
             _ = (authenticationAction?.InvokeAction(authenticationCode, tGChat, botCommand).ConfigureAwait(false));
 
             // 返回结果（不等待上述动作执行完成）

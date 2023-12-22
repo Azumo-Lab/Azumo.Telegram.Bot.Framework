@@ -33,14 +33,14 @@ namespace Telegram.Bot.ChannelManager.Controllers
         }
 
         [BotCommand("/AddChannel", Description = "说Hello")]
-        public async Task AddChannel() => _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "Hello Admin");
+        public async Task AddChannel() => _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, "Hello Admin");
 
         [BotCommand("/ListFile", Description = "罗列出指定路径下的文件")]
         public async Task ListFile([Param(Sender = typeof(Sender))] string Path)
         {
             if (!Directory.Exists(Path))
             {
-                _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "路径不是有效路径");
+                _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, "路径不是有效路径");
                 return;
             }
             var paths = Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories);
@@ -52,13 +52,13 @@ namespace Telegram.Bot.ChannelManager.Controllers
                 if (count >= 10)
                 {
                     count = 0;
-                    _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, stringBuilder.ToString());
+                    _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, stringBuilder.ToString());
                     _ = stringBuilder.Clear();
                 }
                 count++;
             }
             _ = stringBuilder.AppendLine("以上是全部内容.");
-            _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, stringBuilder.ToString());
+            _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, stringBuilder.ToString());
             _ = stringBuilder.Clear();
         }
     }

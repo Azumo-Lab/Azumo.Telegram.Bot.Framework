@@ -12,7 +12,7 @@ namespace MyChannel.Senders
     {
         public override IControllerParamSender? ParamSender { get => this; set => _ = value; }
 
-        public override Task<object> CatchObjs(TGChat tGChat) => Task.FromResult<object>(tGChat.Message?.Document!);
+        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) => Task.FromResult<object>(tGChat.Message?.Document!);
 
         public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute)
         {

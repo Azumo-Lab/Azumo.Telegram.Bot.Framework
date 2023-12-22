@@ -24,7 +24,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
     /// <summary>
     /// 
     /// </summary>
-    internal class PipelineControllerInvoke : IProcessAsync<TGChat>
+    internal class PipelineControllerInvoke : IProcessAsync<TelegramUserChatContext>
     {
         /// <summary>
         /// 开始执行控制器流程
@@ -32,14 +32,14 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         /// <param name="chat"></param>
         /// <param name="pipelineController"></param>
         /// <returns></returns>
-        public async Task<TGChat> ExecuteAsync(TGChat chat, IPipelineController<TGChat> pipelineController)
+        public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext chat, IPipelineController<TelegramUserChatContext> pipelineController)
         {
             // 获取必要的数据
-            var controllerManager = chat.UserService.GetRequiredService<IControllerManager>();
+            var controllerManager = chat.UserScopeService.GetRequiredService<IControllerManager>();
             var botCommand = controllerManager.GetCommand(chat);
 
             // 控制器执行的过滤器，可自定义的流程
-            foreach (var item in chat.UserService.GetServices<IControllerFilter>()?.ToList() ?? [])
+            foreach (var item in chat.UserScopeService.GetServices<IControllerFilter>()?.ToList() ?? [])
             {
                 var result = await item.Execute(chat, botCommand);
                 if (!result)
@@ -47,7 +47,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
             }
 
             // 获取参数
-            var controllerParamManager = chat.UserService.GetRequiredService<IControllerParamManager>();
+            var controllerParamManager = chat.UserScopeService.GetRequiredService<IControllerParamManager>();
             if (botCommand != null)
             {
                 controllerParamManager.Clear();
@@ -65,7 +65,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
             // 执行控制器
             try
             {
-                var telegramController = (TelegramController)ActivatorUtilities.CreateInstance(chat.UserService, botCommand!.Controller, []);
+                var telegramController = (TelegramController)ActivatorUtilities.CreateInstance(chat.UserScopeService, botCommand!.Controller, []);
                 await telegramController.ControllerInvokeAsync(chat, botCommand.Func, controllerParamManager);
             }
             catch (Exception)

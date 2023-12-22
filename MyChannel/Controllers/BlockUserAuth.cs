@@ -12,11 +12,11 @@ namespace MyChannel.Controllers
 
         public HashSet<Enum> RoleName { get; set; } = [];
 
-        public async Task<bool> IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute)
+        public async Task<bool> IsAuthenticated(TelegramUserChatContext tGChat, AuthenticateAttribute authenticateAttribute)
         {
             if (RoleName.Count == 0)
             {
-                var userInfo = await __Context.UserInfoEntity.Where(x => x.ChatID == tGChat.ChatId).FirstOrDefaultAsync();
+                var userInfo = await __Context.UserInfoEntity.Where(x => x.ChatID == tGChat.UserChatID).FirstOrDefaultAsync();
                 if (userInfo == null || userInfo.Blocked)
                     _ = RoleName.Add(AuthEnum.NONE);
             }

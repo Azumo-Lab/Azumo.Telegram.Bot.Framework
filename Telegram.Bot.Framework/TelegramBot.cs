@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 机器人的服务
         /// </summary>
-        private readonly IServiceProvider ServiceProvider;
+        public IServiceProvider ServiceProvider { get; }
 
         /// <summary>
         /// 

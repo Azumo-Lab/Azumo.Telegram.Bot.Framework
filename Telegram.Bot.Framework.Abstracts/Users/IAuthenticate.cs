@@ -34,6 +34,6 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <param name="tGChat"></param>
         /// <param name="authenticateAttribute"></param>
         /// <returns></returns>
-        public Task<bool> IsAuthenticated(TGChat tGChat, AuthenticateAttribute authenticateAttribute);
+        public Task<bool> IsAuthenticated(TelegramUserChatContext chatContext, AuthenticateAttribute authenticateAttribute);
     }
 }

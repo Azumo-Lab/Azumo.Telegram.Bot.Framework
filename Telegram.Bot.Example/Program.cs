@@ -31,15 +31,15 @@ namespace Telegram.Bot.Example
         [BotCommand]
         public async Task Test()
         {
-            await Chat.BotClient.SendChatActionAsync(Chat.ChatId, Types.Enums.ChatAction.Typing);
-            _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"第{count++}次 Hello World !!");
+            await Chat.BotClient.SendChatActionAsync(Chat.UserChatID, Types.Enums.ChatAction.Typing);
+            _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, $"第{count++}次 Hello World !!");
         }
 
         [BotCommand("/Catch")]
         public async Task Test2(string str)
         {
             Logger.LogInformation($"发送的消息 : {str}");
-            _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, $"You Say {str}");
+            _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, $"You Say {str}");
         }
     }
 }

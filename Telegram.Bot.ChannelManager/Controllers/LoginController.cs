@@ -12,7 +12,7 @@ namespace Telegram.Bot.ChannelManager.Controllers
         {
             if (password == Secret.AdminPassword)
             {
-                _ = await Chat.BotClient.SendTextMessageAsync(Chat.ChatId, "登陆成功，欢迎管理员");
+                _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, "登陆成功，欢迎管理员");
             }
             await Task.CompletedTask;
         }
