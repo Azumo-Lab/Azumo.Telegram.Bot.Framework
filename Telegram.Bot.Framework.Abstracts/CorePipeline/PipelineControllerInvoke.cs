@@ -29,50 +29,50 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         /// <summary>
         /// 开始执行控制器流程
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="chat"></param>
         /// <param name="pipelineController"></param>
         /// <returns></returns>
-        public async Task<TGChat> ExecuteAsync(TGChat t, IPipelineController<TGChat> pipelineController)
+        public async Task<TGChat> ExecuteAsync(TGChat chat, IPipelineController<TGChat> pipelineController)
         {
             // 获取必要的数据
-            var controllerManager = t.UserService.GetRequiredService<IControllerManager>();
-            var botCommand = controllerManager.GetCommand(t);
+            var controllerManager = chat.UserService.GetRequiredService<IControllerManager>();
+            var botCommand = controllerManager.GetCommand(chat);
 
             // 控制器执行的过滤器，可自定义的流程
-            foreach (var item in t.UserService.GetServices<IControllerFilter>()?.ToList() ?? [])
+            foreach (var item in chat.UserService.GetServices<IControllerFilter>()?.ToList() ?? [])
             {
-                var result = await item.Execute(t, botCommand);
+                var result = await item.Execute(chat, botCommand);
                 if (!result)
-                    _ = await pipelineController.StopAsync(t);
+                    _ = await pipelineController.StopAsync(chat);
             }
 
             // 获取参数
-            var controllerParamManager = t.UserService.GetRequiredService<IControllerParamManager>();
+            var controllerParamManager = chat.UserService.GetRequiredService<IControllerParamManager>();
             if (botCommand != null)
             {
                 controllerParamManager.Clear();
                 controllerParamManager.SetBotCommand(botCommand);
                 controllerParamManager.ControllerParams = new List<IControllerParam>(botCommand.ControllerParams);
             }
-            var resultEnum = await controllerParamManager.NextParam(t);
+            var resultEnum = await controllerParamManager.NextParam(chat);
             if (resultEnum != ResultEnum.Finish)
-                return await pipelineController.StopAsync(t);
+                return await pipelineController.StopAsync(chat);
 
             botCommand ??= controllerParamManager.GetBotCommand();
             if (botCommand == null)
-                return await pipelineController.StopAsync(t);
+                return await pipelineController.StopAsync(chat);
 
             // 执行控制器
             try
             {
-                var telegramController = (TelegramController)ActivatorUtilities.CreateInstance(t.UserService, botCommand!.Controller, []);
-                await telegramController.ControllerInvokeAsync(t, botCommand.Func, controllerParamManager);
+                var telegramController = (TelegramController)ActivatorUtilities.CreateInstance(chat.UserService, botCommand!.Controller, []);
+                await telegramController.ControllerInvokeAsync(chat, botCommand.Func, controllerParamManager);
             }
             catch (Exception)
             { }
 
             // 执行下一个
-            return await pipelineController.NextAsync(t);
+            return await pipelineController.NextAsync(chat);
         }
     }
 }
