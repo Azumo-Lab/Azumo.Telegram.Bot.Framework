@@ -33,24 +33,25 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
             _ = await pipelineController.SwitchTo(tGChat.Type, tGChat);
         }
 
-        public void AddServices(IServiceCollection services) => _ = services.AddScoped(x => PipelineFactory
-                                                                                 .CreateIPipelineBuilder<TGChat>()
-                                                                                 .AddProcedure(new PipelineNull())
-                                                                                 .CreatePipeline(UpdateType.Unknown)
-                                                                                 .AddProcedure(new PipelineControllerInvoke())
-                                                                                 .CreatePipeline(UpdateType.Message)
-                                                                                 .CreatePipeline(UpdateType.ChosenInlineResult)
-                                                                                 .CreatePipeline(UpdateType.CallbackQuery)
-                                                                                 .CreatePipeline(UpdateType.EditedMessage)
-                                                                                 .CreatePipeline(UpdateType.ChannelPost)
-                                                                                 .CreatePipeline(UpdateType.EditedChannelPost)
-                                                                                 .CreatePipeline(UpdateType.ShippingQuery)
-                                                                                 .CreatePipeline(UpdateType.PreCheckoutQuery)
-                                                                                 .CreatePipeline(UpdateType.Poll)
-                                                                                 .CreatePipeline(UpdateType.PollAnswer)
-                                                                                 .CreatePipeline(UpdateType.MyChatMember)
-                                                                                 .CreatePipeline(UpdateType.ChatMember)
-                                                                                 .CreatePipeline(UpdateType.ChatJoinRequest)
-                                                                                 .BuilderPipelineController());
+        public void AddServices(IServiceCollection services) =>
+            _ = services.AddScoped(x => PipelineFactory
+                .CreateIPipelineBuilder<TGChat>()
+                .AddProcedure(new PipelineNull())
+                .CreatePipeline(UpdateType.Unknown)
+                .AddProcedure(new PipelineControllerInvoke())
+                .CreatePipeline(UpdateType.Message)
+                .CreatePipeline(UpdateType.ChosenInlineResult)
+                .CreatePipeline(UpdateType.CallbackQuery)
+                .CreatePipeline(UpdateType.EditedMessage)
+                .CreatePipeline(UpdateType.ChannelPost)
+                .CreatePipeline(UpdateType.EditedChannelPost)
+                .CreatePipeline(UpdateType.ShippingQuery)
+                .CreatePipeline(UpdateType.PreCheckoutQuery)
+                .CreatePipeline(UpdateType.Poll)
+                .CreatePipeline(UpdateType.PollAnswer)
+                .CreatePipeline(UpdateType.MyChatMember)
+                .CreatePipeline(UpdateType.ChatMember)
+                .CreatePipeline(UpdateType.ChatJoinRequest)
+                .BuilderPipelineController());
     }
 }

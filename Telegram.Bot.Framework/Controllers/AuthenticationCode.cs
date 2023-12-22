@@ -10,19 +10,16 @@ namespace Telegram.Bot.Framework.Controllers
         /// <summary>
         /// 需要登陆
         /// </summary>
-        [DebuggerDisplay("需要登录")]
-        NeedToLogIn,
+        [DebuggerDisplay("需要登录")] NeedToLogIn,
 
         /// <summary>
         /// 没有权限
         /// </summary>
-        [DebuggerDisplay("权限不足")]
-        PermissionDenied,
+        [DebuggerDisplay("权限不足")] PermissionDenied,
 
         /// <summary>
         /// 成功
         /// </summary>
-        [DebuggerDisplay("成功")]
-        Success,
+        [DebuggerDisplay("成功")] Success,
     }
 }
