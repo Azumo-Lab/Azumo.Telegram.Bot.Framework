@@ -14,37 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 
-namespace Telegram.Bot.Framework.Bots
+namespace Telegram.Bot.Framework.UserAuthentication
 {
-    internal class TelegramAuthenticate<T> : ITelegramPartCreator where T : Enum
+    internal class TelegramUserAuthentication : ITelegramPartCreator
     {
-        public TelegramAuthenticate()
-        {
-
-        }
-
         public void AddBuildService(IServiceCollection services)
         {
 
         }
-
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
-
+            _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
+            _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
         }
     }
 
-    public static partial class TelegramBuilderExtensionMethods
+    public static class UserAuthenticationInstall
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder"></param>
-        /// <param name="roleKey"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder AddAuthenticate<T>(this ITelegramBotBuilder builder, T roleKey) where T : Enum => builder.AddTelegramPartCreator(new TelegramAuthenticate<T>());
+        public static ITelegramBotBuilder AddUserAuthentication(this ITelegramBotBuilder telegramBotBuilder) =>
+            telegramBotBuilder.AddTelegramPartCreator(new TelegramUserAuthentication());
     }
 }

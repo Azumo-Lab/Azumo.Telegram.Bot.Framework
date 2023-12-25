@@ -65,6 +65,11 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         {
             var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
             var telegramUserChatContext = chatManager.Create(botClient, update, __ServiceProvider);
+
+            // 已被全局屏蔽
+            if (telegramUserChatContext == null)
+                return;
+
             try
             {
                 var pipelineController = telegramUserChatContext.UserScopeService.GetRequiredService<IPipelineController<TelegramUserChatContext>>();

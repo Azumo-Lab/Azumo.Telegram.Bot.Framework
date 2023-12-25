@@ -10,7 +10,7 @@ namespace MyChannel.Controllers
     {
         private readonly MyDBContext __Context = __Context;
 
-        public HashSet<Enum> RoleName { get; set; } = [];
+        public HashSet<string> RoleName { get; set; } = [];
 
         public async Task<bool> IsAuthenticated(TelegramUserChatContext tGChat, AuthenticateAttribute authenticateAttribute)
         {
@@ -18,7 +18,7 @@ namespace MyChannel.Controllers
             {
                 var userInfo = await __Context.UserInfoEntity.Where(x => x.ChatID == tGChat.UserChatID).FirstOrDefaultAsync();
                 if (userInfo == null || userInfo.Blocked)
-                    _ = RoleName.Add(AuthEnum.NONE);
+                    _ = RoleName.Add(AuthEnum.NONE.ToString());
             }
             foreach (var role in RoleName)
                 if (authenticateAttribute.RoleName.Contains(role))

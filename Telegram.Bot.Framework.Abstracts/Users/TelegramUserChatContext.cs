@@ -33,14 +33,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <summary>
         /// 用户的ChatID
         /// </summary>
-        public ChatId UserChatID
-        {
-            get
-            {
-                __CacheUserChatID ??= new ChatId(User.Id);
-                return __CacheUserChatID;
-            }
-        }
+        public ChatId UserChatID => User.UserChatID;
 
         /// <summary>
         /// 本次请求的Chat
@@ -50,19 +43,12 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <summary>
         /// 用户的Chat
         /// </summary>
-        public Chat UserChat
-        {
-            get 
-            {
-                __CacheUserChat ??= BotClient.GetChatAsync(UserChatID).Result;
-                return __CacheUserChat;
-            }
-        }
+        public Chat UserChat => User.UserChat;
 
         /// <summary>
         /// 用户
         /// </summary>
-        public User User { get; }
+        public User ThisUser => User.User;
 
         /// <summary>
         /// 机器人客户端接口
@@ -79,12 +65,20 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// </summary>
         public IUserServices UserServices { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ISession Session { get; }
 
         /// <summary>
         /// 
         /// </summary>
         private readonly AsyncServiceScope __UserServiceScope;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IUser User { get; }
 
         /// <summary>
         /// 
@@ -98,12 +92,14 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <param name="chatId"></param>
         private TelegramUserChatContext(IServiceProvider service, User user)
         {
-            User = user;
             __UserServiceScope = service.CreateAsyncScope();
 
             UserServices = UserScopeService.GetRequiredService<IUserServices>();
             BotClient = UserScopeService.GetRequiredService<ITelegramBotClient>();
             Session = UserScopeService.GetRequiredService<ISession>();
+            User = UserScopeService.GetRequiredService<IUser>();
+
+            User.User = user;
         }
 
         /// <summary>
@@ -115,6 +111,7 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// <returns></returns>
         public static TelegramUserChatContext GetChat(User user, IServiceProvider BotService) =>
             new(BotService, user);
+            
 
         #region Dispose相关的方法
         private void Dispose(bool disposing)

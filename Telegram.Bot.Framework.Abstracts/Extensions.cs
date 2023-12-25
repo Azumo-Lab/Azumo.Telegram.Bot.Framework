@@ -104,6 +104,29 @@ namespace Telegram.Bot.Framework.Abstracts
             object result;
             return (result = session.Get(key)) != null && result is T tResult ? tResult : default;
         }
+
+        public static T Set<T>(this ISession session, string key, T value)
+        {
+            _ = session.Set(key, value!);
+            return value;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="session"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool TryGetValue<T>(this ISession session, string key, out T? value)
+        {
+            bool result;
+            value = default;
+            if (result = session.TryGetValue(key, out var outResult))
+                value = outResult is T tResult ? tResult : default;
+            return result;
+        }
         #endregion
 
         #region Update 的扩展方法

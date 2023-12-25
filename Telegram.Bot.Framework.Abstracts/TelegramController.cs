@@ -23,8 +23,11 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Abstracts
 {
     /// <summary>
-    /// 控制器
+    /// Telegram 控制器
     /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
     public abstract class TelegramController
     {
         /// <summary>
@@ -38,13 +41,13 @@ namespace Telegram.Bot.Framework.Abstracts
         protected ILogger Logger { get; private set; } = null!;
 
         /// <summary>
-        /// 
+        /// 控制器执行
         /// </summary>
         /// <param name="Chat"></param>
         /// <param name="func"></param>
         /// <param name="controllerParamManager"></param>
         /// <returns></returns>
-        public async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<TelegramController, object[], Task> func, IControllerParamManager controllerParamManager)
+        public virtual async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<TelegramController, object[], Task> func, IControllerParamManager controllerParamManager)
         {
             this.Chat = Chat;
             Logger = this.Chat.UserScopeService.GetRequiredService<ILogger<TelegramController>>();
@@ -64,10 +67,10 @@ namespace Telegram.Bot.Framework.Abstracts
         }
 
         /// <summary>
-        /// 
+        /// 获取消息创建器
         /// </summary>
         /// <returns></returns>
-        protected IMessageBuilder GetMessageBuilder() => Chat.UserScopeService.GetService<IMessageBuilder>()!;
+        protected IMessageBuilder? GetMessageBuilder() => Chat.UserScopeService.GetService<IMessageBuilder>();
 
         /// <summary>
         /// 发送文本消息
@@ -78,42 +81,15 @@ namespace Telegram.Bot.Framework.Abstracts
                 .SendTextMessageAsync(Chat.UserChatID, message, parseMode: Types.Enums.ParseMode.Html);
 
         /// <summary>
-        /// 用户登录
-        /// </summary>
-        /// <returns></returns>
-        protected static Task UserSignIn() => Task.CompletedTask;
-
-        /// <summary>
-        /// 用户注册
-        /// </summary>
-        /// <returns></returns>
-        protected static Task UserSignUp() => Task.CompletedTask;
-
-        /// <summary>
-        /// 用户登出
-        /// </summary>
-        /// <returns></returns>
-        protected static Task UserSignOut() => Task.CompletedTask;
-
-        /// <summary>
-        /// 屏蔽用户
-        /// </summary>
-        /// <returns></returns>
-        protected static Task UserBlock() => Task.CompletedTask;
-
-        /// <summary>
-        /// 删除用户相关信息
-        /// </summary>
-        /// <returns></returns>
-        protected static Task UserDeleteInfo() => Task.CompletedTask;
-
-        /// <summary>
         /// 发送附带图片组的消息
         /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
         /// <param name="message"></param>
         /// <param name="imagePaths"></param>
         /// <returns></returns>
-        protected async Task<Message[]?> SendMediaGroup(string message, string[] imagePathOrID)
+        protected async Task<Message[]?> SendMediaGroup(IMessageBuilder message, string[] imagePathOrID)
         {
             if (imagePathOrID == null || imagePathOrID.Length == 0)
                 return null!;
@@ -133,10 +109,12 @@ namespace Telegram.Bot.Framework.Abstracts
                 })
                 .ToList();
 
+            // 创建HTML消息
+            var htmlMessage = message.Build();
             // 进行设定
-            if (!string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(htmlMessage))
             {
-                images[0].Caption = message;
+                images[0].Caption = htmlMessage;
                 images[0].ParseMode = Types.Enums.ParseMode.Html;
             }
 

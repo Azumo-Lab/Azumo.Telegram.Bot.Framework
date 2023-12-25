@@ -14,26 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.UserAuthentication;
 
-namespace Telegram.Bot.Framework.Abstracts.Users
+namespace Telegram.Bot.Framework.UserAuthentication
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IAuthenticate
+    [DependencyInjection(ServiceLifetime.Singleton, typeof(IGlobalBlackList))]
+    internal class GlobalBlackList : IGlobalBlackList
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public HashSet<string> RoleName { get; }
+        public event EventHandler<UserIDArgs>? OnLoadUserID;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <param name="authenticateAttribute"></param>
-        /// <returns></returns>
-        public Task<bool> IsAuthenticated(TelegramUserChatContext chatContext, AuthenticateAttribute authenticateAttribute);
+        private readonly HashSet<long> __UserIDs = [];
+
+        public void Add(long userID) =>
+            __UserIDs.Add(userID);
+
+        public void Remove(long userID) =>
+            __UserIDs.Remove(userID);
+
+        public bool Verify(long userID) =>
+            __UserIDs.Contains(userID);
     }
 }

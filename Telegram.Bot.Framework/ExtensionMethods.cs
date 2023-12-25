@@ -164,25 +164,25 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 将一个 <see cref="Update"/> 中的内容，复制到另一个 <see cref="Update"/> 中
         /// </summary>
-        /// <param name="souce">想要进行复制的对象</param>
-        /// <param name="target">复制的目标对象</param>
+        /// <param name="target">想要进行复制的对象</param>
+        /// <param name="souce">复制的目标对象</param>
         public static void CopyTo(this Update souce, Update target)
         {
-            souce.Poll = target.Poll;
-            souce.ChatMember = target.ChatMember;
-            souce.ChatJoinRequest = target.ChatJoinRequest;
-            souce.CallbackQuery = target.CallbackQuery;
-            souce.ChannelPost = target.ChannelPost;
-            souce.ChosenInlineResult = target.ChosenInlineResult;
-            souce.EditedChannelPost = target.EditedChannelPost;
-            souce.EditedMessage = target.EditedMessage;
-            souce.Id = target.Id;
-            souce.InlineQuery = target.InlineQuery;
-            souce.Message = target.Message;
-            souce.MyChatMember = target.MyChatMember;
-            souce.PollAnswer = target.PollAnswer;
-            souce.PreCheckoutQuery = target.PreCheckoutQuery;
-            souce.ShippingQuery = target.ShippingQuery;
+            target.Poll = souce.Poll;
+            target.ChatMember = souce.ChatMember;
+            target.ChatJoinRequest = souce.ChatJoinRequest;
+            target.CallbackQuery = souce.CallbackQuery;
+            target.ChannelPost = souce.ChannelPost;
+            target.ChosenInlineResult = souce.ChosenInlineResult;
+            target.EditedChannelPost = souce.EditedChannelPost;
+            target.EditedMessage = souce.EditedMessage;
+            target.Id = souce.Id;
+            target.InlineQuery = souce.InlineQuery;
+            target.Message = souce.Message;
+            target.MyChatMember = souce.MyChatMember;
+            target.PollAnswer = souce.PollAnswer;
+            target.PreCheckoutQuery = souce.PreCheckoutQuery;
+            target.ShippingQuery = souce.ShippingQuery;
         }
     }
 }

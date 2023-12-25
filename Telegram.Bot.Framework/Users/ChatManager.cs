@@ -16,6 +16,7 @@
 
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.UserAuthentication;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
@@ -26,12 +27,17 @@ namespace Telegram.Bot.Framework.Users
     /// 拥有 <see cref="DependencyInjectionAttribute"/> 标签，可以自动注册服务
     /// </summary>
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IChatManager))]
-    internal class ChatManager : IChatManager
+    internal class ChatManager(IServiceProvider serviceProvider) : IChatManager
     {
         /// <summary>
         /// 用于缓存 <see cref="TelegramUserChatContext"/> 对象
         /// </summary>
-        private readonly Dictionary<ChatId, TelegramUserChatContext> __Chats = [];
+        private readonly Dictionary<long, TelegramUserChatContext> __UserIDs = [];
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IGlobalBlackList blackList = serviceProvider.GetService<IGlobalBlackList>();
 
         /// <summary>
         /// 创建或取得 <see cref="TelegramUserChatContext"/> 对象
@@ -47,20 +53,20 @@ namespace Telegram.Bot.Framework.Users
         public TelegramUserChatContext Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider)
         {
             var User = update.GetRequestUser();
-            var UserID = User?.Id;
-            TelegramUserChatContext chat;
-            if (UserID != null)
+            if (User == null) return null;
+
+            var userID = User.Id;
+            // 检查屏蔽列表
+            if (blackList?.Verify(userID) ?? false)
+                return null;
+
+            if (!__UserIDs.TryGetValue(userID, out var chatContext))
             {
-                if (!__Chats.TryGetValue(UserID, out chat))
-                {
-                    chat = TelegramUserChatContext.GetChat(User, BotServiceProvider);
-                    __Chats.Add(UserID, chat);
-                }
+                chatContext = TelegramUserChatContext.GetChat(User, BotServiceProvider);
+                __UserIDs.TryAdd(userID, chatContext);
             }
-            else
-                throw new NullReferenceException();
-            chat.CopyTo(update);
-            return chat;
+            update.CopyTo(chatContext);
+            return chatContext;
         }
     }
 }

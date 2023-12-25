@@ -14,27 +14,31 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.Pipeline;
+using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Attributes;
-using Telegram.Bot.Framework.Abstracts.Bots;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.CorePipelines
+namespace Telegram.Bot.Framework.UserAuthentication
 {
-    [DependencyInjection(ServiceLifetime.Singleton, typeof(ITelegramService))]
-    internal class PipelineService : ITelegramService
+    internal class UserAuthenticationFilter : IControllerFilter
     {
-        public void AddServices(IServiceCollection services) =>
-            services.AddScoped(x => PipelineFactory.CreateIPipelineBuilder<TelegramUserChatContext>()
+        public async Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand)
+        {
+            AuthenticateAttribute authenticateAttribute;
 
-            .AddProcedure(new PipelineBotCommand())
-            .AddProcedure(new PipelineControllerFilter())
-            .AddProcedure(new PipelineControllerInvoker())
-            .AddProcedure(new PipelineClear())
+            // 指令没有权限标志（或者不是指令）
+            if (botCommand?.AuthenticateAttribute == null)
+                return true;
 
-            .CreatePipeline(UpdateType.Message)
+            // 指令有权限标志
+            var userManager = tGChat.UserScopeService.GetRequiredService<IUserManager>();
+            if (!userManager.IsSignIn(tGChat.User))
+                return false;
 
-            .BuilderPipelineController());
+            authenticateAttribute = botCommand.AuthenticateAttribute;
+
+            return await Task.FromResult(userManager.VerifyRole(tGChat.User, authenticateAttribute));
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.Users
         /// <summary>
         /// 
         /// </summary>
-        public HashSet<Enum> RoleName { get; } = [];
+        public HashSet<string> RoleName { get; } = [];
 
         /// <summary>
         /// 
