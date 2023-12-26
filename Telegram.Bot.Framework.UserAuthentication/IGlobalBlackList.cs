@@ -1,22 +1,6 @@
-﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
-//
-//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+﻿using Telegram.Bot.Framework.Abstracts.Controllers;
 
-using Telegram.Bot.Framework.Abstracts.Users;
-
-namespace Telegram.Bot.Framework.Abstracts.UserAuthentication
+namespace Telegram.Bot.Framework.UserAuthentication
 {
     /// <summary>
     /// 全局屏蔽接口
@@ -25,7 +9,7 @@ namespace Telegram.Bot.Framework.Abstracts.UserAuthentication
     /// 用于对用户进行全局屏蔽，非全局屏蔽的用户，会创建 <see cref="TelegramUserChatContext"/> 类，耗费额外的资源，
     /// 对于全局屏蔽用户的处理，则是在最初的 <see cref="TelegramUserChatContext"/> 创建时进行屏蔽。
     /// </remarks>
-    public interface IGlobalBlackList
+    public interface IGlobalBlackList : IGlobalFilter
     {
         /// <summary>
         /// 在加载屏蔽列表时的事件

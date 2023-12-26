@@ -14,17 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Types;
+
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     /// <summary>
-    /// 消息内容创建
+    /// 全局过滤器
     /// </summary>
-    public interface IMessageContent
+    public interface IGlobalFilter
     {
         /// <summary>
-        /// 创建消息
+        /// 开始执行过滤
         /// </summary>
+        /// <param name="update"></param>
         /// <returns></returns>
-        public string Build();
+        public bool FilterInvoke(Update update);
     }
 }

@@ -14,42 +14,168 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
-    public class BotCommand
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BotCommand(IServiceProvider serviceProvider)
     {
-        private string __BotCommandName = string.Empty;
+        /// <summary>
+        /// 
+        /// </summary>
         public string BotCommandName
         {
-            get => __BotCommandName;
-            set
+            get
             {
-                var botCommandName = value;
-                if (!string.IsNullOrEmpty(botCommandName))
-                {
-                    if (!botCommandName.StartsWith('/'))
-                        botCommandName = $"/{botCommandName}";
-                }
-                __BotCommandName = botCommandName;
+                if (__BotCommandName != null)
+                    return __BotCommandName;
+
+                __BotCommandName = BotCommandAttribute?.BotCommandName ?? string.Empty;
+                return __BotCommandName;
             }
         }
+        private string? __BotCommandName;
 
-        public string Description { get; set; } = string.Empty;
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Description
+        {
+            get
+            {
+                if (__Description != null)
+                    return __Description;
 
-        public MessageType MessageType { get; set; } = MessageType.Unknown;
+                __Description = BotCommandAttribute?.Description ?? string.Empty;
+                return __Description;
+            }
+        }
+        private string? __Description;
 
-        public Func<TelegramController, object[], Task> Func { get; set; } = (controller, objs) => Task.CompletedTask;
+        /// <summary>
+        /// 
+        /// </summary>
+        public MessageType MessageType
+        {
+            get
+            {
+                if (__MessageType != null)
+                    return __MessageType.GetValueOrDefault(MessageType.Unknown);
 
-        public MethodInfo MethodInfo { get; set; } = null!;
+                __MessageType = BotCommandAttribute?.MessageType ?? MessageType.Unknown;
+                return __MessageType.GetValueOrDefault(MessageType.Unknown);
+            }
+        }
+        private MessageType? __MessageType;
 
-        public Type Controller { get; set; } = null!;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Func<TelegramController, object[], Task> Func
+        {
+            get
+            {
+                if (__Func != null)
+                    return __Func;
 
-        public List<IControllerParam> ControllerParams { get; set; } = [];
+                __Func = (controller, paramsObjs) =>
+                {
+                    var result = MethodInfo.Invoke(controller, paramsObjs);
+                    return result is Task task ? task : Task.CompletedTask;
+                };
+                RuntimeHelpers.PrepareDelegate(__Func);
+                return __Func;
+            }
+        }
+        private Func<TelegramController, object[], Task>? __Func;
 
-        public AuthenticateAttribute AuthenticateAttribute { get; set; } = null!;
+        /// <summary>
+        /// 
+        /// </summary>
+        public MethodInfo MethodInfo
+        {
+            get => __MethodInfo!;
+            set
+            {
+                __MethodInfo = value;
+                RuntimeHelpers.PrepareMethod(__MethodInfo.MethodHandle);
+
+                AuthenticateAttribute = Attribute.GetCustomAttribute(__MethodInfo, typeof(AuthenticateAttribute)) as AuthenticateAttribute;
+                BotCommandAttribute = Attribute.GetCustomAttribute(__MethodInfo, typeof(BotCommandAttribute)) as BotCommandAttribute;
+            }
+        }
+        private MethodInfo? __MethodInfo;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type Controller
+        {
+            get
+            {
+                if (__Controller != null)
+                    return __Controller;
+
+                __Controller = MethodInfo.DeclaringType;
+                return __Controller!;
+            }
+        }
+        private Type? __Controller;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<IControllerParam> ControllerParams 
+        {
+            get
+            {
+                if (__ControllerParams != null)
+                    return __ControllerParams;
+
+                __ControllerParams = MethodInfo.GetParameters().Select(p =>
+                {
+                    var controllerParamMaker = serviceProvider.GetService<IControllerParamMaker>()!;
+                    if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.Sender != null)
+                    {
+                        var controllerParamSender = ActivatorUtilities.CreateInstance(serviceProvider, paramAttribute.Sender, []) as IControllerParamSender;
+                        return controllerParamMaker.Make(p, controllerParamSender!);
+                    }
+                    return controllerParamMaker.Make(p, null!);
+                }).ToList() ?? [];
+
+                return __ControllerParams;
+            }
+        }
+        private List<IControllerParam>? __ControllerParams;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public AuthenticateAttribute? AuthenticateAttribute { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public BotCommandAttribute? BotCommandAttribute { get; private set; }
+
+        #region 缓存
+        private static readonly List<PropertyInfo> propertyInfos =
+        [
+            .. typeof(BotCommand)
+                        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        ];
+        public void Cache()
+        {
+            foreach (var propertyInfo in propertyInfos)
+                _ = propertyInfo.GetValue(this);
+        }
+        #endregion
     }
 }

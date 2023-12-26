@@ -16,7 +16,6 @@
 
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
-using Telegram.Bot.Framework.Abstracts.UserAuthentication;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
@@ -35,11 +34,6 @@ namespace Telegram.Bot.Framework.Users
         private readonly Dictionary<long, TelegramUserChatContext> __UserIDs = [];
 
         /// <summary>
-        /// 
-        /// </summary>
-        private readonly IGlobalBlackList blackList = serviceProvider.GetService<IGlobalBlackList>();
-
-        /// <summary>
         /// 创建或取得 <see cref="TelegramUserChatContext"/> 对象
         /// </summary>
         /// <remarks>
@@ -56,14 +50,11 @@ namespace Telegram.Bot.Framework.Users
             if (User == null) return null;
 
             var userID = User.Id;
-            // 检查屏蔽列表
-            if (blackList?.Verify(userID) ?? false)
-                return null;
 
             if (!__UserIDs.TryGetValue(userID, out var chatContext))
             {
                 chatContext = TelegramUserChatContext.GetChat(User, BotServiceProvider);
-                __UserIDs.TryAdd(userID, chatContext);
+                _ = __UserIDs.TryAdd(userID, chatContext);
             }
             update.CopyTo(chatContext);
             return chatContext;

@@ -14,7 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts.UserAuthentication;
+using Telegram.Bot.Framework.Abstracts;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
@@ -23,25 +24,25 @@ namespace Telegram.Bot.Framework.UserAuthentication
         public event EventHandler<UserIDArgs>? OnLoadUserID;
         public event EventHandler<UserIDArgs>? OnSaveUserID;
 
-        private readonly HashSet<long> __UserIDs = [];
+        private readonly HashSet<long> __BlackList = [long.MinValue];
 
         public void Add(long userID) =>
-            __UserIDs.Add(userID);
+            __BlackList.Add(userID);
 
         public void Remove(long userID) =>
-            __UserIDs.Remove(userID);
+            __BlackList.Remove(userID);
 
         public bool Verify(long userID) =>
-            __UserIDs.Contains(userID);
+            __BlackList.Contains(userID);
 
         public void Init()
         {
             var userIDArgs = new UserIDArgs();
             OnLoadUserID?.Invoke(null, userIDArgs);
             foreach (var id in userIDArgs.UserIDs ?? [])
-                _ = __UserIDs.Add(id);
+                _ = __BlackList.Add(id);
         }
-
-        public List<long> GetList() => __UserIDs.ToList();
+        public List<long> GetList() => __BlackList.ToList();
+        public bool FilterInvoke(Update update) => !Verify(update.GetRequestUser()?.Id ?? long.MinValue);
     }
 }

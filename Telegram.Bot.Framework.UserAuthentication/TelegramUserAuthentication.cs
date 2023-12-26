@@ -17,7 +17,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Controllers;
-using Telegram.Bot.Framework.Abstracts.UserAuthentication;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
@@ -31,6 +30,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
         {
             _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
             _ = services.AddScoped<IUserManager, UserManager>();
+            _ = services.AddSingleton<IGlobalFilter>(x => x.GetService<IGlobalBlackList>()!);
             _ = services.AddSingleton<IGlobalBlackList, GlobalBlackList>(x =>
             {
                 var blackList = new GlobalBlackList();

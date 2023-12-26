@@ -90,53 +90,23 @@ namespace Telegram.Bot.Framework.Bots
 
             services.AddSingleton<IControllerManager>(service =>
             {
-                if (service == null)
-                {
+                ControllerManager controllerManager = new();
+                
+                var azReflection = AzReflection<TelegramController>.Create();
 
-                }
-                return new ControllerManager();
-            });
-            ControllerManager controllerManager = new();
-
-            var azReflection = AzReflection<TelegramController>.Create();
-            foreach (var Controller in azReflection.FindAllSubclass())
-            {
-                var methodInfos = Controller.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                foreach (var Method in methodInfos)
+                foreach (var controller in azReflection.FindAllSubclass())
                 {
-                    if (Attribute.IsDefined(Method, typeof(BotCommandAttribute)))
-                    {
-                        var botCommandAttribute = Attribute.GetCustomAttribute(Method, typeof(BotCommandAttribute)) as BotCommandAttribute;
-                        controllerManager.InternalCommands.Add(new BotCommand
-                        {
-                            BotCommandName = botCommandAttribute?.BotCommandName == null && botCommandAttribute?.MessageType == null ? $"/{Method.Name.ToLower()}" : botCommandAttribute?.BotCommandName ?? string.Empty,
-                            Description = botCommandAttribute?.Description ?? string.Empty,
-                            Controller = Controller,
-                            Func = (telegram, objs) => Method.Invoke(telegram, objs) is Task task ? task : Task.CompletedTask,
-                            MethodInfo = Method,
-                            ControllerParams = Method.GetParameters().Select(p =>
+                    var methodinfos = controller.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    foreach (var method in methodinfos)
+                        if (Attribute.IsDefined(method, typeof(BotCommandAttribute)))
+                            controllerManager.InternalCommands.Add(new BotCommand(builderService)
                             {
-                                var controllerParamMaker = builderService.GetService<IControllerParamMaker>()!;
-                                if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.Sender != null)
-                                {
-                                    var controllerParamSender = ActivatorUtilities.CreateInstance(builderService, paramAttribute.Sender, []) as IControllerParamSender;
-                                    return controllerParamMaker.Make(p, controllerParamSender);
-                                }
-                                return controllerParamMaker.Make(p, null!);
-                            }).ToList(),
-                            MessageType = botCommandAttribute?.MessageType ?? Types.Enums.MessageType.Unknown
-                        });
-                    }
+                                MethodInfo = method,
+                            });
                 }
-            }
-
-            foreach (var item in controllerManager.InternalCommands)
-            {
-                RuntimeHelpers.PrepareDelegate(item.Func);
-                RuntimeHelpers.PrepareMethod(item.MethodInfo.MethodHandle);
-            }
-
-            _ = services.AddSingleton<IControllerManager>(controllerManager);
+                controllerManager.InternalCommands.ForEach(x => x.Cache());
+                return controllerManager;
+            });
 
             foreach (var service in builderService.GetServices<ITelegramService>())
                 service.AddServices(services);

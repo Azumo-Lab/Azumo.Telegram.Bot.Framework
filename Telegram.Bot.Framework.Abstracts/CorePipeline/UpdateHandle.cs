@@ -18,6 +18,7 @@ using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -62,15 +63,22 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
         /// <exception cref="NotImplementedException"></exception>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            // 全局过滤器
+            var globalFilters = __ServiceProvider.GetServices<IGlobalFilter>();
+            foreach (var filter in globalFilters ?? [])
+                if (!filter.FilterInvoke(update))
+                    return;
+
+            // 创建用户 TelegramUserChatContext
             var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
             var telegramUserChatContext = chatManager.Create(botClient, update, __ServiceProvider);
-
-            // 已被全局屏蔽
+            // 无法创建，停止执行
             if (telegramUserChatContext == null)
                 return;
 
             try
             {
+                // 开始执行
                 var pipelineController = telegramUserChatContext.UserScopeService.GetRequiredService<IPipelineController<TelegramUserChatContext>>();
                 _ = await pipelineController.SwitchTo(telegramUserChatContext.Type, telegramUserChatContext);
             }

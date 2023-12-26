@@ -38,6 +38,10 @@ namespace Telegram.Bot.Framework.Bots
 
         public void AddBuildService(IServiceCollection services)
         {
+            ArgumentException.ThrowIfNullOrEmpty(__SettingPath, "配置文件路径");
+            if (!File.Exists(__SettingPath))
+                throw new FileNotFoundException($"未找到配置文件路径 : \"{__SettingPath}\"");
+
             _ = services.RemoveAll<IConfiguration>();
             var configurationBuilder = new ConfigurationBuilder().AddJsonFile(__SettingPath).Build();
             _ = services.AddSingleton<IConfiguration>(configurationBuilder);
