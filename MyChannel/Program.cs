@@ -22,7 +22,7 @@ namespace MyChannel
 {
     internal class Program
     {
-        private static async Task Main(string[] args)
+        private static void Main(string[] args)
         {
             //var sender = new HttpClient();
             //var html = await (await sender.GetAsync("https://yande.re/post/show/1127314")).Content.ReadAsStringAsync();

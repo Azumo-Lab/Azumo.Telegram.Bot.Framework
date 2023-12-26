@@ -22,7 +22,7 @@ namespace Telegram.Bot.Framework.Abstracts.CorePipeline
     /// <summary>
     /// 不进行任何处理
     /// </summary>
-    internal class PipelineNull : IProcessAsync<TelegramUserChatContext>
+    internal class PipelineEmpty : IProcessAsync<TelegramUserChatContext>
     {
         /// <summary>
         /// 不进行任何处理

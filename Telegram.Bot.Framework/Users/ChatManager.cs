@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.Users
     /// 拥有 <see cref="DependencyInjectionAttribute"/> 标签，可以自动注册服务
     /// </summary>
     [DependencyInjection(ServiceLifetime.Singleton, typeof(IChatManager))]
-    internal class ChatManager(IServiceProvider serviceProvider) : IChatManager
+    internal class ChatManager : IChatManager
     {
         /// <summary>
         /// 用于缓存 <see cref="TelegramUserChatContext"/> 对象
