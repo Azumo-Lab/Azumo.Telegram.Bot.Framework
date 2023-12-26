@@ -31,12 +31,17 @@ namespace Telegram.Bot.Framework.Bots
 
         }
 
-        public void Build(IServiceCollection services, IServiceProvider builderService) => _ = services.AddSingleton<IStartExec, RegisterBotCommand>();
+        public void Build(IServiceCollection services, IServiceProvider builderService) => 
+            _ = services.AddSingleton<IStartExec, RegisterBotCommand>();
 
+        /// <summary>
+        /// Bot启动任务
+        /// </summary>
         private class RegisterBotCommand : IStartExec
         {
             public async Task Exec(ITelegramBotClient bot, IServiceProvider serviceProvider)
             {
+                // 开始注册
                 using (var serviceScope = serviceProvider.CreateScope())
                 {
                     var controllerManager = serviceScope.ServiceProvider.GetRequiredService<IControllerManager>();

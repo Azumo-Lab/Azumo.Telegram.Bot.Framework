@@ -30,6 +30,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
         {
             _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
             _ = services.AddScoped<IUserManager, UserManager>();
+            _ = services.AddSingleton<IRoleManager, RoleManager>();
             _ = services.AddSingleton<IGlobalFilter>(x => x.GetService<IGlobalBlackList>()!);
             _ = services.AddSingleton<IGlobalBlackList, GlobalBlackList>(x =>
             {

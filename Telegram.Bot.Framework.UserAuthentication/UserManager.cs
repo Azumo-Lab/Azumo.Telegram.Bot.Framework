@@ -23,7 +23,8 @@ namespace Telegram.Bot.Framework.UserAuthentication
 {
     internal class UserManager(IServiceProvider serviceProvider) : IUserManager
     {
-        private readonly IGlobalBlackList? blackList = serviceProvider.GetService<IGlobalBlackList>();
+        private readonly IGlobalBlackList? __blackList = serviceProvider.GetService<IGlobalBlackList>();
+        private readonly IRoleManager? __roleManager = serviceProvider.GetService<IRoleManager>();
 
         private static readonly string SignInFlag = Guid.NewGuid().ToString();
         private static readonly string RoleFlag = Guid.NewGuid().ToString();
@@ -51,7 +52,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
         /// <returns></returns>
         public Task<bool> UserBan(IUser user)
         {
-            blackList?.Add(user.User.Id);
+            __blackList?.Add(user.User.Id);
             return Task.FromResult(user.Session.Set(UserBlockFlag, true));
         }
 
@@ -98,6 +99,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
                 roles = [role];
                 _ = user.Session.Set(RoleFlag, roles);
             }
+            __roleManager?.AddUser(user.User, roles);
             return await Task.FromResult(true);
         }
 
@@ -177,9 +179,16 @@ namespace Telegram.Bot.Framework.UserAuthentication
         public bool VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute)
         {
             var flag = false;
+
+            // 检查是否是已经注册的角色名称
+            foreach (var item in authenticateAttribute.RoleName)
+                if (!__roleManager?.VerifyRole(item) ?? true)
+                    return flag;
+
             // 已屏蔽用户
             if (user.Session.HasVal(UserBlockFlag))
                 return flag;
+
             // 检查权限
             if (user.Session.TryGetValue(RoleFlag, out List<string>? role))
                 foreach (var item in role!)
@@ -190,7 +199,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
 
         public Task<bool> UserUnBan(IUser user)
         {
-            blackList?.Remove(user.User.Id);
+            __blackList?.Remove(user.User.Id);
             return Task.FromResult(user.Session.Remove(UserBlockFlag));
         }
     }
