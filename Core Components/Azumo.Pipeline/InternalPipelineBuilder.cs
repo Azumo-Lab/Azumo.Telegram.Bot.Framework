@@ -21,23 +21,17 @@ namespace Azumo.Pipeline
     /// <summary>
     /// 内部实现的流水线创建类
     /// </summary>
-    internal class InternalPipelineBuilder<T> : IPipelineBuilder<T>
+    /// <remarks>
+    /// 初始化
+    /// </remarks>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    internal class InternalPipelineBuilder<T>(List<Type>? TypeList = null) : IPipelineBuilder<T>
     {
         private readonly List<IProcessAsync<T>> __Procedures = [];
-        private readonly IPipelineController<T> __Controller;
-        private readonly List<Type>? __TypeList;
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        public InternalPipelineBuilder(List<Type>? TypeList = null)
-        {
-            __Controller = PipelineFactory.CreateIPipelineController<T>();
-            __TypeList = TypeList;
-        }
+        private readonly IPipelineController<T> __Controller = PipelineFactory.CreateIPipelineController<T>();
+        private readonly List<Type>? __TypeList = TypeList;
 
         /// <summary>
         /// 
@@ -77,10 +71,9 @@ namespace Azumo.Pipeline
         /// <returns></returns>
         public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull
         {
-            if (pipelineName == null)
-                throw new ArgumentNullException(nameof(pipelineName));
+            ArgumentNullException.ThrowIfNull(pipelineName, nameof(pipelineName));
 
-            __Controller.AddPipeline(pipelineName, PipelineFactory.CreateIPipeline(__Procedures.ToArray(), __Controller));
+            __Controller.AddPipeline(pipelineName, PipelineFactory.CreateIPipeline([.. __Procedures], __Controller));
             __Procedures.Clear();
             return this;
         }

@@ -18,14 +18,36 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IRoleManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleName"></param>
         public void AddRole(string roleName);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
         public List<User> GetRoleUser(string roleName);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="roles"></param>
         public void AddUser(User user, List<string> roles);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
         public bool VerifyRole(string roleName);
     }
 }

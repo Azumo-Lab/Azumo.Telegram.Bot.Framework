@@ -128,6 +128,7 @@ namespace Azumo.Pipeline
         /// <returns></returns>
         public async Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull
         {
+            InvokePathList.Clear();
             if (__Pipelines.TryGetValue(pipelineName, out var val))
                 __NowPipeline = val;
             return await NextAsync(t);
