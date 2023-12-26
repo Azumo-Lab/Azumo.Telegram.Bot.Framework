@@ -22,7 +22,6 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
-    [DependencyInjection(ServiceLifetime.Scoped, typeof(IUserManager))]
     internal class UserManager(IServiceProvider serviceProvider) : IUserManager
     {
         private readonly IGlobalBlackList? blackList = serviceProvider.GetService<IGlobalBlackList>();
@@ -56,7 +55,6 @@ namespace Telegram.Bot.Framework.UserAuthentication
             blackList?.Add(user.User.Id);
             return Task.FromResult(user.Session.Set(UserBlockFlag, true));
         }
-
 
         /// <summary>
         /// 

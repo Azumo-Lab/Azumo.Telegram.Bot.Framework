@@ -14,16 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.UserAuthentication;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
-    [DependencyInjection(ServiceLifetime.Singleton, typeof(IGlobalBlackList))]
     internal class GlobalBlackList : IGlobalBlackList
     {
         public event EventHandler<UserIDArgs>? OnLoadUserID;
+        public event EventHandler<UserIDArgs>? OnSaveUserID;
 
         private readonly HashSet<long> __UserIDs = [];
 
@@ -35,5 +33,15 @@ namespace Telegram.Bot.Framework.UserAuthentication
 
         public bool Verify(long userID) =>
             __UserIDs.Contains(userID);
+
+        public void Init()
+        {
+            var userIDArgs = new UserIDArgs();
+            OnLoadUserID?.Invoke(null, userIDArgs);
+            foreach (var id in userIDArgs.UserIDs ?? [])
+                _ = __UserIDs.Add(id);
+        }
+
+        public List<long> GetList() => __UserIDs.ToList();
     }
 }

@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Controllers;
+using Telegram.Bot.Framework.Abstracts.UserAuthentication;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
@@ -29,7 +30,13 @@ namespace Telegram.Bot.Framework.UserAuthentication
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
             _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
-            _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
+            _ = services.AddScoped<IUserManager, UserManager>();
+            _ = services.AddSingleton<IGlobalBlackList, GlobalBlackList>(x =>
+            {
+                var blackList = new GlobalBlackList();
+                blackList.Init();
+                return blackList;
+            });
         }
     }
 
