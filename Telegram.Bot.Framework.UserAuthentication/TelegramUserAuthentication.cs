@@ -42,6 +42,11 @@ namespace Telegram.Bot.Framework.UserAuthentication
 
     public static class UserAuthenticationInstall
     {
+        /// <summary>
+        /// 添加并使用权限认证部分功能
+        /// </summary>
+        /// <param name="telegramBotBuilder"></param>
+        /// <returns></returns>
         public static ITelegramBotBuilder AddUserAuthentication(this ITelegramBotBuilder telegramBotBuilder) =>
             telegramBotBuilder.AddTelegramPartCreator(new TelegramUserAuthentication());
     }

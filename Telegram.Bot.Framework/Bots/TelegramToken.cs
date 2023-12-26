@@ -127,7 +127,8 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, string token) => builder.AddTelegramPartCreator(new TelegramToken(token));
+        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, string token) => 
+            builder.AddTelegramPartCreator(new TelegramToken(token));
 
         /// <summary>
         /// 添加 Token
@@ -139,7 +140,8 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="tokenFunc"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, Func<IConfiguration, string> tokenFunc) => builder.AddTelegramPartCreator(new TelegramToken(tokenFunc));
+        public static ITelegramBotBuilder UseToken(this ITelegramBotBuilder builder, Func<IConfiguration, string> tokenFunc) => 
+            builder.AddTelegramPartCreator(new TelegramToken(tokenFunc));
 
         /// <summary>
         /// 添加 Token
@@ -154,6 +156,7 @@ namespace Telegram.Bot.Framework.Bots
         /// <param name="builder"></param>
         /// <param name="tokenFunc"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder UseToken<SettingType>(this ITelegramBotBuilder builder, Func<SettingType, string> tokenFunc) => builder.AddTelegramPartCreator(new TelegramToken<SettingType>(tokenFunc));
+        public static ITelegramBotBuilder UseToken<SettingType>(this ITelegramBotBuilder builder, Func<SettingType, string> tokenFunc) => 
+            builder.AddTelegramPartCreator(new TelegramToken<SettingType>(tokenFunc));
     }
 }

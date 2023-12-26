@@ -17,7 +17,6 @@
 using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Polling;
