@@ -9,21 +9,10 @@ namespace Telegram.Bot.Framework.CorePipelines
     {
         public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext chat, IPipelineController<TelegramUserChatContext> pipelineController)
         {
-            var botCommand = chat.Session.GetBotCommand();
             // 获取参数
             var controllerParamManager = chat.UserScopeService.GetRequiredService<IControllerParamManager>();
-            if (botCommand != null)
-            {
-                chat.Session.RemoveBotCommand();
-                controllerParamManager.Clear();
-                controllerParamManager.SetBotCommand(botCommand);
-                controllerParamManager.ControllerParams = new List<IControllerParam>(botCommand.ControllerParams);
-            }
-            var resultEnum = await controllerParamManager.NextParam(chat);
-            if (resultEnum != ResultEnum.Finish)
-                return await pipelineController.StopAsync(chat);
 
-            botCommand ??= controllerParamManager.GetBotCommand();
+            var botCommand = controllerParamManager.GetBotCommand();
             if (botCommand == null)
                 return await pipelineController.StopAsync(chat);
 
@@ -34,7 +23,13 @@ namespace Telegram.Bot.Framework.CorePipelines
                 await telegramController.ControllerInvokeAsync(chat, botCommand.Func, controllerParamManager);
             }
             catch (Exception)
-            { }
+            { 
+                
+            }
+            finally
+            {
+                controllerParamManager.Clear();
+            }
 
             // 执行下一个
             return await pipelineController.NextAsync(chat);

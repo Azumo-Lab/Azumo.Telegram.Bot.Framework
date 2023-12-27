@@ -28,8 +28,8 @@ namespace Telegram.Bot.Framework.CorePipelines
         public void AddServices(IServiceCollection services) =>
             services.AddScoped(x => PipelineFactory.CreateIPipelineBuilder<TelegramUserChatContext>()
 
-            .AddProcedure(new PipelineBotCommand())
             .AddProcedure(new PipelineControllerFilter())
+            .AddProcedure(new PipelineControllerParams())
             .AddProcedure(new PipelineControllerInvoker())
             .AddProcedure(new PipelineClear())
 

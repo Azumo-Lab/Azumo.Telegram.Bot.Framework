@@ -60,10 +60,6 @@ namespace Telegram.Bot.Framework.Abstracts
             {
                 throw;
             }
-            finally
-            {
-                controllerParamManager.Clear();
-            }
         }
 
         /// <summary>

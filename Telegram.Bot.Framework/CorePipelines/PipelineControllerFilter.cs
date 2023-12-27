@@ -25,14 +25,19 @@ namespace Telegram.Bot.Framework.CorePipelines
     {
         public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext telegramUserChatContext, IPipelineController<TelegramUserChatContext> pipelineController)
         {
-            var botCommand = telegramUserChatContext.Session.GetBotCommand();
+            var controllerManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerManager>();
+            var botCommand = controllerManager.GetCommand(telegramUserChatContext);
+            
             if (botCommand != null)
             {
-                telegramUserChatContext.Session.SetBotCommand(botCommand);
-                var controllerFilters = telegramUserChatContext.UserScopeService.GetServices<IControllerFilter>();
-                foreach (var controllerFilter in controllerFilters)
+                foreach (var controllerFilter in telegramUserChatContext.UserScopeService.GetServices<IControllerFilter>() ?? [])
                     if (!await controllerFilter.Execute(telegramUserChatContext, botCommand))
                         return await pipelineController.StopAsync(telegramUserChatContext);
+
+                var controllerParamManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerParamManager>();
+                controllerParamManager.Clear();
+                controllerParamManager.SetBotCommand(botCommand);
+                controllerParamManager.ControllerParams = new List<IControllerParam>(botCommand.ControllerParams);
             }
 
             return await pipelineController.NextAsync(telegramUserChatContext);

@@ -18,7 +18,9 @@ using Azumo.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
@@ -200,6 +202,42 @@ namespace Telegram.Bot.Framework.UserAuthentication
         {
             __blackList?.Remove(user.User.Id);
             return Task.FromResult(user.Session.Remove(UserBlockFlag));
+        }
+
+        public async Task ChangeBotCommand(TelegramUserChatContext telegramUserChatContext)
+        {
+            var roleName = string.Empty;
+            if (telegramUserChatContext.Session.TryGetValue(RoleFlag, out List<string>? roles))
+                roleName = (roles ?? []).FirstOrDefault(string.Empty);
+
+            var controllerManager = serviceProvider.GetRequiredService<IControllerManager>();
+            var commands = controllerManager.GetAllCommands()
+                .Where(x => x.AuthenticateAttribute == null || x.AuthenticateAttribute!.RoleName.Contains(roleName))
+                .ToList();
+            BotCommandScope botCommandScope = BotCommandScope.Default();
+            switch (telegramUserChatContext.UserChat.Type)
+            {
+                case Types.Enums.ChatType.Private:
+                    botCommandScope = BotCommandScope.Chat(telegramUserChatContext.UserChatID);
+                    break;
+                case Types.Enums.ChatType.Group:
+                    User? user;
+                    if ((user = telegramUserChatContext.RequestUser) != null)
+                        botCommandScope = BotCommandScope.ChatMember(telegramUserChatContext.UserChatID, user.Id);
+                    break;
+                case Types.Enums.ChatType.Channel:
+                    break;
+                case Types.Enums.ChatType.Supergroup:
+                    break;
+                default:
+                    break;
+            }
+            var telegramBotClient = serviceProvider.GetRequiredService<ITelegramBotClient>();
+            await telegramBotClient.SetMyCommandsAsync(commands.Select(x => new Types.BotCommand
+            {
+                Command = x.BotCommandName,
+                Description = x.Description,
+            }), botCommandScope);
         }
     }
 }

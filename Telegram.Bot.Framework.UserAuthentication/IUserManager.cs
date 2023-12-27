@@ -75,6 +75,14 @@ namespace Telegram.Bot.Framework.UserAuthentication
         public EnumVerifyRoleResult VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public Task ChangeBotCommand(TelegramUserChatContext telegramUserChatContext);
+
+        /// <summary>
         /// 用户登录
         /// </summary>
         /// <param name="user">用户信息</param>

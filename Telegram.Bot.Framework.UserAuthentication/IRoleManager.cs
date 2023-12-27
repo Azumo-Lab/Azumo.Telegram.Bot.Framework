@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.UserAuthentication

@@ -40,6 +40,8 @@ namespace Telegram.Bot.Framework.Abstracts.Users
         /// </summary>
         public Chat? RequestChat => Extensions.GetRequestChat(this);
 
+        public User? RequestUser => Extensions.GetRequestUser(this);
+
         /// <summary>
         /// 用户的Chat
         /// </summary>
