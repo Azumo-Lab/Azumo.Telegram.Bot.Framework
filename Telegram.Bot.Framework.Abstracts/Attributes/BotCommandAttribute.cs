@@ -21,7 +21,7 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
     public class BotCommandAttribute : Attribute
     {
         /// <summary>

@@ -108,6 +108,29 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <summary>
         /// 
         /// </summary>
+        public Func<object[], Task> StaticFun
+        {
+            get
+            {
+                if (__StaticFun != null)
+                    return __StaticFun;
+
+                __StaticFun = (paramsObjs) =>
+                {
+                    var result = MethodInfo.Invoke(Target, paramsObjs);
+                    return result is Task task ? task : Task.CompletedTask;
+                };
+                RuntimeHelpers.PrepareDelegate(__StaticFun);
+                return __StaticFun;
+            }
+        }
+        private Func<object[], Task>? __StaticFun;
+
+        public object? Target { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public MethodInfo MethodInfo
         {
             get => __MethodInfo!;

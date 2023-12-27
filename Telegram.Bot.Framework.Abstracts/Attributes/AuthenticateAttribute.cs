@@ -22,7 +22,7 @@ namespace Telegram.Bot.Framework.Abstracts.Attributes
     /// <remarks>
     /// 这个标签可以用于权限认证
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Delegate, AllowMultiple = false)]
     public class AuthenticateAttribute : Attribute
     {
         /// <summary>

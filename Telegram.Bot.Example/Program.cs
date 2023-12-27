@@ -49,6 +49,7 @@ namespace Telegram.Bot.Example
                 .RegisterBotCommand()
                 // 添加用户认证服务
                 .AddUserAuthentication(["admin", "user"])
+                .AddCommand([BotCommand("Func", Description = "Func测试")]()=> Task.CompletedTask)
                 // 创建机器人接口
                 .Build();
 

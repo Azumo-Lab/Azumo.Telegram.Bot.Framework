@@ -104,6 +104,14 @@ namespace Telegram.Bot.Framework.Bots
                                 MethodInfo = method,
                             });
                 }
+                foreach (var command in builderService.GetServices<Delegate>() ?? [])
+                {
+                    controllerManager.InternalCommands.Add(new BotCommand(builderService)
+                    {
+                        MethodInfo = command.Method,
+                        Target = command.Target,
+                    });
+                }
                 controllerManager.InternalCommands.ForEach(x => x.Cache());
                 return controllerManager;
             });
