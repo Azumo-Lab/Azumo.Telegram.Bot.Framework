@@ -16,7 +16,7 @@ namespace Telegram.Bot.Framework.Users
             get => __User;
             set
             {
-                if (__User.Id != value.Id)
+                if (__User?.Id != value.Id)
                 {
                     __User = value;
                     __Chat = null;

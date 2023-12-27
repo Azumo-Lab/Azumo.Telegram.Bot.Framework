@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
@@ -115,7 +116,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
             OnSignIn?.Invoke(null, signInArgs);
             if (signInArgs.PasswordHash != null)
             {
-                if (signInArgs.PasswordHash == password)
+                if (signInArgs.PasswordHash == PasswordHelper.Hash(password))
                 {
                     _ = user.Session.Set(SignInFlag, true);
                     _ = user.Session.Set(RoleFlag, new List<string>(signInArgs.UserRoles));
@@ -176,25 +177,23 @@ namespace Telegram.Bot.Framework.UserAuthentication
         /// <param name="user"></param>
         /// <param name="authenticateAttribute"></param>
         /// <returns></returns>
-        public bool VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute)
+        public EnumVerifyRoleResult VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute)
         {
-            var flag = false;
-
             // 检查是否是已经注册的角色名称
             foreach (var item in authenticateAttribute.RoleName)
                 if (!__roleManager?.VerifyRole(item) ?? true)
-                    return flag;
+                    return EnumVerifyRoleResult.Failure;
 
             // 已屏蔽用户
             if (user.Session.HasVal(UserBlockFlag))
-                return flag;
+                return EnumVerifyRoleResult.Failure;
 
             // 检查权限
             if (user.Session.TryGetValue(RoleFlag, out List<string>? role))
                 foreach (var item in role!)
-                    if (flag = authenticateAttribute.RoleName.Contains(item))
-                        return flag;
-            return flag;
+                    if (authenticateAttribute.RoleName.Contains(item))
+                        return EnumVerifyRoleResult.Success;
+            return EnumVerifyRoleResult.Failure;
         }
 
         public Task<bool> UserUnBan(IUser user)

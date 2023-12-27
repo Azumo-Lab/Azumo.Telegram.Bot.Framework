@@ -20,17 +20,20 @@ using Telegram.Bot.Framework.Abstracts.Controllers;
 
 namespace Telegram.Bot.Framework.UserAuthentication
 {
-    internal class TelegramUserAuthentication : ITelegramPartCreator
+    internal class TelegramUserAuthentication(string[] roles) : ITelegramPartCreator
     {
         public void AddBuildService(IServiceCollection services)
         {
-
+            var roleManager = new RoleManager();
+            foreach (var item in roles ?? [])
+                roleManager.AddRole(item);
+            _ = services.AddSingleton<IRoleManager>(roleManager);
         }
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
             _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
             _ = services.AddScoped<IUserManager, UserManager>();
-            _ = services.AddSingleton<IRoleManager, RoleManager>();
+            _ = services.AddSingleton(builderService.GetRequiredService<IRoleManager>());
             _ = services.AddSingleton<IGlobalFilter>(x => x.GetService<IGlobalBlackList>()!);
             _ = services.AddSingleton<IGlobalBlackList, GlobalBlackList>(x =>
             {
@@ -48,7 +51,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
         /// </summary>
         /// <param name="telegramBotBuilder"></param>
         /// <returns></returns>
-        public static ITelegramBotBuilder AddUserAuthentication(this ITelegramBotBuilder telegramBotBuilder) =>
-            telegramBotBuilder.AddTelegramPartCreator(new TelegramUserAuthentication());
+        public static ITelegramBotBuilder AddUserAuthentication(this ITelegramBotBuilder telegramBotBuilder, string[] roles) =>
+            telegramBotBuilder.AddTelegramPartCreator(new TelegramUserAuthentication(roles));
     }
 }

@@ -14,6 +14,7 @@ namespace Telegram.Bot.Framework.CorePipelines
             var controllerParamManager = chat.UserScopeService.GetRequiredService<IControllerParamManager>();
             if (botCommand != null)
             {
+                chat.Session.RemoveBotCommand();
                 controllerParamManager.Clear();
                 controllerParamManager.SetBotCommand(botCommand);
                 controllerParamManager.ControllerParams = new List<IControllerParam>(botCommand.ControllerParams);

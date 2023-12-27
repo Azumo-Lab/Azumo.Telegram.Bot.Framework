@@ -72,7 +72,7 @@ namespace Telegram.Bot.Framework.UserAuthentication
         /// <param name="user">用户信息</param>
         /// <param name="authenticateAttribute">指令的权限信息</param>
         /// <returns>是否可以访问</returns>
-        public bool VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute);
+        public EnumVerifyRoleResult VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute);
 
         /// <summary>
         /// 用户登录

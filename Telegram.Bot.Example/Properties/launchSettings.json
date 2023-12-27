@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Telegram.Bot.Net": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-setting C:\\Users\\ko--o\\Desktop\\AppSetting.json"
     }
   }
 }

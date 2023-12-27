@@ -38,7 +38,9 @@ namespace Telegram.Bot.Framework.UserAuthentication
 
             authenticateAttribute = botCommand.AuthenticateAttribute;
 
-            return await Task.FromResult(userManager.VerifyRole(tGChat.User, authenticateAttribute));
+            // 开始验证
+            var result = userManager.VerifyRole(tGChat.User, authenticateAttribute);
+            return await Task.FromResult(result == EnumVerifyRoleResult.Success);
         }
     }
 }

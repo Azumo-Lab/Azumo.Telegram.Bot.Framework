@@ -38,7 +38,14 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                     return __BotCommandName;
 
                 __BotCommandName = BotCommandAttribute?.BotCommandName ?? string.Empty;
+                if (string.IsNullOrEmpty(__BotCommandName))
+                    BotCommandName = MethodInfo.Name.ToLower();
                 return __BotCommandName;
+            }
+            private set
+            {
+                if (!string.IsNullOrEmpty(value) && !value.StartsWith('/'))
+                    __BotCommandName = $"/{value}";
             }
         }
         private string? __BotCommandName;
@@ -54,6 +61,8 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                     return __Description;
 
                 __Description = BotCommandAttribute?.Description ?? string.Empty;
+                if (string.IsNullOrEmpty(__Description))
+                    __Description = "No Message";
                 return __Description;
             }
         }

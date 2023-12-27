@@ -1,4 +1,21 @@
-﻿using Azumo.Utils;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Azumo.Utils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -18,15 +35,24 @@ namespace Telegram.Bot.Example
             if (!dic.TryGetValue("-setting", out var settingPath))
                 ArgumentException.ThrowIfNullOrEmpty(settingPath, "请添加启动参数 -setting ，后面添加配置文件路径");
 
+            // 创建ITelegramBotBuilder接口
             var telegramBot = TelegramBuilder.Create()
+                // 添加配置文件
                 .AddConfiguration<AppSetting>(settingPath)
+                // 使用Token
                 .UseToken<AppSetting>(x => x.Token)
+                // 使用Clash默认代理
                 .UseClashDefaultProxy()
+                // 添加一个控制台Log
                 .AddSimpleConsole()
+                // 注册Bot指令
                 .RegisterBotCommand()
-                .AddUserAuthentication()
+                // 添加用户认证服务
+                .AddUserAuthentication(["admin", "user"])
+                // 创建机器人接口
                 .Build();
 
+            // 启动Bot
             var task = telegramBot.StartAsync();
             task.Wait();
         }
@@ -34,21 +60,30 @@ namespace Telegram.Bot.Example
 
     public class TestController : TelegramController
     {
-        private static int count;
-
-        [BotCommand]
-        public async Task Test()
+        [BotCommand(Description = "进行管理员认证")]
+        public async Task Login([Param(Name = "密码")]string password)
         {
-            await Chat.BotClient.SendChatActionAsync(Chat.UserChatID, Types.Enums.ChatAction.Typing);
-            _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, $"第{count++}次 Hello World !!");
+            var userManager = Chat.UserScopeService.GetService<IUserManager>();
+            userManager.OnSignIn += UserManager_OnSignIn;
+            await userManager.UserSignIn(Chat.User, password);
+            await userManager.UserRole(Chat.User, "admin");
+            userManager.OnSignIn -= UserManager_OnSignIn;
+            await SendMessage("已赋予管理员权限");
+        }
+
+        private void UserManager_OnSignIn(object sender, SignInArgs e)
+        {
+            var appSetting = Chat.UserScopeService.GetService<AppSetting>();
+            e.PasswordHash = PasswordHelper.Hash(appSetting.AdminPassword);
+            e.UserRoles.Add("admin");
         }
 
         [Authenticate("admin")]
-        [BotCommand("/Catch")]
-        public async Task Test2(string str)
+        [BotCommand("/Admin")]
+        public async Task Test2()
         {
-            Logger.LogInformation($"发送的消息 : {str}");
-            _ = await Chat.BotClient.SendTextMessageAsync(Chat.UserChatID, $"You Say {str}");
+            await SendMessage("管理员");
+            await SendMessage("欢迎管理员！！");
         }
     }
 }

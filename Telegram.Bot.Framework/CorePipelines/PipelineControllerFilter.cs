@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.CorePipelines
                 telegramUserChatContext.Session.SetBotCommand(botCommand);
                 var controllerFilters = telegramUserChatContext.UserScopeService.GetServices<IControllerFilter>();
                 foreach (var controllerFilter in controllerFilters)
-                    if (await controllerFilter.Execute(telegramUserChatContext, botCommand))
+                    if (!await controllerFilter.Execute(telegramUserChatContext, botCommand))
                         return await pipelineController.StopAsync(telegramUserChatContext);
             }
 
