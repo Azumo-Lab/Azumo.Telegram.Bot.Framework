@@ -86,7 +86,7 @@ namespace Telegram.Bot.Framework.InternalInterface
             /// <param name="tGChat"></param>
             /// <param name="paramAttribute"></param>
             /// <returns></returns>
-            public Task SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute) => Task.CompletedTask;
+            public Task<bool> SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute) => Task.FromResult(false);
         }
     }
 }

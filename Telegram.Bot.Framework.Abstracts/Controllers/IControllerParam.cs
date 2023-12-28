@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// </summary>
         /// <param name="tGChat"></param>
         /// <returns></returns>
-        public Task SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute);
+        public Task<bool> SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute);
 
         /// <summary>
         /// 

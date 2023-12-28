@@ -22,7 +22,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
 {
     [TypeFor(typeof(string))]
-    internal class StringParams : BaseControllerParam, IControllerParamSender
+    internal class ParamsString : BaseControllerParam, IControllerParamSender
     {
         public override async Task<object> CatchObjs(TelegramUserChatContext tGChat) => await Task.FromResult<object>(tGChat.Message?.Text ?? string.Empty);
     }

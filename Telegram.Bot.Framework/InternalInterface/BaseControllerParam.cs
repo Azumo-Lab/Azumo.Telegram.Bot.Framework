@@ -34,8 +34,12 @@ namespace Telegram.Bot.Framework.InternalInterface
 
         public abstract Task<object> CatchObjs(TelegramUserChatContext tGChat);
 
-        public virtual async Task SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute) => 
+        public virtual async Task<bool> SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute)
+        {
             await (ParamSender ?? this).Send(tGChat.BotClient, tGChat.UserChatID, paramAttribute);
+            return false;
+        }
+            
         public virtual async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute)
         {
             var name = paramAttribute?.Name ?? string.Empty;

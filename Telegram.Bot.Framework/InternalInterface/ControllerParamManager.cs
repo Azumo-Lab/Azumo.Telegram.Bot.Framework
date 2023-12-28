@@ -60,18 +60,21 @@ namespace Telegram.Bot.Framework.InternalInterface
                     }
                     finally
                     {
-                        if (__ControllerParamsCopy.Any())
+                        if (__ControllerParamsCopy.Count != 0)
                             __ControllerParamsCopy.RemoveAt(0);
                     }
                     __NowResult = ResultEnum.SendMessage;
                     _ = await NextParam(tGChat);
                     break;
                 case ResultEnum.SendMessage:
+                    var gotoCatchParamters = false;
                     if (Now != null)
                     {
-                        await Now.SendMessage(tGChat, Now.ParamAttribute);
+                        gotoCatchParamters = await Now.SendMessage(tGChat, Now.ParamAttribute);
                     }
                     __NowResult = ResultEnum.ReceiveParameters;
+                    if (gotoCatchParamters)
+                        await NextParam(tGChat);
                     break;
                 case ResultEnum.ReceiveParameters:
                     if (Now != null)
