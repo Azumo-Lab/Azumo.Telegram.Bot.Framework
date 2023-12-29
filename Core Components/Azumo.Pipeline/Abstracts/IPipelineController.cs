@@ -85,5 +85,10 @@ namespace Azumo.Pipeline.Abstracts
         /// </summary>
         /// <returns></returns>
         public string GetInvokePath();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int PipelineCount { get; }
     }
 }

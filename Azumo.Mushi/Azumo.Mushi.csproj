@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stripe.net" Version="43.8.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.57" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj" />
+    <ProjectReference Include="..\Core Components\Azumo.Pipeline\Azumo.Pipeline.csproj" />
   </ItemGroup>
 
 </Project>

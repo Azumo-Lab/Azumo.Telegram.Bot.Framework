@@ -61,7 +61,12 @@ namespace Azumo.Pipeline
         /// 
         /// </summary>
         /// <returns></returns>
-        public IPipelineController<T> BuilderPipelineController() => __Controller;
+        public IPipelineController<T> BuilderPipelineController()
+        {
+            if (__Controller.PipelineCount == 0)
+                CreatePipeline(string.Empty);
+            return __Controller;
+        }
 
         /// <summary>
         /// 

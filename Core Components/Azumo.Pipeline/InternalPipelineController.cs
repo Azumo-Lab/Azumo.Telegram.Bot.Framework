@@ -76,6 +76,8 @@ namespace Azumo.Pipeline
         /// </summary>
         public PipelineResultEnum PipelineResultEnum { get; set; } = PipelineResultEnum.Success;
 
+        public int PipelineCount => __Pipelines.Count;
+
         /// <summary>
         /// 添加一条流水线
         /// </summary>
