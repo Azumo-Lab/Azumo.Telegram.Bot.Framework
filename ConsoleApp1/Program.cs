@@ -1,19 +1,32 @@
 ﻿using Azumo.Mushi;
 using Azumo.Mushi.ProcessBases;
 using Azumo.Pipeline.Abstracts;
+using Azumo.Reflection;
 using HtmlAgilityPack;
 
 namespace ConsoleApp1
 {
+    [Test2233]
     internal class Program
     {
         static void Main(string[] args)
         {
-            Spider spider = new TestSprite();
-            
-            var task = spider.StartAsync();
-            task.Wait();
+            var az = AzumoReflection<Program>.Reflection();
+            az.SetAttributes([new TestAttribute()]);
+            var atr = az.GetAttribute<Test2233Attribute>();
         }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class TestAttribute : Attribute
+    {
+
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class Test2233Attribute : Attribute
+    {
+
     }
 
     public class TestSprite : Spider
@@ -23,8 +36,6 @@ namespace ConsoleApp1
             builder.AddProcedure(new GetHtmlProcess());
             builder.AddProcedure(new SearchATag());
             builder.AddProcedure(new PrintProcess());
-
-
 
             return builder;
         }

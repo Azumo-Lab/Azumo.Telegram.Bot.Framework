@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Azumo.Mushi\Azumo.Mushi.csproj" />
+    <ProjectReference Include="..\Core Components\Azumo.Reflection\Azumo.Reflection.csproj" />
   </ItemGroup>
 
 </Project>
