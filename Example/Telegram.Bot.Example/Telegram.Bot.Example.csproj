@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Telegram.Bot.Framework.UserAuthentication\Telegram.Bot.Framework.UserAuthentication.csproj" />
-    <ProjectReference Include="..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
+    <ProjectReference Include="..\..\Basic Components\Telegram.Bot.Framework.UserAuthentication\Telegram.Bot.Framework.UserAuthentication.csproj" />
+    <ProjectReference Include="..\..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
   </ItemGroup>
 
 </Project>

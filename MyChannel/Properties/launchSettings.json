@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "MyChannel": {
-      "commandName": "Project",
-      "commandLineArgs": "-config D:\\OneDrive\\MyChannelBot\\Setting.json"
-    }
-  }
-}
