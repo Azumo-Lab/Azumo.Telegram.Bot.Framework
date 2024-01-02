@@ -2,7 +2,9 @@
 using Azumo.Mushi.ProcessBases;
 using Azumo.Pipeline.Abstracts;
 using Azumo.Reflection;
+using Azumo.Reflection.MethodReflections;
 using HtmlAgilityPack;
+using System.ComponentModel;
 
 namespace ConsoleApp1
 {
@@ -11,10 +13,26 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            var az = AzumoReflection<Program>.Reflection();
-            az.SetAttributes([new TestAttribute()]);
-            var atr = az.GetAttribute<Test2233Attribute>();
+            Func<object[], object?> func = (objs) =>
+            {
+                var Para1 = (int)objs[0];
+                var Para2 = (string)objs[1];
+                var obj = (Program)objs[2];
+
+                obj.TestMethod(Para1, Para2);
+                return null;
+            };
+            var azumoMethodReflectionInfo = new AzumoMethodReflectionInfo(func);
+            azumoMethodReflectionInfo.Func([3, "Hello", new Program()]);
+
+            Console.Read();
         }
+
+        public void TestMethod(int count, string str)
+        {
+            for (var i = 0; i < count; i++)
+                Console.WriteLine(str);
+        } 
     }
 
     [AttributeUsage(AttributeTargets.All)]
