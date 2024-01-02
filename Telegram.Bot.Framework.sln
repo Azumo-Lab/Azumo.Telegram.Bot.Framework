@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{237A0F2B-778D-4A54-9D12-C4E8CE5DA9A0}"
 	ProjectSection(SolutionItems) = preProject
+		Azumo脚本语言方案.txt = Azumo脚本语言方案.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
