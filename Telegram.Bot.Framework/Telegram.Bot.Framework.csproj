@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
     <NeutralLanguage />
     <Company>Azumo-Lab</Company>
     <PackageProjectUrl>https://github.com/Azumo-Lab/Telegram.Bot.Framework</PackageProjectUrl>
     <Authors>Azumo-Lab</Authors>
-    <Version>1.0.0.1</Version>
+    <Version>1.0.1</Version>
     <Copyright>https://github.com/Azumo-Lab/Telegram.Bot.Framework</Copyright>
     <Description>一个使用简单的Telegram Bot框架</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -17,6 +17,16 @@
     <RepositoryUrl>https://github.com/Azumo-Lab/Telegram.Bot.Framework</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

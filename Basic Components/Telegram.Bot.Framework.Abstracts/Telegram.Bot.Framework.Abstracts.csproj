@@ -4,6 +4,24 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Title>$(AssemblyName)</Title>
+    <Authors>Azumo-Lab</Authors>
+    <Company>$(Authors)</Company>
+    <Copyright>https://github.com/Azumo-Lab/Telegram.Bot.Framework</Copyright>
+    <PackageProjectUrl>https://github.com/Azumo-Lab/Telegram.Bot.Framework</PackageProjectUrl>
+    <Description>一个使用简单的Telegram Bot框架</Description>
+    <RepositoryUrl>https://github.com/Azumo-Lab/Telegram.Bot.Framework</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
