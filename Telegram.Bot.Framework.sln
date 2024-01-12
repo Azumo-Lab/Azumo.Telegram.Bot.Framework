@@ -43,6 +43,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{94B2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Mushi", "Core Components\Azumo.Mushi\Azumo.Mushi.csproj", "{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F46A3FE8-263D-4C1D-AF11-9A402B825F8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "Test\TestProject\TestProject.csproj", "{F9847CF6-A846-450C-A8F6-F4566FB2069F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +89,10 @@ Global
 		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +106,7 @@ Global
 		{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9} = {CE7777DA-7126-4A86-A4DA-326EFDFF8E44}
 		{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9} = {CE7777DA-7126-4A86-A4DA-326EFDFF8E44}
 		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
+		{F9847CF6-A846-450C-A8F6-F4566FB2069F} = {F46A3FE8-263D-4C1D-AF11-9A402B825F8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}

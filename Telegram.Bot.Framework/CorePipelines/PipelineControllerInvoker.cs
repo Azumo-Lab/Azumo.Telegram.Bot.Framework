@@ -19,11 +19,8 @@ namespace Telegram.Bot.Framework.CorePipelines
             // 执行控制器
             try
             {
-                if (botCommand.Target != null)
-                    await botCommand.StaticFun(controllerParamManager.GetParams());
-                else
-                    await ((TelegramController)ActivatorUtilities.CreateInstance(chat.UserScopeService, botCommand!.Controller, []))
-                        .ControllerInvokeAsync(chat, botCommand.Func, controllerParamManager);
+                var controllerObj = botCommand.ObjectFactory(chat.UserScopeService, []);
+                await botCommand.Func(controllerObj, controllerParamManager.GetParams());
             }
             catch (Exception)
             { 

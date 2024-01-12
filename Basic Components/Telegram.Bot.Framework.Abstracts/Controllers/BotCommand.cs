@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts.Attributes;
@@ -25,10 +26,10 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
     /// <summary>
     /// 
     /// </summary>
-    public class BotCommand(IServiceProvider serviceProvider)
+    public class BotCommand
     {
         /// <summary>
-        /// 
+        /// Bot的指令部分
         /// </summary>
         public string BotCommandName
         {
@@ -51,7 +52,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         private string? __BotCommandName;
 
         /// <summary>
-        /// 
+        /// Bot指令的详细
         /// </summary>
         public string Description
         {
@@ -69,67 +70,54 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         private string? __Description;
 
         /// <summary>
-        /// 
+        /// Bot的消息处理部分
         /// </summary>
         public MessageType MessageType
         {
             get
             {
-                if (__MessageType != null)
-                    return __MessageType.GetValueOrDefault(MessageType.Unknown);
-
                 __MessageType = BotCommandAttribute?.MessageType ?? MessageType.Unknown;
-                return __MessageType.GetValueOrDefault(MessageType.Unknown);
+                return __MessageType;
             }
         }
-        private MessageType? __MessageType;
+        private MessageType __MessageType = MessageType.Unknown;
 
         /// <summary>
-        /// 
+        /// 实行的Func
         /// </summary>
-        public Func<TelegramController, object[], Task> Func
+        public Func<object, object[], Task> Func
         {
             get
             {
                 if (__Func != null)
                     return __Func;
 
-                __Func = (controller, paramsObjs) =>
-                {
-                    var result = MethodInfo.Invoke(controller, paramsObjs);
-                    return result is Task task ? task : Task.CompletedTask;
-                };
+                __Func = Factory.BuildFunc(MethodInfo);
                 RuntimeHelpers.PrepareDelegate(__Func);
+
                 return __Func;
             }
         }
-        private Func<TelegramController, object[], Task>? __Func;
+        private Func<object, object[], Task>? __Func;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Func<object[], Task> StaticFun
+        public ObjectFactory ObjectFactory
         {
             get
             {
-                if (__StaticFun != null)
-                    return __StaticFun;
+                if (__ObjectFactory != null)
+                    return __ObjectFactory;
 
-                __StaticFun = (paramsObjs) =>
-                {
-                    var result = MethodInfo.Invoke(Target, paramsObjs);
-                    return result is Task task ? task : Task.CompletedTask;
-                };
-                RuntimeHelpers.PrepareDelegate(__StaticFun);
-                return __StaticFun;
+                __ObjectFactory = Factory.BuildObjectFactory(Controller);
+                RuntimeHelpers.PrepareDelegate(__ObjectFactory);
+
+                return __ObjectFactory;
             }
+            set => __ObjectFactory = value;
         }
-        private Func<object[], Task>? __StaticFun;
-
-        public object? Target { get; set; }
+        private ObjectFactory? __ObjectFactory;
 
         /// <summary>
-        /// 
+        /// 指令的方法主体
         /// </summary>
         public MethodInfo MethodInfo
         {
@@ -164,23 +152,16 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <summary>
         /// 
         /// </summary>
-        public List<IControllerParam> ControllerParams 
+        public List<IControllerParam> ControllerParams
         {
             get
             {
                 if (__ControllerParams != null)
                     return __ControllerParams;
 
-                __ControllerParams = MethodInfo.GetParameters().Select(p =>
-                {
-                    var controllerParamMaker = serviceProvider.GetService<IControllerParamMaker>()!;
-                    if (Attribute.GetCustomAttribute(p, typeof(ParamAttribute)) is ParamAttribute paramAttribute && paramAttribute.Sender != null)
-                    {
-                        var controllerParamSender = ActivatorUtilities.CreateInstance(serviceProvider, paramAttribute.Sender, []) as IControllerParamSender;
-                        return controllerParamMaker.Make(p, controllerParamSender!);
-                    }
-                    return controllerParamMaker.Make(p, null!);
-                }).ToList() ?? [];
+                __ControllerParams = MethodInfo.GetParameters()
+                    .Select(Factory.GetControllerParam)
+                    .ToList();
 
                 return __ControllerParams;
             }

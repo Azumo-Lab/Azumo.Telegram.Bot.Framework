@@ -76,7 +76,6 @@ namespace Telegram.Bot.Framework.Bots
         }
         public void AddBuildService(IServiceCollection services)
         {
-            _ = services.AddSingleton<IControllerParamMaker, ControllerParamMaker>();
             var reflection = AzReflection<ITelegramService>.Create();
             foreach (var item in reflection.FindAllSubclass())
             {
@@ -99,17 +98,17 @@ namespace Telegram.Bot.Framework.Bots
                     var methodinfos = controller.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
                     foreach (var method in methodinfos)
                         if (Attribute.IsDefined(method, typeof(BotCommandAttribute)))
-                            controllerManager.InternalCommands.Add(new BotCommand(builderService)
+                            controllerManager.InternalCommands.Add(new BotCommand()
                             {
                                 MethodInfo = method,
                             });
                 }
                 foreach (var command in builderService.GetServices<Delegate>() ?? [])
                 {
-                    controllerManager.InternalCommands.Add(new BotCommand(builderService)
+                    controllerManager.InternalCommands.Add(new BotCommand()
                     {
                         MethodInfo = command.Method,
-                        Target = command.Target,
+                        ObjectFactory = (service, objs) => command.Target!,
                     });
                 }
                 controllerManager.InternalCommands.ForEach(x => x.Cache());
