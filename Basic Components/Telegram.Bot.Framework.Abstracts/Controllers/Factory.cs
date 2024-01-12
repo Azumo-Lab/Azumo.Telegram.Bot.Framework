@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                 argsExpression[i] = Expression.Convert(arrayParam, methodParamInfos[i].ParameterType);
             }
             // 调用方法
-            var invoker = Expression.Call(instance, methodInfo, argsExpression);
+            var invoker = Expression.Call(Expression.Convert(instance, methodInfo.DeclaringType!), methodInfo, argsExpression);
             Expression<Func<object, Task>> result = (obj) => obj as Task ?? Task.CompletedTask;
             var task = methodInfo.ReturnType != typeof(void)
                 ? Expression.Invoke(result, invoker)

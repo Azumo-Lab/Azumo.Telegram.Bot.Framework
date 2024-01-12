@@ -20,7 +20,8 @@ namespace Telegram.Bot.Framework.CorePipelines
             try
             {
                 var controllerObj = botCommand.ObjectFactory(chat.UserScopeService, []);
-                await botCommand.Func(controllerObj, controllerParamManager.GetParams());
+                await ((TelegramController)controllerObj)
+                    .ControllerInvokeAsync(chat, botCommand.Func, controllerParamManager);
             }
             catch (Exception)
             { 
