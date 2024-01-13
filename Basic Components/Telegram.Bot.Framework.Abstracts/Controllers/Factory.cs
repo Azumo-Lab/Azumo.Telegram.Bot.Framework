@@ -1,12 +1,23 @@
-﻿using Azumo.Reflection;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Azumo.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Types;
 
@@ -14,13 +25,32 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
 {
     internal static class Factory
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly static IControllerParamMaker _controllerParamMaker = new ControllerParamMaker();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameterInfo"></param>
+        /// <returns></returns>
         public static IControllerParam GetControllerParam(ParameterInfo parameterInfo) =>
             _controllerParamMaker.Make(parameterInfo);
 
-        public static ObjectFactory BuildObjectFactory(Type type) => 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static ObjectFactory BuildObjectFactory(Type type) =>
             ActivatorUtilities.CreateFactory(type, []);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
         public static Func<object, object[], Task> BuildFunc(MethodInfo methodInfo)
         {
             // 获取方法的参数
@@ -48,10 +78,20 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
             return express.Compile();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private class ControllerParamMaker : IControllerParamMaker
         {
+            /// <summary>
+            /// 
+            /// </summary>
             private static readonly List<(Type, TypeForAttribute)> _IControllerParamType;
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <exception cref="Exception"></exception>
             static ControllerParamMaker()
             {
                 var list = AzumoReflection<IControllerParam>.Reflection().GetAllSubClass();
@@ -64,6 +104,12 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                 _IControllerParamType = list.Select(x => (x, (TypeForAttribute)Attribute.GetCustomAttribute(x, typeof(TypeForAttribute))!)).ToList();
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="parameterInfo"></param>
+            /// <returns></returns>
+            /// <exception cref="Exception"></exception>
             public IControllerParam Make(ParameterInfo parameterInfo)
             {
                 var controllerParam = _IControllerParamType
@@ -76,7 +122,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                     throw new Exception($"暂时不支持具有参数的类型 {type.FullName}");
 
                 IControllerParamSender controllerParamSender;
-                var result = (newInvoker.Invoke([]) as IControllerParam)! 
+                var result = (newInvoker.Invoke([]) as IControllerParam)!
                     ?? throw new Exception($"{type.FullName} 似乎未实现 {nameof(IControllerParam)} 接口");
 
                 controllerParamSender = new NULLControllerParamSender();
@@ -91,12 +137,20 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private class NULLControllerParamSender : IControllerParamSender
         {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="botClient"></param>
+            /// <param name="chatId"></param>
+            /// <param name="paramAttribute"></param>
+            /// <returns></returns>
             public Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute) =>
                 _ = botClient.SendTextMessageAsync(chatId, $"请输入参数{paramAttribute?.Name ?? string.Empty}的值");
         }
     }
-
-    
 }

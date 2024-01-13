@@ -8,6 +8,8 @@ namespace TestProject
     [TestClass]
     public class UnitTest1/* : PageTest*/
     {
+        private static readonly object[] arguments = [];
+
         //[TestMethod]
         //public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
         //{
@@ -29,11 +31,11 @@ namespace TestProject
         //    await Expect(Page).ToHaveURLAsync(new Regex(".*intro"));
         //}
 
-        public static Func<IServiceProvider, object[], Task> BuildFunc(MethodInfo methodInfo, object obj)
+        public static Func<IServiceProvider, object[], Task> BuildFunc(MethodInfo methodInfo, ObjectFactory obj)
         {
             // 获取方法的参数
             var methodParamInfos = methodInfo.GetParameters();
-
+            
             // 设置参数
             var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "service");
             var parameterExpression = Expression.Parameter(typeof(object[]), "args");
@@ -46,19 +48,8 @@ namespace TestProject
                 var arrayParam = Expression.ArrayIndex(parameterExpression, indexExpression);
                 argsExpression[i] = Expression.Convert(arrayParam, methodParamInfos[i].ParameterType);
             }
-            Expression newInvoker;
-            if (obj is Type controllerType)
-            {
-                // 传入的是一个类型
-                Expression<Func<IServiceProvider, object>> newInvokerParams = (serviceProvider) =>
-                    ActivatorUtilities.CreateFactory(typeof(string), null! );
-                newInvoker = Expression.Invoke(newInvokerParams, serviceProvider);
-            }
-            else
-            {
-                // 传入的是一个实例
-                newInvoker = Expression.Constant(obj);
-            }
+            Expression newInvoker = Expression.Invoke((IServiceProvider service) => obj(service, arguments), serviceProvider);
+            
             // 调用方法
             var invoker = Expression.Call(Expression.Convert(newInvoker, methodInfo.DeclaringType!), methodInfo, argsExpression);
             Expression<Func<object, Task>> result = (obj) => obj as Task ?? Task.CompletedTask;
@@ -77,12 +68,21 @@ namespace TestProject
                 .AddTransient<TestCC>()
                 .BuildServiceProvider();
 
-            var objectFactory = ActivatorUtilities.CreateFactory<Test>([]);
+            var func = BuildFunc(typeof(Test).GetMethods().First(), ActivatorUtilities.CreateFactory(typeof(Test), []));
+            RuntimeHelpers.PrepareDelegate(func);
+
             for (var i = 0; i < 1000000; i++)
             {
-                var obj = objectFactory(serviceProvider, []);
-                obj.TestInvoke("Hello");
+                func(serviceProvider, ["Hello"]);
             }
+
+            Console.WriteLine();
+
+            for (var i = 0; i < 1000000; i++)
+            {
+                new Test(new TestBB(new TestCC())).TestInvoke("Hello");
+            }
+
             Console.WriteLine();
         }
     }
