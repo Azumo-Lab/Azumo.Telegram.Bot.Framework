@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
@@ -27,6 +28,20 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
     /// </summary>
     public class BotCommand
     {
+        public Func<TelegramUserChatContext, IControllerParamManager, Task> Invoker
+        {
+            get
+            {
+                if (__Invoker != null)
+                    return __Invoker;
+
+                __Invoker = Factory.BuildInvoker(ObjectFactory, Func, Controller);
+                RuntimeHelpers.PrepareDelegate(__Invoker);
+
+                return __Invoker;
+            }
+        }
+        private Func<TelegramUserChatContext, IControllerParamManager, Task>? __Invoker;
         /// <summary>
         /// Bot的指令部分
         /// </summary>

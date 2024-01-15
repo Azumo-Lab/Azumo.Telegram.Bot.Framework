@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 using System.Reflection;
 using Telegram.Bot.Framework.Abstracts.Attributes;
+using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Abstracts.Controllers
@@ -68,6 +69,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                 var arrayParam = Expression.ArrayIndex(parameterExpression, indexExpression);
                 argsExpression[i] = Expression.Convert(arrayParam, methodParamInfos[i].ParameterType);
             }
+
             // 调用方法
             var invoker = Expression.Call(Expression.Convert(instance, methodInfo.DeclaringType!), methodInfo, argsExpression);
             Expression<Func<object, Task>> result = (obj) => obj as Task ?? Task.CompletedTask;
@@ -76,6 +78,40 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
                 : (Expression)Expression.Block(invoker, Expression.Invoke(result, Expression.Constant(new object(), typeof(object))));
             var express = Expression.Lambda<Func<object, object[], Task>>(task, instance, parameterExpression);
             return express.Compile();
+        }
+
+        public static Func<TelegramUserChatContext, IControllerParamManager, Task> BuildInvoker(ObjectFactory _objectFactory, Func<object, object[], Task> _func, Type controllerType)
+        {
+            var objArray = Expression.Constant(Array.Empty<object>());
+
+            var factory = Expression.Constant(_objectFactory, typeof(ObjectFactory));
+            var func = Expression.Constant(_func, typeof(Func<object, object[], Task>));
+            var context = Expression.Parameter(typeof(TelegramUserChatContext));
+            var iparam = Expression.Parameter(typeof(IControllerParamManager));
+
+            Expression<Func<TelegramUserChatContext, IServiceProvider>> serviceProvider = (TelegramUserChatContext context) => context.UserScopeService;
+
+            if (typeof(TelegramController).IsAssignableFrom(controllerType))
+            {
+                var obj = Expression.Invoke(factory, Expression.Invoke(serviceProvider, context), objArray);
+                var call = Expression.Call(
+                    Expression.Convert(obj, typeof(TelegramController)), 
+                    typeof(TelegramController).GetMethod(nameof(TelegramController.ControllerInvokeAsync), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!,
+                    context, func, iparam);
+                return Expression
+                    .Lambda<Func<TelegramUserChatContext, IControllerParamManager, Task>>(
+                    call, context, iparam
+                    ).Compile();
+            }
+            else
+            {
+                var obj = Expression.Invoke(factory, Expression.Invoke(serviceProvider, context), objArray);
+                var result = Expression.Call(iparam, typeof(IControllerParamManager).GetMethod(nameof(IControllerParamManager.GetParams), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!);
+                return Expression
+                    .Lambda<Func<TelegramUserChatContext, IControllerParamManager, Task>>(
+                    Expression.Invoke(func, obj, result), context, iparam
+                    ).Compile();
+            }
         }
 
         /// <summary>
@@ -149,7 +185,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
             /// <param name="chatId"></param>
             /// <param name="paramAttribute"></param>
             /// <returns></returns>
-            public Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute) =>
+            public Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute) =>
                 _ = botClient.SendTextMessageAsync(chatId, $"请输入参数{paramAttribute?.Name ?? string.Empty}的值");
         }
     }
