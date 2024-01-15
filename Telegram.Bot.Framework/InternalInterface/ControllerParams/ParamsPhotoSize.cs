@@ -1,4 +1,20 @@
-﻿using Telegram.Bot.Framework.Abstracts.Attributes;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
@@ -7,9 +23,10 @@ namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
     [TypeFor(typeof(PhotoSize))]
     internal class ParamsPhotoSize : BaseControllerParam
     {
-        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) => Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault());
+        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) => 
+            Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault()!);
 
-        public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute)
+        public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute)
         {
             var name = paramAttribute?.Name ?? string.Empty;
             await botClient.SendTextMessageAsync(chatId, $"请发送{name}");

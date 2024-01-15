@@ -21,13 +21,8 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
     /// <summary>
     /// 
     /// </summary>
-    public interface IControllerParamManager
+    public interface IControllerParamManager : IDisposable
     {
-        /// <summary>
-        /// 要执行的参数获取接口
-        /// </summary>
-        public List<IControllerParam> ControllerParams { get; set; }
-
         /// <summary>
         /// 获取参数
         /// </summary>
@@ -51,11 +46,6 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// 设置命令
         /// </summary>
         /// <param name="botCommand"></param>
-        public void SetBotCommand(BotCommand botCommand);
-
-        /// <summary>
-        /// 全部清理
-        /// </summary>
-        public void Clear();
+        public void NewBotCommandParamScope(BotCommand botCommand);
     }
 }

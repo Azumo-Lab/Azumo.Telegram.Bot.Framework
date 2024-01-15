@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.CorePipelines
             }
             finally
             {
-                controllerParamManager.Clear();
+                controllerParamManager.Dispose();
             }
 
             // 执行下一个

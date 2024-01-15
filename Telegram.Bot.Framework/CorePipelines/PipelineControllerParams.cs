@@ -15,7 +15,7 @@ namespace Telegram.Bot.Framework.CorePipelines
     {
         public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext t, IPipelineController<TelegramUserChatContext> pipelineController)
         {
-            var controllerManager = t.UserScopeService.GetService<IControllerParamManager>();
+            var controllerManager = t.UserScopeService.GetRequiredService<IControllerParamManager>();
             var resultEnum = await controllerManager.NextParam(t);
             
             return resultEnum != ResultEnum.Finish ? await pipelineController.StopAsync(t) : await pipelineController.NextAsync(t);

@@ -31,6 +31,6 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <param name="chatId"></param>
         /// <param name="paramAttribute"></param>
         /// <returns></returns>
-        Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute paramAttribute);
+        Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute);
     }
 }

@@ -26,19 +26,9 @@ namespace Telegram.Bot.Framework.InternalInterface
     [DependencyInjection(ServiceLifetime.Scoped, typeof(IControllerParamManager))]
     internal class ControllerParamManager : IControllerParamManager
     {
-        private IControllerParam? Now = null!;
-        private List<IControllerParam> __ControllerParamsCopy = [];
+        private IControllerParam NowControllerParam = null!;
         private List<IControllerParam> __ControllerParams = [];
         private ResultEnum __NowResult = ResultEnum.NoStatus;
-        public List<IControllerParam> ControllerParams
-        {
-            get => __ControllerParams;
-            set
-            {
-                __ControllerParams = value;
-                __ControllerParamsCopy = new List<IControllerParam>(value);
-            }
-        }
         private BotCommand? __BotCommand;
 
         private readonly List<object> _params = [];
@@ -52,35 +42,27 @@ namespace Telegram.Bot.Framework.InternalInterface
                 case ResultEnum.NoStatus:
                     try
                     {
-                        Now = __ControllerParamsCopy.FirstOrDefault();
-                        if (Now == null)
-                        {
+                        if (__ControllerParams.Count == 0)
                             return __NowResult = ResultEnum.Finish;
-                        }
+
+                        NowControllerParam = __ControllerParams.First();
                     }
                     finally
                     {
-                        if (__ControllerParamsCopy.Count != 0)
-                            __ControllerParamsCopy.RemoveAt(0);
+                        if (__ControllerParams.Count != 0)
+                            __ControllerParams.RemoveAt(0);
                     }
                     __NowResult = ResultEnum.SendMessage;
                     _ = await NextParam(tGChat);
                     break;
                 case ResultEnum.SendMessage:
-                    var gotoCatchParamters = false;
-                    if (Now != null)
-                    {
-                        gotoCatchParamters = await Now.SendMessage(tGChat, Now.ParamAttribute);
-                    }
+                    var gotoCatchParamters = await NowControllerParam.SendMessage(tGChat);
                     __NowResult = ResultEnum.ReceiveParameters;
                     if (gotoCatchParamters)
                         await NextParam(tGChat);
                     break;
                 case ResultEnum.ReceiveParameters:
-                    if (Now != null)
-                    {
-                        _params.Add(await Now.CatchObjs(tGChat));
-                    }
+                    _params.Add(await NowControllerParam.CatchObjs(tGChat));
                     __NowResult = ResultEnum.NextParam;
                     _ = await NextParam(tGChat);
                     break;
@@ -95,10 +77,9 @@ namespace Telegram.Bot.Framework.InternalInterface
             return __NowResult;
         }
 
-        public void Clear()
+        private void Clear()
         {
-            Now = null;
-            ControllerParams = [];
+            NowControllerParam = null!;
             _params.Clear();
             __NowResult = ResultEnum.NoStatus;
             __BotCommand = null;
@@ -106,6 +87,13 @@ namespace Telegram.Bot.Framework.InternalInterface
 
         public BotCommand GetBotCommand() => __BotCommand!;
 
-        public void SetBotCommand(BotCommand botCommand) => __BotCommand = botCommand;
+        public void NewBotCommandParamScope(BotCommand botCommand)
+        {
+            Clear();
+            __BotCommand = botCommand;
+            __ControllerParams = new List<IControllerParam>(__BotCommand.ControllerParams);
+        }
+
+        public void Dispose() => Clear();
     }
 }

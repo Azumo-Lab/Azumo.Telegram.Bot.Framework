@@ -53,8 +53,7 @@ namespace Telegram.Bot.Framework.Abstracts
             Logger = this.Chat.UserScopeService.GetRequiredService<ILogger<TelegramController>>();
             try
             {
-                if (func(this, controllerParamManager.GetParams() ?? []) is Task task)
-                    await task;
+                await func(this, controllerParamManager.GetParams() ?? []);
             }
             catch (Exception)
             {

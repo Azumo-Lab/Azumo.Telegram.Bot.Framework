@@ -35,9 +35,7 @@ namespace Telegram.Bot.Framework.CorePipelines
                         return await pipelineController.StopAsync(telegramUserChatContext);
 
                 var controllerParamManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerParamManager>();
-                controllerParamManager.Clear();
-                controllerParamManager.SetBotCommand(botCommand);
-                controllerParamManager.ControllerParams = new List<IControllerParam>(botCommand.ControllerParams);
+                controllerParamManager.NewBotCommandParamScope(botCommand);
             }
 
             return await pipelineController.NextAsync(telegramUserChatContext);

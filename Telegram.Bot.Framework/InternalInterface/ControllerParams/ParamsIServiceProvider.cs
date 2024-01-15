@@ -9,7 +9,7 @@ namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
         public override Task<object> CatchObjs(TelegramUserChatContext tGChat) =>
             Task.FromResult<object>(tGChat.UserScopeService);
 
-        public override Task<bool> SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute) =>
+        public override Task<bool> SendMessage(TelegramUserChatContext tGChat) =>
             Task.FromResult(true);
     }
 }

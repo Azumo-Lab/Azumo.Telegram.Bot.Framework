@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// <summary>
         /// 
         /// </summary>
-        public ParamAttribute ParamAttribute { get; set; }
+        public ParamAttribute? ParamAttribute { get; set; }
 
         /// <summary>
         /// 
@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.Abstracts.Controllers
         /// </summary>
         /// <param name="tGChat"></param>
         /// <returns></returns>
-        public Task<bool> SendMessage(TelegramUserChatContext tGChat, ParamAttribute paramAttribute);
+        public Task<bool> SendMessage(TelegramUserChatContext tGChat);
 
         /// <summary>
         /// 
