@@ -20,16 +20,10 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
 {
-    [TypeFor(typeof(PhotoSize))]
-    internal class ParamsPhotoSize : BaseControllerParam
+    [TypeFor(typeof(PhotoSize[]))]
+    internal class ParamsPhotoSizeArray : BaseControllerParam
     {
-        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) => 
-            Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault()!);
-
-        public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute)
-        {
-            var name = paramAttribute?.Name ?? "图片";
-            await botClient.SendTextMessageAsync(chatId, $"请发送{name}");
-        }
+        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) =>
+            Task.FromResult<object>(tGChat.Message?.Photo!);
     }
 }

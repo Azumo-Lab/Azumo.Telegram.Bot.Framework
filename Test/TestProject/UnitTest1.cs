@@ -76,8 +76,6 @@ namespace TestProject
                 func(serviceProvider, ["Hello"]);
             }
 
-            Console.WriteLine();
-
             for (var i = 0; i < 1000000; i++)
             {
                 new Test(new TestBB(new TestCC())).TestInvoke("Hello");

@@ -20,8 +20,20 @@ using Telegram.Bot.Framework.Abstracts.Users;
 
 namespace Telegram.Bot.Framework.CorePipelines
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class PipelineControllerParams : IProcessAsync<TelegramUserChatContext>
     {
+        /// <summary>
+        /// 开始进行方法参数的获取
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="t"></param>
+        /// <param name="pipelineController"></param>
+        /// <returns></returns>
         public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext t, IPipelineController<TelegramUserChatContext> pipelineController)
         {
             var controllerManager = t.UserScopeService.GetRequiredService<IControllerParamManager>();

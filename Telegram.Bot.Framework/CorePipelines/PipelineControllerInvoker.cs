@@ -22,6 +22,12 @@ namespace Telegram.Bot.Framework.CorePipelines
 {
     internal class PipelineControllerInvoker : IProcessAsync<TelegramUserChatContext>
     {
+        /// <summary>
+        /// 控制器的执行
+        /// </summary>
+        /// <param name="chat"></param>
+        /// <param name="pipelineController"></param>
+        /// <returns></returns>
         public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext chat, IPipelineController<TelegramUserChatContext> pipelineController)
         {
             // 获取参数
