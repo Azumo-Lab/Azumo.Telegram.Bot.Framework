@@ -39,7 +39,9 @@ namespace Telegram.Bot.Framework.CorePipelines
             var controllerManager = t.UserScopeService.GetRequiredService<IControllerParamManager>();
             var resultEnum = await controllerManager.NextParam(t);
 
-            return resultEnum != ResultEnum.Finish ? await pipelineController.StopAsync(t) : await pipelineController.NextAsync(t);
+            return resultEnum != ResultEnum.Finish ?
+                await pipelineController.StopAsync(t) :
+                await pipelineController.NextAsync(t);
         }
     }
 }
