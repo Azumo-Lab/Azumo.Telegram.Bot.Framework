@@ -14,33 +14,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.Pipeline.Abstracts;
-using Telegram.Bot.Framework.Abstracts.Controllers;
-using Telegram.Bot.Framework.Abstracts.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.CorePipelines;
+namespace Azumo.PipelineMiddleware;
 
 /// <summary>
 /// 
 /// </summary>
-internal class PipelineControllerParams : IProcessAsync<TelegramUserChatContext>
+/// <typeparam name="TInput"></typeparam>
+/// <typeparam name="TOutput"></typeparam>
+public interface IPipelineBuilder<TInput>
 {
     /// <summary>
-    /// 开始进行方法参数的获取
-    /// </summary>
-    /// <remarks>
     /// 
-    /// </remarks>
-    /// <param name="t"></param>
-    /// <param name="pipelineController"></param>
+    /// </summary>
+    /// <param name="middleware"></param>
+    /// <param name="middlewareInsertionMode"></param>
     /// <returns></returns>
-    public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext t, IPipelineController<TelegramUserChatContext> pipelineController)
-    {
-        var controllerManager = t.UserScopeService.GetRequiredService<IControllerParamManager>();
-        var resultEnum = await controllerManager.NextParam(t);
+    IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase);
 
-        return resultEnum != ResultEnum.Finish ?
-            await pipelineController.StopAsync(t) :
-            await pipelineController.NextAsync(t);
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    IPipeline<TInput> Build();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    IEnumerable<IMiddleware<TInput>> Middleware { get; }
 }
