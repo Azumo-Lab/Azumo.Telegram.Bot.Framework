@@ -19,28 +19,27 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.UserAuthentication
+namespace Telegram.Bot.Framework.UserAuthentication;
+
+internal class UserAuthenticationFilter : IControllerFilter
 {
-    internal class UserAuthenticationFilter : IControllerFilter
+    public async Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand)
     {
-        public async Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand)
-        {
-            AuthenticateAttribute authenticateAttribute;
+        AuthenticateAttribute authenticateAttribute;
 
-            // 指令没有权限标志（或者不是指令）
-            if (botCommand?.AuthenticateAttribute == null)
-                return true;
+        // 指令没有权限标志（或者不是指令）
+        if (botCommand?.AuthenticateAttribute == null)
+            return true;
 
-            // 指令有权限标志
-            var userManager = tGChat.UserScopeService.GetRequiredService<IUserManager>();
-            if (!userManager.IsSignIn(tGChat.User))
-                return false;
+        // 指令有权限标志
+        var userManager = tGChat.UserScopeService.GetRequiredService<IUserManager>();
+        if (!userManager.IsSignIn(tGChat.User))
+            return false;
 
-            authenticateAttribute = botCommand.AuthenticateAttribute;
+        authenticateAttribute = botCommand.AuthenticateAttribute;
 
-            // 开始验证
-            var result = userManager.VerifyRole(tGChat.User, authenticateAttribute);
-            return await Task.FromResult(result == EnumVerifyRoleResult.Success);
-        }
+        // 开始验证
+        var result = userManager.VerifyRole(tGChat.User, authenticateAttribute);
+        return await Task.FromResult(result == EnumVerifyRoleResult.Success);
     }
 }

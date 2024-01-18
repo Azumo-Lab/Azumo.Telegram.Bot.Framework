@@ -14,17 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Controllers;
+
+/// <summary>
+/// 消息内容创建
+/// </summary>
+public interface IMessageContent
 {
     /// <summary>
-    /// 消息内容创建
+    /// 创建消息
     /// </summary>
-    public interface IMessageContent
-    {
-        /// <summary>
-        /// 创建消息
-        /// </summary>
-        /// <returns></returns>
-        public string Build();
-    }
+    /// <returns></returns>
+    public string Build();
 }

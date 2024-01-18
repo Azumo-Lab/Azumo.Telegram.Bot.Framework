@@ -17,60 +17,59 @@
 using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Azumo.Pipeline
+namespace Azumo.Pipeline;
+
+/// <summary>
+/// 一个内部实现的流水线
+/// </summary>
+internal class InternalPipeline<T> : IPipeline<T>
 {
     /// <summary>
-    /// 一个内部实现的流水线
+    /// 流水线的委托
     /// </summary>
-    internal class InternalPipeline<T> : IPipeline<T>
+    private readonly PipelineDelegate<T> __PipelineFuns = (t, c) => Task.FromResult(t);
+
+    /// <summary>
+    /// 流水线控制器
+    /// </summary>
+    private readonly IPipelineController<T> __Controller;
+
+    /// <summary>
+    /// 过滤器集合
+    /// </summary>
+    private readonly List<IPipelineFilter> pipelineFilters = PipelineFactory.ServiceProvider.GetServices<IPipelineFilter>().ToList();
+
+    /// <summary>
+    /// 初始化，创建流水线
+    /// </summary>
+    /// <param name="procedures">流水线的处理工序</param>
+    /// <param name="pipelineController">控制器</param>
+    public InternalPipeline(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController)
     {
-        /// <summary>
-        /// 流水线的委托
-        /// </summary>
-        private readonly PipelineDelegate<T> __PipelineFuns = (t, c) => Task.FromResult(t);
+        __Controller = pipelineController;
 
-        /// <summary>
-        /// 流水线控制器
-        /// </summary>
-        private readonly IPipelineController<T> __Controller;
-
-        /// <summary>
-        /// 过滤器集合
-        /// </summary>
-        private readonly List<IPipelineFilter> pipelineFilters = PipelineFactory.ServiceProvider.GetServices<IPipelineFilter>().ToList();
-
-        /// <summary>
-        /// 初始化，创建流水线
-        /// </summary>
-        /// <param name="procedures">流水线的处理工序</param>
-        /// <param name="pipelineController">控制器</param>
-        public InternalPipeline(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController)
-        {
-            __Controller = pipelineController;
-
-            List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = [];
-            foreach (var proc in procedures)
-                procs.Add(handle => (model, controller) =>
+        List<Func<PipelineDelegate<T>, PipelineDelegate<T>>> procs = [];
+        foreach (var proc in procedures)
+            procs.Add(handle => (model, controller) =>
+            {
+                // TODO: 这部分逻辑比较复杂，稍后进行详细的解释
+                foreach (var filter in pipelineFilters)
                 {
-                    // TODO: 这部分逻辑比较复杂，稍后进行详细的解释
-                    foreach (var filter in pipelineFilters)
-                    {
-                        (model, var next) = filter.Execute(model, controller, proc, handle);
-                        if (!next)
-                            return Task.FromResult(model);
-                    }
-                    return proc.ExecuteAsync(model, controller);
-                });
+                    (model, var next) = filter.Execute(model, controller, proc, handle);
+                    if (!next)
+                        return Task.FromResult(model);
+                }
+                return proc.ExecuteAsync(model, controller);
+            });
 
-            foreach (var item in procs.Reverse<Func<PipelineDelegate<T>, PipelineDelegate<T>>>())
-                __PipelineFuns = item(__PipelineFuns);
-        }
-
-        /// <summary>
-        /// 开始执行
-        /// </summary>
-        /// <param name="obj">处理数据</param>
-        /// <returns>流水线处理后数据</returns>
-        public async Task<T> Invoke(T obj) => await __PipelineFuns(obj, __Controller);
+        foreach (var item in procs.Reverse<Func<PipelineDelegate<T>, PipelineDelegate<T>>>())
+            __PipelineFuns = item(__PipelineFuns);
     }
+
+    /// <summary>
+    /// 开始执行
+    /// </summary>
+    /// <param name="obj">处理数据</param>
+    /// <returns>流水线处理后数据</returns>
+    public async Task<T> Invoke(T obj) => await __PipelineFuns(obj, __Controller);
 }

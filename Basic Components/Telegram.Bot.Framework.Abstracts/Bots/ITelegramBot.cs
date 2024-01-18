@@ -14,28 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Bots
+namespace Telegram.Bot.Framework.Abstracts.Bots;
+
+/// <summary>
+/// 机器人接口
+/// </summary>
+public interface ITelegramBot
 {
     /// <summary>
-    /// 机器人接口
+    /// 机器人的服务
     /// </summary>
-    public interface ITelegramBot
-    {
-        /// <summary>
-        /// 机器人的服务
-        /// </summary>
-        public IServiceProvider ServiceProvider { get; }
+    public IServiceProvider ServiceProvider { get; }
 
-        /// <summary>
-        /// 启动
-        /// </summary>
-        /// <returns></returns>
-        public Task StartAsync();
+    /// <summary>
+    /// 启动
+    /// </summary>
+    /// <returns></returns>
+    public Task StartAsync();
 
-        /// <summary>
-        /// 停止
-        /// </summary>
-        /// <returns></returns>
-        public Task StopAsync();
-    }
+    /// <summary>
+    /// 停止
+    /// </summary>
+    /// <returns></returns>
+    public Task StopAsync();
 }

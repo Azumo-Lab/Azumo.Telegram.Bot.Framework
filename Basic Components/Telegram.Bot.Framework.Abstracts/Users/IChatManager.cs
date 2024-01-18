@@ -16,20 +16,19 @@
 
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts.Users
+namespace Telegram.Bot.Framework.Abstracts.Users;
+
+/// <summary>
+/// 
+/// </summary>
+public interface IChatManager
 {
     /// <summary>
-    /// 
+    /// 创建 <see cref="TelegramUserChatContext"/> 对象
     /// </summary>
-    public interface IChatManager
-    {
-        /// <summary>
-        /// 创建 <see cref="TelegramUserChatContext"/> 对象
-        /// </summary>
-        /// <param name="telegramBotClient"></param>
-        /// <param name="update"></param>
-        /// <param name="BotServiceProvider"></param>
-        /// <returns></returns>
-        public TelegramUserChatContext Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider);
-    }
+    /// <param name="telegramBotClient"></param>
+    /// <param name="update"></param>
+    /// <param name="BotServiceProvider"></param>
+    /// <returns></returns>
+    public TelegramUserChatContext Create(ITelegramBotClient telegramBotClient, Update update, IServiceProvider BotServiceProvider);
 }

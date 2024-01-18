@@ -18,82 +18,81 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface;
+
+/// <summary>
+/// 
+/// </summary>
+[DependencyInjection(ServiceLifetime.Scoped, typeof(IControllerParamManager))]
+internal class ControllerParamManager : IControllerParamManager
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped, typeof(IControllerParamManager))]
-    internal class ControllerParamManager : IControllerParamManager
+    private IControllerParam NowControllerParam = null!;
+    private List<IControllerParam> __ControllerParams = [];
+    private ResultEnum __NowResult = ResultEnum.NoStatus;
+    private BotCommand? __BotCommand;
+
+    private readonly List<object> _params = [];
+
+    public object[] GetParams() => _params.ToArray();
+
+    public async Task<ResultEnum> NextParam(TelegramUserChatContext tGChat)
     {
-        private IControllerParam NowControllerParam = null!;
-        private List<IControllerParam> __ControllerParams = [];
-        private ResultEnum __NowResult = ResultEnum.NoStatus;
-        private BotCommand? __BotCommand;
-
-        private readonly List<object> _params = [];
-
-        public object[] GetParams() => _params.ToArray();
-
-        public async Task<ResultEnum> NextParam(TelegramUserChatContext tGChat)
+        switch (__NowResult)
         {
-            switch (__NowResult)
-            {
-                case ResultEnum.NoStatus:
-                    try
-                    {
-                        if (__ControllerParams.Count == 0)
-                            return __NowResult = ResultEnum.Finish;
+            case ResultEnum.NoStatus:
+                try
+                {
+                    if (__ControllerParams.Count == 0)
+                        return __NowResult = ResultEnum.Finish;
 
-                        NowControllerParam = __ControllerParams.First();
-                    }
-                    finally
-                    {
-                        if (__ControllerParams.Count != 0)
-                            __ControllerParams.RemoveAt(0);
-                    }
-                    __NowResult = ResultEnum.SendMessage;
+                    NowControllerParam = __ControllerParams.First();
+                }
+                finally
+                {
+                    if (__ControllerParams.Count != 0)
+                        __ControllerParams.RemoveAt(0);
+                }
+                __NowResult = ResultEnum.SendMessage;
+                _ = await NextParam(tGChat);
+                break;
+            case ResultEnum.SendMessage:
+                var gotoCatchParamters = await NowControllerParam.SendMessage(tGChat);
+                __NowResult = ResultEnum.ReceiveParameters;
+                if (gotoCatchParamters)
                     _ = await NextParam(tGChat);
-                    break;
-                case ResultEnum.SendMessage:
-                    var gotoCatchParamters = await NowControllerParam.SendMessage(tGChat);
-                    __NowResult = ResultEnum.ReceiveParameters;
-                    if (gotoCatchParamters)
-                        await NextParam(tGChat);
-                    break;
-                case ResultEnum.ReceiveParameters:
-                    _params.Add(await NowControllerParam.CatchObjs(tGChat));
-                    __NowResult = ResultEnum.NextParam;
-                    _ = await NextParam(tGChat);
-                    break;
-                case ResultEnum.NextParam:
-                case ResultEnum.Finish:
-                    __NowResult = ResultEnum.NoStatus;
-                    _ = await NextParam(tGChat);
-                    break;
-                default:
-                    break;
-            }
-            return __NowResult;
+                break;
+            case ResultEnum.ReceiveParameters:
+                _params.Add(await NowControllerParam.CatchObjs(tGChat));
+                __NowResult = ResultEnum.NextParam;
+                _ = await NextParam(tGChat);
+                break;
+            case ResultEnum.NextParam:
+            case ResultEnum.Finish:
+                __NowResult = ResultEnum.NoStatus;
+                _ = await NextParam(tGChat);
+                break;
+            default:
+                break;
         }
-
-        private void Clear()
-        {
-            NowControllerParam = null!;
-            _params.Clear();
-            __NowResult = ResultEnum.NoStatus;
-            __BotCommand = null;
-        }
-
-        public BotCommand GetBotCommand() => __BotCommand!;
-
-        public void NewBotCommandParamScope(BotCommand botCommand)
-        {
-            Clear();
-            __BotCommand = botCommand;
-            __ControllerParams = new List<IControllerParam>(__BotCommand.ControllerParams);
-        }
-
-        public void Dispose() => Clear();
+        return __NowResult;
     }
+
+    private void Clear()
+    {
+        NowControllerParam = null!;
+        _params.Clear();
+        __NowResult = ResultEnum.NoStatus;
+        __BotCommand = null;
+    }
+
+    public BotCommand GetBotCommand() => __BotCommand!;
+
+    public void NewBotCommandParamScope(BotCommand botCommand)
+    {
+        Clear();
+        __BotCommand = botCommand;
+        __ControllerParams = new List<IControllerParam>(__BotCommand.ControllerParams);
+    }
+
+    public void Dispose() => Clear();
 }

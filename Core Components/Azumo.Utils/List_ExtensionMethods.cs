@@ -3,58 +3,57 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Azumo.Utils
+namespace Azumo.Utils;
+
+/// <summary>
+/// 
+/// </summary>
+public static class List_ExtensionMethods
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class List_ExtensionMethods
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static List<object> ToObjectList(this IEnumerable values) => values.Cast<object>().ToList();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static List<object> ToObjectList(this IEnumerator values)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static List<object> ToObjectList(this IEnumerable values) => values.Cast<object>().ToList();
+        List<object> list = [];
+        while (values.MoveNext())
+            list.Add(values.Current);
+        return list;
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static List<object> ToObjectList(this IEnumerator values)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static List<T> ToList<T>(this IEnumerable values) => values.Cast<T>().ToList();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static List<T> ToList<T>(this IEnumerator values)
+    {
+        List<T> list = [];
+        try
         {
-            List<object> list = [];
             while (values.MoveNext())
-                list.Add(values.Current);
-            return list;
+                list.Add((T)values.Current);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static List<T> ToList<T>(this IEnumerable values) => values.Cast<T>().ToList();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static List<T> ToList<T>(this IEnumerator values)
-        {
-            List<T> list = [];
-            try
-            {
-                while (values.MoveNext())
-                    list.Add((T)values.Current);
-            }
-            catch (Exception)
-            { }
-            return list;
-        }
+        catch (Exception)
+        { }
+        return list;
     }
 }

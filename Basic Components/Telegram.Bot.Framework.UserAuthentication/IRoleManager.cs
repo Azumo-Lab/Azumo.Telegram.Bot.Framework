@@ -14,41 +14,39 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.UserAuthentication
+namespace Telegram.Bot.Framework.UserAuthentication;
+
+/// <summary>
+/// 
+/// </summary>
+public interface IRoleManager
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IRoleManager
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="roleName"></param>
-        public void AddRole(string roleName);
+    /// <param name="roleName"></param>
+    public void AddRole(string roleName);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        public List<User> GetRoleUser(string roleName);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="roleName"></param>
+    /// <returns></returns>
+    public List<User> GetRoleUser(string roleName);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roles"></param>
-        public void AddUser(User user, List<string> roles);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="roles"></param>
+    public void AddUser(User user, List<string> roles);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="roleName"></param>
-        /// <returns></returns>
-        public bool VerifyRole(string roleName);
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="roleName"></param>
+    /// <returns></returns>
+    public bool VerifyRole(string roleName);
 }

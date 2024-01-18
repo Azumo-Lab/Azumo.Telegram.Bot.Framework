@@ -18,18 +18,17 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
-{
-    [TypeFor(typeof(PhotoSize))]
-    internal class ParamsPhotoSize : BaseControllerParam
-    {
-        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) => 
-            Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault()!);
+namespace Telegram.Bot.Framework.InternalInterface.ControllerParams;
 
-        public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute)
-        {
-            var name = paramAttribute?.Name ?? "图片";
-            await botClient.SendTextMessageAsync(chatId, $"请发送{name}");
-        }
+[TypeFor(typeof(PhotoSize))]
+internal class ParamsPhotoSize : BaseControllerParam
+{
+    public override Task<object> CatchObjs(TelegramUserChatContext tGChat) =>
+        Task.FromResult<object>(tGChat.Message?.Photo?.OrderBy(x => x.FileSize)?.FirstOrDefault()!);
+
+    public override async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute)
+    {
+        var name = paramAttribute?.Name ?? "图片";
+        _ = await botClient.SendTextMessageAsync(chatId, $"请发送{name}");
     }
 }

@@ -16,27 +16,26 @@
 
 using Azumo.Pipeline.Abstracts;
 
-namespace Azumo.Pipeline
+namespace Azumo.Pipeline;
+
+/// <summary>
+/// 
+/// </summary>
+internal class InternalPipelineFilter : IPipelineFilter
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class InternalPipelineFilter : IPipelineFilter
+    /// <typeparam name="T"></typeparam>
+    /// <param name="t"></param>
+    /// <param name="pipelineController"></param>
+    /// <param name="process"></param>
+    /// <param name="nextHandle"></param>
+    /// <returns></returns>
+    public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="t"></param>
-        /// <param name="pipelineController"></param>
-        /// <param name="process"></param>
-        /// <param name="nextHandle"></param>
-        /// <returns></returns>
-        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle)
-        {
-            pipelineController.NextPipeline = nextHandle;
-            pipelineController.NextPipelineName = process is IPipelineName name ? name.Name : null!;
-            return (t, true);
-        }
+        pipelineController.NextPipeline = nextHandle;
+        pipelineController.NextPipelineName = process is IPipelineName name ? name.Name : null!;
+        return (t, true);
     }
 }

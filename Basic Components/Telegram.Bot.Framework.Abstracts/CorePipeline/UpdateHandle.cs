@@ -23,69 +23,68 @@ using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts.CorePipeline
+namespace Telegram.Bot.Framework.Abstracts.CorePipeline;
+
+/// <summary>
+/// 
+/// </summary>
+/// <remarks>
+/// 
+/// </remarks>
+/// <param name="serviceProvider"></param>
+/// <param name="logger"></param>
+[DependencyInjection(ServiceLifetime.Singleton, typeof(IUpdateHandler))]
+internal class UpdateHandle(IServiceProvider serviceProvider, ILogger<UpdateHandle> logger) : IUpdateHandler
 {
+    private readonly IServiceProvider __ServiceProvider = serviceProvider;
+    private readonly ILogger<UpdateHandle> __Logger = logger;
+
     /// <summary>
     /// 
     /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="serviceProvider"></param>
-    /// <param name="logger"></param>
-    [DependencyInjection(ServiceLifetime.Singleton, typeof(IUpdateHandler))]
-    internal class UpdateHandle(IServiceProvider serviceProvider, ILogger<UpdateHandle> logger) : IUpdateHandler
+    /// <param name="botClient"></param>
+    /// <param name="exception"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
-        private readonly IServiceProvider __ServiceProvider = serviceProvider;
-        private readonly ILogger<UpdateHandle> __Logger = logger;
+        __Logger.LogError(exception, "发生错误");
+        await Task.CompletedTask;
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="botClient"></param>
-        /// <param name="exception"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-        {
-            __Logger.LogError(exception, "发生错误");
-            await Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="botClient"></param>
-        /// <param name="update"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
-            // 全局过滤器
-            var globalFilters = __ServiceProvider.GetServices<IGlobalFilter>();
-            foreach (var filter in globalFilters ?? [])
-                if (!filter.FilterInvoke(update))
-                    return;
-
-            // 创建用户 TelegramUserChatContext
-            var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
-            var telegramUserChatContext = chatManager.Create(botClient, update, __ServiceProvider);
-            // 无法创建，停止执行
-            if (telegramUserChatContext == null)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="botClient"></param>
+    /// <param name="update"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    {
+        // 全局过滤器
+        var globalFilters = __ServiceProvider.GetServices<IGlobalFilter>();
+        foreach (var filter in globalFilters ?? [])
+            if (!filter.FilterInvoke(update))
                 return;
 
-            try
-            {
-                // 开始执行
-                var pipelineController = telegramUserChatContext.UserScopeService.GetRequiredService<IPipelineController<TelegramUserChatContext>>();
-                _ = await pipelineController.SwitchTo(telegramUserChatContext.Type, telegramUserChatContext);
-            }
-            catch (Exception ex)
-            {
-                __Logger.LogError(ex, "发生错误");
-            }
+        // 创建用户 TelegramUserChatContext
+        var chatManager = __ServiceProvider.GetRequiredService<IChatManager>();
+        var telegramUserChatContext = chatManager.Create(botClient, update, __ServiceProvider);
+        // 无法创建，停止执行
+        if (telegramUserChatContext == null)
+            return;
+
+        try
+        {
+            // 开始执行
+            var pipelineController = telegramUserChatContext.UserScopeService.GetRequiredService<IPipelineController<TelegramUserChatContext>>();
+            _ = await pipelineController.SwitchTo(telegramUserChatContext.Type, telegramUserChatContext);
+        }
+        catch (Exception ex)
+        {
+            __Logger.LogError(ex, "发生错误");
         }
     }
 }

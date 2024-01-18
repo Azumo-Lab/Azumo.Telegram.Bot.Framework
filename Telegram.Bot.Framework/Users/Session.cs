@@ -17,61 +17,60 @@
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Users
+namespace Telegram.Bot.Framework.Users;
+
+/// <summary>
+/// 
+/// </summary>
+[DependencyInjection(ServiceLifetime.Scoped, typeof(ISession))]
+internal class Session : ISession
 {
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped, typeof(ISession))]
-    internal class Session : ISession
+    private readonly Dictionary<string, object> __Val = [];
+
+    public string SessionID { get; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public object Get(string key) => TryGetValue(key, out var value) ? value : null;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public bool HasVal(string key) => __Val.ContainsKey(key);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public bool Remove(string key) => __Val.Remove(key);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    public bool Set(string key, object value)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Dictionary<string, object> __Val = [];
-
-        public string SessionID { get; } = Guid.NewGuid().ToString();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public object Get(string key) => TryGetValue(key, out var value) ? value : null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool HasVal(string key) => __Val.ContainsKey(key);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool Remove(string key) => __Val.Remove(key);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public bool Set(string key, object value)
-        {
-            bool result;
-            if (result = !__Val.TryAdd(key, value))
-                __Val[key] = value;
-            return result;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public bool TryGetValue(string key, out object value) => __Val.TryGetValue(key, out value);
+        bool result;
+        if (result = !__Val.TryAdd(key, value))
+            __Val[key] = value;
+        return result;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public bool TryGetValue(string key, out object value) => __Val.TryGetValue(key, out value);
 }

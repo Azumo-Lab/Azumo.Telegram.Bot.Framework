@@ -2,34 +2,33 @@
 using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Azumo.Mushi
+namespace Azumo.Mushi;
+
+public abstract class Spider
 {
-    public abstract class Spider
+    public async Task StartAsync()
     {
-        public async Task StartAsync()
+        IServiceProvider serviceProvider = new ServiceCollection()
+            .AddScoped<DataContext, NormalDataContext>()
+            .BuildServiceProvider();
+
+        using (var serviceScope = serviceProvider.CreateScope())
         {
-            IServiceProvider serviceProvider = new ServiceCollection()
-                .AddScoped<DataContext, NormalDataContext>()
-                .BuildServiceProvider();
+            var __Pipeline =
+            AddProcessFlow(PipelineFactory.CreateIPipelineBuilder<DataContext>())
+            .BuilderPipelineController();
 
-            using (var serviceScope = serviceProvider.CreateScope())
-            {
-                var __Pipeline =
-                AddProcessFlow(PipelineFactory.CreateIPipelineBuilder<DataContext>())
-                .BuilderPipelineController();
+            var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+            context.StartURL.AddRange(StartPages());
 
-                var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
-                context.StartURL.AddRange(StartPages());
+            var dataContext =
+                await __Pipeline.SwitchTo(string.Empty, context);
 
-                var dataContext = 
-                    await __Pipeline.SwitchTo(string.Empty, context);
-               
-                await Task.CompletedTask;
-            }
+            await Task.CompletedTask;
         }
-
-        protected abstract IPipelineBuilder<DataContext> AddProcessFlow(IPipelineBuilder<DataContext> builder);
-
-        protected abstract List<string> StartPages();
     }
+
+    protected abstract IPipelineBuilder<DataContext> AddProcessFlow(IPipelineBuilder<DataContext> builder);
+
+    protected abstract List<string> StartPages();
 }

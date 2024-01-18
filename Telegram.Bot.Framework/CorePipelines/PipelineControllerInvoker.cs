@@ -18,42 +18,41 @@ using Azumo.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.CorePipelines
+namespace Telegram.Bot.Framework.CorePipelines;
+
+internal class PipelineControllerInvoker : IProcessAsync<TelegramUserChatContext>
 {
-    internal class PipelineControllerInvoker : IProcessAsync<TelegramUserChatContext>
+    /// <summary>
+    /// 控制器的执行
+    /// </summary>
+    /// <param name="chat"></param>
+    /// <param name="pipelineController"></param>
+    /// <returns></returns>
+    public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext chat, IPipelineController<TelegramUserChatContext> pipelineController)
     {
-        /// <summary>
-        /// 控制器的执行
-        /// </summary>
-        /// <param name="chat"></param>
-        /// <param name="pipelineController"></param>
-        /// <returns></returns>
-        public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext chat, IPipelineController<TelegramUserChatContext> pipelineController)
+        // 获取参数
+        var controllerParamManager = chat.UserScopeService.GetRequiredService<IControllerParamManager>();
+
+        var botCommand = controllerParamManager.GetBotCommand();
+        if (botCommand == null)
+            return await pipelineController.StopAsync(chat);
+
+        // 执行控制器
+        try
         {
-            // 获取参数
-            var controllerParamManager = chat.UserScopeService.GetRequiredService<IControllerParamManager>();
-
-            var botCommand = controllerParamManager.GetBotCommand();
-            if (botCommand == null)
-                return await pipelineController.StopAsync(chat);
-
-            // 执行控制器
-            try
-            {
-                var Invoker = botCommand.Invoker;
-                await Invoker(chat, controllerParamManager);
-            }
-            catch (Exception)
-            {
-
-            }
-            finally
-            {
-                controllerParamManager.Dispose();
-            }
-
-            // 执行下一个
-            return await pipelineController.NextAsync(chat);
+            var Invoker = botCommand.Invoker;
+            await Invoker(chat, controllerParamManager);
         }
+        catch (Exception)
+        {
+
+        }
+        finally
+        {
+            controllerParamManager.Dispose();
+        }
+
+        // 执行下一个
+        return await pipelineController.NextAsync(chat);
     }
 }

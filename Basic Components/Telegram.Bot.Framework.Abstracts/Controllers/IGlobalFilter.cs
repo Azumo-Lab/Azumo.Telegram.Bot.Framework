@@ -16,18 +16,17 @@
 
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Controllers;
+
+/// <summary>
+/// 全局过滤器
+/// </summary>
+public interface IGlobalFilter
 {
     /// <summary>
-    /// 全局过滤器
+    /// 开始执行过滤
     /// </summary>
-    public interface IGlobalFilter
-    {
-        /// <summary>
-        /// 开始执行过滤
-        /// </summary>
-        /// <param name="update"></param>
-        /// <returns></returns>
-        public bool FilterInvoke(Update update);
-    }
+    /// <param name="update"></param>
+    /// <returns></returns>
+    public bool FilterInvoke(Update update);
 }

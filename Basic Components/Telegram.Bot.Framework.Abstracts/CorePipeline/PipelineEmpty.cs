@@ -17,21 +17,20 @@
 using Azumo.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.CorePipeline
+namespace Telegram.Bot.Framework.Abstracts.CorePipeline;
+
+/// <summary>
+/// 不进行任何处理
+/// </summary>
+internal class PipelineEmpty : IProcessAsync<TelegramUserChatContext>
 {
     /// <summary>
     /// 不进行任何处理
     /// </summary>
-    internal class PipelineEmpty : IProcessAsync<TelegramUserChatContext>
-    {
-        /// <summary>
-        /// 不进行任何处理
-        /// </summary>
-        /// <param name="t">传入参数</param>
-        /// <param name="pipelineController">控制器</param>
-        /// <returns>直接对传入参数进行返回</returns>
-        public Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext t, IPipelineController<TelegramUserChatContext> pipelineController) =>
-            // 结束处理
-            pipelineController.StopAsync(t);
-    }
+    /// <param name="t">传入参数</param>
+    /// <param name="pipelineController">控制器</param>
+    /// <returns>直接对传入参数进行返回</returns>
+    public Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext t, IPipelineController<TelegramUserChatContext> pipelineController) =>
+        // 结束处理
+        pipelineController.StopAsync(t);
 }

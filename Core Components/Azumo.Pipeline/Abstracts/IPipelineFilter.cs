@@ -14,25 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts;
+
+/// <summary>
+/// 流水线过滤器
+/// </summary>
+/// <remarks>
+/// 一个流水线过滤器，通过此接口对流水线的数据，以及是否继续执行进行判断与处理
+/// </remarks>
+public interface IPipelineFilter
 {
     /// <summary>
-    /// 流水线过滤器
+    /// 执行处理任务
     /// </summary>
     /// <remarks>
-    /// 一个流水线过滤器，通过此接口对流水线的数据，以及是否继续执行进行判断与处理
+    /// 通过此接口对流水线的数据，以及是否继续执行进行判断与处理
     /// </remarks>
-    public interface IPipelineFilter
-    {
-        /// <summary>
-        /// 执行处理任务
-        /// </summary>
-        /// <remarks>
-        /// 通过此接口对流水线的数据，以及是否继续执行进行判断与处理
-        /// </remarks>
-        /// <param name="t">任务处理的数据类型</param>
-        /// <param name="pipelineController">流水线控制器</param>
-        /// <returns>异步的处理后的数据</returns>
-        public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle);
-    }
+    /// <param name="t">任务处理的数据类型</param>
+    /// <param name="pipelineController">流水线控制器</param>
+    /// <returns>异步的处理后的数据</returns>
+    public (T result, bool next) Execute<T>(T t, IPipelineController<T> pipelineController, IProcessAsync<T> process, PipelineDelegate<T> nextHandle);
 }

@@ -18,15 +18,14 @@ using Azumo.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.CorePipelines
-{
-    internal class PipelineClear : IProcessAsync<TelegramUserChatContext>
-    {
-        public Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext telegramUserChatContext, IPipelineController<TelegramUserChatContext> pipelineController)
-        {
-            telegramUserChatContext.Session.RemoveBotCommand();
+namespace Telegram.Bot.Framework.CorePipelines;
 
-            return pipelineController.NextAsync(telegramUserChatContext);
-        }
+internal class PipelineClear : IProcessAsync<TelegramUserChatContext>
+{
+    public Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext telegramUserChatContext, IPipelineController<TelegramUserChatContext> pipelineController)
+    {
+        telegramUserChatContext.Session.RemoveBotCommand();
+
+        return pipelineController.NextAsync(telegramUserChatContext);
     }
 }

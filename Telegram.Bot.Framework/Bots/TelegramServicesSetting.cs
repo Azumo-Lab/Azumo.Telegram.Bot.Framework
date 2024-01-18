@@ -17,33 +17,32 @@
 using System.Diagnostics;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.Bots
+namespace Telegram.Bot.Framework.Bots;
+
+/// <summary>
+/// 添加一个自定义的配置
+/// </summary>
+[DebuggerDisplay("添加自定义服务注册")]
+internal class TelegramServicesSetting : ITelegramPartCreator
+{
+    private readonly Action<IServiceCollection, IServiceProvider> __ServiceSettingAction;
+    public TelegramServicesSetting(Action<IServiceCollection, IServiceProvider> action) => __ServiceSettingAction = action;
+
+    public void AddBuildService(IServiceCollection services)
+    {
+
+    }
+
+    public void Build(IServiceCollection services, IServiceProvider builderService) => __ServiceSettingAction(services, builderService);
+}
+
+public static partial class TelegramBuilderExtensionMethods
 {
     /// <summary>
-    /// 添加一个自定义的配置
+    /// 
     /// </summary>
-    [DebuggerDisplay("添加自定义服务注册")]
-    internal class TelegramServicesSetting : ITelegramPartCreator
-    {
-        private readonly Action<IServiceCollection, IServiceProvider> __ServiceSettingAction;
-        public TelegramServicesSetting(Action<IServiceCollection, IServiceProvider> action) => __ServiceSettingAction = action;
-
-        public void AddBuildService(IServiceCollection services)
-        {
-
-        }
-
-        public void Build(IServiceCollection services, IServiceProvider builderService) => __ServiceSettingAction(services, builderService);
-    }
-
-    public static partial class TelegramBuilderExtensionMethods
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="telegramBotBuilder"></param>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection, IServiceProvider> action) => telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
-    }
+    /// <param name="telegramBotBuilder"></param>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder AddServices(this ITelegramBotBuilder telegramBotBuilder, Action<IServiceCollection, IServiceProvider> action) => telegramBotBuilder.AddTelegramPartCreator(new TelegramServicesSetting(action));
 }

@@ -22,222 +22,221 @@ using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.UserAuthentication
+namespace Telegram.Bot.Framework.UserAuthentication;
+
+internal class UserManager(IServiceProvider serviceProvider) : IUserManager
 {
-    internal class UserManager(IServiceProvider serviceProvider) : IUserManager
+    private readonly IGlobalBlackList? __blackList = serviceProvider.GetService<IGlobalBlackList>();
+    private readonly IRoleManager? __roleManager = serviceProvider.GetService<IRoleManager>();
+
+    private static readonly string SignInFlag = Guid.NewGuid().ToString();
+    private static readonly string RoleFlag = Guid.NewGuid().ToString();
+    private static readonly string UserBlockFlag = Guid.NewGuid().ToString();
+
+    public event EventHandler<SignInArgs>? OnSignIn;
+    public event EventHandler? OnSignInSuccess;
+    public event EventHandler? OnSignInFailure;
+
+    public event EventHandler<SignupArgs>? OnSignUP;
+    public event EventHandler<UserDeleteArgs>? OnUserDelete;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public bool IsSignIn(IUser user) =>
+        user.Session.HasVal(SignInFlag);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public Task<bool> UserBan(IUser user)
     {
-        private readonly IGlobalBlackList? __blackList = serviceProvider.GetService<IGlobalBlackList>();
-        private readonly IRoleManager? __roleManager = serviceProvider.GetService<IRoleManager>();
+        __blackList?.Add(user.User.Id);
+        return Task.FromResult(user.Session.Set(UserBlockFlag, true));
+    }
 
-        private static readonly string SignInFlag = Guid.NewGuid().ToString();
-        private static readonly string RoleFlag = Guid.NewGuid().ToString();
-        private static readonly string UserBlockFlag = Guid.NewGuid().ToString();
-
-        public event EventHandler<SignInArgs>? OnSignIn;
-        public event EventHandler? OnSignInSuccess;
-        public event EventHandler? OnSignInFailure;
-
-        public event EventHandler<SignupArgs>? OnSignUP;
-        public event EventHandler<UserDeleteArgs>? OnUserDelete;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public bool IsSignIn(IUser user) =>
-            user.Session.HasVal(SignInFlag);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public Task<bool> UserBan(IUser user)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public async Task<bool> UserDeleteInfo(IUser user)
+    {
+        try
         {
-            __blackList?.Add(user.User.Id);
-            return Task.FromResult(user.Session.Set(UserBlockFlag, true));
+            OnUserDelete?.Invoke(null, new UserDeleteArgs { User = user });
+            return true;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public async Task<bool> UserDeleteInfo(IUser user)
+        catch (Exception)
         {
-            try
+            return await Task.FromResult(false);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="role"></param>
+    /// <returns></returns>
+    public async Task<bool> UserRole(IUser user, string role)
+    {
+        ArgumentNullException.ThrowIfNull(user, nameof(user));
+        ArgumentException.ThrowIfNullOrEmpty(role, nameof(role));
+
+        // 未登录
+        if (!IsSignIn(user))
+            return false;
+
+        // 添加权限角色
+        if (user.Session.TryGetValue(RoleFlag, out List<string>? roles))
+        {
+            roles!.Add(role);
+        }
+        else
+        {
+            roles = [role];
+            _ = user.Session.Set(RoleFlag, roles);
+        }
+        __roleManager?.AddUser(user.User, roles);
+        return await Task.FromResult(true);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public async Task<bool> UserSignIn(IUser user, string password)
+    {
+        var signInArgs = new SignInArgs();
+        OnSignIn?.Invoke(null, signInArgs);
+        if (signInArgs.PasswordHash != null)
+        {
+            if (signInArgs.PasswordHash == PasswordHelper.Hash(password))
             {
-                OnUserDelete?.Invoke(null, new UserDeleteArgs { User = user });
+                _ = user.Session.Set(SignInFlag, true);
+                _ = user.Session.Set(RoleFlag, new List<string>(signInArgs.UserRoles));
+                OnSignInSuccess?.Invoke(null, EventArgs.Empty);
                 return true;
-            }
-            catch (Exception)
-            {
-                return await Task.FromResult(false);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        public async Task<bool> UserRole(IUser user, string role)
-        {
-            ArgumentNullException.ThrowIfNull(user, nameof(user));
-            ArgumentException.ThrowIfNullOrEmpty(role, nameof(role));
-
-            // 未登录
-            if (!IsSignIn(user))
-                return false;
-
-            // 添加权限角色
-            if (user.Session.TryGetValue(RoleFlag, out List<string>? roles))
-            {
-                roles!.Add(role);
             }
             else
             {
-                roles = [role];
-                _ = user.Session.Set(RoleFlag, roles);
+                OnSignInFailure?.Invoke(null, EventArgs.Empty);
             }
-            __roleManager?.AddUser(user.User, roles);
-            return await Task.FromResult(true);
         }
+        return await Task.FromResult(false);
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public async Task<bool> UserSignIn(IUser user, string password)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    public Task<bool> UserSignOut(IUser user)
+    {
+        _ = user.Session.Remove(SignInFlag);
+        _ = user.Session.Remove(RoleFlag);
+        return Task.FromResult(true);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="password"></param>
+    /// <param name="roles"></param>
+    /// <returns></returns>
+    public async Task<bool> UserSignUp(IUser user, string password, List<string> roles)
+    {
+        ArgumentNullException.ThrowIfNull(user, nameof(user));
+        ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
+
+        var signupArgs = new SignupArgs();
+        try
         {
-            var signInArgs = new SignInArgs();
-            OnSignIn?.Invoke(null, signInArgs);
-            if (signInArgs.PasswordHash != null)
-            {
-                if (signInArgs.PasswordHash == PasswordHelper.Hash(password))
-                {
-                    _ = user.Session.Set(SignInFlag, true);
-                    _ = user.Session.Set(RoleFlag, new List<string>(signInArgs.UserRoles));
-                    OnSignInSuccess?.Invoke(null, EventArgs.Empty);
-                    return true;
-                }
-                else
-                {
-                    OnSignInFailure?.Invoke(null, EventArgs.Empty);
-                }
-            }
+            signupArgs.User = user.User;
+            signupArgs.Password = password;
+            signupArgs.UserRoles.AddRange(roles ?? []);
+
+            OnSignUP?.Invoke(null, signupArgs);
+            return true;
+        }
+        catch (Exception)
+        {
             return await Task.FromResult(false);
         }
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public Task<bool> UserSignOut(IUser user)
-        {
-            _ = user.Session.Remove(SignInFlag);
-            _ = user.Session.Remove(RoleFlag);
-            return Task.FromResult(true);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password"></param>
-        /// <param name="roles"></param>
-        /// <returns></returns>
-        public async Task<bool> UserSignUp(IUser user, string password, List<string> roles)
-        {
-            ArgumentNullException.ThrowIfNull(user, nameof(user));
-            ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
-
-            var signupArgs = new SignupArgs();
-            try
-            {
-                signupArgs.User = user.User;
-                signupArgs.Password = password;
-                signupArgs.UserRoles.AddRange(roles ?? []);
-
-                OnSignUP?.Invoke(null, signupArgs);
-                return true;
-            }
-            catch (Exception)
-            {
-                return await Task.FromResult(false);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="authenticateAttribute"></param>
-        /// <returns></returns>
-        public EnumVerifyRoleResult VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute)
-        {
-            // 检查是否是已经注册的角色名称
-            foreach (var item in authenticateAttribute.RoleName)
-                if (!__roleManager?.VerifyRole(item) ?? true)
-                    return EnumVerifyRoleResult.Failure;
-
-            // 已屏蔽用户
-            if (user.Session.HasVal(UserBlockFlag))
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="authenticateAttribute"></param>
+    /// <returns></returns>
+    public EnumVerifyRoleResult VerifyRole(IUser user, AuthenticateAttribute authenticateAttribute)
+    {
+        // 检查是否是已经注册的角色名称
+        foreach (var item in authenticateAttribute.RoleName)
+            if (!__roleManager?.VerifyRole(item) ?? true)
                 return EnumVerifyRoleResult.Failure;
 
-            // 检查权限
-            if (user.Session.TryGetValue(RoleFlag, out List<string>? role))
-                foreach (var item in role!)
-                    if (authenticateAttribute.RoleName.Contains(item))
-                        return EnumVerifyRoleResult.Success;
+        // 已屏蔽用户
+        if (user.Session.HasVal(UserBlockFlag))
             return EnumVerifyRoleResult.Failure;
-        }
 
-        public Task<bool> UserUnBan(IUser user)
+        // 检查权限
+        if (user.Session.TryGetValue(RoleFlag, out List<string>? role))
+            foreach (var item in role!)
+                if (authenticateAttribute.RoleName.Contains(item))
+                    return EnumVerifyRoleResult.Success;
+        return EnumVerifyRoleResult.Failure;
+    }
+
+    public Task<bool> UserUnBan(IUser user)
+    {
+        __blackList?.Remove(user.User.Id);
+        return Task.FromResult(user.Session.Remove(UserBlockFlag));
+    }
+
+    public async Task ChangeBotCommand(TelegramUserChatContext telegramUserChatContext)
+    {
+        var roleName = string.Empty;
+        if (telegramUserChatContext.Session.TryGetValue(RoleFlag, out List<string>? roles))
+            roleName = (roles ?? []).FirstOrDefault(string.Empty);
+
+        var controllerManager = serviceProvider.GetRequiredService<IControllerManager>();
+        var commands = controllerManager.GetAllCommands()
+            .Where(x => x.AuthenticateAttribute == null || x.AuthenticateAttribute!.RoleName.Contains(roleName))
+            .ToList();
+        BotCommandScope botCommandScope = BotCommandScope.Default();
+        switch (telegramUserChatContext.UserChat.Type)
         {
-            __blackList?.Remove(user.User.Id);
-            return Task.FromResult(user.Session.Remove(UserBlockFlag));
+            case Types.Enums.ChatType.Private:
+                botCommandScope = BotCommandScope.Chat(telegramUserChatContext.UserChatID);
+                break;
+            case Types.Enums.ChatType.Group:
+                User? user;
+                if ((user = telegramUserChatContext.RequestUser) != null)
+                    botCommandScope = BotCommandScope.ChatMember(telegramUserChatContext.UserChatID, user.Id);
+                break;
+            case Types.Enums.ChatType.Channel:
+                break;
+            case Types.Enums.ChatType.Supergroup:
+                break;
+            default:
+                break;
         }
-
-        public async Task ChangeBotCommand(TelegramUserChatContext telegramUserChatContext)
+        var telegramBotClient = serviceProvider.GetRequiredService<ITelegramBotClient>();
+        await telegramBotClient.SetMyCommandsAsync(commands.Select(x => new Types.BotCommand
         {
-            var roleName = string.Empty;
-            if (telegramUserChatContext.Session.TryGetValue(RoleFlag, out List<string>? roles))
-                roleName = (roles ?? []).FirstOrDefault(string.Empty);
-
-            var controllerManager = serviceProvider.GetRequiredService<IControllerManager>();
-            var commands = controllerManager.GetAllCommands()
-                .Where(x => x.AuthenticateAttribute == null || x.AuthenticateAttribute!.RoleName.Contains(roleName))
-                .ToList();
-            BotCommandScope botCommandScope = BotCommandScope.Default();
-            switch (telegramUserChatContext.UserChat.Type)
-            {
-                case Types.Enums.ChatType.Private:
-                    botCommandScope = BotCommandScope.Chat(telegramUserChatContext.UserChatID);
-                    break;
-                case Types.Enums.ChatType.Group:
-                    User? user;
-                    if ((user = telegramUserChatContext.RequestUser) != null)
-                        botCommandScope = BotCommandScope.ChatMember(telegramUserChatContext.UserChatID, user.Id);
-                    break;
-                case Types.Enums.ChatType.Channel:
-                    break;
-                case Types.Enums.ChatType.Supergroup:
-                    break;
-                default:
-                    break;
-            }
-            var telegramBotClient = serviceProvider.GetRequiredService<ITelegramBotClient>();
-            await telegramBotClient.SetMyCommandsAsync(commands.Select(x => new Types.BotCommand
-            {
-                Command = x.BotCommandName,
-                Description = x.Description,
-            }), botCommandScope);
-        }
+            Command = x.BotCommandName,
+            Description = x.Description,
+        }), botCommandScope);
     }
 }

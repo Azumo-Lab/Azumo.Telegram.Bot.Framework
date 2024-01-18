@@ -16,17 +16,16 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.Abstracts.Bots
+namespace Telegram.Bot.Framework.Abstracts.Bots;
+
+/// <summary>
+/// 向 Bot 中添加自定义的服务
+/// </summary>
+public interface ITelegramService
 {
     /// <summary>
-    /// 向 Bot 中添加自定义的服务
+    /// 向 <see cref="IServiceCollection"/> 中添加服务项目
     /// </summary>
-    public interface ITelegramService
-    {
-        /// <summary>
-        /// 向 <see cref="IServiceCollection"/> 中添加服务项目
-        /// </summary>
-        /// <param name="services"></param>
-        public void AddServices(IServiceCollection services);
-    }
+    /// <param name="services"></param>
+    public void AddServices(IServiceCollection services);
 }

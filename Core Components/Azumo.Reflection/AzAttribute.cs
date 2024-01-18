@@ -14,21 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.Reflection
+namespace Azumo.Reflection;
+
+public class AzAttribute<T> where T : Attribute
 {
-    public class AzAttribute<T> where T : Attribute
-    {
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private static readonly List<Type> __AllTypes;
+    /// <summary>
+    /// 
+    /// </summary>
+    private static readonly List<Type> __AllTypes;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        static AzAttribute() => __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
+    /// <summary>
+    /// 
+    /// </summary>
+    static AzAttribute() => __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
-        public List<Type> GetAllType() => __AllTypes.Where(x => Attribute.IsDefined(x, typeof(T))).ToList();
-    }
+    public List<Type> GetAllType() => __AllTypes.Where(x => Attribute.IsDefined(x, typeof(T))).ToList();
 }

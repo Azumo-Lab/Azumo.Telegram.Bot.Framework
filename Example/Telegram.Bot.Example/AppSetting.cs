@@ -14,12 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Example
-{
-    internal class AppSetting
-    {
-        public string Token { get; set; } = string.Empty;
+namespace Telegram.Bot.Example;
 
-        public string AdminPassword { get; set; } = string.Empty;
-    }
+internal class AppSetting
+{
+    public string Token { get; set; } = string.Empty;
+
+    public string AdminPassword { get; set; } = string.Empty;
 }

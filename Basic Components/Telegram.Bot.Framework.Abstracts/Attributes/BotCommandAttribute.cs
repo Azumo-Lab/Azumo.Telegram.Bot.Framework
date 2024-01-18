@@ -16,59 +16,58 @@
 
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Abstracts.Attributes
+namespace Telegram.Bot.Framework.Abstracts.Attributes;
+
+/// <summary>
+/// 
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
+public class BotCommandAttribute : Attribute
 {
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
-    public class BotCommandAttribute : Attribute
+    public string BotCommandName { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public MessageType? MessageType { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="BotCommandName"></param>
+    public BotCommandAttribute(string BotCommandName) : this(null, BotCommandName) { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="messageType"></param>
+    public BotCommandAttribute(MessageType messageType) : this(messageType, string.Empty) { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="MessageType"></param>
+    /// <param name="BotCommandName"></param>
+    public BotCommandAttribute(MessageType? MessageType, string BotCommandName)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string BotCommandName { get; }
+        BotCommandName = BotCommandName.ToLower();
+        if (!BotCommandName.StartsWith("/"))
+            BotCommandName = $"/{BotCommandName}";
+        this.BotCommandName = BotCommandName.ToLower();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public MessageType? MessageType { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Description { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="BotCommandName"></param>
-        public BotCommandAttribute(string BotCommandName) : this(null, BotCommandName) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="messageType"></param>
-        public BotCommandAttribute(MessageType messageType) : this(messageType, string.Empty) { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="MessageType"></param>
-        /// <param name="BotCommandName"></param>
-        public BotCommandAttribute(MessageType? MessageType, string BotCommandName)
-        {
-            BotCommandName = BotCommandName.ToLower();
-            if (!BotCommandName.StartsWith("/"))
-                BotCommandName = $"/{BotCommandName}";
-            this.BotCommandName = BotCommandName.ToLower();
-
-            this.MessageType = MessageType;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public BotCommandAttribute() => BotCommandName = null!;
+        this.MessageType = MessageType;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public BotCommandAttribute() => BotCommandName = null!;
 }

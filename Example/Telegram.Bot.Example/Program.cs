@@ -26,71 +26,70 @@ using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Framework.Bots;
 using Telegram.Bot.Framework.UserAuthentication;
 
-namespace Telegram.Bot.Example
+namespace Telegram.Bot.Example;
+
+internal class Program
 {
-    internal class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var dic = ArgsHelper.ToDictionary(args);
-            if (!dic.TryGetValue("-setting", out var settingPath))
-                ArgumentException.ThrowIfNullOrEmpty(settingPath, "请添加启动参数 -setting ，后面添加配置文件路径");
+        var dic = ArgsHelper.ToDictionary(args);
+        if (!dic.TryGetValue("-setting", out var settingPath))
+            ArgumentException.ThrowIfNullOrEmpty(settingPath, "请添加启动参数 -setting ，后面添加配置文件路径");
 
-            // 创建ITelegramBotBuilder接口
-            var telegramBot = TelegramBuilder.Create()
-                // 添加配置文件
-                .AddConfiguration<AppSetting>(settingPath)
-                // 使用Token
-                .UseToken<AppSetting>(x => x.Token)
-                // 使用Clash默认代理
-                .UseClashDefaultProxy()
-                // 添加一个控制台Log
-                .AddSimpleConsole()
-                // 注册Bot指令
-                .RegisterBotCommand()
-                // 添加用户认证服务
-                .AddUserAuthentication(["admin", "user"])
-                // 添加指令
-                .AddCommand([BotCommand("Func", Description = "Func测试")] async (TelegramUserChatContext telegramUserChatContext) =>
-                {
-                    await telegramUserChatContext.BotClient.SendTextMessageAsync(telegramUserChatContext.UserChatID, "Func 测试");
-                    await Task.CompletedTask;
-                })
-                // 创建机器人接口
-                .Build();
+        // 创建ITelegramBotBuilder接口
+        var telegramBot = TelegramBuilder.Create()
+            // 添加配置文件
+            .AddConfiguration<AppSetting>(settingPath)
+            // 使用Token
+            .UseToken<AppSetting>(x => x.Token)
+            // 使用Clash默认代理
+            .UseClashDefaultProxy()
+            // 添加一个控制台Log
+            .AddSimpleConsole()
+            // 注册Bot指令
+            .RegisterBotCommand()
+            // 添加用户认证服务
+            .AddUserAuthentication(["admin", "user"])
+            // 添加指令
+            .AddCommand([BotCommand("Func", Description = "Func测试")] async (TelegramUserChatContext telegramUserChatContext) =>
+            {
+                _ = await telegramUserChatContext.BotClient.SendTextMessageAsync(telegramUserChatContext.UserChatID, "Func 测试");
+                await Task.CompletedTask;
+            })
+            // 创建机器人接口
+            .Build();
 
-            // 启动Bot
-            var task = telegramBot.StartAsync();
-            task.Wait();
-        }
+        // 启动Bot
+        var task = telegramBot.StartAsync();
+        task.Wait();
+    }
+}
+
+public class TestController : TelegramController
+{
+    [BotCommand(Description = "进行管理员认证")]
+    public async Task Login([Param(Name = "密码")] string password)
+    {
+        var userManager = Chat.UserScopeService.GetService<IUserManager>();
+        userManager.OnSignIn += UserManager_OnSignIn;
+        _ = await userManager.UserSignIn(Chat.User, password);
+        _ = await userManager.UserRole(Chat.User, "admin");
+        userManager.OnSignIn -= UserManager_OnSignIn;
+        _ = await SendMessage("已赋予管理员权限");
     }
 
-    public class TestController : TelegramController
+    private void UserManager_OnSignIn(object sender, SignInArgs e)
     {
-        [BotCommand(Description = "进行管理员认证")]
-        public async Task Login([Param(Name = "密码")]string password)
-        {
-            var userManager = Chat.UserScopeService.GetService<IUserManager>();
-            userManager.OnSignIn += UserManager_OnSignIn;
-            await userManager.UserSignIn(Chat.User, password);
-            await userManager.UserRole(Chat.User, "admin");
-            userManager.OnSignIn -= UserManager_OnSignIn;
-            await SendMessage("已赋予管理员权限");
-        }
+        var appSetting = Chat.UserScopeService.GetService<AppSetting>();
+        e.PasswordHash = PasswordHelper.Hash(appSetting.AdminPassword);
+        e.UserRoles.Add("admin");
+    }
 
-        private void UserManager_OnSignIn(object sender, SignInArgs e)
-        {
-            var appSetting = Chat.UserScopeService.GetService<AppSetting>();
-            e.PasswordHash = PasswordHelper.Hash(appSetting.AdminPassword);
-            e.UserRoles.Add("admin");
-        }
-
-        [Authenticate("admin")]
-        [BotCommand("/Admin")]
-        public async Task Test2()
-        {
-            await SendMessage("管理员");
-            await SendMessage("欢迎管理员！！");
-        }
+    [Authenticate("admin")]
+    [BotCommand("/Admin")]
+    public async Task Test2()
+    {
+        _ = await SendMessage("管理员");
+        _ = await SendMessage("欢迎管理员！！");
     }
 }

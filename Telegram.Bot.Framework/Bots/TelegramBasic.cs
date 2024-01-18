@@ -16,119 +16,116 @@
 
 using Azumo.Reflection;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.InternalInterface;
 
-namespace Telegram.Bot.Framework.Bots
+namespace Telegram.Bot.Framework.Bots;
+
+/// <summary>
+/// 进行框架运行所必须依赖的设置工作
+/// </summary>
+/// <remarks>
+/// 进行基础服务的设置和处理
+/// </remarks>
+[DebuggerDisplay("框架基础服务")]
+internal class TelegramBasic : ITelegramPartCreator
 {
     /// <summary>
-    /// 进行框架运行所必须依赖的设置工作
+    /// 创建时服务
     /// </summary>
-    /// <remarks>
-    /// 进行基础服务的设置和处理
-    /// </remarks>
-    [DebuggerDisplay("框架基础服务")]
-    internal class TelegramBasic : ITelegramPartCreator
+    /// <param name="services"></param>
+    public void AddBuildService(IServiceCollection services)
     {
-        /// <summary>
-        /// 创建时服务
-        /// </summary>
-        /// <param name="services"></param>
-        public void AddBuildService(IServiceCollection services)
-        {
 
-        }
+    }
 
-        /// <summary>
-        /// 运行时服务
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="builderService"></param>
-        public void Build(IServiceCollection services, IServiceProvider builderService)
+    /// <summary>
+    /// 运行时服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="builderService"></param>
+    public void Build(IServiceCollection services, IServiceProvider builderService)
+    {
+        var _LogActions = builderService.GetServices<Action<ILoggingBuilder, IServiceProvider>>();
+        // 添加Log
+        _ = services.AddLogging(option =>
         {
-            var _LogActions = builderService.GetServices<Action<ILoggingBuilder, IServiceProvider>>();
-            // 添加Log
-            _ = services.AddLogging(option =>
-            {
-                if (_LogActions == null || !_LogActions.Any())
-                    _ = option.AddSimpleConsole();
-                else
-                    foreach (var item in _LogActions)
-                        item.Invoke(option, builderService);
-            });
-            // 添加 ITelegramBot
-            _ = services.AddSingleton<ITelegramBot, TelegramBot>();
+            if (_LogActions == null || !_LogActions.Any())
+                _ = option.AddSimpleConsole();
+            else
+                foreach (var item in _LogActions)
+                    item.Invoke(option, builderService);
+        });
+        // 添加 ITelegramBot
+        _ = services.AddSingleton<ITelegramBot, TelegramBot>();
+    }
+}
+
+[DebuggerDisplay("基础框架安装搜索服务")]
+internal class TelegramInstall : ITelegramPartCreator
+{
+    public TelegramInstall()
+    {
+
+    }
+    public void AddBuildService(IServiceCollection services)
+    {
+        var reflection = AzReflection<ITelegramService>.Create();
+        foreach (var item in reflection.FindAllSubclass())
+        {
+            _ = services.AddSingleton(typeof(ITelegramService), item);
         }
     }
 
-    [DebuggerDisplay("基础框架安装搜索服务")]
-    internal class TelegramInstall : ITelegramPartCreator
+    public void Build(IServiceCollection services, IServiceProvider builderService)
     {
-        public TelegramInstall()
-        {
+        _ = services.ScanService();
 
-        }
-        public void AddBuildService(IServiceCollection services)
+        _ = services.AddSingleton<IControllerManager>(service =>
         {
-            var reflection = AzReflection<ITelegramService>.Create();
-            foreach (var item in reflection.FindAllSubclass())
+            ControllerManager controllerManager = new();
+
+            var azReflection = AzReflection<TelegramController>.Create();
+
+            foreach (var controller in azReflection.FindAllSubclass())
             {
-                _ = services.AddSingleton(typeof(ITelegramService), item);
+                var methodinfos = controller.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                foreach (var method in methodinfos)
+                    if (Attribute.IsDefined(method, typeof(BotCommandAttribute)))
+                        controllerManager.InternalCommands.Add(new BotCommand()
+                        {
+                            MethodInfo = method,
+                        });
             }
-        }
-
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-            _ = services.ScanService();
-
-            services.AddSingleton<IControllerManager>(service =>
+            foreach (var command in builderService.GetServices<Delegate>() ?? [])
             {
-                ControllerManager controllerManager = new();
-                
-                var azReflection = AzReflection<TelegramController>.Create();
-
-                foreach (var controller in azReflection.FindAllSubclass())
+                controllerManager.InternalCommands.Add(new BotCommand()
                 {
-                    var methodinfos = controller.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                    foreach (var method in methodinfos)
-                        if (Attribute.IsDefined(method, typeof(BotCommandAttribute)))
-                            controllerManager.InternalCommands.Add(new BotCommand()
-                            {
-                                MethodInfo = method,
-                            });
-                }
-                foreach (var command in builderService.GetServices<Delegate>() ?? [])
-                {
-                    controllerManager.InternalCommands.Add(new BotCommand()
-                    {
-                        MethodInfo = command.Method,
-                        ObjectFactory = (service, objs) => command.Target!,
-                    });
-                }
-                controllerManager.InternalCommands.ForEach(x => x.Cache());
-                return controllerManager;
-            });
+                    MethodInfo = command.Method,
+                    ObjectFactory = (service, objs) => command.Target!,
+                });
+            }
+            controllerManager.InternalCommands.ForEach(x => x.Cache());
+            return controllerManager;
+        });
 
-            foreach (var service in builderService.GetServices<ITelegramService>())
-                service.AddServices(services);
-        }
+        foreach (var service in builderService.GetServices<ITelegramService>())
+            service.AddServices(services);
     }
+}
 
-    public static partial class TelegramBuilderExtensionMethods
-    {
-        /// <summary>
-        /// 添加基础的服务
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder) => builder
-                .AddTelegramPartCreator(new TelegramInstall())
-                .AddTelegramPartCreator(new TelegramBasic());
-    }
+public static partial class TelegramBuilderExtensionMethods
+{
+    /// <summary>
+    /// 添加基础的服务
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    internal static ITelegramBotBuilder AddBasic(this ITelegramBotBuilder builder) => builder
+            .AddTelegramPartCreator(new TelegramInstall())
+            .AddTelegramPartCreator(new TelegramBasic());
 }

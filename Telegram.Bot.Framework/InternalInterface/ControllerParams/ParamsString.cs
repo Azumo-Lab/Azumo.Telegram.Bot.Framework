@@ -17,14 +17,12 @@
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
+namespace Telegram.Bot.Framework.InternalInterface.ControllerParams;
+
+[TypeFor(typeof(string))]
+internal class ParamsString : BaseControllerParam, IControllerParamSender
 {
-    [TypeFor(typeof(string))]
-    internal class ParamsString : BaseControllerParam, IControllerParamSender
-    {
-        public override async Task<object> CatchObjs(TelegramUserChatContext tGChat) => 
-            await Task.FromResult<object>(tGChat.Message?.Text ?? string.Empty);
-    }
+    public override async Task<object> CatchObjs(TelegramUserChatContext tGChat) =>
+        await Task.FromResult<object>(tGChat.Message?.Text ?? string.Empty);
 }

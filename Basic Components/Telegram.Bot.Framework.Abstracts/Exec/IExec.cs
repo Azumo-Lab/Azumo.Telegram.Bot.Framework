@@ -14,17 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Exec
+namespace Telegram.Bot.Framework.Abstracts.Exec;
+
+/// <summary>
+/// 任务执行
+/// </summary>
+public interface IExec
 {
     /// <summary>
-    /// 任务执行
+    /// 执行任务
     /// </summary>
-    public interface IExec
-    {
-        /// <summary>
-        /// 执行任务
-        /// </summary>
-        /// <returns>异步任务</returns>
-        public Task Execute();
-    }
+    /// <returns>异步任务</returns>
+    public Task Execute();
 }

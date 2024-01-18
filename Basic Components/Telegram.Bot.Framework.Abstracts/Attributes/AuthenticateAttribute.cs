@@ -14,31 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Attributes
+namespace Telegram.Bot.Framework.Abstracts.Attributes;
+
+/// <summary>
+/// 用于权限认证的标签
+/// </summary>
+/// <remarks>
+/// 这个标签可以用于权限认证
+/// </remarks>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Delegate, AllowMultiple = false)]
+public class AuthenticateAttribute : Attribute
 {
     /// <summary>
-    /// 用于权限认证的标签
+    /// 角色名称
     /// </summary>
-    /// <remarks>
-    /// 这个标签可以用于权限认证
-    /// </remarks>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Delegate, AllowMultiple = false)]
-    public class AuthenticateAttribute : Attribute
-    {
-        /// <summary>
-        /// 角色名称
-        /// </summary>
-        public HashSet<string> RoleName { get; }
+    public HashSet<string> RoleName { get; }
 
-        /// <summary>
-        /// 有参数的初始化
-        /// </summary>
-        /// <param name="role"></param>
-        public AuthenticateAttribute(params string[] role) => RoleName = new HashSet<string>(role);
+    /// <summary>
+    /// 有参数的初始化
+    /// </summary>
+    /// <param name="role"></param>
+    public AuthenticateAttribute(params string[] role) => RoleName = new HashSet<string>(role);
 
-        /// <summary>
-        /// 无参数的初始化
-        /// </summary>
-        public AuthenticateAttribute() => RoleName = [];
-    }
+    /// <summary>
+    /// 无参数的初始化
+    /// </summary>
+    public AuthenticateAttribute() => RoleName = [];
 }

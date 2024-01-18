@@ -17,38 +17,37 @@
 using System.Diagnostics;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.Bots
+namespace Telegram.Bot.Framework.Bots;
+
+[DebuggerDisplay("安装自定义Log")]
+internal class TelegramLogger(Action<ILoggingBuilder, IServiceProvider> action) : ITelegramPartCreator
 {
-    [DebuggerDisplay("安装自定义Log")]
-    internal class TelegramLogger(Action<ILoggingBuilder, IServiceProvider> action) : ITelegramPartCreator
+    private readonly Action<ILoggingBuilder, IServiceProvider> _LogAction = action;
+
+    public void AddBuildService(IServiceCollection services) => _ = services.AddSingleton(_LogAction);
+
+    public void Build(IServiceCollection services, IServiceProvider builderService)
     {
-        private readonly Action<ILoggingBuilder, IServiceProvider> _LogAction = action;
 
-        public void AddBuildService(IServiceCollection services) => _ = services.AddSingleton(_LogAction);
-
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-
-        }
     }
+}
 
-    public static partial class TelegramBuilderExtensionMethods
+public static partial class TelegramBuilderExtensionMethods
+{
+    /// <summary>
+    /// 添加Log设置
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder AddLogger(this ITelegramBotBuilder builder, Action<ILoggingBuilder, IServiceProvider> action) => builder.AddTelegramPartCreator(new TelegramLogger(action));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder AddSimpleConsole(this ITelegramBotBuilder builder)
     {
-        /// <summary>
-        /// 添加Log设置
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder AddLogger(this ITelegramBotBuilder builder, Action<ILoggingBuilder, IServiceProvider> action) => builder.AddTelegramPartCreator(new TelegramLogger(action));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder AddSimpleConsole(this ITelegramBotBuilder builder)
-        {
-            return builder.AddTelegramPartCreator(new TelegramLogger((logbuilder, service) => logbuilder.AddSimpleConsole())); ;
-        }
+        return builder.AddTelegramPartCreator(new TelegramLogger((logbuilder, service) => logbuilder.AddSimpleConsole())); ;
     }
 }

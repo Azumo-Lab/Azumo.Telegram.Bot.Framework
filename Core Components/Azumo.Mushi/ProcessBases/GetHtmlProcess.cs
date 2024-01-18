@@ -1,31 +1,25 @@
 ﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Azumo.Mushi.ProcessBases
+namespace Azumo.Mushi.ProcessBases;
+
+public class GetHtmlProcess : BaseProcess
 {
-    public class GetHtmlProcess : BaseProcess
+    protected override async Task<bool> Process(DataContext dataContext)
     {
-        protected override async Task<bool> Process(DataContext dataContext)
+        foreach (var item in dataContext.StartURL)
         {
-            foreach (var item in dataContext.StartURL)
+            try
             {
-                try
-                {
-                    var htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(await GetHtml(item));
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(await GetHtml(item));
 
-                    dataContext.Document.Add(htmlDoc);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
+                dataContext.Document.Add(htmlDoc);
             }
-            return true;
+            catch (Exception)
+            {
+                continue;
+            }
         }
+        return true;
     }
 }

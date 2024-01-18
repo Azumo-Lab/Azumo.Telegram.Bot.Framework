@@ -18,12 +18,11 @@ using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalInterface.ControllerParams
+namespace Telegram.Bot.Framework.InternalInterface.ControllerParams;
+
+[TypeFor(typeof(PhotoSize[]))]
+internal class ParamsPhotoSizeArray : BaseControllerParam
 {
-    [TypeFor(typeof(PhotoSize[]))]
-    internal class ParamsPhotoSizeArray : BaseControllerParam
-    {
-        public override Task<object> CatchObjs(TelegramUserChatContext tGChat) =>
-            Task.FromResult<object>(tGChat.Message?.Photo!);
-    }
+    public override Task<object> CatchObjs(TelegramUserChatContext tGChat) =>
+        Task.FromResult<object>(tGChat.Message?.Photo!);
 }

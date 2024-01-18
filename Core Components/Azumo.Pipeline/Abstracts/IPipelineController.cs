@@ -14,81 +14,80 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts;
+
+/// <summary>
+/// 流水线管理控制器
+/// </summary>
+/// <remarks>
+/// 流水线的控制器，用于控制流水线继续停止
+/// </remarks>
+public interface IPipelineController<T>
 {
+
+    #region 流水线属性
+
     /// <summary>
-    /// 流水线管理控制器
+    /// 流水线执行结果
     /// </summary>
-    /// <remarks>
-    /// 流水线的控制器，用于控制流水线继续停止
-    /// </remarks>
-    public interface IPipelineController<T>
-    {
+    public PipelineResultEnum PipelineResultEnum { get; set; }
 
-        #region 流水线属性
+    /// <summary>
+    /// 下一道工序
+    /// </summary>
+    internal PipelineDelegate<T> NextPipeline { get; set; }
 
-        /// <summary>
-        /// 流水线执行结果
-        /// </summary>
-        public PipelineResultEnum PipelineResultEnum { get; set; }
+    /// <summary>
+    /// 下一条工序名称
+    /// </summary>
+    public string NextPipelineName { get; internal set; }
 
-        /// <summary>
-        /// 下一道工序
-        /// </summary>
-        internal PipelineDelegate<T> NextPipeline { get; set; }
+    #endregion
 
-        /// <summary>
-        /// 下一条工序名称
-        /// </summary>
-        public string NextPipelineName { get; internal set; }
+    #region 流水线编辑
 
-        #endregion
+    /// <summary>
+    /// 添加一条流水线
+    /// </summary>
+    /// <param name="pipelineName"></param>
+    /// <param name="pipeline"></param>
+    public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull;
 
-        #region 流水线编辑
+    #endregion
 
-        /// <summary>
-        /// 添加一条流水线
-        /// </summary>
-        /// <param name="pipelineName"></param>
-        /// <param name="pipeline"></param>
-        public void AddPipeline<PipelineNameType>(PipelineNameType pipelineName, IPipeline<T> pipeline) where PipelineNameType : notnull;
+    #region 控制器控制
 
-        #endregion
+    /// <summary>
+    /// 执行下一道工序
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public Task<T> NextAsync(T t);
 
-        #region 控制器控制
+    /// <summary>
+    /// 停止当前流水线并立刻返回值
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public Task<T> StopAsync(T t);
 
-        /// <summary>
-        /// 执行下一道工序
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public Task<T> NextAsync(T t);
+    /// <summary>
+    /// 切换到指定流水线
+    /// </summary>
+    /// <param name="pipelineName"></param>
+    /// <returns></returns>
+    public Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull;
 
-        /// <summary>
-        /// 停止当前流水线并立刻返回值
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        public Task<T> StopAsync(T t);
+    #endregion
 
-        /// <summary>
-        /// 切换到指定流水线
-        /// </summary>
-        /// <param name="pipelineName"></param>
-        /// <returns></returns>
-        public Task<T> SwitchTo<PipelineNameType>(PipelineNameType pipelineName, T t) where PipelineNameType : notnull;
+    /// <summary>
+    /// 获取执行路径
+    /// </summary>
+    /// <returns></returns>
+    public string GetInvokePath();
 
-        #endregion
-
-        /// <summary>
-        /// 获取执行路径
-        /// </summary>
-        /// <returns></returns>
-        public string GetInvokePath();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int PipelineCount { get; }
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    public int PipelineCount { get; }
 }

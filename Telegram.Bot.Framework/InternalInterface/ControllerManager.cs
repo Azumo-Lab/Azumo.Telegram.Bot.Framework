@@ -19,63 +19,62 @@ using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface;
+
+/// <summary>
+/// 
+/// </summary>
+[DependencyInjection(ServiceLifetime.Singleton, typeof(IControllerManager))]
+internal class ControllerManager : IControllerManager
 {
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Singleton, typeof(IControllerManager))]
-    internal class ControllerManager : IControllerManager
+    public List<BotCommand> InternalCommands { get; } = [];
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public Dictionary<string, BotCommand> __BotCommand = [];
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public Dictionary<MessageType, BotCommand> __BotCommandMessageType = [];
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <returns></returns>
+    public BotCommand GetCommand(TelegramUserChatContext tGChat)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<BotCommand> InternalCommands { get; } = [];
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<string, BotCommand> __BotCommand = [];
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<MessageType, BotCommand> __BotCommandMessageType = [];
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <returns></returns>
-        public BotCommand GetCommand(TelegramUserChatContext tGChat)
+        string command;
+        if ((command = tGChat.GetCommand()) != null)
         {
-            string command;
-            if ((command = tGChat.GetCommand()) != null)
-            {
-                if (__BotCommand.TryGetValue(command, out var botCommand))
-                    return botCommand;
-                botCommand = InternalCommands.Where(x => x.BotCommandName == command).FirstOrDefault();
-                if (botCommand != null)
-                    _ = __BotCommand.TryAdd(command, botCommand);
-                return botCommand!;
-            }
-            else
-            {
-                var type = tGChat.Message?.Type ?? MessageType.Unknown;
-                if (__BotCommandMessageType.TryGetValue(type, out var botCommand))
-                    return botCommand;
-
-                botCommand = InternalCommands.Where(x => x.MessageType == type).FirstOrDefault();
-                if (botCommand != null)
-                    _ = __BotCommandMessageType.TryAdd(type, botCommand);
-                return botCommand!;
-            }
+            if (__BotCommand.TryGetValue(command, out var botCommand))
+                return botCommand;
+            botCommand = InternalCommands.Where(x => x.BotCommandName == command).FirstOrDefault();
+            if (botCommand != null)
+                _ = __BotCommand.TryAdd(command, botCommand);
+            return botCommand!;
         }
+        else
+        {
+            var type = tGChat.Message?.Type ?? MessageType.Unknown;
+            if (__BotCommandMessageType.TryGetValue(type, out var botCommand))
+                return botCommand;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<BotCommand> GetAllCommands() => new(InternalCommands);
+            botCommand = InternalCommands.Where(x => x.MessageType == type).FirstOrDefault();
+            if (botCommand != null)
+                _ = __BotCommandMessageType.TryAdd(type, botCommand);
+            return botCommand!;
+        }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<BotCommand> GetAllCommands() => new(InternalCommands);
 }

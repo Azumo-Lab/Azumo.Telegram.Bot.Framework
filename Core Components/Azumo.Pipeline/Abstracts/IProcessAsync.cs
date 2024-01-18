@@ -14,65 +14,64 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts;
+
+/// <summary>
+/// 处理任务
+/// </summary>
+/// <remarks>
+/// 流水线的一个处理任务
+/// </remarks>
+/// <typeparam name="T">要进行处理的类型</typeparam>
+public interface IProcessAsync<T>
 {
     /// <summary>
-    /// 处理任务
+    /// 执行处理任务
     /// </summary>
-    /// <remarks>
-    /// 流水线的一个处理任务
-    /// </remarks>
-    /// <typeparam name="T">要进行处理的类型</typeparam>
-    public interface IProcessAsync<T>
-    {
-        /// <summary>
-        /// 执行处理任务
-        /// </summary>
-        /// <param name="t">任务处理的数据类型</param>
-        /// <param name="pipelineController">流水线控制器</param>
-        /// <returns>异步的处理后的数据</returns>
-        public Task<T> ExecuteAsync(T t, IPipelineController<T> pipelineController);
-    }
+    /// <param name="t">任务处理的数据类型</param>
+    /// <param name="pipelineController">流水线控制器</param>
+    /// <returns>异步的处理后的数据</returns>
+    public Task<T> ExecuteAsync(T t, IPipelineController<T> pipelineController);
+}
 
+/// <summary>
+/// 处理任务
+/// </summary>
+/// <remarks>
+/// 流水线的一个处理任务
+/// </remarks>
+/// <typeparam name="A"></typeparam>
+/// <typeparam name="B"></typeparam>
+public interface IProcessAsync<A, B>
+{
     /// <summary>
-    /// 处理任务
+    /// 执行处理任务
     /// </summary>
-    /// <remarks>
-    /// 流水线的一个处理任务
-    /// </remarks>
-    /// <typeparam name="A"></typeparam>
-    /// <typeparam name="B"></typeparam>
-    public interface IProcessAsync<A, B>
-    {
-        /// <summary>
-        /// 执行处理任务
-        /// </summary>
-        /// <param name="t">任务处理的数据类型</param>
-        /// <param name="objb"></param>
-        /// <param name="pipelineController">流水线控制器</param>
-        /// <returns>异步的处理后的数据</returns>
-        public Task<A> ExecuteAsync(A t, ref B objb, IPipelineController<A> pipelineController);
-    }
+    /// <param name="t">任务处理的数据类型</param>
+    /// <param name="objb"></param>
+    /// <param name="pipelineController">流水线控制器</param>
+    /// <returns>异步的处理后的数据</returns>
+    public Task<A> ExecuteAsync(A t, ref B objb, IPipelineController<A> pipelineController);
+}
 
+/// <summary>
+/// 处理任务
+/// </summary>
+/// <remarks>
+/// 流水线的一个处理任务
+/// </remarks>
+/// <typeparam name="A"></typeparam>
+/// <typeparam name="B"></typeparam>
+/// <typeparam name="C"></typeparam>
+public interface IProcessAsync<A, B, C>
+{
     /// <summary>
-    /// 处理任务
+    /// 执行处理任务
     /// </summary>
-    /// <remarks>
-    /// 流水线的一个处理任务
-    /// </remarks>
-    /// <typeparam name="A"></typeparam>
-    /// <typeparam name="B"></typeparam>
-    /// <typeparam name="C"></typeparam>
-    public interface IProcessAsync<A, B, C>
-    {
-        /// <summary>
-        /// 执行处理任务
-        /// </summary>
-        /// <param name="t">任务处理的数据类型</param>
-        /// <param name="objb"></param>
-        /// <param name="objc"></param>
-        /// <param name="pipelineController">流水线控制器</param>
-        /// <returns>异步的处理后的数据</returns>
-        public Task<A> ExecuteAsync(A t, ref B objb, ref C objc, IPipelineController<A> pipelineController);
-    }
+    /// <param name="t">任务处理的数据类型</param>
+    /// <param name="objb"></param>
+    /// <param name="objc"></param>
+    /// <param name="pipelineController">流水线控制器</param>
+    /// <returns>异步的处理后的数据</returns>
+    public Task<A> ExecuteAsync(A t, ref B objb, ref C objc, IPipelineController<A> pipelineController);
 }

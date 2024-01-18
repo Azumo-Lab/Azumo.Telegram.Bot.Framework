@@ -17,35 +17,34 @@
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Controllers;
+
+/// <summary>
+/// 
+/// </summary>
+public interface IControllerParam
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IControllerParam
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ParamAttribute? ParamAttribute { get; set; }
+    public ParamAttribute? ParamAttribute { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public IControllerParamSender? ParamSender { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public IControllerParamSender? ParamSender { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <returns></returns>
-        public Task<bool> SendMessage(TelegramUserChatContext tGChat);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <returns></returns>
+    public Task<bool> SendMessage(TelegramUserChatContext tGChat);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <returns></returns>
-        public Task<object> CatchObjs(TelegramUserChatContext tGChat);
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <returns></returns>
+    public Task<object> CatchObjs(TelegramUserChatContext tGChat);
 }

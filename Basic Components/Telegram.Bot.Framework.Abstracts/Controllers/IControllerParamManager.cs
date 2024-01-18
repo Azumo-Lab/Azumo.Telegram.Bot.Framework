@@ -16,36 +16,35 @@
 
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Controllers;
+
+/// <summary>
+/// 
+/// </summary>
+public interface IControllerParamManager : IDisposable
 {
     /// <summary>
-    /// 
+    /// 获取参数
     /// </summary>
-    public interface IControllerParamManager : IDisposable
-    {
-        /// <summary>
-        /// 获取参数
-        /// </summary>
-        /// <returns></returns>
-        public object[] GetParams();
+    /// <returns></returns>
+    public object[] GetParams();
 
-        /// <summary>
-        /// 进行获取参数的执行
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <returns></returns>
-        public Task<ResultEnum> NextParam(TelegramUserChatContext tGChat);
+    /// <summary>
+    /// 进行获取参数的执行
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <returns></returns>
+    public Task<ResultEnum> NextParam(TelegramUserChatContext tGChat);
 
-        /// <summary>
-        /// 获取命令
-        /// </summary>
-        /// <returns></returns>
-        public BotCommand GetBotCommand();
+    /// <summary>
+    /// 获取命令
+    /// </summary>
+    /// <returns></returns>
+    public BotCommand GetBotCommand();
 
-        /// <summary>
-        /// 设置命令
-        /// </summary>
-        /// <param name="botCommand"></param>
-        public void NewBotCommandParamScope(BotCommand botCommand);
-    }
+    /// <summary>
+    /// 设置命令
+    /// </summary>
+    /// <param name="botCommand"></param>
+    public void NewBotCommandParamScope(BotCommand botCommand);
 }

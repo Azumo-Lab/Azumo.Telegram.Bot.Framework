@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Azumo.Mushi;
 
-namespace Azumo.Mushi
+internal class NormalDataContext : DataContext
 {
-    internal class NormalDataContext : DataContext
-    {
-    }
 }

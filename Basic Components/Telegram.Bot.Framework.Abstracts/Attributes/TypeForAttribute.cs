@@ -14,21 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Attributes
+namespace Telegram.Bot.Framework.Abstracts.Attributes;
+
+/// <summary>
+/// 这个类对应的类型
+/// </summary>
+/// <remarks>
+/// 
+/// </remarks>
+/// <param name="type"></param>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class TypeForAttribute(Type type) : Attribute
 {
     /// <summary>
-    /// 这个类对应的类型
+    /// 对应的类型
     /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="type"></param>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class TypeForAttribute(Type type) : Attribute
-    {
-        /// <summary>
-        /// 对应的类型
-        /// </summary>
-        public Type Type { get; } = type;
-    }
+    public Type Type { get; } = type;
 }

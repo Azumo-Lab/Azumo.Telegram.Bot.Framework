@@ -17,80 +17,79 @@
 using Telegram.Bot.Framework.Abstracts.Exec;
 using Timer = System.Timers.Timer;
 
-namespace Telegram.Bot.Framework.Exec
+namespace Telegram.Bot.Framework.Exec;
+
+/// <summary>
+/// 定时任务
+/// </summary>
+/// <remarks>
+/// 实现了 <see cref="IExec"/> 接口的定时任务抽象类
+/// </remarks>
+public abstract class AbsTimedTasks : IExec
 {
     /// <summary>
-    /// 定时任务
+    /// 定时任务的计时器
     /// </summary>
-    /// <remarks>
-    /// 实现了 <see cref="IExec"/> 接口的定时任务抽象类
-    /// </remarks>
-    public abstract class AbsTimedTasks : IExec
+    private static readonly Timer __Timer = new(TimeSpan.FromSeconds(60));
+
+    /// <summary>
+    /// 定时任务执行时间
+    /// </summary>
+    protected virtual TimeSpan TimeSpan { get; set; } = TimeSpan.FromSeconds(60);
+
+    /// <summary>
+    /// 上次执行时间
+    /// </summary>
+    private DateTime __ExecTime = DateTime.MinValue;
+
+    /// <summary>
+    /// 下次执行时间
+    /// </summary>
+    private DateTime __NextTime = DateTime.MinValue;
+
+    /// <summary>
+    /// 静态初始化
+    /// </summary>
+    static AbsTimedTasks() => __Timer.Start();
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    public AbsTimedTasks()
     {
-        /// <summary>
-        /// 定时任务的计时器
-        /// </summary>
-        private static readonly Timer __Timer = new(TimeSpan.FromSeconds(60));
+        __ExecTime = DateTime.Now;
+        __NextTime = DateTime.Now + TimeSpan;
+    }
 
-        /// <summary>
-        /// 定时任务执行时间
-        /// </summary>
-        protected virtual TimeSpan TimeSpan { get; set; } = TimeSpan.FromSeconds(60);
+    /// <summary>
+    /// 执行定时任务
+    /// </summary>
+    /// <returns></returns>
+    public Task Execute()
+    {
+        __Timer.Elapsed += ExecuteElapsed!;
+        return Task.CompletedTask;
+    }
 
-        /// <summary>
-        /// 上次执行时间
-        /// </summary>
-        private DateTime __ExecTime = DateTime.MinValue;
-
-        /// <summary>
-        /// 下次执行时间
-        /// </summary>
-        private DateTime __NextTime = DateTime.MinValue;
-
-        /// <summary>
-        /// 静态初始化
-        /// </summary>
-        static AbsTimedTasks() => __Timer.Start();
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public AbsTimedTasks()
+    /// <summary>
+    /// 定期执行的定时任务
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ExecuteElapsed(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        var now = DateTime.Now;
+        if (now > __ExecTime && now > __NextTime)
         {
-            __ExecTime = DateTime.Now;
+            __ExecTime = now;
+            _ = Exec().ConfigureAwait(false);
             __NextTime = DateTime.Now + TimeSpan;
         }
-
-        /// <summary>
-        /// 执行定时任务
-        /// </summary>
-        /// <returns></returns>
-        public Task Execute()
-        {
-            __Timer.Elapsed += ExecuteElapsed!;
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// 定期执行的定时任务
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExecuteElapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            var now = DateTime.Now;
-            if (now > __ExecTime && now > __NextTime)
-            {
-                __ExecTime = now;
-                _ = Exec().ConfigureAwait(false);
-                __NextTime = DateTime.Now + TimeSpan;
-            }
-        }
-
-        /// <summary>
-        /// 实现的抽象定时任务
-        /// </summary>
-        /// <returns></returns>
-        protected abstract Task Exec();
     }
+
+    /// <summary>
+    /// 实现的抽象定时任务
+    /// </summary>
+    /// <returns></returns>
+    protected abstract Task Exec();
 }

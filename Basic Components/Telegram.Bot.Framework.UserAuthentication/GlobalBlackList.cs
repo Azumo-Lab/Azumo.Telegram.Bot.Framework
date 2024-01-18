@@ -17,32 +17,31 @@
 using Telegram.Bot.Framework.Abstracts;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.UserAuthentication
+namespace Telegram.Bot.Framework.UserAuthentication;
+
+internal class GlobalBlackList : IGlobalBlackList
 {
-    internal class GlobalBlackList : IGlobalBlackList
+    public event EventHandler<UserIDArgs>? OnLoadUserID;
+    public event EventHandler<UserIDArgs>? OnSaveUserID;
+
+    private readonly HashSet<long> __BlackList = [long.MinValue];
+
+    public void Add(long userID) =>
+        __BlackList.Add(userID);
+
+    public void Remove(long userID) =>
+        __BlackList.Remove(userID);
+
+    public bool Verify(long userID) =>
+        __BlackList.Contains(userID);
+
+    public void Init()
     {
-        public event EventHandler<UserIDArgs>? OnLoadUserID;
-        public event EventHandler<UserIDArgs>? OnSaveUserID;
-
-        private readonly HashSet<long> __BlackList = [long.MinValue];
-
-        public void Add(long userID) =>
-            __BlackList.Add(userID);
-
-        public void Remove(long userID) =>
-            __BlackList.Remove(userID);
-
-        public bool Verify(long userID) =>
-            __BlackList.Contains(userID);
-
-        public void Init()
-        {
-            var userIDArgs = new UserIDArgs();
-            OnLoadUserID?.Invoke(null, userIDArgs);
-            foreach (var id in userIDArgs.UserIDs ?? [])
-                _ = __BlackList.Add(id);
-        }
-        public List<long> GetList() => __BlackList.ToList();
-        public bool FilterInvoke(Update update) => !Verify(update.GetRequestUser()?.Id ?? long.MinValue);
+        var userIDArgs = new UserIDArgs();
+        OnLoadUserID?.Invoke(null, userIDArgs);
+        foreach (var id in userIDArgs.UserIDs ?? [])
+            _ = __BlackList.Add(id);
     }
+    public List<long> GetList() => __BlackList.ToList();
+    public bool FilterInvoke(Update update) => !Verify(update.GetRequestUser()?.Id ?? long.MinValue);
 }

@@ -16,71 +16,70 @@
 
 using Azumo.Pipeline.Abstracts;
 
-namespace Azumo.Pipeline
+namespace Azumo.Pipeline;
+
+/// <summary>
+/// 内部实现的流水线创建类
+/// </summary>
+/// <remarks>
+/// 初始化
+/// </remarks>
+/// <remarks>
+/// 
+/// </remarks>
+internal class InternalPipelineBuilder<T>(List<Type>? TypeList = null) : IPipelineBuilder<T>
 {
+    private readonly List<IProcessAsync<T>> __Procedures = [];
+    private readonly IPipelineController<T> __Controller = PipelineFactory.CreateIPipelineController<T>();
+    private readonly List<Type>? __TypeList = TypeList;
+
     /// <summary>
-    /// 内部实现的流水线创建类
-    /// </summary>
-    /// <remarks>
-    /// 初始化
-    /// </remarks>
-    /// <remarks>
     /// 
-    /// </remarks>
-    internal class InternalPipelineBuilder<T>(List<Type>? TypeList = null) : IPipelineBuilder<T>
+    /// </summary>
+    /// <param name="procedure"></param>
+    /// <returns></returns>
+    public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure)
     {
-        private readonly List<IProcessAsync<T>> __Procedures = [];
-        private readonly IPipelineController<T> __Controller = PipelineFactory.CreateIPipelineController<T>();
-        private readonly List<Type>? __TypeList = TypeList;
+        __Procedures.Add(procedure);
+        return this;
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="procedure"></param>
-        /// <returns></returns>
-        public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure)
-        {
-            __Procedures.Add(procedure);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="procedure"></param>
+    /// <returns></returns>
+    public IPipelineBuilder<T> AddProcedure(string procedure)
+    {
+        if (__TypeList == null)
             return this;
-        }
+        var type = __TypeList!.Where(x => x.Name == procedure).FirstOrDefault();
+        return type == null ? this : Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync ? this : AddProcedure(processAsync);
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="procedure"></param>
-        /// <returns></returns>
-        public IPipelineBuilder<T> AddProcedure(string procedure)
-        {
-            if (__TypeList == null)
-                return this;
-            var type = __TypeList!.Where(x => x.Name == procedure).FirstOrDefault();
-            return type == null ? this : Activator.CreateInstance(type!) is not IProcessAsync<T> processAsync ? this : AddProcedure(processAsync);
-        }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public IPipelineController<T> BuilderPipelineController()
+    {
+        if (__Controller.PipelineCount == 0)
+            _ = CreatePipeline(string.Empty);
+        return __Controller;
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public IPipelineController<T> BuilderPipelineController()
-        {
-            if (__Controller.PipelineCount == 0)
-                CreatePipeline(string.Empty);
-            return __Controller;
-        }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="PipelineNameType"></typeparam>
+    /// <param name="pipelineName"></param>
+    /// <returns></returns>
+    public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull
+    {
+        ArgumentNullException.ThrowIfNull(pipelineName, nameof(pipelineName));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="PipelineNameType"></typeparam>
-        /// <param name="pipelineName"></param>
-        /// <returns></returns>
-        public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull
-        {
-            ArgumentNullException.ThrowIfNull(pipelineName, nameof(pipelineName));
-
-            __Controller.AddPipeline(pipelineName, PipelineFactory.CreateIPipeline([.. __Procedures], __Controller));
-            __Procedures.Clear();
-            return this;
-        }
+        __Controller.AddPipeline(pipelineName, PipelineFactory.CreateIPipeline([.. __Procedures], __Controller));
+        __Procedures.Clear();
+        return this;
     }
 }

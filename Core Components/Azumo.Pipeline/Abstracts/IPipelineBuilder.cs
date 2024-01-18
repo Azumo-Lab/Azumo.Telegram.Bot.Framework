@@ -14,34 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts;
+
+/// <summary>
+/// 创建流水线
+/// </summary>
+public interface IPipelineBuilder<T>
 {
     /// <summary>
-    /// 创建流水线
+    /// 添加工序
     /// </summary>
-    public interface IPipelineBuilder<T>
-    {
-        /// <summary>
-        /// 添加工序
-        /// </summary>
-        /// <param name="procedure"></param>
-        public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure);
+    /// <param name="procedure"></param>
+    public IPipelineBuilder<T> AddProcedure(IProcessAsync<T> procedure);
 
-        /// <summary>
-        /// 添加工序
-        /// </summary>
-        /// <param name="procedure"></param>
-        public IPipelineBuilder<T> AddProcedure(string procedure);
+    /// <summary>
+    /// 添加工序
+    /// </summary>
+    /// <param name="procedure"></param>
+    public IPipelineBuilder<T> AddProcedure(string procedure);
 
-        /// <summary>
-        /// 将工序组装成流水线
-        /// </summary>
-        public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull;
+    /// <summary>
+    /// 将工序组装成流水线
+    /// </summary>
+    public IPipelineBuilder<T> CreatePipeline<PipelineNameType>(PipelineNameType pipelineName) where PipelineNameType : notnull;
 
-        /// <summary>
-        /// 创建流水线控制器
-        /// </summary>
-        /// <returns></returns>
-        public IPipelineController<T> BuilderPipelineController();
-    }
+    /// <summary>
+    /// 创建流水线控制器
+    /// </summary>
+    /// <returns></returns>
+    public IPipelineController<T> BuilderPipelineController();
 }

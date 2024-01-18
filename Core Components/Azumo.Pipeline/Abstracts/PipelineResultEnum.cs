@@ -14,26 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.Pipeline.Abstracts
+namespace Azumo.Pipeline.Abstracts;
+
+/// <summary>
+/// 流水线处理结果
+/// </summary>
+public enum PipelineResultEnum
 {
     /// <summary>
-    /// 流水线处理结果
+    /// 成功
     /// </summary>
-    public enum PipelineResultEnum
-    {
-        /// <summary>
-        /// 成功
-        /// </summary>
-        Success,
+    Success,
 
-        /// <summary>
-        /// 失败
-        /// </summary>
-        Failure,
+    /// <summary>
+    /// 失败
+    /// </summary>
+    Failure,
 
-        /// <summary>
-        /// 请重试
-        /// </summary>
-        TryAgain,
-    }
+    /// <summary>
+    /// 请重试
+    /// </summary>
+    TryAgain,
 }

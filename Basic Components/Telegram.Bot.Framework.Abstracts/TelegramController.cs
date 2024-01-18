@@ -20,163 +20,162 @@ using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Abstracts
+namespace Telegram.Bot.Framework.Abstracts;
+
+/// <summary>
+/// Telegram 控制器
+/// </summary>
+/// <remarks>
+/// 
+/// </remarks>
+public abstract class TelegramController
 {
     /// <summary>
-    /// Telegram 控制器
+    /// 
+    /// </summary>
+    protected TelegramUserChatContext Chat { get; private set; } = null!;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    protected ILogger Logger { get; private set; } = null!;
+
+    /// <summary>
+    /// 控制器执行
+    /// </summary>
+    /// <param name="Chat"></param>
+    /// <param name="func"></param>
+    /// <param name="controllerParamManager"></param>
+    /// <returns></returns>
+    public virtual async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<object, object[], Task> func, IControllerParamManager controllerParamManager)
+    {
+        this.Chat = Chat;
+        Logger = this.Chat.UserScopeService.GetRequiredService<ILogger<TelegramController>>();
+        try
+        {
+            await func(this, controllerParamManager.GetParams() ?? []);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 获取消息创建器
+    /// </summary>
+    /// <returns></returns>
+    protected IMessageBuilder? GetMessageBuilder() => Chat.UserScopeService.GetService<IMessageBuilder>();
+
+    /// <summary>
+    /// 发送文本消息
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    protected async Task<Message> SendMessage(string message) => await Chat!.BotClient
+            .SendTextMessageAsync(Chat.UserChatID, message, parseMode: Types.Enums.ParseMode.Html);
+
+    /// <summary>
+    /// 发送附带图片组的消息
     /// </summary>
     /// <remarks>
     /// 
     /// </remarks>
-    public abstract class TelegramController
+    /// <param name="message"></param>
+    /// <param name="imagePaths"></param>
+    /// <returns></returns>
+    protected async Task<Message[]?> SendMediaGroup(IMessageBuilder message, string[] imagePathOrID)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        protected TelegramUserChatContext Chat { get; private set; } = null!;
+        if (imagePathOrID == null || imagePathOrID.Length == 0)
+            return null!;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        protected ILogger Logger { get; private set; } = null!;
+        // 初始化
+        var images = imagePathOrID
+            .Select(PathOrID =>
+            {
+                InputMediaPhoto inputMediaPhoto;
+                if (!System.IO.File.Exists(PathOrID) && !Path.HasExtension(PathOrID))
+                    // 文件不存在且没有扩展名，视作文件ID
+                    inputMediaPhoto = new(new InputFileId(PathOrID));
+                else
+                    // 否则，是为文件
+                    inputMediaPhoto = new(new InputFileStream(new FileStream(PathOrID, FileMode.Open), Path.GetFileName(PathOrID)));
+                return inputMediaPhoto;
+            })
+            .ToList();
 
-        /// <summary>
-        /// 控制器执行
-        /// </summary>
-        /// <param name="Chat"></param>
-        /// <param name="func"></param>
-        /// <param name="controllerParamManager"></param>
-        /// <returns></returns>
-        public virtual async Task ControllerInvokeAsync(TelegramUserChatContext Chat, Func<object, object[], Task> func, IControllerParamManager controllerParamManager)
+        // 创建HTML消息
+        var htmlMessage = message.Build();
+        // 进行设定
+        if (!string.IsNullOrEmpty(htmlMessage))
         {
-            this.Chat = Chat;
-            Logger = this.Chat.UserScopeService.GetRequiredService<ILogger<TelegramController>>();
-            try
-            {
-                await func(this, controllerParamManager.GetParams() ?? []);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            images[0].Caption = htmlMessage;
+            images[0].ParseMode = Types.Enums.ParseMode.Html;
         }
 
-        /// <summary>
-        /// 获取消息创建器
-        /// </summary>
-        /// <returns></returns>
-        protected IMessageBuilder? GetMessageBuilder() => Chat.UserScopeService.GetService<IMessageBuilder>();
-
-        /// <summary>
-        /// 发送文本消息
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        protected async Task<Message> SendMessage(string message) => await Chat!.BotClient
-                .SendTextMessageAsync(Chat.UserChatID, message, parseMode: Types.Enums.ParseMode.Html);
-
-        /// <summary>
-        /// 发送附带图片组的消息
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <param name="message"></param>
-        /// <param name="imagePaths"></param>
-        /// <returns></returns>
-        protected async Task<Message[]?> SendMediaGroup(IMessageBuilder message, string[] imagePathOrID)
+        try
         {
-            if (imagePathOrID == null || imagePathOrID.Length == 0)
-                return null!;
-
-            // 初始化
-            var images = imagePathOrID
-                .Select(PathOrID =>
-                {
-                    InputMediaPhoto inputMediaPhoto;
-                    if (!System.IO.File.Exists(PathOrID) && !Path.HasExtension(PathOrID))
-                        // 文件不存在且没有扩展名，视作文件ID
-                        inputMediaPhoto = new(new InputFileId(PathOrID));
-                    else
-                        // 否则，是为文件
-                        inputMediaPhoto = new(new InputFileStream(new FileStream(PathOrID, FileMode.Open), Path.GetFileName(PathOrID)));
-                    return inputMediaPhoto;
-                })
-                .ToList();
-
-            // 创建HTML消息
-            var htmlMessage = message.Build();
-            // 进行设定
-            if (!string.IsNullOrEmpty(htmlMessage))
+            // 发送
+            return await Chat!.BotClient.SendMediaGroupAsync(Chat.UserChatID,
+                images);
+        }
+        catch (Exception)
+        {
+            return null!;
+        }
+        finally
+        {
+            // 关闭文件流
+            foreach (var item in images)
             {
-                images[0].Caption = htmlMessage;
-                images[0].ParseMode = Types.Enums.ParseMode.Html;
-            }
+                if (item.Media is not InputFileStream inputFileStream)
+                    continue;
 
-            try
-            {
-                // 发送
-                return await Chat!.BotClient.SendMediaGroupAsync(Chat.UserChatID,
-                    images);
-            }
-            catch (Exception)
-            {
-                return null!;
-            }
-            finally
-            {
-                // 关闭文件流
-                foreach (var item in images)
-                {
-                    if (item.Media is not InputFileStream inputFileStream)
-                        continue;
-
-                    var stream = inputFileStream?.Content;
-                    stream?.Dispose();
-                }
+                var stream = inputFileStream?.Content;
+                stream?.Dispose();
             }
         }
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="PathOrID"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        protected async Task<Message?> SendFile(string message, string PathOrID, string fileName = "")
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="PathOrID"></param>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    protected async Task<Message?> SendFile(string message, string PathOrID, string fileName = "")
+    {
+        if (string.IsNullOrEmpty(PathOrID))
+            return null!;
+
+        InputFile inputFile;
+        if (!System.IO.File.Exists(PathOrID))
         {
-            if (string.IsNullOrEmpty(PathOrID))
-                return null!;
+            inputFile = new InputFileId(PathOrID);
+        }
+        else
+        {
+            var name = string.IsNullOrEmpty(fileName)
+                ? Path.GetFileName(PathOrID)
+                : string.IsNullOrEmpty(Path.GetExtension(fileName)) ?
+                    $"{fileName}{Path.GetExtension(PathOrID)}" : fileName;
+            inputFile = new InputFileStream(new FileStream(PathOrID, FileMode.Open), name);
+        }
 
-            InputFile inputFile;
-            if (!System.IO.File.Exists(PathOrID))
-            {
-                inputFile = new InputFileId(PathOrID);
-            }
-            else
-            {
-                var name = string.IsNullOrEmpty(fileName)
-                    ? Path.GetFileName(PathOrID)
-                    : string.IsNullOrEmpty(Path.GetExtension(fileName)) ?
-                        $"{fileName}{Path.GetExtension(PathOrID)}" : fileName;
-                inputFile = new InputFileStream(new FileStream(PathOrID, FileMode.Open), name);
-            }
-
-            try
-            {
-                return await Chat.BotClient.SendDocumentAsync(Chat.UserChatID, inputFile,
-                    caption: message, parseMode: Types.Enums.ParseMode.Html);
-            }
-            catch (Exception)
-            {
-                return null!;
-            }
-            finally
-            {
-                if (inputFile is InputFileStream stream)
-                    stream?.Content?.Dispose();
-            }
+        try
+        {
+            return await Chat.BotClient.SendDocumentAsync(Chat.UserChatID, inputFile,
+                caption: message, parseMode: Types.Enums.ParseMode.Html);
+        }
+        catch (Exception)
+        {
+            return null!;
+        }
+        finally
+        {
+            if (inputFile is InputFileStream stream)
+                stream?.Content?.Dispose();
         }
     }
 }

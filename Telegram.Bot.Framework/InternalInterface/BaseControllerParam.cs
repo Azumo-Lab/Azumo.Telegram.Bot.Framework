@@ -19,58 +19,57 @@ using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalInterface
+namespace Telegram.Bot.Framework.InternalInterface;
+
+/// <summary>
+/// 
+/// </summary>
+public abstract class BaseControllerParam : IControllerParam, IControllerParamSender
 {
     /// <summary>
     /// 
     /// </summary>
-    public abstract class BaseControllerParam : IControllerParam, IControllerParamSender
+    public virtual IControllerParamSender? ParamSender { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ParamAttribute? ParamAttribute { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public BaseControllerParam() =>
+        ParamSender = this;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <returns></returns>
+    public abstract Task<object> CatchObjs(TelegramUserChatContext tGChat);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <returns></returns>
+    public virtual async Task<bool> SendMessage(TelegramUserChatContext tGChat)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual IControllerParamSender? ParamSender { get; set; }
+        await (ParamSender ?? this).Send(tGChat.BotClient, tGChat.UserChatID, ParamAttribute);
+        return false;
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ParamAttribute? ParamAttribute { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public BaseControllerParam() => 
-            ParamSender = this;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <returns></returns>
-        public abstract Task<object> CatchObjs(TelegramUserChatContext tGChat);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <returns></returns>
-        public virtual async Task<bool> SendMessage(TelegramUserChatContext tGChat)
-        {
-            await (ParamSender ?? this).Send(tGChat.BotClient, tGChat.UserChatID, ParamAttribute);
-            return false;
-        }
-            
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="botClient"></param>
-        /// <param name="chatId"></param>
-        /// <param name="paramAttribute"></param>
-        /// <returns></returns>
-        public virtual async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute)
-        {
-            var name = paramAttribute?.Name ?? string.Empty;
-            _ = await botClient.SendTextMessageAsync(chatId, $"请输入参数{name}的值");
-        }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="botClient"></param>
+    /// <param name="chatId"></param>
+    /// <param name="paramAttribute"></param>
+    /// <returns></returns>
+    public virtual async Task Send(ITelegramBotClient botClient, ChatId chatId, ParamAttribute? paramAttribute)
+    {
+        var name = paramAttribute?.Name ?? string.Empty;
+        _ = await botClient.SendTextMessageAsync(chatId, $"请输入参数{name}的值");
     }
 }

@@ -18,99 +18,98 @@ using System.Diagnostics;
 using System.Net;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.Bots
+namespace Telegram.Bot.Framework.Bots;
+
+/// <summary>
+/// 添加代理设置
+/// </summary>
+[DebuggerDisplay("设置代理：地址：{__ProxyHost}，端口：{__Port}，用户名：{__Username}，密码：{__Password}")]
+internal class TelegramProxy : ITelegramPartCreator
 {
     /// <summary>
-    /// 添加代理设置
+    /// 
     /// </summary>
-    [DebuggerDisplay("设置代理：地址：{__ProxyHost}，端口：{__Port}，用户名：{__Username}，密码：{__Password}")]
-    internal class TelegramProxy : ITelegramPartCreator
+    private readonly HttpClient __HttpClient;
+
+    /// <summary>
+    /// gg
+    /// </summary>
+    private readonly string __ProxyHost, __Port, __Username, __Password = string.Empty;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="proxyHost"></param>
+    /// <param name="port"></param>
+    /// <param name="username"></param>
+    /// <param name="password"></param>
+    public TelegramProxy(string proxyHost, int? port = null, string username = null, string password = null)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly HttpClient __HttpClient;
+        ArgumentException.ThrowIfNullOrEmpty(proxyHost, nameof(proxyHost));
 
-        /// <summary>
-        /// gg
-        /// </summary>
-        private readonly string __ProxyHost, __Port, __Username, __Password = string.Empty;
+        __ProxyHost = proxyHost;
+        __Port = port?.ToString() ?? string.Empty;
+        __Username = username ?? string.Empty;
+        __Password = password ?? string.Empty;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="proxyHost"></param>
-        /// <param name="port"></param>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        public TelegramProxy(string proxyHost, int? port = null, string username = null, string password = null)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(proxyHost, nameof(proxyHost));
+        var uri = port.HasValue ? $"{proxyHost}:{port}" : proxyHost;
+        WebProxy webProxy = new(uri);
+        if (!string.IsNullOrEmpty(username))
+            webProxy.Credentials = new NetworkCredential(username, password);
 
-            __ProxyHost = proxyHost;
-            __Port = port?.ToString() ?? string.Empty;
-            __Username = username ?? string.Empty;
-            __Password = password ?? string.Empty;
-
-            var uri = port.HasValue ? $"{proxyHost}:{port}" : proxyHost;
-            WebProxy webProxy = new(uri);
-            if (!string.IsNullOrEmpty(username))
-                webProxy.Credentials = new NetworkCredential(username, password);
-
-            __HttpClient = new(
-                new HttpClientHandler { Proxy = webProxy, UseProxy = true, }
-            );
-        }
-
-        public void AddBuildService(IServiceCollection services) => _ = services.AddSingleton(__HttpClient);
-
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-
-        }
+        __HttpClient = new(
+            new HttpClientHandler { Proxy = webProxy, UseProxy = true, }
+        );
     }
 
-    public static partial class TelegramBuilderExtensionMethods
+    public void AddBuildService(IServiceCollection services) => _ = services.AddSingleton(__HttpClient);
+
+    public void Build(IServiceCollection services, IServiceProvider builderService)
     {
-        /// <summary>
-        /// 设置代理
-        /// </summary>
-        /// <param name="telegramBotBuilder"></param>
-        /// <param name="proxyHost"></param>
-        /// <param name="port"></param>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder UseProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null) => telegramBotBuilder.AddTelegramPartCreator(new TelegramProxy(proxyHost, port, username, password));
 
-        /// <summary>
-        /// 添加默认的Clash的代理地址
-        /// </summary>
-        /// <remarks>
-        /// Clash 默认的代理地址是<br></br>
-        /// <code>
-        /// 127.0.0.1:7890
-        /// </code>
-        /// 如果已经更改地址端口等默认信息<br/>
-        /// 请使用 <see cref="UseProxy(ITelegramBotBuilder, string, int?, string, string)"/>
-        /// </remarks>
-        /// <param name="telegramBotBuilder"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder UseClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder) => UseProxy(telegramBotBuilder, "localhost", 7890);
-
-        /// <summary>
-        /// 添加默认的SS/SSR的代理地址
-        /// </summary>
-        /// <remarks>
-        /// SS/SSR 默认的代理地址是<br></br>
-        /// <code>
-        /// 127.0.0.1:1080
-        /// </code>
-        /// 如果已经更改地址端口等默认信息<br/>
-        /// 请使用 <see cref="UseProxy(ITelegramBotBuilder, string, int?, string, string)"/>
-        /// </remarks>
-        /// <param name="telegramBotBuilder"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder UseSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder) => UseProxy(telegramBotBuilder, "localhost", 1080);
     }
+}
+
+public static partial class TelegramBuilderExtensionMethods
+{
+    /// <summary>
+    /// 设置代理
+    /// </summary>
+    /// <param name="telegramBotBuilder"></param>
+    /// <param name="proxyHost"></param>
+    /// <param name="port"></param>
+    /// <param name="username"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder UseProxy(this ITelegramBotBuilder telegramBotBuilder, string proxyHost, int? port = null, string username = null, string password = null) => telegramBotBuilder.AddTelegramPartCreator(new TelegramProxy(proxyHost, port, username, password));
+
+    /// <summary>
+    /// 添加默认的Clash的代理地址
+    /// </summary>
+    /// <remarks>
+    /// Clash 默认的代理地址是<br></br>
+    /// <code>
+    /// 127.0.0.1:7890
+    /// </code>
+    /// 如果已经更改地址端口等默认信息<br/>
+    /// 请使用 <see cref="UseProxy(ITelegramBotBuilder, string, int?, string, string)"/>
+    /// </remarks>
+    /// <param name="telegramBotBuilder"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder UseClashDefaultProxy(this ITelegramBotBuilder telegramBotBuilder) => UseProxy(telegramBotBuilder, "localhost", 7890);
+
+    /// <summary>
+    /// 添加默认的SS/SSR的代理地址
+    /// </summary>
+    /// <remarks>
+    /// SS/SSR 默认的代理地址是<br></br>
+    /// <code>
+    /// 127.0.0.1:1080
+    /// </code>
+    /// 如果已经更改地址端口等默认信息<br/>
+    /// 请使用 <see cref="UseProxy(ITelegramBotBuilder, string, int?, string, string)"/>
+    /// </remarks>
+    /// <param name="telegramBotBuilder"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder UseSSRDefaultProxy(this ITelegramBotBuilder telegramBotBuilder) => UseProxy(telegramBotBuilder, "localhost", 1080);
 }

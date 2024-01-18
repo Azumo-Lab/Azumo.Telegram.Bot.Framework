@@ -17,66 +17,65 @@
 using Azumo.Pipeline.Abstracts;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Azumo.Pipeline
+namespace Azumo.Pipeline;
+
+/// <summary>
+/// 流水线创建工厂
+/// </summary>
+public static class PipelineFactory
 {
     /// <summary>
-    /// 流水线创建工厂
+    /// 内部实现
     /// </summary>
-    public static class PipelineFactory
+    internal static IServiceProvider ServiceProvider { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    static PipelineFactory()
     {
-        /// <summary>
-        /// 内部实现
-        /// </summary>
-        internal static IServiceProvider ServiceProvider { get; }
+        ServiceCollection serviceDescriptors = new();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        static PipelineFactory()
-        {
-            ServiceCollection serviceDescriptors = new();
+        _ = serviceDescriptors.AddSingleton<IPipelineFilter, InternalPipelineFilter>();
 
-            _ = serviceDescriptors.AddSingleton<IPipelineFilter, InternalPipelineFilter>();
+        ServiceAction(serviceDescriptors);
 
-            ServiceAction(serviceDescriptors);
-
-            ServiceProvider = serviceDescriptors.BuildServiceProvider();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static Action<IServiceCollection> ServiceAction { get; set; } = (coll) => { };
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="procedures"></param>
-        /// <param name="pipelineController"></param>
-        /// <returns></returns>
-        internal static IPipeline<T> CreateIPipeline<T>(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController) => new InternalPipeline<T>(procedures, pipelineController);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        internal static IPipelineController<T> CreateIPipelineController<T>() => new InternalPipelineController<T>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>() => new InternalPipelineBuilder<T>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="TypeList"></param>
-        /// <returns></returns>
-        public static IPipelineBuilder<T> CreateIPipelineBuilder<T>(List<Type> TypeList) => new InternalPipelineBuilder<T>(TypeList);
+        ServiceProvider = serviceDescriptors.BuildServiceProvider();
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static Action<IServiceCollection> ServiceAction { get; set; } = (coll) => { };
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="procedures"></param>
+    /// <param name="pipelineController"></param>
+    /// <returns></returns>
+    internal static IPipeline<T> CreateIPipeline<T>(IProcessAsync<T>[] procedures, IPipelineController<T> pipelineController) => new InternalPipeline<T>(procedures, pipelineController);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    internal static IPipelineController<T> CreateIPipelineController<T>() => new InternalPipelineController<T>();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static IPipelineBuilder<T> CreateIPipelineBuilder<T>() => new InternalPipelineBuilder<T>();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="TypeList"></param>
+    /// <returns></returns>
+    public static IPipelineBuilder<T> CreateIPipelineBuilder<T>(List<Type> TypeList) => new InternalPipelineBuilder<T>(TypeList);
 }

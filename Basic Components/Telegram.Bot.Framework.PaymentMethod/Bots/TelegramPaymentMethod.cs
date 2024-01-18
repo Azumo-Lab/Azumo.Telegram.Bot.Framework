@@ -2,36 +2,35 @@
 using Stripe;
 using Telegram.Bot.Framework.Abstracts.Bots;
 
-namespace Telegram.Bot.Framework.PaymentMethod.Bots
+namespace Telegram.Bot.Framework.PaymentMethod.Bots;
+
+internal class TelegramPaymentMethod(PaymentOption paymentOption) : ITelegramPartCreator
 {
-    internal class TelegramPaymentMethod(PaymentOption paymentOption) : ITelegramPartCreator
-    {
-        private readonly PaymentOption __PaymentOption = paymentOption;
+    private readonly PaymentOption __PaymentOption = paymentOption;
 
-        public void AddBuildService(IServiceCollection services)
+    public void AddBuildService(IServiceCollection services)
+    {
+
+    }
+    public void Build(IServiceCollection services, IServiceProvider builderService)
+    {
+        _ = new RequestOptions()
         {
-
-        }
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-            var requestOptions = new RequestOptions()
-            {
-                ApiKey = __PaymentOption.Token,
-            };
-            var s = new ChargeService();
-            //s.Get()
-            var task = Task.CompletedTask;
-        }
+            ApiKey = __PaymentOption.Token,
+        };
+        _ = new ChargeService();
+        //s.Get()
+        _ = Task.CompletedTask;
     }
+}
 
-    public static class Install
-    {
-        public static ITelegramBotBuilder AddPaymentService(this ITelegramBotBuilder telegramBotBuilder, PaymentOption option) =>
-            telegramBotBuilder.AddTelegramPartCreator(new TelegramPaymentMethod(option));
-    }
+public static class Install
+{
+    public static ITelegramBotBuilder AddPaymentService(this ITelegramBotBuilder telegramBotBuilder, PaymentOption option) =>
+        telegramBotBuilder.AddTelegramPartCreator(new TelegramPaymentMethod(option));
+}
 
-    public class PaymentOption
-    {
-        public string Token { get; set; }
-    }
+public class PaymentOption
+{
+    public string Token { get; set; }
 }

@@ -16,39 +16,38 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Telegram.Bot.Framework.Abstracts.Attributes
+namespace Telegram.Bot.Framework.Abstracts.Attributes;
+
+/// <summary>
+/// 
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class DependencyInjectionAttribute : Attribute
 {
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class DependencyInjectionAttribute : Attribute
+    public ServiceLifetime ServiceLifetime { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public Type? ServiceType { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ServiceLifetime"></param>
+    /// <param name="ServiceType"></param>
+    public DependencyInjectionAttribute(ServiceLifetime ServiceLifetime, Type ServiceType)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ServiceLifetime ServiceLifetime { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Type? ServiceType { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ServiceLifetime"></param>
-        /// <param name="ServiceType"></param>
-        public DependencyInjectionAttribute(ServiceLifetime ServiceLifetime, Type ServiceType)
-        {
-            this.ServiceLifetime = ServiceLifetime;
-            this.ServiceType = ServiceType;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ServiceLifetime"></param>
-        public DependencyInjectionAttribute(ServiceLifetime ServiceLifetime) => this.ServiceLifetime = ServiceLifetime;
+        this.ServiceLifetime = ServiceLifetime;
+        this.ServiceType = ServiceType;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ServiceLifetime"></param>
+    public DependencyInjectionAttribute(ServiceLifetime ServiceLifetime) => this.ServiceLifetime = ServiceLifetime;
 }

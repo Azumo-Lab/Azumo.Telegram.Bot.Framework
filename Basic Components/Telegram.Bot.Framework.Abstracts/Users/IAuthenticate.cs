@@ -16,24 +16,23 @@
 
 using Telegram.Bot.Framework.Abstracts.Attributes;
 
-namespace Telegram.Bot.Framework.Abstracts.Users
+namespace Telegram.Bot.Framework.Abstracts.Users;
+
+/// <summary>
+/// 
+/// </summary>
+public interface IAuthenticate
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IAuthenticate
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public HashSet<string> RoleName { get; }
+    public HashSet<string> RoleName { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <param name="authenticateAttribute"></param>
-        /// <returns></returns>
-        public Task<bool> IsAuthenticated(TelegramUserChatContext chatContext, AuthenticateAttribute authenticateAttribute);
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <param name="authenticateAttribute"></param>
+    /// <returns></returns>
+    public Task<bool> IsAuthenticated(TelegramUserChatContext chatContext, AuthenticateAttribute authenticateAttribute);
 }

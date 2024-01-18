@@ -17,108 +17,107 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Azumo.Reflection
+namespace Azumo.Reflection;
+
+/// <summary>
+/// 
+/// </summary>
+public class AzReflection<T> : IDisposable
 {
+    public static T? Create(params object[] args) => args == null || args.Length == 0 ? (T?)Activator.CreateInstance(typeof(T)) : (T?)Activator.CreateInstance(typeof(T), args);
     /// <summary>
     /// 
     /// </summary>
-    public class AzReflection<T> : IDisposable
+    private readonly Type __Type;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private static readonly List<Type> __AllTypes;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    static AzReflection() => __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    private AzReflection(Type type) => __Type = type;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static AzReflection<T> Create() => new(typeof(T));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<Type> FindAllSubclass() => Cache(CacheKey(__Type.FullName!, nameof(FindAllSubclass)), () => __AllTypes.Where(__Type.IsAssignableFrom).Where(x => !x.IsInterface && !x.IsAbstract).ToList());
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<Func<T, object[], object?>> GetFuncMethods()
     {
-        public static T? Create(params object[] args) => args == null || args.Length == 0 ? (T?)Activator.CreateInstance(typeof(T)) : (T?)Activator.CreateInstance(typeof(T), args);
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Type __Type;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private static readonly List<Type> __AllTypes;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        static AzReflection() => __AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"></param>
-        private AzReflection(Type type) => __Type = type;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static AzReflection<T> Create() => new(typeof(T));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<Type> FindAllSubclass() => Cache(CacheKey(__Type.FullName!, nameof(FindAllSubclass)), () => __AllTypes.Where(__Type.IsAssignableFrom).Where(x => !x.IsInterface && !x.IsAbstract).ToList());
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<Func<T, object[], object?>> GetFuncMethods()
-        {
-            var funcs = Cache(CacheKey(__Type.FullName!, nameof(GetFuncMethods)), () => GetMethods().Select<MethodInfo, Func<T, object[], object?>>(x =>
-                {
-                    RuntimeHelpers.PrepareMethod(x.MethodHandle);
-                    return (t, param) => x.Invoke(t, param);
-                }).ToList());
-            foreach (var func in funcs)
-                RuntimeHelpers.PrepareDelegate(func);
-            return funcs;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<MethodInfo> GetMethods()
-        {
-            var methods = Cache(CacheKey(__Type.FullName!, nameof(GetMethods)), () => __Type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static));
-            return [.. (methods ?? [])];
-        }
-
-        #region 保存缓存
-
-        private static readonly Dictionary<string, object> __CacheObjDic = [];
-
-        private static string CacheKey(string typeFullName, string methodName) => $"{typeFullName}.{methodName}";
-
-        private static CacheType Cache<CacheType>(string cacheKey, Func<CacheType> cacheObj)
-        {
-            CacheType? result = default;
-            if (!__CacheObjDic.TryGetValue(cacheKey, out var obj))
+        var funcs = Cache(CacheKey(__Type.FullName!, nameof(GetFuncMethods)), () => GetMethods().Select<MethodInfo, Func<T, object[], object?>>(x =>
             {
-                result = cacheObj();
-                _ = __CacheObjDic.TryAdd(cacheKey, result!);
-            }
-            else
-            {
-                try
-                {
-                    result = (CacheType)obj;
-                }
-                catch (Exception)
-                { }
-            }
-            return result!;
-        }
+                RuntimeHelpers.PrepareMethod(x.MethodHandle);
+                return (t, param) => x.Invoke(t, param);
+            }).ToList());
+        foreach (var func in funcs)
+            RuntimeHelpers.PrepareDelegate(func);
+        return funcs;
+    }
 
-        #endregion
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public List<MethodInfo> GetMethods()
+    {
+        var methods = Cache(CacheKey(__Type.FullName!, nameof(GetMethods)), () => __Type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static));
+        return [.. (methods ?? [])];
+    }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
+    #region 保存缓存
+
+    private static readonly Dictionary<string, object> __CacheObjDic = [];
+
+    private static string CacheKey(string typeFullName, string methodName) => $"{typeFullName}.{methodName}";
+
+    private static CacheType Cache<CacheType>(string cacheKey, Func<CacheType> cacheObj)
+    {
+        CacheType? result = default;
+        if (!__CacheObjDic.TryGetValue(cacheKey, out var obj))
         {
-
+            result = cacheObj();
+            _ = __CacheObjDic.TryAdd(cacheKey, result!);
         }
+        else
+        {
+            try
+            {
+                result = (CacheType)obj;
+            }
+            catch (Exception)
+            { }
+        }
+        return result!;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Dispose()
+    {
+
     }
 }

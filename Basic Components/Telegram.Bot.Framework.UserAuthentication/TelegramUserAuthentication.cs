@@ -18,40 +18,39 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Abstracts.Bots;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 
-namespace Telegram.Bot.Framework.UserAuthentication
-{
-    internal class TelegramUserAuthentication(string[] roles) : ITelegramPartCreator
-    {
-        public void AddBuildService(IServiceCollection services)
-        {
-            var roleManager = new RoleManager();
-            foreach (var item in roles ?? [])
-                roleManager.AddRole(item);
-            _ = services.AddSingleton<IRoleManager>(roleManager);
-        }
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-            _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
-            _ = services.AddScoped<IUserManager, UserManager>();
-            _ = services.AddSingleton(builderService.GetRequiredService<IRoleManager>());
-            _ = services.AddSingleton<IGlobalFilter>(x => x.GetService<IGlobalBlackList>()!);
-            _ = services.AddSingleton<IGlobalBlackList, GlobalBlackList>(x =>
-            {
-                var blackList = new GlobalBlackList();
-                blackList.Init();
-                return blackList;
-            });
-        }
-    }
+namespace Telegram.Bot.Framework.UserAuthentication;
 
-    public static class UserAuthenticationInstall
+internal class TelegramUserAuthentication(string[] roles) : ITelegramPartCreator
+{
+    public void AddBuildService(IServiceCollection services)
     {
-        /// <summary>
-        /// 添加并使用权限认证部分功能
-        /// </summary>
-        /// <param name="telegramBotBuilder"></param>
-        /// <returns></returns>
-        public static ITelegramBotBuilder AddUserAuthentication(this ITelegramBotBuilder telegramBotBuilder, string[] roles) =>
-            telegramBotBuilder.AddTelegramPartCreator(new TelegramUserAuthentication(roles));
+        var roleManager = new RoleManager();
+        foreach (var item in roles ?? [])
+            roleManager.AddRole(item);
+        _ = services.AddSingleton<IRoleManager>(roleManager);
     }
+    public void Build(IServiceCollection services, IServiceProvider builderService)
+    {
+        _ = services.AddScoped<IControllerFilter, UserAuthenticationFilter>();
+        _ = services.AddScoped<IUserManager, UserManager>();
+        _ = services.AddSingleton(builderService.GetRequiredService<IRoleManager>());
+        _ = services.AddSingleton<IGlobalFilter>(x => x.GetService<IGlobalBlackList>()!);
+        _ = services.AddSingleton<IGlobalBlackList, GlobalBlackList>(x =>
+        {
+            var blackList = new GlobalBlackList();
+            blackList.Init();
+            return blackList;
+        });
+    }
+}
+
+public static class UserAuthenticationInstall
+{
+    /// <summary>
+    /// 添加并使用权限认证部分功能
+    /// </summary>
+    /// <param name="telegramBotBuilder"></param>
+    /// <returns></returns>
+    public static ITelegramBotBuilder AddUserAuthentication(this ITelegramBotBuilder telegramBotBuilder, string[] roles) =>
+        telegramBotBuilder.AddTelegramPartCreator(new TelegramUserAuthentication(roles));
 }

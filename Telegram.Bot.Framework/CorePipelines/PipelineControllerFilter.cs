@@ -18,26 +18,25 @@ using Azumo.Pipeline.Abstracts;
 using Telegram.Bot.Framework.Abstracts.Controllers;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.CorePipelines
+namespace Telegram.Bot.Framework.CorePipelines;
+
+internal class PipelineControllerFilter : IProcessAsync<TelegramUserChatContext>
 {
-    internal class PipelineControllerFilter : IProcessAsync<TelegramUserChatContext>
+    public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext telegramUserChatContext, IPipelineController<TelegramUserChatContext> pipelineController)
     {
-        public async Task<TelegramUserChatContext> ExecuteAsync(TelegramUserChatContext telegramUserChatContext, IPipelineController<TelegramUserChatContext> pipelineController)
+        var controllerManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerManager>();
+        var botCommand = controllerManager.GetCommand(telegramUserChatContext);
+
+        if (botCommand != null)
         {
-            var controllerManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerManager>();
-            var botCommand = controllerManager.GetCommand(telegramUserChatContext);
+            foreach (var controllerFilter in telegramUserChatContext.UserScopeService.GetServices<IControllerFilter>() ?? [])
+                if (!await controllerFilter.Execute(telegramUserChatContext, botCommand))
+                    return await pipelineController.StopAsync(telegramUserChatContext);
 
-            if (botCommand != null)
-            {
-                foreach (var controllerFilter in telegramUserChatContext.UserScopeService.GetServices<IControllerFilter>() ?? [])
-                    if (!await controllerFilter.Execute(telegramUserChatContext, botCommand))
-                        return await pipelineController.StopAsync(telegramUserChatContext);
-
-                var controllerParamManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerParamManager>();
-                controllerParamManager.NewBotCommandParamScope(botCommand);
-            }
-
-            return await pipelineController.NextAsync(telegramUserChatContext);
+            var controllerParamManager = telegramUserChatContext.UserScopeService.GetRequiredService<IControllerParamManager>();
+            controllerParamManager.NewBotCommandParamScope(botCommand);
         }
+
+        return await pipelineController.NextAsync(telegramUserChatContext);
     }
 }

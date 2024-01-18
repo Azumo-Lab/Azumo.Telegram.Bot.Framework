@@ -14,14 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Controllers;
+
+public enum ResultEnum
 {
-    public enum ResultEnum
-    {
-        NoStatus,
-        SendMessage,
-        ReceiveParameters,
-        NextParam,
-        Finish,
-    }
+    NoStatus,
+    SendMessage,
+    ReceiveParameters,
+    NextParam,
+    Finish,
 }

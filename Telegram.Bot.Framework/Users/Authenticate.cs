@@ -17,32 +17,31 @@
 using Telegram.Bot.Framework.Abstracts.Attributes;
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Users
+namespace Telegram.Bot.Framework.Users;
+
+/// <summary>
+/// 
+/// </summary>
+[DependencyInjection(ServiceLifetime.Scoped, typeof(IAuthenticate))]
+internal class Authenticate : IAuthenticate
 {
     /// <summary>
     /// 
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Scoped, typeof(IAuthenticate))]
-    internal class Authenticate : IAuthenticate
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public HashSet<string> RoleName { get; } = [];
+    public HashSet<string> RoleName { get; } = [];
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tGChat"></param>
-        /// <param name="authenticateAttribute"></param>
-        /// <returns></returns>
-        public Task<bool> IsAuthenticated(TelegramUserChatContext tGChat, AuthenticateAttribute authenticateAttribute)
-        {
-            var result = false;
-            foreach (var roleName in RoleName)
-                if (!(result = authenticateAttribute.RoleName.Contains(roleName)))
-                    continue;
-            return Task.FromResult(result);
-        }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tGChat"></param>
+    /// <param name="authenticateAttribute"></param>
+    /// <returns></returns>
+    public Task<bool> IsAuthenticated(TelegramUserChatContext tGChat, AuthenticateAttribute authenticateAttribute)
+    {
+        var result = false;
+        foreach (var roleName in RoleName)
+            if (!(result = authenticateAttribute.RoleName.Contains(roleName)))
+                continue;
+        return Task.FromResult(result);
     }
 }

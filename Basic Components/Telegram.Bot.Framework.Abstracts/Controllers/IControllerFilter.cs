@@ -16,25 +16,24 @@
 
 using Telegram.Bot.Framework.Abstracts.Users;
 
-namespace Telegram.Bot.Framework.Abstracts.Controllers
+namespace Telegram.Bot.Framework.Abstracts.Controllers;
+
+/// <summary>
+/// 控制器过滤器
+/// </summary>
+/// <remarks>
+/// 在控制器执行之前进行执行的过滤器
+/// </remarks>
+public interface IControllerFilter
 {
     /// <summary>
-    /// 控制器过滤器
+    /// 开始执行过滤器
     /// </summary>
     /// <remarks>
-    /// 在控制器执行之前进行执行的过滤器
+    /// 
     /// </remarks>
-    public interface IControllerFilter
-    {
-        /// <summary>
-        /// 开始执行过滤器
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <param name="tGChat"></param>
-        /// <param name="botCommand"></param>
-        /// <returns></returns>
-        public Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand);
-    }
+    /// <param name="tGChat"></param>
+    /// <param name="botCommand"></param>
+    /// <returns></returns>
+    public Task<bool> Execute(TelegramUserChatContext tGChat, BotCommand botCommand);
 }
