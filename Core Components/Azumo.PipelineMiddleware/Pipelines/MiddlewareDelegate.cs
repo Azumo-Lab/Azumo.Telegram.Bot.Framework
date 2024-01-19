@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
@@ -28,4 +22,4 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// <typeparam name="TInput"></typeparam>
 /// <param name="input"></param>
 /// <returns></returns>
-internal delegate Task MiddlewareDelegate<TInput>(TInput input);
+internal delegate Task MiddlewareDelegate<TInput>(TInput input, IPipelineController<TInput> pipelineController);

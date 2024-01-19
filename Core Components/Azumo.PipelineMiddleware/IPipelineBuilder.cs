@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
@@ -35,16 +29,24 @@ public interface IPipelineBuilder<TInput>
     /// <param name="middleware"></param>
     /// <param name="middlewareInsertionMode"></param>
     /// <returns></returns>
-    IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase);
+    public IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="invokeFilter"></param>
+    /// <returns></returns>
+    public IPipelineBuilder<TInput> Use(IPipelineInvokeFilter<TInput> invokeFilter);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public IPipelineBuilder<TInput> NewPipeline(object name);
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    IPipeline<TInput> Build();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    IEnumerable<IMiddleware<TInput>> Middleware { get; }
+    public IPipelineController<TInput> Build();
 }

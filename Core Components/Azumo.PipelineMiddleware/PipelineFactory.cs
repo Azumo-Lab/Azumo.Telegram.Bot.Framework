@@ -14,13 +14,42 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Azumo.PipelineMiddleware.Pipelines;
 
 namespace Azumo.PipelineMiddleware;
+
+/// <summary>
+/// 
+/// </summary>
 public class PipelineFactory
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TInput"></typeparam>
+    /// <returns></returns>
+    internal static IPipelineController<TInput> GetPipelineController<TInput>() =>
+        new DefaultPipelineController<TInput>();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TInput"></typeparam>
+    /// <param name="middleware"></param>
+    /// <param name="pipelineController"></param>
+    /// <returns></returns>
+    internal static IPipeline<TInput> GetPipeline<TInput>(MiddlewareDelegate<TInput> middleware, IPipelineController<TInput> pipelineController) =>
+        new DefaultPipeline<TInput>(middleware, pipelineController);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TInput"></typeparam>
+    /// <returns></returns>
+    public static IPipelineBuilder<TInput> GetPipelineBuilder<TInput>()
+    {
+        var builder = new DefaultPipelineBuilder<TInput>();
+        builder.Use(new ControllerPipelineInvokeFilter<TInput>());
+        return builder;
+    }
 }

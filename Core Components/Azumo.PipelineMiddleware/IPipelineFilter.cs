@@ -14,26 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Azumo.PipelineMiddleware.Pipelines;
+namespace Azumo.PipelineMiddleware;
 
 /// <summary>
-/// 
+/// 流水线执行过滤器
 /// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <param name="__Middleware"></param>
-/// <param name="pipelineController"></param>
-internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
+/// <remarks>
+/// 用于对流水线进行处理
+/// </remarks>
+/// <typeparam name="TInput">处理数据类型</typeparam>
+public interface IPipelineFilter<TInput>
 {
-    private readonly MiddlewareDelegate<TInput> __Middleware = __Middleware;
+    /// <summary>
+    /// 流水线执行前
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public Task<bool> InvokeBefore(TInput input);
 
-    private readonly IPipelineController<TInput> __PipelineController = pipelineController;
-
-    public Task Invoke(TInput input) => 
-        __Middleware(input, __PipelineController);
+    /// <summary>
+    /// 流水线执行后
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public Task<bool> InvokeAfter(TInput input);
 }

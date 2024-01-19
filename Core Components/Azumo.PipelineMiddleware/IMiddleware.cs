@@ -14,31 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
-/// 
+/// 流水线的处理中间件
 /// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <typeparam name="TOutput"></typeparam>
+/// <remarks>
+/// 
+/// </remarks>
+/// <typeparam name="TInput">传入的处理数据类型</typeparam>
 public interface IMiddleware<TInput>
 {
     /// <summary>
-    /// 
+    /// 流水线执行阶段
     /// </summary>
-    PipelinePhase Phase { get; }
+    public PipelinePhase Phase { get; }
 
     /// <summary>
-    /// 
+    /// 开始执行该阶段的处理
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="pipelineController"></param>
-    /// <returns></returns>
+    /// <param name="input">传入的待处理数据</param>
+    /// <param name="pipelineController">流水线控制器</param>
+    /// <returns>异步执行</returns>
     public Task Execute(TInput input, IPipelineController<TInput> pipelineController);
 }

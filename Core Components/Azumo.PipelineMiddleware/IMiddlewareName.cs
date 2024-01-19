@@ -14,21 +14,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
-/// 
+/// 中间件名称
 /// </summary>
+/// <remarks>
+/// 可选的接口，中间件的名称，通过实现该接口，为实现了<see cref="IMiddleware{TInput}"/>的接口赋予名称
+/// </remarks>
 public interface IMiddlewareName
 {
     /// <summary>
-    /// 
+    /// 名称，自定义的名字
     /// </summary>
     public string MiddlewareName { get; }
 }

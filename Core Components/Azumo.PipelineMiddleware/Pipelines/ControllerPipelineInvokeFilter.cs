@@ -21,19 +21,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Azumo.PipelineMiddleware.Pipelines;
-
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <param name="__Middleware"></param>
-/// <param name="pipelineController"></param>
-internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
+internal class ControllerPipelineInvokeFilter<TInput> : IPipelineInvokeFilter<TInput>
 {
-    private readonly MiddlewareDelegate<TInput> __Middleware = __Middleware;
-
-    private readonly IPipelineController<TInput> __PipelineController = pipelineController;
-
-    public Task Invoke(TInput input) => 
-        __Middleware(input, __PipelineController);
+    public bool Filter(Delegate handle, IMiddleware<TInput> middleware, TInput input, IPipelineController<TInput> pipelineController)
+    {
+        pipelineController.NextHandle = (MiddlewareDelegate<TInput>)handle;
+        return true;
+    }
 }

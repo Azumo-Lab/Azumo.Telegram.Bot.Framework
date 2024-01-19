@@ -14,17 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
 /// 流水线阶段
 /// </summary>
-public enum PipelinePhase
+public enum PipelinePhase : int
 {
+    /// <summary>
+    /// 前处理
+    /// </summary>
+    PreProcessing = 2,
+
+    /// <summary>
+    /// 一般处理
+    /// </summary>
+    GeneralProcessing = 4,
+
+    /// <summary>
+    /// 后处理
+    /// </summary>
+    PostProcessing = 8,
 }

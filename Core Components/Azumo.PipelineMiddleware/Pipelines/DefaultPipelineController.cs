@@ -21,19 +21,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Azumo.PipelineMiddleware.Pipelines;
-
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <param name="__Middleware"></param>
-/// <param name="pipelineController"></param>
-internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
+internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
 {
-    private readonly MiddlewareDelegate<TInput> __Middleware = __Middleware;
+    private MiddlewareDelegate<TInput>? middleware;
+    MiddlewareDelegate<TInput>? IPipelineController<TInput>.NextHandle
+    {
+        get => middleware;
+        set => middleware = value;
+    }
 
-    private readonly IPipelineController<TInput> __PipelineController = pipelineController;
+    private readonly Dictionary<object, IPipeline<TInput>> __PipelineDic = [];
 
-    public Task Invoke(TInput input) => 
-        __Middleware(input, __PipelineController);
+    public void AddPipeline(IPipeline<TInput> pipeline, object name)
+    {
+        if (__PipelineDic.TryAdd(name, pipeline))
+            __PipelineDic[name] = pipeline;
+    }
+    public Task Execute(object name, TInput input) => 
+        __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline.Invoke(input) : Task.CompletedTask;
+
+    public Task Next(TInput input) => middleware?.Invoke(input, this) ?? Task.CompletedTask;
+    public void RemovePipeline(object name) => 
+        __PipelineDic.Remove(name);
+    public Task Stop(TInput input) => Task.CompletedTask;
 }
