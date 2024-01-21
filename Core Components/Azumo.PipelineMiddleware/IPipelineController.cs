@@ -19,10 +19,12 @@ using Azumo.PipelineMiddleware.Pipelines;
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
-/// 
+/// 流水线控制器
 /// </summary>
+/// <remarks>
+/// 作用是
+/// </remarks>
 /// <typeparam name="TInput"></typeparam>
-/// <typeparam name="TOutput"></typeparam>
 public interface IPipelineController<TInput>
 {
     #region
@@ -35,34 +37,41 @@ public interface IPipelineController<TInput>
     #endregion
 
     /// <summary>
-    /// 
+    /// 获取指定的流水线
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public IPipeline<TInput>? GetPipeline(object name);
+
+    /// <summary>
+    /// 执行下一个操作
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
     public Task Next(TInput input);
 
     /// <summary>
-    /// 
+    /// 停止流水线的执行
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
     public Task Stop(TInput input);
 
     /// <summary>
-    /// 
+    /// 添加一个指定的流水线
     /// </summary>
     /// <param name="pipeline"></param>
     /// <param name="name"></param>
     public void AddPipeline(IPipeline<TInput> pipeline, object name);
 
     /// <summary>
-    /// 
+    /// 删除一个指定的流水线
     /// </summary>
     /// <param name="name"></param>
     public void RemovePipeline(object name);
 
     /// <summary>
-    /// 
+    /// 执行一个指定的流水线
     /// </summary>
     /// <param name="name"></param>
     /// <param name="input"></param>

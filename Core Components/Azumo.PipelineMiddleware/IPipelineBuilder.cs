@@ -17,7 +17,7 @@
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
-/// 
+/// 流水线建造器接口
 /// </summary>
 /// <typeparam name="TInput"></typeparam>
 /// <typeparam name="TOutput"></typeparam>
@@ -44,6 +44,7 @@ public interface IPipelineBuilder<TInput>
     /// <param name="name"></param>
     /// <returns></returns>
     public IPipelineBuilder<TInput> NewPipeline(object name);
+
     /// <summary>
     /// 
     /// </summary>

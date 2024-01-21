@@ -19,7 +19,7 @@ using Azumo.PipelineMiddleware.Pipelines;
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
-/// 
+/// 流水线工厂类
 /// </summary>
 public class PipelineFactory
 {
@@ -42,8 +42,11 @@ public class PipelineFactory
         new DefaultPipeline<TInput>(middleware, pipelineController);
 
     /// <summary>
-    /// 
+    /// 创建流水线建造器
     /// </summary>
+    /// <remarks>
+    /// 创建一个流水线建造器
+    /// </remarks>
     /// <typeparam name="TInput"></typeparam>
     /// <returns></returns>
     public static IPipelineBuilder<TInput> GetPipelineBuilder<TInput>()

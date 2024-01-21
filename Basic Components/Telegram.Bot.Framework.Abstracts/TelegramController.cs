@@ -26,7 +26,7 @@ namespace Telegram.Bot.Framework.Abstracts;
 /// Telegram 控制器
 /// </summary>
 /// <remarks>
-/// 
+/// 控制器，继承控制器类即可
 /// </remarks>
 public abstract class TelegramController
 {

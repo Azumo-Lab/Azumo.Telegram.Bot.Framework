@@ -14,13 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Azumo.PipelineMiddleware.Pipelines;
+
+/// <summary>
+/// 默认的实现类，实现了接口 <see cref="IPipelineController{TInput}"/>
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+[DebuggerDisplay("PipelineController")]
 internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
 {
     private MiddlewareDelegate<TInput>? middleware;
@@ -37,11 +39,13 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
         if (__PipelineDic.TryAdd(name, pipeline))
             __PipelineDic[name] = pipeline;
     }
-    public Task Execute(object name, TInput input) => 
+    public Task Execute(object name, TInput input) =>
         __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline.Invoke(input) : Task.CompletedTask;
 
     public Task Next(TInput input) => middleware?.Invoke(input, this) ?? Task.CompletedTask;
-    public void RemovePipeline(object name) => 
+    public void RemovePipeline(object name) =>
         __PipelineDic.Remove(name);
     public Task Stop(TInput input) => Task.CompletedTask;
+    public IPipeline<TInput>? GetPipeline(object name) =>
+        __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline : default;
 }
