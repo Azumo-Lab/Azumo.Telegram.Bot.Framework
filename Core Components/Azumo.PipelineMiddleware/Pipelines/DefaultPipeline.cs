@@ -30,10 +30,21 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// <param name="pipelineController"></param>
 internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly MiddlewareDelegate<TInput> __Middleware = __Middleware;
 
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly IPipelineController<TInput> __PipelineController = pipelineController;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public Task Invoke(TInput input) => 
         __Middleware(input, __PipelineController);
 }

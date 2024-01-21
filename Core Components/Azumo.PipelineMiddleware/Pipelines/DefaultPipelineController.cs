@@ -25,27 +25,71 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 [DebuggerDisplay("PipelineController")]
 internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private MiddlewareDelegate<TInput>? middleware;
+
+    /// <summary>
+    /// 
+    /// </summary>
     MiddlewareDelegate<TInput>? IPipelineController<TInput>.NextHandle
     {
         get => middleware;
         set => middleware = value;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly Dictionary<object, IPipeline<TInput>> __PipelineDic = [];
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pipeline"></param>
+    /// <param name="name"></param>
     public void AddPipeline(IPipeline<TInput> pipeline, object name)
     {
         if (__PipelineDic.TryAdd(name, pipeline))
             __PipelineDic[name] = pipeline;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public Task Execute(object name, TInput input) =>
         __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline.Invoke(input) : Task.CompletedTask;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public Task Next(TInput input) => middleware?.Invoke(input, this) ?? Task.CompletedTask;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
     public void RemovePipeline(object name) =>
         __PipelineDic.Remove(name);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public Task Stop(TInput input) => Task.CompletedTask;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public IPipeline<TInput>? GetPipeline(object name) =>
         __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline : default;
 }

@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
@@ -34,7 +28,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// 
     /// </summary>
     private readonly Dictionary<object, List<IMiddleware<TInput>>> __Func = [];
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -43,7 +37,12 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// <summary>
     /// 
     /// </summary>
-    private readonly List<IPipelineInvokeFilter<TInput>> __Filters = [];
+    private readonly List<IPipelineInvokeFilter<TInput>> __InvokeFilters = [];
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly List<IPipelineFilter<TInput>> __Filters = [];
 
     /// <summary>
     /// 
@@ -53,7 +52,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     {
         var func = __Func.ToDictionary(x => x.Key, y => y.Value.Select<IMiddleware<TInput>, Func<MiddlewareDelegate<TInput>, MiddlewareDelegate<TInput>>>(z => (handle) => (input, controller) =>
             {
-                foreach (var item in __Filters)
+                foreach (var item in __InvokeFilters)
                     if (!item.Filter(handle, z, input, controller))
                         return Task.CompletedTask;
                 return z.Execute(input, controller);
@@ -72,7 +71,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     public IPipelineBuilder<TInput> NewPipeline(object name)
     {
         key = name;
-        __Func.TryAdd(name, []);
+        _ = __Func.TryAdd(name, []);
         return this;
     }
 
@@ -115,7 +114,13 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
 
     public IPipelineBuilder<TInput> Use(IPipelineInvokeFilter<TInput> invokeFilter)
     {
-        __Filters.Add(invokeFilter);
+        __InvokeFilters.Add(invokeFilter);
+        return this;
+    }
+
+    public IPipelineBuilder<TInput> Use(IPipelineFilter<TInput> filter)
+    {
+        __Filters.Add(filter);
         return this;
     }
 }

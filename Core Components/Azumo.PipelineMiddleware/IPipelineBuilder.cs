@@ -19,12 +19,11 @@ namespace Azumo.PipelineMiddleware;
 /// <summary>
 /// 流水线建造器接口
 /// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <typeparam name="TOutput"></typeparam>
+/// <typeparam name="TInput">流水线处理数据类型</typeparam>
 public interface IPipelineBuilder<TInput>
 {
     /// <summary>
-    /// 
+    /// 使用中间件
     /// </summary>
     /// <param name="middleware"></param>
     /// <param name="middlewareInsertionMode"></param>
@@ -32,21 +31,28 @@ public interface IPipelineBuilder<TInput>
     public IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase);
 
     /// <summary>
-    /// 
+    /// 使用流水线执行过滤
     /// </summary>
     /// <param name="invokeFilter"></param>
     /// <returns></returns>
     public IPipelineBuilder<TInput> Use(IPipelineInvokeFilter<TInput> invokeFilter);
 
     /// <summary>
-    /// 
+    /// 使用流水线过滤器
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <returns></returns>
+    public IPipelineBuilder<TInput> Use(IPipelineFilter<TInput> filter);
+
+    /// <summary>
+    /// 创建一个新的流水线
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     public IPipelineBuilder<TInput> NewPipeline(object name);
 
     /// <summary>
-    /// 
+    /// 开始创建流水线控制器
     /// </summary>
     /// <returns></returns>
     public IPipelineController<TInput> Build();

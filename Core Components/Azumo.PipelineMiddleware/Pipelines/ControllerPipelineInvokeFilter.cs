@@ -14,15 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware.Pipelines;
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
 internal class ControllerPipelineInvokeFilter<TInput> : IPipelineInvokeFilter<TInput>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="handle"></param>
+    /// <param name="middleware"></param>
+    /// <param name="input"></param>
+    /// <param name="pipelineController"></param>
+    /// <returns></returns>
     public bool Filter(Delegate handle, IMiddleware<TInput> middleware, TInput input, IPipelineController<TInput> pipelineController)
     {
         pipelineController.NextHandle = (MiddlewareDelegate<TInput>)handle;
