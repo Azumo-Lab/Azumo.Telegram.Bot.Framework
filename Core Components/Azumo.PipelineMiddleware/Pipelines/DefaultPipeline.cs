@@ -14,37 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
-/// 
+/// 默认的流水线实现类
 /// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <param name="__Middleware"></param>
-/// <param name="pipelineController"></param>
+/// <typeparam name="TInput">流水线处理类型</typeparam>
+/// <param name="__Middleware">中间件的委托</param>
+/// <param name="pipelineController">流水线控制器的应用</param>
 internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
 {
     /// <summary>
-    /// 
+    /// 流水线委托
     /// </summary>
     private readonly MiddlewareDelegate<TInput> __Middleware = __Middleware;
 
     /// <summary>
-    /// 
+    /// 流水线控制器
     /// </summary>
     private readonly IPipelineController<TInput> __PipelineController = pipelineController;
 
     /// <summary>
-    /// 
+    /// 开始执行本条流水线
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public Task Invoke(TInput input) => 
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="input">要处理的数据</param>
+    /// <returns>异步任务</returns>
+    public Task Invoke(TInput input) =>
         __Middleware(input, __PipelineController);
 }

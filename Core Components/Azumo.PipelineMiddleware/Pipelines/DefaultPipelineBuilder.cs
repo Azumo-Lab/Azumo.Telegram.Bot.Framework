@@ -23,7 +23,11 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// <param name="controller"></param>
 internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private object key = null!;
+
     /// <summary>
     /// 
     /// </summary>
@@ -68,6 +72,11 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
         return __Controller;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public IPipelineBuilder<TInput> NewPipeline(object name)
     {
         key = name;
@@ -112,12 +121,22 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
         return this;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="invokeFilter"></param>
+    /// <returns></returns>
     public IPipelineBuilder<TInput> Use(IPipelineInvokeFilter<TInput> invokeFilter)
     {
         __InvokeFilters.Add(invokeFilter);
         return this;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <returns></returns>
     public IPipelineBuilder<TInput> Use(IPipelineFilter<TInput> filter)
     {
         __Filters.Add(filter);
