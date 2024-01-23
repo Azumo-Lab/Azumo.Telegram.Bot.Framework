@@ -95,29 +95,31 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
         if (key == null)
             throw new Exception($"Call {NewPipeline} Method");
 
-        static void Add(List<IMiddleware<TInput>> list, IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode)
+        if (!__Func.TryGetValue(key, out var list))
+            list = [];
+
+        var phase = middleware.Phase;
+
+        var phaseList = list.GroupBy(x => x.Phase).ToDictionary(x => x.Key, x => x.ToList());
+        if (phaseList.TryAdd(phase, [middleware]))
+            goto LIST;
+
+        switch (middlewareInsertionMode)
         {
-            switch (middlewareInsertionMode)
-            {
-                case MiddlewareInsertionMode.EndOfPhase:
-                    list.Add(middleware);
-                    break;
-                case MiddlewareInsertionMode.StartOfPhase:
-                    list.Insert(0, middleware);
-                    break;
-                default:
-                    break;
-            }
+            case MiddlewareInsertionMode.EndOfPhase:
+                phaseList[phase].Add(middleware);
+                break;
+            case MiddlewareInsertionMode.StartOfPhase:
+                phaseList[phase].Insert(0, middleware);
+                break;
+            default:
+                throw new ArgumentException($"{nameof(middlewareInsertionMode)} Type Error");
         }
 
-        var result =
-            __Func[key]
-            .GroupBy(x => x.Phase)
-            .ToDictionary(x => x.Key, x => x.ToList());
+    LIST:
+        list.Clear();
+        list.AddRange(phaseList.OrderBy(x => x.Key).SelectMany(x => x.Value).ToList());
 
-        Add(result[middleware.Phase], middleware, middlewareInsertionMode);
-
-        __Func[key].Add(middleware);
         return this;
     }
 

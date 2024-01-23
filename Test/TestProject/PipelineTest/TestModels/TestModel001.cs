@@ -9,5 +9,7 @@ public class TestModel001
 {
     public string? Str { get; set; }
 
-    public string? InvokeLink { get; set; }
+    public string? Copy { get; set; }
+
+    public List<string> InvokeLink { get; set; } = [];
 }
