@@ -19,6 +19,9 @@ namespace Azumo.PipelineMiddleware;
 /// <summary>
 /// 流水线
 /// </summary>
+/// <remarks>
+/// 流水线，是将中间件操作合成流水线委托后，执行的一个接口
+/// </remarks>
 /// <typeparam name="TInput">传入的数据类型</typeparam>
 public interface IPipeline<TInput>
 {

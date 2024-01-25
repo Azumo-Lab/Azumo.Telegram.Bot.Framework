@@ -11,12 +11,13 @@ namespace TestProject.PipelineTest;
 [TestClass]
 public class PipelineTestClass
 {
+    private const string Invoke = "Invoke";
     [TestMethod]
     public void Test001()
     {
         var builder = PipelineFactory.GetPipelineBuilder<TestModel001>();
         var controller = builder
-            .NewPipeline("Str")
+            .NewPipeline(Invoke)
             .Use(new Test00(), MiddlewareInsertionMode.StartOfPhase)
             .Use(new Test01(), MiddlewareInsertionMode.EndOfPhase)
             .Use(new Test02(), MiddlewareInsertionMode.EndOfPhase)
@@ -32,7 +33,7 @@ public class PipelineTestClass
             Str = "dghjiudghuir"
         };
 
-        controller.Execute("Str", test);
+        controller.Execute(Invoke, test);
     }
 }
 

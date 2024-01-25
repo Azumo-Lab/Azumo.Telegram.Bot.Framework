@@ -21,10 +21,13 @@ namespace Azumo.PipelineMiddleware;
 /// <summary>
 /// 流水线工厂类
 /// </summary>
+/// <remarks>
+/// 使用这个静态工厂来创建相应的接口
+/// </remarks>
 public class PipelineFactory
 {
     /// <summary>
-    /// 
+    /// 内部方法，创建流水线控制器实例
     /// </summary>
     /// <typeparam name="TInput"></typeparam>
     /// <returns></returns>
@@ -32,7 +35,7 @@ public class PipelineFactory
         new DefaultPipelineController<TInput>();
 
     /// <summary>
-    /// 
+    /// 内部方法，创建流水线实例
     /// </summary>
     /// <typeparam name="TInput"></typeparam>
     /// <param name="middleware"></param>
@@ -51,8 +54,13 @@ public class PipelineFactory
     /// <returns></returns>
     public static IPipelineBuilder<TInput> GetPipelineBuilder<TInput>()
     {
+        // 新生成一个默认的实现实例
         var builder = new DefaultPipelineBuilder<TInput>();
+
+        // 使用一个默认的过滤器
         builder.Use(new ControllerPipelineInvokeFilter<TInput>());
+
+        // 返回实例
         return builder;
     }
 }

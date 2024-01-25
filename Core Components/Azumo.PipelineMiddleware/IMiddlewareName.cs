@@ -20,7 +20,7 @@ namespace Azumo.PipelineMiddleware;
 /// 中间件名称
 /// </summary>
 /// <remarks>
-/// 可选的接口，中间件的名称，通过实现该接口，为实现了<see cref="IMiddleware{TInput}"/>的接口赋予名称
+/// 可选的接口，中间件的名称，通过实现该接口，为接口赋予名称
 /// </remarks>
 public interface IMiddlewareName
 {

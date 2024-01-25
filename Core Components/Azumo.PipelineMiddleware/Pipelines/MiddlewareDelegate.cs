@@ -17,9 +17,13 @@
 namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
-/// 
+/// 中间件委托
 /// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <param name="input"></param>
-/// <returns></returns>
+/// <remarks>
+/// 借助这个委托，实现了流水线的处理功能。
+/// </remarks>
+/// <typeparam name="TInput">处理类型</typeparam>
+/// <param name="input">要处理的数据</param>
+/// <param name="pipelineController">流水线控制器</param>
+/// <returns>异步任务</returns>
 internal delegate Task MiddlewareDelegate<TInput>(TInput input, IPipelineController<TInput> pipelineController);

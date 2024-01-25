@@ -17,50 +17,58 @@
 namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
-/// 
+/// 默认的流水线建造器
 /// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <param name="controller"></param>
+/// <remarks>
+/// 一个默认的流水线创造器，实现了 <see cref="IPipelineBuilder{TInput}"/> 接口。
+/// </remarks>
+/// <typeparam name="TInput">要处理的数据类型</typeparam>
 internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
 {
     /// <summary>
-    /// 
+    /// 当前设定的流水线的Key
     /// </summary>
-    private object key = null!;
+    private object __CurrentPipelineKey = null!;
 
     /// <summary>
-    /// 
+    /// 当前的流水线中间件字典
     /// </summary>
-    private readonly Dictionary<object, List<IMiddleware<TInput>>> __Func = [];
+    private readonly Dictionary<object, List<IMiddleware<TInput>>> __CurrentPipelineDic = [];
 
     /// <summary>
-    /// 
+    /// 流水线控制器引用
     /// </summary>
     private readonly IPipelineController<TInput> __Controller = PipelineFactory.GetPipelineController<TInput>();
 
     /// <summary>
-    /// 
+    /// 流水线执行时的过滤器
     /// </summary>
     private readonly List<IPipelineInvokeFilter<TInput>> __InvokeFilters = [];
 
     /// <summary>
-    /// 
+    /// 流水线开头和结尾的过滤器(前处理和后处理过滤器)
     /// </summary>
     private readonly List<IPipelineFilter<TInput>> __Filters = [];
 
     /// <summary>
-    /// 
+    /// 将中间件实例转换成委托
     /// </summary>
-    /// <returns></returns>
+    /// <remarks>
+    /// 将中间件实例转换成委托后，创建流水线，并设置流水线控制器要进行控制的流水线。
+    /// </remarks>
+    /// <returns>流水线控制器引用</returns>
     public IPipelineController<TInput> Build()
     {
-        var func = __Func.ToDictionary(x => x.Key, y => y.Value.Select<IMiddleware<TInput>, Func<MiddlewareDelegate<TInput>, MiddlewareDelegate<TInput>>>(z => (handle) => (input, controller) =>
+        // 创建委托列表
+        var func = __CurrentPipelineDic.ToDictionary(x => x.Key, y => y.Value.Select<IMiddleware<TInput>, Func<MiddlewareDelegate<TInput>, MiddlewareDelegate<TInput>>>(z => (handle) => (input, controller) =>
             {
                 foreach (var item in __InvokeFilters)
                     if (!item.Filter(handle, z, input, controller))
                         return Task.CompletedTask;
                 return z.Execute(input, controller);
             }));
+        
+        // 将委托列表转换为单个委托
         foreach (var fun in func)
         {
             MiddlewareDelegate<TInput> middlewareDelegate = (input, controller) => Task.CompletedTask;
@@ -69,33 +77,56 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
 
             __Controller.AddPipeline(PipelineFactory.GetPipeline(middlewareDelegate, __Controller), fun.Key);
         }
+
+        // 返回控制器的实例引用
         return __Controller;
     }
 
     /// <summary>
-    /// 
+    /// 创建一个新的流水线
     /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    public IPipelineBuilder<TInput> NewPipeline(object name)
+    /// <remarks>
+    /// 当流水线Key： <paramref name="pipelineKey"/> 的值是 <see cref="null"/> 的时候，
+    /// 则会抛出异常 <see cref="ArgumentNullException"/>
+    /// </remarks>
+    /// <param name="pipelineKey">流水线Key</param>
+    /// <exception cref="ArgumentNullException"><paramref name="pipelineKey"/>的值为NULL</exception>
+    /// <returns>添加了流水线Key的本实例引用</returns>
+    public IPipelineBuilder<TInput> NewPipeline(object pipelineKey)
     {
-        key = name;
-        _ = __Func.TryAdd(name, []);
+        __CurrentPipelineKey = pipelineKey;
+
+        ArgumentNullException.ThrowIfNull(__CurrentPipelineKey, nameof(pipelineKey));
+
+        // 尝试添加到流水线字典中
+        _ = __CurrentPipelineDic.TryAdd(__CurrentPipelineKey, []);
         return this;
     }
 
     /// <summary>
-    /// 
+    /// 使用指定中间件
     /// </summary>
-    /// <param name="middleware"></param>
-    /// <param name="middlewareInsertionMode"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 使用指定的中间件，中间件要实现 <see cref="IMiddleware{TInput}"/> 接口，同时推荐实现 <see cref="IMiddlewareName"/> 接口，
+    /// 为中间件添加名称。
+    /// <br></br>
+    /// <br></br>
+    /// 需要注意的是，执行本方法之前，需要先执行 <see cref="NewPipeline(object)"/> 方法，创建一个新的流水线，否则将会抛出异常 <see cref="Exception"/>
+    /// <br></br>
+    /// <br></br>
+    /// 如果参数 <paramref name="middlewareInsertionMode"/> 的类型或值，不是 <see cref="MiddlewareInsertionMode"/> 的范围的话，则会抛出 <see cref="ArgumentException"/> 异常
+    /// </remarks>
+    /// <param name="middleware">中间件的实例</param>
+    /// <param name="middlewareInsertionMode">中间件插入模式</param>
+    /// <returns>添加中间件的本实例引用</returns>
+    /// <exception cref="Exception">如果没有执行 <see cref="NewPipeline(object)"/> 方法，则会抛出异常</exception>
+    /// <exception cref="ArgumentException"><see cref="MiddlewareInsertionMode"/> 的类型错误</exception>
     public IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
-        if (key == null)
+        if (__CurrentPipelineKey == null)
             throw new Exception($"Call {NewPipeline} Method");
 
-        if (!__Func.TryGetValue(key, out var list))
+        if (!__CurrentPipelineDic.TryGetValue(__CurrentPipelineKey, out var list))
             list = [];
 
         var phase = middleware.Phase;
@@ -124,10 +155,10 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     }
 
     /// <summary>
-    /// 
+    /// 使用流水线执行过滤器
     /// </summary>
-    /// <param name="invokeFilter"></param>
-    /// <returns></returns>
+    /// <param name="invokeFilter">流水线执行时过滤器实例引用</param>
+    /// <returns>返回当前实例的引用</returns>
     public IPipelineBuilder<TInput> Use(IPipelineInvokeFilter<TInput> invokeFilter)
     {
         __InvokeFilters.Add(invokeFilter);
@@ -135,10 +166,10 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     }
 
     /// <summary>
-    /// 
+    /// 使用流水线过滤器
     /// </summary>
-    /// <param name="filter"></param>
-    /// <returns></returns>
+    /// <param name="filter">流水线过滤器的实例引用</param>
+    /// <returns>返回当前实例的引用</returns>
     public IPipelineBuilder<TInput> Use(IPipelineFilter<TInput> filter)
     {
         __Filters.Add(filter);

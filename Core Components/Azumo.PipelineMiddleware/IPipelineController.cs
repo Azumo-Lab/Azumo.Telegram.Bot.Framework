@@ -22,7 +22,7 @@ namespace Azumo.PipelineMiddleware;
 /// 流水线控制器
 /// </summary>
 /// <remarks>
-/// 作用是
+/// 作用是控制流水线的执行
 /// </remarks>
 /// <typeparam name="TInput"></typeparam>
 public interface IPipelineController<TInput>
@@ -41,7 +41,7 @@ public interface IPipelineController<TInput>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public IPipeline<TInput>? GetPipeline(object name);
+    public IPipeline<TInput> GetPipeline(object name);
 
     /// <summary>
     /// 执行下一个操作

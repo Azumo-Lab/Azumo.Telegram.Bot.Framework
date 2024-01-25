@@ -90,6 +90,7 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public IPipeline<TInput>? GetPipeline(object name) =>
-        __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline : default;
+    public IPipeline<TInput> GetPipeline(object name) =>
+        __PipelineDic.TryGetValue(name, out var pipeline) ?
+        pipeline : NullPipeline<TInput>.Instance;
 }

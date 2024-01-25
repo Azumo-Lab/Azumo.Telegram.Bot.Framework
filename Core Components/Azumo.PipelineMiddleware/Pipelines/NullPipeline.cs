@@ -14,33 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.PipelineMiddleware;
+using System.Diagnostics;
+
+namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
-/// 流水线的处理中间件
+/// 一个空的，不进行任何处理的流水线实现
 /// </summary>
 /// <remarks>
-/// 实现该接口，来实现中间件的功能，推荐同时实现 <see cref="IMiddlewareName"/> 接口，将添加中间件的名称。
+/// 这个实现了 <see cref="IPipeline{TInput}"/> 接口，是一个不执行任何操作的空流水线实现
 /// </remarks>
-/// <typeparam name="TInput">传入的处理数据类型</typeparam>
-public interface IMiddleware<TInput>
+/// <typeparam name="TInput">处理的数据类型</typeparam>
+[DebuggerDisplay("NullPipeline")]
+internal class NullPipeline<TInput> : IPipeline<TInput>
 {
     /// <summary>
-    /// 流水线执行阶段
+    /// 空执行
     /// </summary>
     /// <remarks>
-    /// 流水线的执行阶段，这个值将会决定这个中间件的执行位置，是哪一个阶段执行本中间件。
+    /// 方法不进行任何处理，返回 <see cref="Task.CompletedTask"/>
     /// </remarks>
-    public PipelinePhase Phase { get; }
+    /// <param name="input">传入数据</param>
+    /// <returns>异步任务</returns>
+    public Task Invoke(TInput input) => Task.CompletedTask;
 
     /// <summary>
-    /// 执行该阶段的处理
+    /// 静态的实例
     /// </summary>
-    /// <remarks>
-    /// 开始执行数据 <paramref name="input"/> 的处理操作
-    /// </remarks>
-    /// <param name="input">传入的待处理数据</param>
-    /// <param name="pipelineController">流水线控制器</param>
-    /// <returns>异步执行</returns>
-    public Task Execute(TInput input, IPipelineController<TInput> pipelineController);
+    public static IPipeline<TInput> Instance { get; } = new NullPipeline<TInput>();
 }
