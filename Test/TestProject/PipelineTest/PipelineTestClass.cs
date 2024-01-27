@@ -33,6 +33,9 @@ public class PipelineTestClass
             Str = "dghjiudghuir"
         };
 
+        var pipeline = controller.GetPipeline(Invoke);
+        pipeline.Invoke(test);
+
         controller.Execute(Invoke, test);
     }
 }

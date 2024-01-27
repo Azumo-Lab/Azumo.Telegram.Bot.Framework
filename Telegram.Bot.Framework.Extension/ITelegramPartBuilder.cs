@@ -14,37 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Diagnostics;
-
-namespace Azumo.PipelineMiddleware.Pipelines;
+namespace Telegram.Bot.Framework.Extension;
 
 /// <summary>
-/// 一个空的，不进行任何处理的流水线实现
+/// 
 /// </summary>
-/// <remarks>
-/// 这个实现了 <see cref="IPipeline{TInput}"/> 接口，是一个不执行任何操作的空流水线实现
-/// </remarks>
-/// <typeparam name="TInput">处理的数据类型</typeparam>
-[DebuggerDisplay("NullPipeline")]
-internal class NullPipeline<TInput> : IPipeline<TInput>
+public interface ITelegramPartBuilder
 {
     /// <summary>
-    /// 空执行
+    /// 添加内容设置
     /// </summary>
     /// <remarks>
-    /// 方法不进行任何处理，返回 <see cref="Task.CompletedTask"/>
+    /// 通过添加实现了 <see cref="ITelegramPartCreator"/> 接口的类，来处理和添加相对应的服务
     /// </remarks>
-    /// <param name="input">传入数据</param>
-    /// <returns>异步任务</returns>
-    public Task Invoke(TInput input) => Task.CompletedTask;
-
-    /// <summary>
-    /// 私密的初始化方法
-    /// </summary>
-    private NullPipeline() { }
-
-    /// <summary>
-    /// 静态的实例
-    /// </summary>
-    public static IPipeline<TInput> Instance { get; } = new NullPipeline<TInput>();
+    /// <param name="telegramPartCreator">可扩展的内容设置 <see cref="ITelegramPartCreator"/> </param>
+    /// <returns></returns>
+    public ITelegramPartBuilder AddTelegramPartCreator(ITelegramPartCreator telegramPartCreator);
 }

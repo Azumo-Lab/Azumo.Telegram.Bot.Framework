@@ -14,37 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Azumo.PipelineMiddleware.Pipelines;
+namespace Telegram.Bot.Framework.Extension;
 
 /// <summary>
-/// 一个空的，不进行任何处理的流水线实现
+/// 可扩展的内容设置
 /// </summary>
 /// <remarks>
-/// 这个实现了 <see cref="IPipeline{TInput}"/> 接口，是一个不执行任何操作的空流水线实现
+/// 通过实现这个接口，来进行 <see cref="ITelegramBotBuilder"/> 接口的处理设置
 /// </remarks>
-/// <typeparam name="TInput">处理的数据类型</typeparam>
-[DebuggerDisplay("NullPipeline")]
-internal class NullPipeline<TInput> : IPipeline<TInput>
+public interface ITelegramPartCreator
 {
     /// <summary>
-    /// 空执行
+    /// 添加创建时服务
     /// </summary>
     /// <remarks>
-    /// 方法不进行任何处理，返回 <see cref="Task.CompletedTask"/>
+    /// 创建时服务，用于执行 <see cref="Build(IServiceCollection, IServiceProvider)"/> 方法时使用的服务。
     /// </remarks>
-    /// <param name="input">传入数据</param>
-    /// <returns>异步任务</returns>
-    public Task Invoke(TInput input) => Task.CompletedTask;
+    /// <param name="services">服务集合</param>
+    public void AddBuildService(IServiceCollection services);
 
     /// <summary>
-    /// 私密的初始化方法
+    /// 创建运行时服务
     /// </summary>
-    private NullPipeline() { }
-
-    /// <summary>
-    /// 静态的实例
-    /// </summary>
-    public static IPipeline<TInput> Instance { get; } = new NullPipeline<TInput>();
+    /// <remarks>
+    /// 可以使用 <paramref name="builderService"/> 参数来获取创建时服务。
+    /// 可以使用创建时服务来创建，添加，处理运行时服务
+    /// </remarks>
+    /// <param name="services">运行时服务集合</param>
+    /// <param name="builderService">创建时服务</param>
+    public void Build(IServiceCollection services, IServiceProvider builderService);
 }

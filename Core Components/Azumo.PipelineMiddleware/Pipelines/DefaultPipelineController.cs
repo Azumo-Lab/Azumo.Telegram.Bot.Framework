@@ -26,12 +26,12 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
 {
     /// <summary>
-    /// 
+    /// 执行下一个操作的委托
     /// </summary>
     private MiddlewareDelegate<TInput>? middleware;
 
     /// <summary>
-    /// 
+    /// 执行下一个操作的委托
     /// </summary>
     MiddlewareDelegate<TInput>? IPipelineController<TInput>.NextHandle
     {
@@ -40,12 +40,12 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     }
 
     /// <summary>
-    /// 
+    /// 流水线Key和流水线的字典
     /// </summary>
     private readonly Dictionary<object, IPipeline<TInput>> __PipelineDic = [];
 
     /// <summary>
-    /// 
+    /// 添加一条流水线
     /// </summary>
     /// <param name="pipeline"></param>
     /// <param name="name"></param>
@@ -56,40 +56,53 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     }
 
     /// <summary>
-    /// 
+    /// 执行指定的流水线
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="input"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 获取指定的Key的流水线实例，并执行流水线操作
+    /// </remarks>
+    /// <param name="name">流水线Key</param>
+    /// <param name="input">要处理的数据</param>
+    /// <returns>异步执行</returns>
     public Task Execute(object name, TInput input) =>
         __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline.Invoke(input) : Task.CompletedTask;
 
     /// <summary>
-    /// 
+    /// 执行下一步操作
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public Task Next(TInput input) => middleware?.Invoke(input, this) ?? Task.CompletedTask;
+    /// <remarks>
+    /// 执行流水线的下一个操作，在中间件中，需要调用这个方法来进入下一个中间件处理流程
+    /// </remarks>
+    /// <param name="input">要处理的数据</param>
+    /// <returns>异步执行</returns>
+    public Task Next(TInput input) => 
+        middleware?.Invoke(input, this) ?? Task.CompletedTask;
 
     /// <summary>
-    /// 
+    /// 移除一个流水线
     /// </summary>
-    /// <param name="name"></param>
+    /// <remarks>
+    /// 从流水线列表中移除指定的流水线，如果没有指定Key的流水线，则不会报错
+    /// </remarks>
+    /// <param name="name">流水线Key</param>
     public void RemovePipeline(object name) =>
         __PipelineDic.Remove(name);
 
     /// <summary>
-    /// 
+    /// 停止执行
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
+    /// <param name="input">处理数据</param>
+    /// <returns>异步执行</returns>
     public Task Stop(TInput input) => Task.CompletedTask;
 
     /// <summary>
-    /// 
+    /// 获取流水线
     /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 根据指定的Key获取流水线，如果指定的Key不能获取流水线的情况，则返回 <see cref="NullPipeline{TInput}.Instance"/> 
+    /// </remarks>
+    /// <param name="name">流水线对应的Key</param>
+    /// <returns>流水线实例的引用</returns>
     public IPipeline<TInput> GetPipeline(object name) =>
         __PipelineDic.TryGetValue(name, out var pipeline) ?
         pipeline : NullPipeline<TInput>.Instance;

@@ -48,10 +48,10 @@ public class PipelineFactory
     /// 创建流水线建造器
     /// </summary>
     /// <remarks>
-    /// 创建一个流水线建造器
+    /// 创建一个流水线建造器，<typeparamref name="TInput"/> 是要进行处理的数据类型。
     /// </remarks>
-    /// <typeparam name="TInput"></typeparam>
-    /// <returns></returns>
+    /// <typeparam name="TInput">要处理的数据类型</typeparam>
+    /// <returns>返回流水线建造器实例</returns>
     public static IPipelineBuilder<TInput> GetPipelineBuilder<TInput>()
     {
         // 新生成一个默认的实现实例

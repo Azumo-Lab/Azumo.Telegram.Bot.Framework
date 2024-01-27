@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
+
 namespace Azumo.PipelineMiddleware.Pipelines;
 
 /// <summary>
@@ -22,6 +24,7 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// <typeparam name="TInput">流水线处理类型</typeparam>
 /// <param name="__Middleware">中间件的委托</param>
 /// <param name="pipelineController">流水线控制器的应用</param>
+[DebuggerDisplay("Pipeline")]
 internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
 {
     /// <summary>

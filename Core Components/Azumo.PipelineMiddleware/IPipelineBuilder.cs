@@ -23,11 +23,15 @@ namespace Azumo.PipelineMiddleware;
 public interface IPipelineBuilder<TInput>
 {
     /// <summary>
-    /// 使用中间件
+    /// 使用指定中间件
     /// </summary>
-    /// <param name="middleware"></param>
-    /// <param name="middlewareInsertionMode"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 使用指定的中间件，中间件要实现 <see cref="IMiddleware{TInput}"/> 接口，同时推荐实现 <see cref="IMiddlewareName"/> 接口，
+    /// 为中间件添加名称。
+    /// </remarks>
+    /// <param name="middleware">中间件的实例</param>
+    /// <param name="middlewareInsertionMode">中间件插入模式</param>
+    /// <returns>添加中间件的本实例引用</returns>
     public IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase);
 
     /// <summary>

@@ -47,7 +47,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F46A3FE8-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "Test\TestProject\TestProject.csproj", "{F9847CF6-A846-450C-A8F6-F4566FB2069F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azumo.PipelineMiddleware", "Core Components\Azumo.PipelineMiddleware\Azumo.PipelineMiddleware.csproj", "{3FE0D76E-2775-4571-9D88-D985EADC406F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.PipelineMiddleware", "Core Components\Azumo.PipelineMiddleware\Azumo.PipelineMiddleware.csproj", "{3FE0D76E-2775-4571-9D88-D985EADC406F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Extension", "Telegram.Bot.Framework.Extension\Telegram.Bot.Framework.Extension.csproj", "{9388F519-CA8C-4355-A937-BB130B2C24B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
