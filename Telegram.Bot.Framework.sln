@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LICENSE", "LICENSE", "{8995
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstracts", "Basic Components\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj", "{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstracts", "Abstracts Components\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj", "{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Components", "Core Components", "{69A193AD-C2E3-4555-9422-3D6CF783CB5C}"
 EndProject
@@ -49,7 +49,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "Test\TestPro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.PipelineMiddleware", "Core Components\Azumo.PipelineMiddleware\Azumo.PipelineMiddleware.csproj", "{3FE0D76E-2775-4571-9D88-D985EADC406F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Extension", "Telegram.Bot.Framework.Extension\Telegram.Bot.Framework.Extension.csproj", "{9388F519-CA8C-4355-A937-BB130B2C24B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Extension", "Telegram.Bot.Framework.Extension\Telegram.Bot.Framework.Extension.csproj", "{9388F519-CA8C-4355-A937-BB130B2C24B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstracts Components", "Abstracts Components", "{690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Attributes", "Abstracts Components\Telegram.Bot.Framework.Attributes\Telegram.Bot.Framework.Attributes.csproj", "{D712325D-12FE-433C-A446-EE0114878BAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,13 +109,17 @@ Global
 		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D712325D-12FE-433C-A446-EE0114878BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D712325D-12FE-433C-A446-EE0114878BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D712325D-12FE-433C-A446-EE0114878BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D712325D-12FE-433C-A446-EE0114878BAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8C481667-BFA8-4A31-994A-54EDA2BF402A} = {94B276AC-369D-4462-B4B8-528EFBF21AD3}
-		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE} = {CE7777DA-7126-4A86-A4DA-326EFDFF8E44}
+		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
 		{3CED3E60-D6A4-41E7-8652-6B250C0821E0} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
 		{7C3BA719-A69F-441D-A3EC-20589CAEB5D1} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
 		{22972926-4C32-4155-938A-58398A0324BC} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
@@ -120,6 +128,7 @@ Global
 		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
 		{F9847CF6-A846-450C-A8F6-F4566FB2069F} = {F46A3FE8-263D-4C1D-AF11-9A402B825F8C}
 		{3FE0D76E-2775-4571-9D88-D985EADC406F} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
+		{D712325D-12FE-433C-A446-EE0114878BAA} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}

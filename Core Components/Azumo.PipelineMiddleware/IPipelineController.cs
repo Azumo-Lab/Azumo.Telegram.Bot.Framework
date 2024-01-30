@@ -19,20 +19,30 @@ using Azumo.PipelineMiddleware.Pipelines;
 namespace Azumo.PipelineMiddleware;
 
 /// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+public interface IPipelineController<TInput> : IPipelineController<TInput, Task>
+{
+
+}
+
+/// <summary>
 /// 流水线控制器
 /// </summary>
 /// <remarks>
 /// 作用是控制流水线的执行
 /// </remarks>
 /// <typeparam name="TInput"></typeparam>
-public interface IPipelineController<TInput>
+/// <typeparam name="TResult"></typeparam>
+public interface IPipelineController<TInput, TResult>
 {
     #region
 
     /// <summary>
     /// 
     /// </summary>
-    internal MiddlewareDelegate<TInput>? NextHandle { get; set; }
+    internal MiddlewareDelegate<TInput, TResult>? NextHandle { get; set; }
 
     #endregion
 
@@ -41,28 +51,28 @@ public interface IPipelineController<TInput>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public IPipeline<TInput> GetPipeline(object name);
+    public IPipeline<TInput, TResult> GetPipeline(object name);
 
     /// <summary>
     /// 执行下一个操作
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public Task Next(TInput input);
+    public TResult Next(TInput input);
 
     /// <summary>
     /// 停止流水线的执行
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    public Task Stop(TInput input);
+    public TResult Stop(TInput input);
 
     /// <summary>
     /// 添加一个指定的流水线
     /// </summary>
     /// <param name="pipeline"></param>
     /// <param name="name"></param>
-    public void AddPipeline(IPipeline<TInput> pipeline, object name);
+    public void AddPipeline(IPipeline<TInput, TResult> pipeline, object name);
 
     /// <summary>
     /// 删除一个指定的流水线
@@ -76,5 +86,5 @@ public interface IPipelineController<TInput>
     /// <param name="name"></param>
     /// <param name="input"></param>
     /// <returns></returns>
-    public Task Execute(object name, TInput input);
+    public TResult Execute(object name, TInput input);
 }

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Controllers.Abstracts.Internals;
 
 namespace Telegram.Bot.Framework.Controllers.Internals;
-internal class MessageTypeBotCommand : IExecutor
+internal class MessageTypeBotCommand
+    : IExecutor
 {
     public Task Invoke(params object[] objs) => throw new NotImplementedException();
 }

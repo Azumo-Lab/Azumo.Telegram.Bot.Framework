@@ -16,6 +16,11 @@
 
 namespace Azumo.PipelineMiddleware;
 
+public interface IPipelineInvokeFilter<TInput> : IPipelineInvokeFilter<TInput, Task>
+{
+
+}
+
 /// <summary>
 /// 流水线执行时的过滤器
 /// </summary>
@@ -23,7 +28,7 @@ namespace Azumo.PipelineMiddleware;
 /// 在流水线执行时的过滤器，这个过滤器的执行时期是每个中间件执行之前进行执行。
 /// </remarks>
 /// <typeparam name="TInput">流水线处理的数据类型</typeparam>
-public interface IPipelineInvokeFilter<TInput>
+public interface IPipelineInvokeFilter<TInput, TResult>
 {
     /// <summary>
     /// 在中间件执行之前，执行过滤器操作
@@ -33,5 +38,5 @@ public interface IPipelineInvokeFilter<TInput>
     /// <param name="input">传入的处理参数</param>
     /// <param name="pipelineController">流水线控制器</param>
     /// <returns>是否继续执行下一步操作</returns>
-    public bool Filter(Delegate handle, IMiddleware<TInput> middleware, TInput input, IPipelineController<TInput> pipelineController);
+    public bool Filter(Delegate handle, IMiddleware<TInput, TResult> middleware, TInput input, IPipelineController<TInput, TResult> pipelineController);
 }

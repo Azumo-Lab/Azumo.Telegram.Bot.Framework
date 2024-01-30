@@ -25,17 +25,17 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// <param name="__Middleware">中间件的委托</param>
 /// <param name="pipelineController">流水线控制器的应用</param>
 [DebuggerDisplay("Pipeline")]
-internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, IPipelineController<TInput> pipelineController) : IPipeline<TInput>
+internal class DefaultPipeline<TInput,TResult>(MiddlewareDelegate<TInput,TResult> __Middleware, IPipelineController<TInput,TResult> pipelineController) : IPipeline<TInput,TResult>
 {
     /// <summary>
     /// 流水线委托
     /// </summary>
-    private readonly MiddlewareDelegate<TInput> __Middleware = __Middleware;
+    private readonly MiddlewareDelegate<TInput,TResult> __Middleware = __Middleware;
 
     /// <summary>
     /// 流水线控制器
     /// </summary>
-    private readonly IPipelineController<TInput> __PipelineController = pipelineController;
+    private readonly IPipelineController<TInput,TResult> __PipelineController = pipelineController;
 
     /// <summary>
     /// 开始执行本条流水线
@@ -45,6 +45,6 @@ internal class DefaultPipeline<TInput>(MiddlewareDelegate<TInput> __Middleware, 
     /// </remarks>
     /// <param name="input">要处理的数据</param>
     /// <returns>异步任务</returns>
-    public Task Invoke(TInput input) =>
+    public TResult Invoke(TInput input) =>
         __Middleware(input, __PipelineController);
 }

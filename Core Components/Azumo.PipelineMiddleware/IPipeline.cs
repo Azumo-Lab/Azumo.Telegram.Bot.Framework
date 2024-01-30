@@ -16,6 +16,11 @@
 
 namespace Azumo.PipelineMiddleware;
 
+public interface IPipeline<TInput> : IPipeline<TInput, Task>
+{
+
+}
+
 /// <summary>
 /// 流水线
 /// </summary>
@@ -23,12 +28,12 @@ namespace Azumo.PipelineMiddleware;
 /// 流水线，是将中间件操作合成流水线委托后，执行的一个接口
 /// </remarks>
 /// <typeparam name="TInput">传入的数据类型</typeparam>
-public interface IPipeline<TInput>
+public interface IPipeline<TInput, TResult>
 {
     /// <summary>
     /// 执行流水线操作
     /// </summary>
     /// <param name="input">要处理的数据</param>
     /// <returns>异步执行</returns>
-    public Task Invoke(TInput input);
+    public TResult Invoke(TInput input);
 }

@@ -14,32 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.PipelineMiddleware;
+namespace Telegram.Bot.Framework.Attributes;
 
-public interface IPipelineFilter<TInput> : IPipelineFilter<TInput, Task<bool>>
-{
-
-}
 /// <summary>
-/// 流水线执行过滤器
+/// 
 /// </summary>
-/// <remarks>
-/// 用于对流水线进行处理
-/// </remarks>
-/// <typeparam name="TInput">处理数据类型</typeparam>
-public interface IPipelineFilter<TInput, TResult>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class DependencyInjectionSingletonAttribute : DependencyInjectionAttribute
 {
-    /// <summary>
-    /// 流水线执行前
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public TResult InvokeBefore(TInput input);
-
-    /// <summary>
-    /// 流水线执行后
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public TResult InvokeAfter(TInput input);
 }

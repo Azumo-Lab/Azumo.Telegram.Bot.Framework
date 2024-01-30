@@ -25,4 +25,9 @@ public enum EnumParametersResults
     /// 
     /// </summary>
     Failure,
+
+    /// <summary>
+    /// 
+    /// </summary>
+    NONE,
 }

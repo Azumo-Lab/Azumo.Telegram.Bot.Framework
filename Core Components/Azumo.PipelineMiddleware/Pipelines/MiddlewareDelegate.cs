@@ -26,4 +26,4 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// <param name="input">要处理的数据</param>
 /// <param name="pipelineController">流水线控制器</param>
 /// <returns>异步任务</returns>
-internal delegate Task MiddlewareDelegate<TInput>(TInput input, IPipelineController<TInput> pipelineController);
+internal delegate TResult MiddlewareDelegate<TInput, TResult>(TInput input, IPipelineController<TInput,TResult> pipelineController);

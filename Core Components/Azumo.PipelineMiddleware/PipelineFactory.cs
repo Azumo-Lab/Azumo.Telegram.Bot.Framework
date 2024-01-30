@@ -26,13 +26,15 @@ namespace Azumo.PipelineMiddleware;
 /// </remarks>
 public class PipelineFactory
 {
+    internal static Delegate DefaultValue = (Func<object>)(() => default!);
+
     /// <summary>
     /// 内部方法，创建流水线控制器实例
     /// </summary>
     /// <typeparam name="TInput"></typeparam>
     /// <returns></returns>
-    internal static IPipelineController<TInput> GetPipelineController<TInput>() =>
-        new DefaultPipelineController<TInput>();
+    internal static IPipelineController<TInput, TResult> GetPipelineController<TInput, TResult>() =>
+        new DefaultPipelineController<TInput, TResult>();
 
     /// <summary>
     /// 内部方法，创建流水线实例
@@ -41,8 +43,8 @@ public class PipelineFactory
     /// <param name="middleware"></param>
     /// <param name="pipelineController"></param>
     /// <returns></returns>
-    internal static IPipeline<TInput> GetPipeline<TInput>(MiddlewareDelegate<TInput> middleware, IPipelineController<TInput> pipelineController) =>
-        new DefaultPipeline<TInput>(middleware, pipelineController);
+    internal static IPipeline<TInput, TResult> GetPipeline<TInput, TResult>(MiddlewareDelegate<TInput, TResult> middleware, IPipelineController<TInput, TResult> pipelineController) =>
+        new DefaultPipeline<TInput, TResult>(middleware, pipelineController);
 
     /// <summary>
     /// 创建流水线建造器
@@ -52,13 +54,14 @@ public class PipelineFactory
     /// </remarks>
     /// <typeparam name="TInput">要处理的数据类型</typeparam>
     /// <returns>返回流水线建造器实例</returns>
-    public static IPipelineBuilder<TInput> GetPipelineBuilder<TInput>()
+    public static IPipelineBuilder<TInput, TResult> GetPipelineBuilder<TInput, TResult>(Func<TResult> defaultValue)
     {
+        DefaultValue = defaultValue;
         // 新生成一个默认的实现实例
-        var builder = new DefaultPipelineBuilder<TInput>();
+        var builder = new DefaultPipelineBuilder<TInput, TResult>();
 
         // 使用一个默认的过滤器
-        builder.Use(new ControllerPipelineInvokeFilter<TInput>());
+        builder.Use(new ControllerPipelineInvokeFilter<TInput, TResult>());
 
         // 返回实例
         return builder;

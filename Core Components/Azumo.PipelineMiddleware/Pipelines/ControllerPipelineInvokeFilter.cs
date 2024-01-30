@@ -24,7 +24,7 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// 这个类是必须的，否则会造成程序执行异常
 /// </remarks>
 /// <typeparam name="TInput">处理类型</typeparam>
-internal class ControllerPipelineInvokeFilter<TInput> : IPipelineInvokeFilter<TInput>
+internal class ControllerPipelineInvokeFilter<TInput, TResult> : IPipelineInvokeFilter<TInput, TResult>
 {
     /// <summary>
     /// 在中间件执行之前，执行的过滤操作
@@ -38,10 +38,10 @@ internal class ControllerPipelineInvokeFilter<TInput> : IPipelineInvokeFilter<TI
     /// <param name="input">要进行处理的数据</param>
     /// <param name="pipelineController">流水线控制器</param>
     /// <returns>返回是否继续执行的标识，<see cref="true"/> 代表继续执行，<see cref="false"/> 代表停止执行</returns>
-    public bool Filter(Delegate handle, IMiddleware<TInput> middleware, TInput input, IPipelineController<TInput> pipelineController)
+    public bool Filter(Delegate handle, IMiddleware<TInput, TResult> middleware, TInput input, IPipelineController<TInput, TResult> pipelineController)
     {
         // 赋值操作
-        pipelineController.NextHandle = (MiddlewareDelegate<TInput>)handle;
+        pipelineController.NextHandle = (MiddlewareDelegate<TInput, TResult>)handle;
         return true;
     }
 }

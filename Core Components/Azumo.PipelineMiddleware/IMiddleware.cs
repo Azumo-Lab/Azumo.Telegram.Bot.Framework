@@ -16,6 +16,11 @@
 
 namespace Azumo.PipelineMiddleware;
 
+public interface IMiddleware<TInput> : IMiddleware<TInput, Task>
+{
+
+}
+
 /// <summary>
 /// 流水线的处理中间件
 /// </summary>
@@ -23,7 +28,7 @@ namespace Azumo.PipelineMiddleware;
 /// 实现该接口，来实现中间件的功能，推荐同时实现 <see cref="IMiddlewareName"/> 接口，将添加中间件的名称。
 /// </remarks>
 /// <typeparam name="TInput">传入的处理数据类型</typeparam>
-public interface IMiddleware<TInput>
+public interface IMiddleware<TInput, TResult>
 {
     /// <summary>
     /// 流水线执行阶段
@@ -42,5 +47,5 @@ public interface IMiddleware<TInput>
     /// <param name="input">传入的待处理数据</param>
     /// <param name="pipelineController">流水线控制器</param>
     /// <returns>异步执行</returns>
-    public Task Execute(TInput input, IPipelineController<TInput> pipelineController);
+    public TResult Execute(TInput input, IPipelineController<TInput, TResult> pipelineController);
 }

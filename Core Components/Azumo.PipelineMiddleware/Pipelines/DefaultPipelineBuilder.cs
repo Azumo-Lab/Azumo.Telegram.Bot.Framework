@@ -23,7 +23,7 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// 一个默认的流水线创造器，实现了 <see cref="IPipelineBuilder{TInput}"/> 接口。
 /// </remarks>
 /// <typeparam name="TInput">要处理的数据类型</typeparam>
-internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
+internal class DefaultPipelineBuilder<TInput, TResult> : IPipelineBuilder<TInput, TResult>
 {
     /// <summary>
     /// 当前设定的流水线的Key
@@ -33,22 +33,22 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// <summary>
     /// 当前的流水线中间件字典
     /// </summary>
-    private readonly Dictionary<object, List<IMiddleware<TInput>>> __CurrentPipelineDic = [];
+    private readonly Dictionary<object, List<IMiddleware<TInput, TResult>>> __CurrentPipelineDic = [];
 
     /// <summary>
     /// 流水线控制器引用
     /// </summary>
-    private readonly IPipelineController<TInput> __Controller = PipelineFactory.GetPipelineController<TInput>();
+    private readonly IPipelineController<TInput, TResult> __Controller = PipelineFactory.GetPipelineController<TInput,TResult>();
 
     /// <summary>
     /// 流水线执行时的过滤器
     /// </summary>
-    private readonly List<IPipelineInvokeFilter<TInput>> __InvokeFilters = [];
+    private readonly List<IPipelineInvokeFilter<TInput, TResult>> __InvokeFilters = [];
 
     /// <summary>
     /// 流水线开头和结尾的过滤器(前处理和后处理过滤器)
     /// </summary>
-    private readonly List<IPipelineFilter<TInput>> __Filters = [];
+    private readonly List<IPipelineFilter<TInput, TResult>> __Filters = [];
 
     /// <summary>
     /// 将中间件实例转换成委托
@@ -57,22 +57,22 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// 将中间件实例转换成委托后，创建流水线，并设置流水线控制器要进行控制的流水线。
     /// </remarks>
     /// <returns>流水线控制器引用</returns>
-    public IPipelineController<TInput> Build()
+    public IPipelineController<TInput, TResult> Build()
     {
         // 创建委托列表
-        var func = __CurrentPipelineDic.ToDictionary(x => x.Key, y => y.Value.Select<IMiddleware<TInput>, Func<MiddlewareDelegate<TInput>, MiddlewareDelegate<TInput>>>(z => (handle) => (input, controller) =>
+        var func = __CurrentPipelineDic.ToDictionary(x => x.Key, y => y.Value.Select<IMiddleware<TInput, TResult>, Func<MiddlewareDelegate<TInput, TResult>, MiddlewareDelegate<TInput, TResult>>>(z => (handle) => (input, controller) =>
             {
                 foreach (var item in __InvokeFilters)
                     if (!item.Filter(handle, z, input, controller))
-                        return Task.CompletedTask;
+                        return default!;
                 return z.Execute(input, controller);
             }));
-        
+
         // 将委托列表转换为单个委托
         foreach (var fun in func)
         {
-            MiddlewareDelegate<TInput> middlewareDelegate = (input, controller) => Task.CompletedTask;
-            foreach (var item in fun.Value.Reverse<Func<MiddlewareDelegate<TInput>, MiddlewareDelegate<TInput>>>())
+            MiddlewareDelegate<TInput, TResult> middlewareDelegate = (input, controller) => default!;
+            foreach (var item in fun.Value.Reverse<Func<MiddlewareDelegate<TInput, TResult>, MiddlewareDelegate<TInput, TResult>>>())
                 middlewareDelegate = item(middlewareDelegate);
 
             __Controller.AddPipeline(PipelineFactory.GetPipeline(middlewareDelegate, __Controller), fun.Key);
@@ -92,7 +92,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// <param name="pipelineKey">流水线Key</param>
     /// <exception cref="ArgumentNullException"><paramref name="pipelineKey"/>的值为NULL</exception>
     /// <returns>添加了流水线Key的本实例引用</returns>
-    public IPipelineBuilder<TInput> NewPipeline(object pipelineKey)
+    public IPipelineBuilder<TInput, TResult> NewPipeline(object pipelineKey)
     {
         __CurrentPipelineKey = pipelineKey;
 
@@ -121,7 +121,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// <returns>添加中间件的本实例引用</returns>
     /// <exception cref="Exception">如果没有执行 <see cref="NewPipeline(object)"/> 方法，则会抛出异常</exception>
     /// <exception cref="ArgumentException"><see cref="MiddlewareInsertionMode"/> 的类型错误</exception>
-    public IPipelineBuilder<TInput> Use(IMiddleware<TInput> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase)
+    public IPipelineBuilder<TInput, TResult> Use(IMiddleware<TInput, TResult> middleware, MiddlewareInsertionMode middlewareInsertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
         if (__CurrentPipelineKey == null)
             throw new Exception($"Call {NewPipeline} Method");
@@ -159,7 +159,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// </summary>
     /// <param name="invokeFilter">流水线执行时过滤器实例引用</param>
     /// <returns>返回当前实例的引用</returns>
-    public IPipelineBuilder<TInput> Use(IPipelineInvokeFilter<TInput> invokeFilter)
+    public IPipelineBuilder<TInput, TResult> Use(IPipelineInvokeFilter<TInput, TResult> invokeFilter)
     {
         __InvokeFilters.Add(invokeFilter);
         return this;
@@ -170,7 +170,7 @@ internal class DefaultPipelineBuilder<TInput> : IPipelineBuilder<TInput>
     /// </summary>
     /// <param name="filter">流水线过滤器的实例引用</param>
     /// <returns>返回当前实例的引用</returns>
-    public IPipelineBuilder<TInput> Use(IPipelineFilter<TInput> filter)
+    public IPipelineBuilder<TInput, TResult> Use(IPipelineFilter<TInput, TResult> filter)
     {
         __Filters.Add(filter);
         return this;

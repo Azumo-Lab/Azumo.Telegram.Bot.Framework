@@ -14,38 +14,44 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Diagnostics;
-
-namespace Azumo.PipelineMiddleware.Pipelines;
+namespace Telegram.Bot.Framework.Attributes;
 
 /// <summary>
-/// 一个空的，不进行任何处理的流水线实现
+/// 
 /// </summary>
-/// <remarks>
-/// 这个实现了 <see cref="IPipeline{TInput}"/> 接口，是一个不执行任何操作的空流水线实现
-/// </remarks>
-/// <typeparam name="TInput">处理的数据类型</typeparam>
-[DebuggerDisplay("NullPipeline")]
-internal class NullPipeline<TInput, TResult> : IPipeline<TInput, TResult>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
+public class BotCommandAttribute : Attribute
 {
     /// <summary>
-    /// 空执行
+    /// 
     /// </summary>
-    /// <remarks>
-    /// 方法不进行任何处理，返回 <see cref="Task.CompletedTask"/>
-    /// </remarks>
-    /// <param name="input">传入数据</param>
-    /// <returns>异步任务</returns>
-    public TResult Invoke(TInput input) =>
-        ((Func<TResult>)PipelineFactory.DefaultValue)();
+    public string BotCommandName { get; }
 
     /// <summary>
-    /// 私密的初始化方法
+    /// 
     /// </summary>
-    private NullPipeline() { }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// 静态的实例
+    /// 
     /// </summary>
-    public static IPipeline<TInput, TResult> Instance { get; } = new NullPipeline<TInput, TResult>();
+    private const char BotCommandStartChar = '/';
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="MessageType"></param>
+    /// <param name="BotCommandName"></param>
+    public BotCommandAttribute(string BotCommandName)
+    {
+        BotCommandName = BotCommandName.ToLower();
+        if (!BotCommandName.StartsWith(BotCommandStartChar))
+            BotCommandName = $"/{BotCommandName}";
+        this.BotCommandName = BotCommandName.ToLower();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public BotCommandAttribute() => BotCommandName = null!;
 }

@@ -23,17 +23,17 @@ namespace Azumo.PipelineMiddleware.Pipelines;
 /// </summary>
 /// <typeparam name="TInput"></typeparam>
 [DebuggerDisplay("PipelineController")]
-internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
+internal class DefaultPipelineController<TInput, TResult> : IPipelineController<TInput, TResult>
 {
     /// <summary>
     /// 执行下一个操作的委托
     /// </summary>
-    private MiddlewareDelegate<TInput>? middleware;
+    private MiddlewareDelegate<TInput, TResult>? middleware;
 
     /// <summary>
     /// 执行下一个操作的委托
     /// </summary>
-    MiddlewareDelegate<TInput>? IPipelineController<TInput>.NextHandle
+    MiddlewareDelegate<TInput, TResult>? IPipelineController<TInput, TResult>.NextHandle
     {
         get => middleware;
         set => middleware = value;
@@ -42,14 +42,14 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     /// <summary>
     /// 流水线Key和流水线的字典
     /// </summary>
-    private readonly Dictionary<object, IPipeline<TInput>> __PipelineDic = [];
+    private readonly Dictionary<object, IPipeline<TInput, TResult>> __PipelineDic = [];
 
     /// <summary>
     /// 添加一条流水线
     /// </summary>
     /// <param name="pipeline"></param>
     /// <param name="name"></param>
-    public void AddPipeline(IPipeline<TInput> pipeline, object name)
+    public void AddPipeline(IPipeline<TInput, TResult> pipeline, object name)
     {
         if (__PipelineDic.TryAdd(name, pipeline))
             __PipelineDic[name] = pipeline;
@@ -64,8 +64,8 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     /// <param name="name">流水线Key</param>
     /// <param name="input">要处理的数据</param>
     /// <returns>异步执行</returns>
-    public Task Execute(object name, TInput input) =>
-        __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline.Invoke(input) : Task.CompletedTask;
+    public TResult Execute(object name, TInput input) =>
+        __PipelineDic.TryGetValue(name, out var pipeline) ? pipeline.Invoke(input) : NullPipeline<TInput, TResult>.Instance.Invoke(input);
 
     /// <summary>
     /// 执行下一步操作
@@ -75,8 +75,8 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     /// </remarks>
     /// <param name="input">要处理的数据</param>
     /// <returns>异步执行</returns>
-    public Task Next(TInput input) => 
-        middleware?.Invoke(input, this) ?? Task.CompletedTask;
+    public TResult Next(TInput input) => 
+        middleware!.Invoke(input, this);
 
     /// <summary>
     /// 移除一个流水线
@@ -93,7 +93,8 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     /// </summary>
     /// <param name="input">处理数据</param>
     /// <returns>异步执行</returns>
-    public Task Stop(TInput input) => Task.CompletedTask;
+    public TResult Stop(TInput input) => 
+        ((Func<TResult>)PipelineFactory.DefaultValue)();
 
     /// <summary>
     /// 获取流水线
@@ -103,7 +104,7 @@ internal class DefaultPipelineController<TInput> : IPipelineController<TInput>
     /// </remarks>
     /// <param name="name">流水线对应的Key</param>
     /// <returns>流水线实例的引用</returns>
-    public IPipeline<TInput> GetPipeline(object name) =>
+    public IPipeline<TInput, TResult> GetPipeline(object name) =>
         __PipelineDic.TryGetValue(name, out var pipeline) ?
-        pipeline : NullPipeline<TInput>.Instance;
+        pipeline : NullPipeline<TInput, TResult>.Instance;
 }

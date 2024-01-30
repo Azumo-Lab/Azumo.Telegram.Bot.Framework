@@ -14,32 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.PipelineMiddleware;
+namespace Telegram.Bot.Framework.Attributes;
 
-public interface IPipelineFilter<TInput> : IPipelineFilter<TInput, Task<bool>>
-{
-
-}
 /// <summary>
-/// 流水线执行过滤器
+/// 用于权限认证的标签
 /// </summary>
 /// <remarks>
-/// 用于对流水线进行处理
+/// 这个标签可以用于权限认证
 /// </remarks>
-/// <typeparam name="TInput">处理数据类型</typeparam>
-public interface IPipelineFilter<TInput, TResult>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Delegate, AllowMultiple = false)]
+public class AuthenticateAttribute : Attribute
 {
     /// <summary>
-    /// 流水线执行前
+    /// 角色名称
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public TResult InvokeBefore(TInput input);
+    public HashSet<string> RoleName { get; }
 
     /// <summary>
-    /// 流水线执行后
+    /// 有参数的初始化
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public TResult InvokeAfter(TInput input);
+    /// <param name="role"></param>
+    public AuthenticateAttribute(params string[] role) => RoleName = new HashSet<string>(role);
+
+    /// <summary>
+    /// 无参数的初始化
+    /// </summary>
+    public AuthenticateAttribute() => RoleName = [];
 }

@@ -15,7 +15,6 @@ internal interface IExecutor
     /// 
     /// </summary>
     /// <param name="serviceProvider"></param>
-    /// <param name="objs"></param>
     /// <returns></returns>
     public Task Invoke(IServiceProvider serviceProvider);
 }
