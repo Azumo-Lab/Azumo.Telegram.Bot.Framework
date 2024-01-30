@@ -14,26 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Abstracts.Controllers;
-
-namespace Telegram.Bot.Framework.Abstracts.Attributes;
-
-/// <summary>
-/// 
-/// </summary>
-[AttributeUsage(AttributeTargets.Parameter)]
-public class ParamAttribute : Attribute
+namespace Telegram.Bot.Framework.TaskAbstracts;
+public interface IEndTaskExec : ITaskExec
 {
-    /// <summary>
-    /// 变量名字
-    /// </summary>
-    public string? Name { get; set; }
-
-    /// <summary>
-    /// 自定义的发送接口类型
-    /// </summary>
-    /// <remarks>
-    /// 需要实现<see cref="IControllerParamSender"/>接口的类型
-    /// </remarks>
-    public Type? Sender { get; set; }
 }

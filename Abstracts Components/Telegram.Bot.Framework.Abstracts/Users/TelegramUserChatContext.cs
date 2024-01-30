@@ -113,7 +113,6 @@ public sealed partial class TelegramUserChatContext : Update, IDisposable
     public static TelegramUserChatContext GetChat(User user, IServiceProvider BotService) =>
         new(BotService, user);
 
-
     #region Dispose相关的方法
     private void Dispose(bool disposing)
     {

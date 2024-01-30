@@ -60,7 +60,7 @@ internal static class ParamPipeline
 {
     public static IPipelineController<Models, Task<EnumParametersResults>>
         pipelineController = PipelineFactory
-        .GetPipelineBuilder<Models, Task<EnumParametersResults>>()
+        .GetPipelineBuilder<Models, Task<EnumParametersResults>>(() => Task.FromResult(EnumParametersResults.Success))
         .NewPipeline(EnumParametersResults.WaitingForInput)
         .Use(new GetParam())
         .NewPipeline(EnumParametersResults.NONE)

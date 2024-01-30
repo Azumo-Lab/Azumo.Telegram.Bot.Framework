@@ -1,13 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Telegram.Bot.Framework.Controllers.Abstracts;
 using Telegram.Bot.Framework.Controllers.Abstracts.Internals;
 
 namespace Telegram.Bot.Framework.Controllers.Internals;
-internal class MessageTypeBotCommand
-    : IExecutor
+internal class MessageTypeBotCommand(Func<object, object[], Task> botFunc, ObjectFactory objectFactory, List<IParameterCapturer> parameterCapturers)
+    : BaseGetParamters(parameterCapturers), IExecutor
 {
-    public Task Invoke(params object[] objs) => throw new NotImplementedException();
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly Func<object, object[], Task> __BotFunc = botFunc;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly ObjectFactory __ObjectFactory = objectFactory;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <returns></returns>
+    public Task Invoke(IServiceProvider serviceProvider) =>
+        __BotFunc(__ObjectFactory(serviceProvider, []), GetParams()!);
 }
