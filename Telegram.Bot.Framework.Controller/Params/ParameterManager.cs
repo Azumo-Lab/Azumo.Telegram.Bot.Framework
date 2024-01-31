@@ -1,5 +1,22 @@
-﻿using Azumo.PipelineMiddleware;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using System.Collections.Generic;
 using Telegram.Bot.Framework.Abstracts.Users;
+using Telegram.Bot.Framework.Controller.ControllerInvoker;
 using Telegram.Bot.Framework.Controller.Params.ParamPipeline;
 
 namespace Telegram.Bot.Framework.Controller.Params;
@@ -7,17 +24,12 @@ namespace Telegram.Bot.Framework.Controller.Params;
 /// <summary>
 /// 
 /// </summary>
-internal class ParameterManager(List<BaseParameterGetter> parameterGetters)
+internal class ParameterManager
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly List<BaseParameterGetter> _parameters = parameterGetters;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private readonly List<BaseParameterGetter> _Copy = [];
+    private readonly List<BaseParameterGetter> _Params = [];
 
     /// <summary>
     /// 
@@ -27,16 +39,22 @@ internal class ParameterManager(List<BaseParameterGetter> parameterGetters)
     /// <summary>
     /// 
     /// </summary>
-    public void Init()
+    public IExecutor Executor { get; set; } = null!;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Init(IExecutor executor)
     {
-        _Copy.Clear();
-        _Copy.AddRange(_parameters);
-        _Copy.ForEach(x => x.Init());
+        Executor = executor;
+        _Params.Clear();
+        _Params.AddRange(Executor.Parameters);
+        _Params.ForEach(x => x.Init());
     }
 
     public async Task<EnumReadParam> Read(TelegramUserChatContext context)
     {
-        var param = _Copy.FirstOrDefault();
+        var param = _Params.FirstOrDefault();
         if (param == null)
             return EnumReadParam.OK;
 

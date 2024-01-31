@@ -1,28 +1,55 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Framework.Controller.Params;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Telegram.Bot.Framework.Controller.ControllerInvoker;
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="func"></param>
+/// <param name="objectFactory"></param>
+/// <param name="parameterGetters"></param>
 internal class BotCommandInvoker(Func<object, object[], object> func, ObjectFactory objectFactory, List<BaseParameterGetter> parameterGetters) : IExecutor
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly Func<object, object[], object> _func = func;
 
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly ObjectFactory _objectFactory = objectFactory;
 
-    private readonly ParameterManager _parameterManager = new(parameterGetters);
+    /// <summary>
+    /// 
+    /// </summary>
+    public IReadOnlyList<BaseParameterGetter> Parameters { get; } = new List<BaseParameterGetter>(parameterGetters);
 
-    public async Task Invoke(IServiceProvider serviceProvider, TelegramUserChatContext context)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public async Task Invoke(IServiceProvider serviceProvider, object[] objects)
     {
-        var result = await _parameterManager.Read(context);
-        if (result == EnumReadParam.OK)
-            return;
-
         var obj = _objectFactory(serviceProvider, []);
-        await (_func(obj, _parameterManager.GetParams()) is Task task ? task : Task.CompletedTask);
+        await (_func(obj, objects) is Task task ? task : Task.CompletedTask);
     }
 }
