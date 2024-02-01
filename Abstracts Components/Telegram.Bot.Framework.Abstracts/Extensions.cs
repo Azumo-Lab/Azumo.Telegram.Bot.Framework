@@ -180,5 +180,39 @@ public static class Extensions
         Types.Enums.UpdateType.ChatJoinRequest => update.ChatJoinRequest?.Chat,
         _ => throw new NotImplementedException(),
     };
+
+    public static BotCommandInfo GetBotCommand(this Update update)
+    {
+        var messageEntity = update.Message?.Entities?.FirstOrDefault();
+        if ( messageEntity?.Type != Types.Enums.MessageEntityType.BotCommand)
+            return BotCommandInfo.NULL;
+
+        if (update.Message!.Entities!.Length == 1)
+            return new BotCommandInfo
+            {
+                BotCommand = update.Message.EntityValues!.FirstOrDefault()
+            };
+
+        var args = update.Message!.EntityValues!.ToList();
+
+        return new BotCommandInfo
+        {
+            BotCommand = args.First(),
+            Args = args.Skip(1).ToArray(),
+        };
+    }
     #endregion
+}
+
+public class BotCommandInfo
+{
+    public string? BotCommand { get; set; }
+
+    public string[]? Args { get; set; }
+
+    public static BotCommandInfo NULL { get; } = new BotCommandInfo
+    {
+        BotCommand = null,
+        Args = null,
+    };
 }

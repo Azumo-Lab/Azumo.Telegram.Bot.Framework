@@ -13,8 +13,5 @@ internal class BotCommandBuilder : IBotCommandBuilder
     {
 
     }
-    public IExecutor Build(MethodInfo methodInfo)
-    {
-        return null!;
-    }
+    public IExecutor Build(MethodInfo methodInfo) => null!;
 }

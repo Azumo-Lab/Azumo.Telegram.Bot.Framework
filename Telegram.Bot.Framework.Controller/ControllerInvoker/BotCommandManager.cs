@@ -10,6 +10,7 @@ internal class BotCommandManager
 {
     public IExecutor GetExecutor(TelegramUserChatContext context)
     {
+        
         return null!;
     }
 }

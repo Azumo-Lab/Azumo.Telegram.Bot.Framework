@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Abstracts Components\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj" />
+    <ProjectReference Include="..\Abstracts Components\Telegram.Bot.Framework.Attributes\Telegram.Bot.Framework.Attributes.csproj" />
     <ProjectReference Include="..\Core Components\Azumo.PipelineMiddleware\Azumo.PipelineMiddleware.csproj" />
   </ItemGroup>
 
