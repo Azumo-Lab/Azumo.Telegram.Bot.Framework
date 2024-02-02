@@ -18,9 +18,7 @@ public sealed class TelegramUserContext : Update, IDisposable, IUserContext
 
     public ISession Session { get; }
 
-    public IPrivateStorage Storage { get; }
-
-    public ChatId ScopeChatID => Storage.UserInfo.Id;
+    public ChatId ScopeChatID => ScopeUser!.Id;
 
     public ChatId RequestChatID => TelegramUserContextExtensions.GetChatID(this);
 
@@ -36,7 +34,6 @@ public sealed class TelegramUserContext : Update, IDisposable, IUserContext
 
         BotClient = UserServiceProvider.GetRequiredService<ITelegramBotClient>();
         Session = UserServiceProvider.GetRequiredService<ISession>();
-        Storage = UserServiceProvider.GetRequiredService<IPrivateStorage>();
     }
 
     /// <summary>

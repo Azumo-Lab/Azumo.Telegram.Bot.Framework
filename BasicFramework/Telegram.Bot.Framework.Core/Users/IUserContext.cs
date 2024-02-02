@@ -1,19 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Users;
+
+/// <summary>
+/// 
+/// </summary>
 public interface IUserContext
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public ChatId ScopeChatID { get; }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public ChatId RequestChatID { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Task<Chat> ScopeChat { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Task<Chat> RequestChat { get; }
 
-    public User ScopeUser { get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public User? ScopeUser { get; }
 }

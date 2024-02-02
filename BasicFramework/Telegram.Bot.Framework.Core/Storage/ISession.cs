@@ -9,7 +9,7 @@ namespace Telegram.Bot.Framework.Core.Storage;
 /// <summary>
 /// 
 /// </summary>
-public interface ISession
+public interface ISession : IDisposable
 {
     /// <summary>
     /// 

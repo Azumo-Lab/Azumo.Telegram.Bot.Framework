@@ -4,18 +4,18 @@
 /// 
 /// </summary>
 /// <typeparam name="TResult"></typeparam>
-public interface ITelegramModuleBuilder<TResult>
+public interface ITelegramModuleBuilder
 {
     /// <summary>
     /// 
     /// </summary>
     /// <param name="module"></param>
     /// <returns></returns>
-    public ITelegramModuleBuilder<TResult> AddModule(ITelegramModule module);
+    public ITelegramModuleBuilder AddModule(ITelegramModule module);
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public TResult Build();
+    public ITelegramBot Build();
 }
