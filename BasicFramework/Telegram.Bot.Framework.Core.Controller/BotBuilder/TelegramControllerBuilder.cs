@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline;
+using Telegram.Bot.Framework.Core.Controller.Install;
 using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Framework.Core.Controller.BotBuilder;
@@ -19,6 +20,9 @@ internal class TelegramControllerBuilder : ITelegramModule
 
 public static class TelegramControllerBuilderExtensions
 {
-    public static ITelegramModuleBuilder UseController(this ITelegramModuleBuilder builder) => 
-        builder.AddModule(new TelegramControllerBuilder());
+    public static ITelegramModuleBuilder UseController(this ITelegramModuleBuilder builder) =>
+        builder
+        .AddModule(new TelegramControllerBuilder())
+        .AddModule(new ScanService())
+        .AddModule(new ScanController());
 }
