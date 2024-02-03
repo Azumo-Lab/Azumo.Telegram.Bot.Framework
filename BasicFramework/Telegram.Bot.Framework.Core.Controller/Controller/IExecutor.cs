@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
 internal interface IExecutor
 {
+    public Attribute[] Attributes { get; }
+
     public IReadOnlyList<IGetParam> Parameters { get; }
 
     public Task Invoke(IServiceProvider serviceProvider, object[] param);

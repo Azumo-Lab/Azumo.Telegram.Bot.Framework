@@ -8,5 +8,7 @@ using Telegram.Bot.Framework.Core.Users;
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
 internal interface ICommandManager
 {
-    public IExecutor GetExecutor(TelegramUserContext userContext);
+    public IExecutor? GetExecutor(TelegramUserContext userContext);
+
+    public void AddExecutor(IExecutor executor);
 }
