@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Azumo.ReflectionEnhancementPack;
+namespace Azumo.SuperExtendedFramework;
 
 public static class TypeExtensions
 {

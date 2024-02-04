@@ -82,6 +82,9 @@ internal class ScanController : ITelegramModule
     }
 }
 
+/// <summary>
+/// 一个空的参数获取实现类
+/// </summary>
 internal class NullParam : IGetParam
 {
     public ParamAttribute? ParamAttribute { get; set; }
