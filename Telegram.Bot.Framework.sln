@@ -5,8 +5,6 @@ VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Example", "Example\Telegram.Bot.Example\Telegram.Bot.Example.csproj", "{8C481667-BFA8-4A31-994A-54EDA2BF402A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{0D0F3100-926F-4152-9749-C92C613A5EE0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{237A0F2B-778D-4A54-9D12-C4E8CE5DA9A0}"
 	ProjectSection(SolutionItems) = preProject
 		Azumo脚本语言方案.txt = Azumo脚本语言方案.txt
@@ -23,49 +21,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LICENSE", "LICENSE", "{8995
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Abstracts", "Abstracts Components\Telegram.Bot.Framework.Abstracts\Telegram.Bot.Framework.Abstracts.csproj", "{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Components", "Core Components", "{69A193AD-C2E3-4555-9422-3D6CF783CB5C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Pipeline", "Core Components\Azumo.Pipeline\Azumo.Pipeline.csproj", "{3CED3E60-D6A4-41E7-8652-6B250C0821E0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Reflection", "Core Components\Azumo.Reflection\Azumo.Reflection.csproj", "{7C3BA719-A69F-441D-A3EC-20589CAEB5D1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Utils", "Core Components\Azumo.Utils\Azumo.Utils.csproj", "{22972926-4C32-4155-938A-58398A0324BC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.UserAuthentication", "Basic Components\Telegram.Bot.Framework.UserAuthentication\Telegram.Bot.Framework.UserAuthentication.csproj", "{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.PaymentMethod", "Basic Components\Telegram.Bot.Framework.PaymentMethod\Telegram.Bot.Framework.PaymentMethod.csproj", "{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basic Components", "Basic Components", "{CE7777DA-7126-4A86-A4DA-326EFDFF8E44}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{94B276AC-369D-4462-B4B8-528EFBF21AD3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.Mushi", "Core Components\Azumo.Mushi\Azumo.Mushi.csproj", "{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F46A3FE8-263D-4C1D-AF11-9A402B825F8C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "Test\TestProject\TestProject.csproj", "{F9847CF6-A846-450C-A8F6-F4566FB2069F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azumo.PipelineMiddleware", "Core Components\Azumo.PipelineMiddleware\Azumo.PipelineMiddleware.csproj", "{3FE0D76E-2775-4571-9D88-D985EADC406F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Extension", "Telegram.Bot.Framework.Extension\Telegram.Bot.Framework.Extension.csproj", "{9388F519-CA8C-4355-A937-BB130B2C24B0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstracts Components", "Abstracts Components", "{690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Attributes", "Abstracts Components\Telegram.Bot.Framework.Attributes\Telegram.Bot.Framework.Attributes.csproj", "{D712325D-12FE-433C-A446-EE0114878BAA}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.TaskAbstracts", "Abstracts Components\Telegram.Bot.Framework.TaskAbstracts\Telegram.Bot.Framework.TaskAbstracts.csproj", "{AEACE626-DEF9-49F9-BD18-C4C82B415EB7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Controller", "Telegram.Bot.Framework.Controller\Telegram.Bot.Framework.Controller.csproj", "{BC1E8AC6-B076-4BFF-9BAE-1D1053BD9B34}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BasicFramework", "BasicFramework", "{FDEEAFB5-1774-4445-BFE3-45AF350237F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Core", "BasicFramework\Telegram.Bot.Framework.Core\Telegram.Bot.Framework.Core.csproj", "{8E113235-238F-4679-A82B-7113F92CA07F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework.Core.Controller", "BasicFramework\Telegram.Bot.Framework.Core.Controller\Telegram.Bot.Framework.Core.Controller.csproj", "{2B21650E-3371-48AA-ABE3-03D27CD411B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework.Core.Controller", "BasicFramework\Telegram.Bot.Framework.Core.Controller\Telegram.Bot.Framework.Core.Controller.csproj", "{2B21650E-3371-48AA-ABE3-03D27CD411B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azumo.ReflectionEnhancementPack", "Core Components\Azumo.ReflectionEnhancementPack\Azumo.ReflectionEnhancementPack.csproj", "{74A12A73-D98B-40D0-8DB3-FF58DB23D755}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azumo.SuperExtendedFramework", "BasicFramework\Azumo.SuperExtendedFramework\Azumo.SuperExtendedFramework.csproj", "{514B3D03-EE95-43B9-A86F-4F5CCBA1D907}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telegram.Bot.Framework", "Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{67BA2275-4D1F-4F72-9CDF-5AD3E68FE009}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,62 +47,10 @@ Global
 		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D0F3100-926F-4152-9749-C92C613A5EE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CED3E60-D6A4-41E7-8652-6B250C0821E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CED3E60-D6A4-41E7-8652-6B250C0821E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CED3E60-D6A4-41E7-8652-6B250C0821E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CED3E60-D6A4-41E7-8652-6B250C0821E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C3BA719-A69F-441D-A3EC-20589CAEB5D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C3BA719-A69F-441D-A3EC-20589CAEB5D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C3BA719-A69F-441D-A3EC-20589CAEB5D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C3BA719-A69F-441D-A3EC-20589CAEB5D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22972926-4C32-4155-938A-58398A0324BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22972926-4C32-4155-938A-58398A0324BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22972926-4C32-4155-938A-58398A0324BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22972926-4C32-4155-938A-58398A0324BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FE0D76E-2775-4571-9D88-D985EADC406F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9388F519-CA8C-4355-A937-BB130B2C24B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D712325D-12FE-433C-A446-EE0114878BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D712325D-12FE-433C-A446-EE0114878BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D712325D-12FE-433C-A446-EE0114878BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D712325D-12FE-433C-A446-EE0114878BAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEACE626-DEF9-49F9-BD18-C4C82B415EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEACE626-DEF9-49F9-BD18-C4C82B415EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEACE626-DEF9-49F9-BD18-C4C82B415EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEACE626-DEF9-49F9-BD18-C4C82B415EB7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC1E8AC6-B076-4BFF-9BAE-1D1053BD9B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC1E8AC6-B076-4BFF-9BAE-1D1053BD9B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC1E8AC6-B076-4BFF-9BAE-1D1053BD9B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC1E8AC6-B076-4BFF-9BAE-1D1053BD9B34}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E113235-238F-4679-A82B-7113F92CA07F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E113235-238F-4679-A82B-7113F92CA07F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E113235-238F-4679-A82B-7113F92CA07F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -141,33 +59,24 @@ Global
 		{2B21650E-3371-48AA-ABE3-03D27CD411B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B21650E-3371-48AA-ABE3-03D27CD411B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B21650E-3371-48AA-ABE3-03D27CD411B7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74A12A73-D98B-40D0-8DB3-FF58DB23D755}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74A12A73-D98B-40D0-8DB3-FF58DB23D755}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74A12A73-D98B-40D0-8DB3-FF58DB23D755}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74A12A73-D98B-40D0-8DB3-FF58DB23D755}.Release|Any CPU.Build.0 = Release|Any CPU
+		{514B3D03-EE95-43B9-A86F-4F5CCBA1D907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{514B3D03-EE95-43B9-A86F-4F5CCBA1D907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{514B3D03-EE95-43B9-A86F-4F5CCBA1D907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{514B3D03-EE95-43B9-A86F-4F5CCBA1D907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67BA2275-4D1F-4F72-9CDF-5AD3E68FE009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67BA2275-4D1F-4F72-9CDF-5AD3E68FE009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67BA2275-4D1F-4F72-9CDF-5AD3E68FE009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67BA2275-4D1F-4F72-9CDF-5AD3E68FE009}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8C481667-BFA8-4A31-994A-54EDA2BF402A} = {94B276AC-369D-4462-B4B8-528EFBF21AD3}
-		{0D0F3100-926F-4152-9749-C92C613A5EE0} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
-		{428BC3FF-2468-4C57-BE88-AEAAE49E39BE} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
-		{3CED3E60-D6A4-41E7-8652-6B250C0821E0} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
-		{7C3BA719-A69F-441D-A3EC-20589CAEB5D1} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
-		{22972926-4C32-4155-938A-58398A0324BC} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
-		{6CB6B9BE-8C5E-417D-BE57-D4661FB943D9} = {CE7777DA-7126-4A86-A4DA-326EFDFF8E44}
-		{C3C9E523-2705-4964-8FAC-3DBCC69CDDE9} = {CE7777DA-7126-4A86-A4DA-326EFDFF8E44}
-		{43C4F0BD-E7EF-4920-9D20-AC31AB17D8D8} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
 		{F9847CF6-A846-450C-A8F6-F4566FB2069F} = {F46A3FE8-263D-4C1D-AF11-9A402B825F8C}
-		{3FE0D76E-2775-4571-9D88-D985EADC406F} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
-		{9388F519-CA8C-4355-A937-BB130B2C24B0} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
-		{D712325D-12FE-433C-A446-EE0114878BAA} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
-		{AEACE626-DEF9-49F9-BD18-C4C82B415EB7} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
-		{BC1E8AC6-B076-4BFF-9BAE-1D1053BD9B34} = {690C9CCD-10B9-4B2E-B071-A09CBB69AAFC}
 		{8E113235-238F-4679-A82B-7113F92CA07F} = {FDEEAFB5-1774-4445-BFE3-45AF350237F5}
 		{2B21650E-3371-48AA-ABE3-03D27CD411B7} = {FDEEAFB5-1774-4445-BFE3-45AF350237F5}
-		{74A12A73-D98B-40D0-8DB3-FF58DB23D755} = {69A193AD-C2E3-4555-9422-3D6CF783CB5C}
+		{514B3D03-EE95-43B9-A86F-4F5CCBA1D907} = {FDEEAFB5-1774-4445-BFE3-45AF350237F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}

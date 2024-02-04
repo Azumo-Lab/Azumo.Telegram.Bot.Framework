@@ -14,9 +14,4 @@
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Basic Components\Telegram.Bot.Framework.UserAuthentication\Telegram.Bot.Framework.UserAuthentication.csproj" />
-    <ProjectReference Include="..\..\Telegram.Bot.Framework\Telegram.Bot.Framework.csproj" />
-  </ItemGroup>
-
 </Project>

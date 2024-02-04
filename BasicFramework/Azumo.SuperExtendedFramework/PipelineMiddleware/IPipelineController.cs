@@ -14,15 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Telegram.Bot.Framework.Core.Controller.Install;
-internal enum EnumCommandType
+namespace Azumo.SuperExtendedFramework.PipelineMiddleware;
+public interface IPipelineController<TInput, TResult>
 {
-    BotCommand,
-    Func,
+    public IPipeline<TInput, TResult> CurrentPipeline { get; }
+
+    public IPipeline<TInput, TResult> this[object key] { get; }
+
+    public void Add(object key, IPipeline<TInput, TResult> pipeline);
+
+    public void Remove(object key);
+
+    public void Clear();
 }

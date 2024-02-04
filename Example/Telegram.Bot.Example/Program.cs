@@ -14,17 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.Utils;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Abstracts;
-using Telegram.Bot.Framework.Abstracts.Attributes;
-using Telegram.Bot.Framework.Abstracts.Users;
-using Telegram.Bot.Framework.Bots;
-using Telegram.Bot.Framework.UserAuthentication;
 
 namespace Telegram.Bot.Example;
 

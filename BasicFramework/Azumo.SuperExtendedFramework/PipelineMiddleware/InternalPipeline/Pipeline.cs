@@ -14,15 +14,26 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace Azumo.SuperExtendedFramework.PipelineMiddleware.InternalPipeline;
 
-namespace Telegram.Bot.Framework.Core.Controller.Install;
-internal enum EnumCommandType
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+/// <typeparam name="TResult"></typeparam>
+/// <param name="middleware"></param>
+internal class Pipeline<TInput, TResult>(PipelineMiddlewareDelegate<TInput, TResult> middleware) : IPipeline<TInput, TResult>
 {
-    BotCommand,
-    Func,
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly PipelineMiddlewareDelegate<TInput, TResult> middleware = middleware;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public TResult Invoke(TInput input) =>
+        middleware.Invoke(input);
 }
