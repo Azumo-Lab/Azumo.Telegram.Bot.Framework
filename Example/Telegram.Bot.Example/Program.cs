@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Core.Attributes;
 
 namespace Telegram.Bot.Example;
 
@@ -57,31 +58,12 @@ internal class Program
     }
 }
 
-public class TestController : TelegramController
+[TelegramController]
+public class TestController
 {
-    [BotCommand(Description = "进行管理员认证")]
-    public async Task Login([Param(Name = "密码")] string password)
-    {
-        var userManager = Chat.UserScopeService.GetService<IUserManager>();
-        userManager.OnSignIn += UserManager_OnSignIn;
-        _ = await userManager.UserSignIn(Chat.User, password);
-        _ = await userManager.UserRole(Chat.User, "admin");
-        userManager.OnSignIn -= UserManager_OnSignIn;
-        _ = await SendMessage("已赋予管理员权限");
-    }
-
-    private void UserManager_OnSignIn(object sender, SignInArgs e)
-    {
-        var appSetting = Chat.UserScopeService.GetService<AppSetting>();
-        e.PasswordHash = PasswordHelper.Hash(appSetting.AdminPassword);
-        e.UserRoles.Add("admin");
-    }
-
-    [Authenticate("admin")]
     [BotCommand("/Admin")]
-    public async Task Test2()
+    public async Task HelloWorld()
     {
-        _ = await SendMessage("管理员");
-        _ = await SendMessage("欢迎管理员！！");
+        
     }
 }

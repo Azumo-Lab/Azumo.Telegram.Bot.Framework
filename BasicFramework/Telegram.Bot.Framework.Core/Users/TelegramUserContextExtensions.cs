@@ -42,13 +42,13 @@ public static class TelegramUserContextExtensions
             case Types.Enums.UpdateType.ChosenInlineResult:
                 break;
             case Types.Enums.UpdateType.CallbackQuery:
-                return update.CallbackQuery.Message.Chat.Id;
+                return update.CallbackQuery!.Message!.Chat.Id;
             case Types.Enums.UpdateType.EditedMessage:
-                return update.EditedMessage.Chat.Id;
+                return update.EditedMessage!.Chat.Id;
             case Types.Enums.UpdateType.ChannelPost:
-                return update.ChannelPost.Chat.Id;
+                return update.ChannelPost!.Chat.Id;
             case Types.Enums.UpdateType.EditedChannelPost:
-                return update.EditedChannelPost.Chat.Id;
+                return update.EditedChannelPost!.Chat.Id;
             case Types.Enums.UpdateType.ShippingQuery:
                 break;
             case Types.Enums.UpdateType.PreCheckoutQuery:
@@ -58,13 +58,13 @@ public static class TelegramUserContextExtensions
             case Types.Enums.UpdateType.PollAnswer:
                 break;
             case Types.Enums.UpdateType.MyChatMember:
-                return update.MyChatMember.Chat.Id;
+                return update.MyChatMember!.Chat.Id;
             case Types.Enums.UpdateType.ChatMember:
-                return update.ChatMember.Chat.Id;
+                return update.ChatMember!.Chat.Id;
             case Types.Enums.UpdateType.ChatJoinRequest:
-                return update.ChatJoinRequest.Chat.Id;
+                return update.ChatJoinRequest!.Chat.Id;
         }
-        return null;
+        return null!;
     }
 
     /// <summary>
@@ -99,13 +99,13 @@ public static class TelegramUserContextExtensions
             case Types.Enums.UpdateType.Poll:
                 break;
             case Types.Enums.UpdateType.PollAnswer:
-                return update.PollAnswer.User;
+                return update.PollAnswer!.User;
             case Types.Enums.UpdateType.MyChatMember:
-                return update.MyChatMember.From;
+                return update.MyChatMember!.From;
             case Types.Enums.UpdateType.ChatMember:
-                return update.ChatMember.From;
+                return update.ChatMember!.From;
             case Types.Enums.UpdateType.ChatJoinRequest:
-                return update.ChatJoinRequest.From;
+                return update.ChatJoinRequest!.From;
         }
         return null;
     }

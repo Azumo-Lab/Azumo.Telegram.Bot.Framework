@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BasicFramework\Telegram.Bot.Framework.Core.Controller\Telegram.Bot.Framework.Core.Controller.csproj" />
+    <ProjectReference Include="..\BasicFramework\Telegram.Bot.Framework.Core\Telegram.Bot.Framework.Core.csproj" />
+  </ItemGroup>
+
 </Project>
