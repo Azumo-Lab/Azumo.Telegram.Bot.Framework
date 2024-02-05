@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Telegram.Bot.Framework.Core.BotBuilder;
 
 /// <summary>
-/// 
+/// 一个简单的模块
 /// </summary>
 public interface ITelegramModule
 {

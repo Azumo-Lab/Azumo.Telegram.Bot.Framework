@@ -17,20 +17,19 @@
 namespace Telegram.Bot.Framework.Core.BotBuilder;
 
 /// <summary>
-/// 
+/// Telegram模块创建器
 /// </summary>
-/// <typeparam name="TResult"></typeparam>
 public interface ITelegramModuleBuilder
 {
     /// <summary>
-    /// 
+    /// 添加模块
     /// </summary>
     /// <param name="module"></param>
     /// <returns></returns>
     public ITelegramModuleBuilder AddModule(ITelegramModule module);
 
     /// <summary>
-    /// 
+    /// 开始创建
     /// </summary>
     /// <returns></returns>
     public ITelegramBot Build();
