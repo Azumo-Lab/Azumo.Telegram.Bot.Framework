@@ -50,7 +50,15 @@ public sealed class TelegramUserContext : Update, IDisposable, IUserContext
 
         BotClient = UserServiceProvider.GetRequiredService<ITelegramBotClient>();
         Session = UserServiceProvider.GetRequiredService<ISession>();
+        Update += TelegramUserContext_Update;
     }
+
+    private void TelegramUserContext_Update(object? sender, Update e)
+    {
+
+    }
+
+    private event EventHandler<Update> Update;
 
     /// <summary>
     /// 
@@ -70,5 +78,14 @@ public sealed class TelegramUserContext : Update, IDisposable, IUserContext
     {
         UserServiceScope.Dispose();
         await UserServiceScope.DisposeAsync();
+    }
+
+    public void Copy(Update update)
+    {
+        Message = update.Message;
+        InlineQuery = update.InlineQuery;
+        MyChatMember = update.MyChatMember;
+
+        Update?.Invoke(null, update);
     }
 }

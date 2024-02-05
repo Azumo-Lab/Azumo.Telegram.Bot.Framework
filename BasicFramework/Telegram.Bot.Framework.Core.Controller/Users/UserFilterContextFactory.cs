@@ -20,7 +20,7 @@ using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Controller.Users;
-internal class UserFilterContextFactory : IContextFactory
+internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserContext>, IContextFactory
 {
     public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
     {
@@ -31,6 +31,19 @@ internal class UserFilterContextFactory : IContextFactory
                 return null;
         }
 
-        return null;
+        var user = update.GetUser();
+        var userID = user!.Id;
+
+        TelegramUserContext telegramUserContext;
+        if (ContainsKey(userID))
+            telegramUserContext = Get(userID)!;
+        else
+        {
+            telegramUserContext = new TelegramUserContext(botServiceProvider);
+            TryAdd(userID, telegramUserContext);
+        }
+        telegramUserContext.Copy(update);
+
+        return telegramUserContext;
     }
 }

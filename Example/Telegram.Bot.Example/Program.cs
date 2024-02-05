@@ -14,9 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Core.Attributes;
 
 namespace Telegram.Bot.Example;
@@ -30,7 +32,7 @@ internal class Program
             ArgumentException.ThrowIfNullOrEmpty(settingPath, "请添加启动参数 -setting ，后面添加配置文件路径");
 
         // 创建ITelegramBotBuilder接口
-        var telegramBot = TelegramBuilder.Create()
+        var telegramBot = TelegramBot.CreateBuilder()
             // 添加配置文件
             .AddConfiguration<AppSetting>(settingPath)
             // 使用Token
