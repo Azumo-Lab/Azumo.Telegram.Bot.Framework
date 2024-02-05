@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework;
 
