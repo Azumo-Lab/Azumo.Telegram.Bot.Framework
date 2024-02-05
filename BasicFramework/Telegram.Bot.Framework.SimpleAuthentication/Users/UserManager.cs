@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
 
@@ -25,11 +26,29 @@ namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
 /// 
 /// </summary>
 [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(IUserManager))]
-internal class UserManager : IUserManager
+[DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(IContextFilter))]
+internal class UserManager : IUserManager, IContextFilter
 {
     private const string RoleKey = "{79973381-B239-4CD6-8F22-544FE7053866}";
     public void ClearRole(TelegramUserContext userContext) => 
         userContext.Session.Remove(RoleKey);
+
+    public bool Filter(TelegramUserContext userContext, string[] roleNames)
+    {
+        var list = userContext.Session.Get<List<string>>(RoleKey);
+        if (list == null)
+            return false;
+
+        var roles = new HashSet<string>(roleNames.Select(x => x.ToLower()));
+
+        foreach (var item in list)
+        {
+            if (roles.Contains(item.ToLower()))
+                return true;
+        }
+
+        return false;
+    }
 
     public void SetRole(TelegramUserContext userContext, string roleName)
     {
@@ -38,16 +57,6 @@ internal class UserManager : IUserManager
         list.Add(roleName);
         userContext.Session.AddOrUpdate(RoleKey, list);
     }
-    public bool Verify(TelegramUserContext userContext, string roleName)
-    {
-        var list = userContext.Session.Get<List<string>>(RoleKey);
-        if (list == null)
-            return false;
-
-        foreach (var item in list)
-            if (item.Equals(roleName, StringComparison.CurrentCultureIgnoreCase))
-                return true;
-
-        return false;
-    }
+    public bool Verify(TelegramUserContext userContext, string roleName) => 
+        Filter(userContext, [roleName]);
 }

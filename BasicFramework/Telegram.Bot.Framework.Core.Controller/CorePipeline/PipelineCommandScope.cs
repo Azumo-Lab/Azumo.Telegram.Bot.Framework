@@ -54,6 +54,7 @@ internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
         var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
         paramManager.SetParamList(exec.Parameters);
 
+        // 开始执行下一个个操作
     Next:
         await Next(input);
     }
