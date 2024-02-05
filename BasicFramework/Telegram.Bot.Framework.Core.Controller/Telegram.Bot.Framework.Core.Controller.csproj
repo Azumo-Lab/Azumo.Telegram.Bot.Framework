@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Azumo.SuperExtendedFramework\Azumo.SuperExtendedFramework.csproj" />
     <ProjectReference Include="..\Telegram.Bot.Framework.Core\Telegram.Bot.Framework.Core.csproj" />
+    <ProjectReference Include="..\Telegram.Bot.Framework.SimpleAuthentication\Telegram.Bot.Framework.SimpleAuthentication.csproj" />
   </ItemGroup>
 
 </Project>

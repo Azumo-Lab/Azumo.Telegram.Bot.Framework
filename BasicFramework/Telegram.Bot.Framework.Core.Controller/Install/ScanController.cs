@@ -62,6 +62,11 @@ internal class ScanController : ITelegramModule
         {
             foreach ((var method, var attr) in controller.GetAttributeMethods<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance))
             {
+                var attributes = new List<Attribute>
+                {
+                    attr
+                };
+                attributes.AddRange(method.GetCustomAttributes());
                 var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand,
                     ActivatorUtilities.CreateFactory(controller, []),
                     method.BuildFunc(),
@@ -89,7 +94,7 @@ internal class ScanController : ITelegramModule
                             throw;
                         }
                     }),
-                    new List<Attribute> { attr });
+                    attributes);
                 commandManager.AddExecutor(executor);
             }
         }

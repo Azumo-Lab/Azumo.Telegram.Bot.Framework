@@ -15,8 +15,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Core.Controller.Filters;
 using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Controller.Users;
@@ -40,7 +40,7 @@ internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserConte
         else
         {
             telegramUserContext = new TelegramUserContext(botServiceProvider);
-            TryAdd(userID, telegramUserContext);
+            _ = TryAdd(userID, telegramUserContext);
         }
         telegramUserContext.Copy(update);
 

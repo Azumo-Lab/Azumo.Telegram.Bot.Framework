@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Core.Controller.Storage;
+using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
 internal class BotCommandInvoker(ObjectFactory objectFactory, Func<object, object[], object> func, List<IGetParam> paramList, Attribute[] attributes)
@@ -27,6 +29,8 @@ internal class BotCommandInvoker(ObjectFactory objectFactory, Func<object, objec
     public IReadOnlyList<IGetParam> Parameters { get; } = new List<IGetParam>(paramList);
 
     public Attribute[] Attributes { get; } = attributes;
+
+    public ISession Session { get; } = new SessionStorage();
 
     public Task Invoke(IServiceProvider serviceProvider, object[] param)
     {

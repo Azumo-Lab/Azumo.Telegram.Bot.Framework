@@ -14,10 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Types;
+namespace Telegram.Bot.Framework.SimpleAuthentication.Attributes;
 
-namespace Telegram.Bot.Framework.Core.Controller.Filters;
-public interface IUpdateFilter
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = true)]
+public class AuthenticationAttribute(string roleName) : Attribute
 {
-    public bool Filter(Update update);
+    public string RoleName { get; } = roleName;
 }

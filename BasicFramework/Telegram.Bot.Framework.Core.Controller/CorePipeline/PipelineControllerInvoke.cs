@@ -30,16 +30,15 @@ internal class PipelineControllerInvoke : IMiddleware<PipelineModel, Task>
         try
         {
             await exec.Invoke(input.UserContext.UserServiceProvider, paramManager.GetParam());
+            await Next(input);
         }
         catch (Exception)
         {
-
+            
         }
         finally
         {
             input.CommandScopeService.Delete();
         }
-
-        await Next(input);
     }
 }
