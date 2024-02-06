@@ -20,6 +20,8 @@ using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Core.Controller.BotBuilder;
+using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Example;
 
@@ -33,6 +35,7 @@ internal class Program
 
         // 创建ITelegramBotBuilder接口
         var telegramBot = TelegramBot.CreateBuilder()
+            .UseController()
             // 添加配置文件
             .AddConfiguration<AppSetting>(settingPath)
             // 使用Token
@@ -46,7 +49,7 @@ internal class Program
             // 添加用户认证服务
             .AddUserAuthentication(["admin", "user"])
             // 添加指令
-            .AddCommand([BotCommand("Func", Description = "Func测试")] async (TelegramUserChatContext telegramUserChatContext) =>
+            .AddCommand([BotCommand("Func", Description = "Func测试")] async (TelegramUserContext telegramUserChatContext) =>
             {
                 _ = await telegramUserChatContext.BotClient.SendTextMessageAsync(telegramUserChatContext.UserChatID, "Func 测试");
                 await Task.CompletedTask;

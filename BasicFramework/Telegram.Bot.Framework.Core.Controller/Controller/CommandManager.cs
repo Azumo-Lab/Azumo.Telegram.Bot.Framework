@@ -52,4 +52,7 @@ internal class CommandManager : ICommandManager
         }
         return null;
     }
+
+    public IReadOnlyList<IExecutor> GetExecutorList() =>
+        CommandExecutor.Values.ToList();
 }

@@ -27,4 +27,6 @@ internal interface ICommandManager
     public IExecutor? GetExecutor(TelegramUserContext userContext);
 
     public void AddExecutor(IExecutor executor);
+
+    public IReadOnlyList<IExecutor> GetExecutorList();
 }

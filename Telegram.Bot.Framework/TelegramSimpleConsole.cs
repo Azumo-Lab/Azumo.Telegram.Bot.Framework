@@ -14,30 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.BotBuilder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Telegram.Bot.Framework.Core.BotBuilder;
 
-/// <summary>
-/// Telegram模块创建器
-/// </summary>
-public interface ITelegramModuleBuilder
+namespace Telegram.Bot.Framework;
+internal class TelegramSimpleConsole : ITelegramModule
 {
-    /// <summary>
-    /// 添加模块
-    /// </summary>
-    /// <param name="module"></param>
-    /// <returns></returns>
-    public ITelegramModuleBuilder AddModule(ITelegramModule module);
+    public void AddBuildService(IServiceCollection services)
+    {
 
-    /// <summary>
-    /// 添加模块
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public ITelegramModuleBuilder AddModule<T>(params object[] objects) where T : ITelegramModule;
+    }
+    public void Build(IServiceCollection services, IServiceProvider builderService) =>
+        services.AddLogging(x => x.AddSimpleConsole());
+}
 
-    /// <summary>
-    /// 开始创建
-    /// </summary>
-    /// <returns></returns>
-    public ITelegramBot Build();
+public static class TelegramSimpleConsoleExtensions
+{
+    public static ITelegramModuleBuilder AddSimpleConsole(this ITelegramModuleBuilder builder) =>
+        builder.AddModule<TelegramSimpleConsole>();
 }

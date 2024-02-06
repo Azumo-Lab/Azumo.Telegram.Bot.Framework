@@ -63,4 +63,7 @@ public static class TypeExtensions
         }
         return Expression.Lambda<Func<object, object[], object>>(func, instance, param).Compile();
     }
+
+    public static List<Type> GetAllTypeSameNameSpace(string nameSpace) => 
+        AllTypes.Where(x => x.Namespace == nameSpace).ToList();
 }

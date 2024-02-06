@@ -30,24 +30,16 @@ namespace Telegram.Bot.Framework.Core.Controller.Install;
 /// </summary>
 internal class ScanController : ITelegramModule
 {
+    private readonly IServiceCollection ScopeServices = new ServiceCollection();
     /// <summary>
     /// 
     /// </summary>
     /// <param name="services"></param>
     public void AddBuildService(IServiceCollection services)
     {
-        services.AddSingleton<ICommandManager, CommandManager>();
-    }
+        ScopeServices.AddSingleton<ICommandManager, CommandManager>();
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="builderService"></param>
-    /// <exception cref="Exception"></exception>
-    public void Build(IServiceCollection services, IServiceProvider builderService)
-    {
-        var i18n = builderService.GetService<II18NManager>();
+        var serviceProvider = ScopeServices.BuildServiceProvider();
 
         // 获取参数实现类
         var getparamTypeList = typeof(IGetParam).GetAllSameType()
@@ -55,7 +47,7 @@ internal class ScanController : ITelegramModule
             .Select(x => (x, (TypeForAttribute)Attribute.GetCustomAttribute(x, typeof(TypeForAttribute))!))
             .ToList();
 
-        var commandManager = builderService.GetRequiredService<ICommandManager>();
+        var commandManager = serviceProvider.GetRequiredService<ICommandManager>();
 
         var controllerTypeList = typeof(TelegramControllerAttribute).GetHasAttributeType();
         foreach ((var controller, var _) in controllerTypeList)
@@ -79,10 +71,10 @@ internal class ScanController : ITelegramModule
 
                         ConstructorInfo? constructorInfo;
                         if ((constructorInfo = paramval.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault()) == null)
-                            throw new Exception(i18n?.Current[""] ?? "没有找到对应的初始化方法");
+                            throw new Exception("没有找到对应的初始化方法");
 
                         if (constructorInfo.GetParameters().Length != 0)
-                            throw new Exception(i18n?.Current[""] ?? "无法生成带有参数的类");
+                            throw new Exception("无法生成带有参数的类");
 
                         try
                         {
@@ -99,8 +91,17 @@ internal class ScanController : ITelegramModule
             }
         }
 
-        services.AddSingleton<ICommandManager>(builderService.GetRequiredService<ICommandManager>());
+        services.AddSingleton(commandManager);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="builderService"></param>
+    /// <exception cref="Exception"></exception>
+    public void Build(IServiceCollection services, IServiceProvider builderService) => 
+        services.AddSingleton(builderService.GetRequiredService<ICommandManager>());
 }
 
 /// <summary>
