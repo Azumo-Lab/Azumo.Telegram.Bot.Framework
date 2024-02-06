@@ -45,6 +45,9 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
     /// </summary>
     private IServiceProvider RuntimeServiceProvider = null!;
 
+    /// <summary>
+    /// 
+    /// </summary>
     private ILogger<TelegramBot>? Logger;
 
     /// <summary>
@@ -129,6 +132,11 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
         await PipelineProc<TelegramBotEndProcAttribute>();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     private async Task PipelineProc<T>() where T : Attribute
     {
         var builder = PipelineFactory.GetPipelineBuilder<IServiceProvider, Task>(() => Task.CompletedTask);
