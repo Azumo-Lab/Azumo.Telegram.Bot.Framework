@@ -52,7 +52,7 @@ internal class ScanController : ITelegramModule
         var controllerTypeList = typeof(TelegramControllerAttribute).GetHasAttributeType();
         foreach ((var controller, var _) in controllerTypeList)
         {
-            foreach ((var method, var attr) in controller.GetAttributeMethods<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance))
+            foreach ((var method, var attr) in controller.GetAttributeMethods<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
                 var attributes = new List<Attribute>
                 {

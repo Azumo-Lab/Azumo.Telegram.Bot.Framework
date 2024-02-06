@@ -85,25 +85,18 @@ public class UnitTest1/* : PageTest*/
     }
 }
 
-public class Test
+public class Test(TestBB testBB)
 {
-    public Test(TestBB testBB)
-    {
-
-    }
-
-    public void TestInvoke(string str) => Console.WriteLine("Hello World " + str);//return Task.CompletedTask;
+    public void TestInvoke(string str) => 
+        Console.WriteLine("Hello World " + str + testBB.testCC1.Hello);//return Task.CompletedTask;
 }
 
-public class TestBB
+public class TestBB(TestCC testCC)
 {
-    public TestBB(TestCC testCC)
-    {
-
-    }
+    public readonly TestCC testCC1 = testCC;
 }
 
 public class TestCC
 {
-
+    public string Hello = "Hello";
 }

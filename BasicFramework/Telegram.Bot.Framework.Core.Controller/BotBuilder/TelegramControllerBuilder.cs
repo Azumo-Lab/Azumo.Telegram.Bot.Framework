@@ -28,10 +28,8 @@ internal class TelegramControllerBuilder : ITelegramModule
     {
 
     }
-    public void Build(IServiceCollection services, IServiceProvider builderService)
-    {
+    public void Build(IServiceCollection services, IServiceProvider builderService) => 
         services.AddSingleton<IUpdateHandler, UpdateHandle>();
-    }
 }
 
 public static class TelegramControllerBuilderExtensions
