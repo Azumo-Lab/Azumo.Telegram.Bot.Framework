@@ -50,38 +50,9 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
     /// </summary>
     private ILogger<TelegramBot>? Logger;
 
-    private const string LogoType1 = @"
-
-
-┏┳┓  ┓            ┳┓    ┏┓                ┓ 
- ┃ ┏┓┃┏┓┏┓┏┓┏┓┏┳┓ ┣┫┏┓╋ ┣ ┏┓┏┓┏┳┓┏┓┓┏┏┏┓┏┓┃┏
- ┻ ┗ ┗┗ ┗┫┛ ┗┻┛┗┗•┻┛┗┛┗•┻ ┛ ┗┻┛┗┗┗ ┗┻┛┗┛┛ ┛┗
-         ┛                                  
-
-
-";
-
-    private const string LogoType2 = @"
-
-
-████████ ███████ ██      ███████  ██████  ██████   █████  ███    ███    ██████   ██████  ████████ 
-   ██    ██      ██      ██      ██       ██   ██ ██   ██ ████  ████    ██   ██ ██    ██    ██    
-   ██    █████   ██      █████   ██   ███ ██████  ███████ ██ ████ ██    ██████  ██    ██    ██    
-   ██    ██      ██      ██      ██    ██ ██   ██ ██   ██ ██  ██  ██    ██   ██ ██    ██    ██    
-   ██    ███████ ███████ ███████  ██████  ██   ██ ██   ██ ██      ██ ██ ██████   ██████     ██    
-                                                                                                  
-                                                                                                  
-   ███████ ██████   █████  ███    ███ ███████ ██     ██  ██████  ██████  ██   ██                  
-   ██      ██   ██ ██   ██ ████  ████ ██      ██     ██ ██    ██ ██   ██ ██  ██                   
-   █████   ██████  ███████ ██ ████ ██ █████   ██  █  ██ ██    ██ ██████  █████                    
-   ██      ██   ██ ██   ██ ██  ██  ██ ██      ██ ███ ██ ██    ██ ██   ██ ██  ██                   
-██ ██      ██   ██ ██   ██ ██      ██ ███████  ███ ███   ██████  ██   ██ ██   ██                  
-                                                                                                  
-                                                                                                  
-
-
-";
-
+    /// <summary>
+    /// 
+    /// </summary>
     private const string LogoType3 = @"
 
 
@@ -176,7 +147,6 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
     {
         ArgumentNullException.ThrowIfNull(RuntimeServiceProvider, nameof(RuntimeServiceProvider));
 
-        string[] logos = [LogoType3, LogoType2, LogoType1];
         Logger?.LogInformation("{A0}", LogoType3);
         Logger?.LogInformation(@"
 <Telegram.Bot.Framework>
