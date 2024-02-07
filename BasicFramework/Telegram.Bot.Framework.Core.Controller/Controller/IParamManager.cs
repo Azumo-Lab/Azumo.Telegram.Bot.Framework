@@ -28,5 +28,5 @@ internal interface IParamManager
 
     public Task<bool> Read(TelegramUserContext userContext);
 
-    public object[] GetParam();
+    public object?[] GetParam();
 }

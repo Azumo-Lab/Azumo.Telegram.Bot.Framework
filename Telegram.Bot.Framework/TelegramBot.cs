@@ -120,7 +120,7 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
     /// 
     /// </summary>
     /// <returns></returns>
-    public async Task StartAsync()
+    public async Task StartAsync(bool wait = false)
     {
         ArgumentNullException.ThrowIfNull(RuntimeServiceProvider, nameof(RuntimeServiceProvider));
         
@@ -130,6 +130,13 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
         await PipelineProc<TelegramBotProcAttribute>();
         // 执行后处理
         await PipelineProc<TelegramBotEndProcAttribute>();
+
+        if(wait)
+        {
+            var token = RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>();
+            while (!token.Token.IsCancellationRequested)
+                await Task.Delay((int)TimeSpan.FromSeconds(0.5).TotalMilliseconds);
+        }
     }
 
     /// <summary>

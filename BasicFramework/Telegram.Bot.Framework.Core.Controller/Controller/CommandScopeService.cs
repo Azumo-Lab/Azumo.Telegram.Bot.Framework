@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
@@ -23,6 +24,7 @@ namespace Telegram.Bot.Framework.Core.Controller.Controller;
 /// 
 /// </summary>
 /// <param name="serviceProvider"></param>
+[DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ICommandScopeService))]
 internal class CommandScopeService(IServiceProvider serviceProvider) : ICommandScopeService
 {
     /// <summary>
@@ -40,7 +42,7 @@ internal class CommandScopeService(IServiceProvider serviceProvider) : ICommandS
     /// </summary>
     public IServiceProvider? Service => _serviceScope?.ServiceProvider;
 
-    public ISession Session { get; set; } = null!;
+    public ISession? Session { get; set; }
 
     /// <summary>
     /// 
@@ -55,7 +57,6 @@ internal class CommandScopeService(IServiceProvider serviceProvider) : ICommandS
     /// </summary>
     public void Delete()
     {
-        Session.Dispose();
         _serviceScope?.Dispose();
         _serviceScope = null;
     }

@@ -26,7 +26,7 @@ internal interface ICommandScopeService
 {
     public IServiceProvider? Service { get; }
 
-    public ISession Session { get; }
+    public ISession? Session { get; }
 
     public void Create();
 

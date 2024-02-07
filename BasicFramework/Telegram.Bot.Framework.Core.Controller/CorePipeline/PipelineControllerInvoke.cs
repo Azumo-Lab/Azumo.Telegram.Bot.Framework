@@ -24,12 +24,13 @@ internal class PipelineControllerInvoke : IMiddleware<PipelineModel, Task>
 {
     public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
     {
-        var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
-        var exec = input.CommandScopeService.Session.GetCommand();
+        var paramManager = input.CommandScopeService.Service?.GetRequiredService<IParamManager>();
+        var exec = input.CommandScopeService.Session?.GetCommand();
 
         try
         {
-            await exec.Invoke(input.UserContext.UserServiceProvider, paramManager.GetParam());
+            if (exec != null)
+                await exec.Invoke(input.UserContext.UserServiceProvider, paramManager?.GetParam() ?? []);
             await Next(input);
         }
         catch (Exception)

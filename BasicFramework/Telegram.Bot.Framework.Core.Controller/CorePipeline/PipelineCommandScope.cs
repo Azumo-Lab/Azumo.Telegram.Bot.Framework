@@ -33,7 +33,18 @@ internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
         // 获取指令
         var exec = input.CommandManager.GetExecutor(input.UserContext);
         if (exec == null)   // 获取不到
-            goto Next;      // 非指令，直接进行下一步操作
+        {
+            if ((exec = input.CommandScopeService.Session?.GetCommand()) == null)
+                goto Next;  // 非指令，直接进行下一步操作
+        }
+        else
+        {
+            // 创建新的指令级别的服务范围
+            input.CommandScopeService.DeleteOldCreateNew();
+            input.CommandScopeService.Session!.AddCommand(exec);
+            var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
+            paramManager.SetParamList(exec.Parameters);
+        }
 
         // 获取指令的认证条件
         List<string> roles;
@@ -47,15 +58,8 @@ internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
         foreach (var item in input.UserContext.UserServiceProvider.GetServices<IContextFilter>() ?? [])
             if (!item.Filter(input.UserContext, [.. roles]))
                 return; // 不能通过认证，权限名称不对等情况
-
-        // 创建新的指令级别的服务范围
-        input.CommandScopeService.DeleteOldCreateNew();
-        input.CommandScopeService.Session.AddCommand(exec);
-        var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
-        paramManager.SetParamList(exec.Parameters);
-
-        // 开始执行下一个个操作
     Next:
+        // 开始执行下一个操作
         await Next(input);
     }
 }

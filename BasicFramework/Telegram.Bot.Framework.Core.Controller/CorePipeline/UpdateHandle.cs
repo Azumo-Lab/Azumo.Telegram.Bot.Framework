@@ -16,6 +16,7 @@
 
 using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.Users;
@@ -23,6 +24,8 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;
+
+[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IUpdateHandler))]
 internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
 {
     private readonly IServiceProvider BotServiceProvider = serviceProvider;

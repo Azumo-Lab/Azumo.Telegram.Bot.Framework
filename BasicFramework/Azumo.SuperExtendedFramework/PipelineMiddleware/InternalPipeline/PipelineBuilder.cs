@@ -23,13 +23,15 @@ internal class PipelineBuilder<TInput, TResult>(Func<TResult> defVal) : IPipelin
     public IPipelineController<TInput, TResult> Build()
     {
         Dictionary<object, IPipeline<TInput, TResult>> pipelineDic = [];
+        if (pipelines.Count == 0)
+            CreatePipeline(Guid.NewGuid().ToString());
         foreach (var item in pipelines)
         {
             PipelineMiddlewareDelegate<TInput, TResult> handleResult = input => defVal();
             List<Func<PipelineMiddlewareDelegate<TInput, TResult>, PipelineMiddlewareDelegate<TInput, TResult>>> list = [];
             foreach (var middleware in item.Value)
                 list.Add(handle => input => middleware.Invoke(input, handle));
-            foreach (var handle in list)
+            foreach (var handle in list.Reverse<Func<PipelineMiddlewareDelegate<TInput, TResult>, PipelineMiddlewareDelegate<TInput, TResult>>>())
                 handleResult = handle(handleResult);
 
             pipelineDic.Add(item.Key, PipelineFactory.GetPipeline(handleResult));

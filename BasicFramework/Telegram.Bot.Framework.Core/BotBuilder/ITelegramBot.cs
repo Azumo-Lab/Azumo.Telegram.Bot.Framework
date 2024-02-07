@@ -25,7 +25,7 @@ public interface ITelegramBot : IDisposable
     /// 
     /// </summary>
     /// <returns></returns>
-    public Task StartAsync();
+    public Task StartAsync(bool wait = false);
 
     /// <summary>
     /// 

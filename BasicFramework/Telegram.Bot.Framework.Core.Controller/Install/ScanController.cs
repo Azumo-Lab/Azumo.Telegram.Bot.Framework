@@ -85,8 +85,8 @@ internal class ScanController : ITelegramModule
                         {
                             throw;
                         }
-                    }),
-                    attributes);
+                    }).ToList(),
+                    attributes.ToArray());
                 commandManager.AddExecutor(executor);
             }
         }

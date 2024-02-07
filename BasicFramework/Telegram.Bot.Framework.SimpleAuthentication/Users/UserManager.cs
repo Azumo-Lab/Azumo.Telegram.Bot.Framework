@@ -35,6 +35,9 @@ internal class UserManager : IUserManager, IContextFilter
 
     public bool Filter(TelegramUserContext userContext, string[] roleNames)
     {
+        if (roleNames.Length == 0)
+            return true;
+
         var list = userContext.Session.Get<List<string>>(RoleKey);
         if (list == null)
             return false;

@@ -59,7 +59,7 @@ internal class Program
             .Build();
 
         // 启动Bot
-        var task = telegramBot.StartAsync();
+        var task = telegramBot.StartAsync(true);
         task.Wait();
     }
 }

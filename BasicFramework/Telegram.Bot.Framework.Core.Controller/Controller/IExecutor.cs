@@ -30,5 +30,5 @@ internal interface IExecutor
 
     public ISession Session { get; }
 
-    public Task Invoke(IServiceProvider serviceProvider, object[] param);
+    public Task Invoke(IServiceProvider serviceProvider, object?[] param);
 }

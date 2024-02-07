@@ -21,10 +21,10 @@ public static class ArgsHelper
         Dictionary<string, string> result = [];
         for (var i = 0; i < args.Length; i++)
         {
-            if(i + 1 >= args.Length)
+            if (i + 1 >= args.Length)
                 result.Add(args[i], string.Empty);
             else
-                result.Add(args[i], args[i++]);
+                result.Add(args[i], args[++i]);
         }
         return result;
     }

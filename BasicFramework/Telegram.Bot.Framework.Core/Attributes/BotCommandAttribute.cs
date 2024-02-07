@@ -32,6 +32,6 @@ public class BotCommandAttribute : Attribute
 
         if (!botCommand.StartsWith('/'))
             botCommand = $"/{botCommand}";
-        BotCommand = botCommand;
+        BotCommand = botCommand.ToLower();
     }
 }

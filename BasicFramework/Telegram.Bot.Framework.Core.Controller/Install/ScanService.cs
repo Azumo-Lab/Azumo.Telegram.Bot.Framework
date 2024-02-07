@@ -35,48 +35,51 @@ internal class ScanService : ITelegramModule
         var list = typeof(DependencyInjectionAttribute).GetHasAttributeType();
         foreach ((var t, var attr) in list)
         {
-            var attrDep = (DependencyInjectionAttribute)attr;
-
-            var keyType = attrDep.ServiceType;
-            if (keyType == null)
+            foreach (var item in attr)
             {
-                Type[] interfaceTypes;
-                Type? basetype;
-                keyType = (interfaceTypes = t.GetInterfaces()).Length == 1
-                    ? interfaceTypes.First()
-                    : (basetype = t.BaseType) != null && basetype.IsAbstract ? basetype : t;
-            }
+                var attrDep = (DependencyInjectionAttribute)item;
 
-            if (!string.IsNullOrEmpty(attrDep.Key))
-                switch (attrDep.Lifetime)
+                var keyType = attrDep.ServiceType;
+                if (keyType == null)
                 {
-                    case ServiceLifetime.Singleton:
-                        _ = services.AddKeyedSingleton(keyType, attrDep.Key, t);
-                        break;
-                    case ServiceLifetime.Scoped:
-                        _ = services.AddKeyedScoped(keyType, attrDep.Key, t);
-                        break;
-                    case ServiceLifetime.Transient:
-                        _ = services.AddKeyedTransient(keyType, attrDep.Key, t);
-                        break;
-                    default:
-                        break;
+                    Type[] interfaceTypes;
+                    Type? basetype;
+                    keyType = (interfaceTypes = t.GetInterfaces()).Length == 1
+                        ? interfaceTypes.First()
+                        : (basetype = t.BaseType) != null && basetype.IsAbstract ? basetype : t;
                 }
-            else
-                switch (attrDep.Lifetime)
-                {
-                    case ServiceLifetime.Singleton:
-                        _ = services.AddSingleton(keyType, t);
-                        break;
-                    case ServiceLifetime.Scoped:
-                        _ = services.AddScoped(keyType, t);
-                        break;
-                    case ServiceLifetime.Transient:
-                        _ = services.AddTransient(keyType, t);
-                        break;
-                    default:
-                        break;
-                }
+
+                if (!string.IsNullOrEmpty(attrDep.Key))
+                    switch (attrDep.Lifetime)
+                    {
+                        case ServiceLifetime.Singleton:
+                            _ = services.AddKeyedSingleton(keyType, attrDep.Key, t);
+                            break;
+                        case ServiceLifetime.Scoped:
+                            _ = services.AddKeyedScoped(keyType, attrDep.Key, t);
+                            break;
+                        case ServiceLifetime.Transient:
+                            _ = services.AddKeyedTransient(keyType, attrDep.Key, t);
+                            break;
+                        default:
+                            break;
+                    }
+                else
+                    switch (attrDep.Lifetime)
+                    {
+                        case ServiceLifetime.Singleton:
+                            _ = services.AddSingleton(keyType, t);
+                            break;
+                        case ServiceLifetime.Scoped:
+                            _ = services.AddScoped(keyType, t);
+                            break;
+                        case ServiceLifetime.Transient:
+                            _ = services.AddTransient(keyType, t);
+                            break;
+                        default:
+                            break;
+                    }
+            }
         }
     }
 }

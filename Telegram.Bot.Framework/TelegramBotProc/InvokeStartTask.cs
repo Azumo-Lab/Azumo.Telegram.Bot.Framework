@@ -39,7 +39,15 @@ internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
                 if (!string.IsNullOrEmpty(name))
                     logger?.LogInformation("开始执行任务：{A0}", name);
 
-                await task.Exec();
+                try
+                {
+                    await task.Exec();
+                }
+                catch (Exception)
+                {
+                    if (!string.IsNullOrEmpty(name))
+                        logger?.LogError("任务执行失败：{A0}", name);
+                }
             }
         }
 

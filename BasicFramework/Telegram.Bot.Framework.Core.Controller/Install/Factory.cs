@@ -31,7 +31,7 @@ internal class Factory
         {
             EnumCommandType.BotCommand => new BotCommandInvoker(
                                 (objects[0] as ObjectFactory)!,
-                                (objects[1] as Func<object, object[], object>)!,
+                                (objects[1] as Func<object, object?[], object>)!,
                                 (objects[2] as List<IGetParam>)!,
                                 (objects[3] as Attribute[])!),
             EnumCommandType.Func => new FuncInvoker(

@@ -24,9 +24,10 @@ internal class PipelineGetParam : IMiddleware<PipelineModel, Task>
 {
     public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
     {
-        var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
-        if (!await paramManager.Read(input.UserContext))
-            return;
+        var paramManager = input.CommandScopeService.Service?.GetService<IParamManager>();
+        if (paramManager != null)
+            if (!await paramManager.Read(input.UserContext))
+                return;
 
         await Next(input);
     }

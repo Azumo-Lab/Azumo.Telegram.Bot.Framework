@@ -15,11 +15,14 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Controller.Users;
+
+[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IContextFactory))]
 internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserContext>, IContextFactory
 {
     public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)

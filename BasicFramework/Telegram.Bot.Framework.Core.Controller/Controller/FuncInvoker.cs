@@ -27,6 +27,6 @@ internal class FuncInvoker(Delegate func, List<IGetParam> paramList, Attribute[]
 
     public ISession Session { get; } = new SessionStorage();
 
-    public Task Invoke(IServiceProvider serviceProvider, object[] param) =>
+    public Task Invoke(IServiceProvider serviceProvider, object?[] param) =>
         func.DynamicInvoke(param) is Task task ? task : Task.CompletedTask;
 }

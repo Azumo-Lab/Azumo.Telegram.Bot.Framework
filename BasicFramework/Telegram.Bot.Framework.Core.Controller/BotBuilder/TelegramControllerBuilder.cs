@@ -14,11 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline;
+using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.Controller.Install;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Core.Controller.BotBuilder;
 
@@ -28,8 +31,13 @@ internal class TelegramControllerBuilder : ITelegramModule
     {
 
     }
-    public void Build(IServiceCollection services, IServiceProvider builderService) => 
-        services.AddSingleton<IUpdateHandler, UpdateHandle>();
+    public void Build(IServiceCollection services, IServiceProvider builderService) =>
+        services.AddScoped(x => PipelineFactory.GetPipelineBuilder<PipelineModel, Task>(() => Task.CompletedTask)
+        .Use(new PipelineCommandScope())
+        .Use(new PipelineGetParam())
+        .Use(new PipelineControllerInvoke())
+        .CreatePipeline(UpdateType.Message)
+        .Build());
 }
 
 public static class TelegramControllerBuilderExtensions

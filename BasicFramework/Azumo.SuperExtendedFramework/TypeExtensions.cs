@@ -27,9 +27,9 @@ public static class TypeExtensions
     public static List<Type> GetAllSameType(this Type type) =>
         AllTypes.Where(x => type.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract).ToList();
 
-    public static List<(Type, Attribute)> GetHasAttributeType(this Type type) =>
+    public static List<(Type, Attribute[])> GetHasAttributeType(this Type type) =>
         AllTypes.Where(x => Attribute.IsDefined(x, type))
-            .Select(x => (x, Attribute.GetCustomAttribute(x, type)!))
+            .Select(x => (x, Attribute.GetCustomAttributes(x, type)!))
             .ToList();
 
     public static List<(MethodInfo, Attribute)> GetAttributeMethods<Attr>(this Type type, BindingFlags bindingFlags) where Attr : Attribute =>
@@ -50,7 +50,7 @@ public static class TypeExtensions
         for (var i = 0; i < paramList.Length; i++)
             paramList[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameters[i].ParameterType);
 
-        var method = Expression.Call(instance, methodInfo, param);
+        var method = Expression.Call(methodInfo.IsStatic ? null : instance, methodInfo, paramList);
         Expression func;
         if (methodInfo.ReturnType.FullName == typeof(void).FullName)
         {

@@ -56,7 +56,7 @@ internal class TelegramCommand(Delegate func) : ITelegramModule
                 {
                     throw;
                 }
-            }),
+            }).ToList(),
             Attribute.GetCustomAttributes(_func.Method));
 
         manager.AddExecutor(exec);
