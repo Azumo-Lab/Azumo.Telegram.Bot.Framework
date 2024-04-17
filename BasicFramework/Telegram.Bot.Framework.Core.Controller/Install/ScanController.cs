@@ -64,29 +64,41 @@ internal class ScanController : ITelegramModule
                     method.BuildFunc(),
                     method.GetParameters().Select(x =>
                     {
-                        var paramval = getparamTypeList
-                            .Where(y => y.Item2.ForType.FullName == x.ParameterType.FullName)
-                            .Select(y => y.x)
-                            .FirstOrDefault() ?? typeof(NullParam);
+                        Type iGetParamType = null!;
 
+                        // 从参数上获取 ParamAttribute 标签
+                        var paramAttribute = Attribute.GetCustomAttribute(x, typeof(ParamAttribute)) as ParamAttribute;
+                        if (paramAttribute != null) // 能获取到就使用获取到的类型
+                            if (paramAttribute.IGetParmType != null)
+                                iGetParamType = paramAttribute.IGetParmType;
+
+                        // 使用默认逻辑
+                        if (iGetParamType == null)
+                        {
+                            var paramval = getparamTypeList
+                                .Where(y => y.Item2.ForType.FullName == x.ParameterType.FullName)
+                                .Select(y => y.x)
+                                .FirstOrDefault() ?? typeof(NullParam);
+                            iGetParamType = paramval;
+                        }
+
+                        // 获取构造函数
                         ConstructorInfo? constructorInfo;
-                        if ((constructorInfo = paramval.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault()) == null)
+                        if ((constructorInfo = iGetParamType.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault()) == null)
                             throw new Exception("没有找到对应的初始化方法");
 
+                        // 判断是否有参数
                         if (constructorInfo.GetParameters().Length != 0)
                             throw new Exception("无法生成带有参数的类");
 
-                        var paramAttribute = Attribute.GetCustomAttribute(x, typeof(ParamAttribute));
-
+                        // 实例化
                         var result = constructorInfo.Invoke([]);
                         if (result is IGetParam getParam)
-                        {
-                            getParam.ParamAttribute = (ParamAttribute?)paramAttribute;
-                        }
+                            getParam.ParamAttribute = paramAttribute;
                         else if (result == null)
-                            throw new NullReferenceException($"类型：{paramval.FullName} 无法实例化");
+                            throw new NullReferenceException($"类型：{iGetParamType.FullName} 无法实例化");
                         else
-                            throw new Exception($"类型：{paramval.FullName} 未实现接口 {nameof(IGetParam)}");
+                            throw new Exception($"类型：{iGetParamType.FullName} 未实现接口 {nameof(IGetParam)}");
                         return getParam;
 
                     }).ToList(),

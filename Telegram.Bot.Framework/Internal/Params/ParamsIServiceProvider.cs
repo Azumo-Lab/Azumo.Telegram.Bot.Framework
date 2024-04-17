@@ -17,5 +17,5 @@ internal class ParamsIServiceProvider : IGetParam
     public Task<object> GetParam(TelegramUserContext context) => 
         Task.FromResult<object>(context.UserServiceProvider);
     public Task<bool> SendMessage(TelegramUserContext context) => 
-        Task.FromResult<bool>(true);
+        Task.FromResult(true);
 }
