@@ -113,6 +113,6 @@ internal class NullParam : IGetParam
 
     public Task<object> GetParam(TelegramUserContext context) =>
         Task.FromResult<object>(null!);
-    public Task SendMessage(TelegramUserContext context) =>
-        Task.CompletedTask;
+    public Task<bool> SendMessage(TelegramUserContext context) =>
+        Task.FromResult(true);
 }

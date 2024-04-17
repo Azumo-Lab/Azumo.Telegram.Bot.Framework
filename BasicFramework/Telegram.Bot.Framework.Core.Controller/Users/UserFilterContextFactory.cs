@@ -46,6 +46,7 @@ internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserConte
             _ = TryAdd(userID, telegramUserContext);
         }
         telegramUserContext.Copy(update);
+        telegramUserContext.ScopeUser = user;
 
         return telegramUserContext;
     }

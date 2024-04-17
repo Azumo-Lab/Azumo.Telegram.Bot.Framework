@@ -22,7 +22,7 @@ public interface IGetParam
 {
     public ParamAttribute? ParamAttribute { get; }
 
-    public Task SendMessage(TelegramUserContext context);
+    public Task<bool> SendMessage(TelegramUserContext context);
 
     public Task<object> GetParam(TelegramUserContext context);
 }
