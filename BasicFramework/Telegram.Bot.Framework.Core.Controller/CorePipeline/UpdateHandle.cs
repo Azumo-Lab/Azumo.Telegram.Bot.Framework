@@ -72,11 +72,11 @@ internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
         if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)
             return;
 
-        // 获取用户的流水线
-        var pipeline = context.UserServiceProvider.GetRequiredService<IPipelineController<PipelineModel, Task>>();
-
         try
         {
+            // 获取用户的流水线
+            var pipeline = context.UserServiceProvider.GetRequiredService<IPipelineController<PipelineModel, Task>>();
+
             // 执行流水线
             await pipeline[update.Type].Invoke(new PipelineModel
             {

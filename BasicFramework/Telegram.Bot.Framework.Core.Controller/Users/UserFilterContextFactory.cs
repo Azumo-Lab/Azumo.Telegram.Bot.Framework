@@ -29,10 +29,8 @@ internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserConte
     {
         var filters = botServiceProvider.GetServices<IUpdateFilter>();
         foreach (var filter in filters)
-        {
             if (!filter.Filter(update))
                 return null;
-        }
 
         var user = update.GetUser();
         var userID = user!.Id;
