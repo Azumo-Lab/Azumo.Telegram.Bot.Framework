@@ -76,15 +76,19 @@ internal class ScanController : ITelegramModule
                         if (constructorInfo.GetParameters().Length != 0)
                             throw new Exception("无法生成带有参数的类");
 
-                        try
+                        var paramAttribute = Attribute.GetCustomAttribute(x, typeof(ParamAttribute));
+
+                        var result = constructorInfo.Invoke([]);
+                        if (result is IGetParam getParam)
                         {
-                            var result = constructorInfo.Invoke([]);
-                            return (IGetParam)result;
+                            getParam.ParamAttribute = (ParamAttribute?)paramAttribute;
                         }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
+                        else if (result == null)
+                            throw new NullReferenceException($"类型：{paramval.FullName} 无法实例化");
+                        else
+                            throw new Exception($"类型：{paramval.FullName} 未实现接口 {nameof(IGetParam)}");
+                        return getParam;
+
                     }).ToList(),
                     attributes.ToArray());
                 commandManager.AddExecutor(executor);

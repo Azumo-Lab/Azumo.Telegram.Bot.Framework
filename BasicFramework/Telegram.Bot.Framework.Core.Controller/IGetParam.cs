@@ -20,7 +20,7 @@ using Telegram.Bot.Framework.Core.Users;
 namespace Telegram.Bot.Framework.Core.Controller;
 public interface IGetParam
 {
-    public ParamAttribute? ParamAttribute { get; }
+    public ParamAttribute? ParamAttribute { get; set; }
 
     public Task<bool> SendMessage(TelegramUserContext context);
 
