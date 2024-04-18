@@ -21,7 +21,7 @@ using Telegram.Bot.Framework.Core.Users;
 namespace Telegram.Bot.Framework.Core.Controller;
 public abstract class BaseGetParam : IGetParam
 {
-    public ParamAttribute? ParamAttribute { get; }
+    public ParamAttribute? ParamAttribute { get; set; }
     public abstract Task<object> GetParam(TelegramUserContext context);
     public virtual async Task<bool> SendMessage(TelegramUserContext context)
     {

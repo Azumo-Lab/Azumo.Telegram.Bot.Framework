@@ -15,7 +15,15 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Telegram.Bot.Framework.Core.Execs;
+
+/// <summary>
+/// 
+/// </summary>
 public interface ITask
 {
-    public Task Exec();
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public Task ExecuteAsync(object? input, CancellationToken token);
 }

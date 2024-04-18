@@ -18,7 +18,7 @@ internal class TelegramRegisterBotCommand : ITelegramModule
     private class RegisterBotCommandExec(IServiceProvider serviceProvider) : IStartTask
     {
         private readonly IServiceProvider serviceProvider = serviceProvider;
-        public async Task Exec()
+        public async Task ExecuteAsync(object? input, CancellationToken token)
         {
             var commandManager = serviceProvider.GetRequiredService<ICommandManager>();
             var botCommand = commandManager.GetExecutorList()

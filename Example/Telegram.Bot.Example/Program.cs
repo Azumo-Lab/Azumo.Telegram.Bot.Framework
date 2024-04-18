@@ -17,17 +17,24 @@
 using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller.BotBuilder;
+using Telegram.Bot.Framework.Core.Execs;
 using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Framework.SimpleAuthentication;
+using Telegraph.Sharp;
+using Telegraph.Sharp.Types;
 
 namespace Telegram.Bot.Example;
-
 internal class Program
 {
+
     public static void Main(string[] args)
     {
         var dic = ArgsHelper.ToDictionary(args);
@@ -55,6 +62,14 @@ internal class Program
                 _ = await telegramUserChatContext.BotClient.SendTextMessageAsync(telegramUserChatContext.ScopeChatID, "Func 测试");
                 await Task.CompletedTask;
             })
+            .AddServiceAction((service) => service.AddSingleton<ITelegraphClient>((sp) =>
+            {
+                var webProxy = sp.GetService<WebProxy>();
+                return new TelegraphClient(new HttpClient(new HttpClientHandler
+                {
+                    Proxy = webProxy,
+                }));
+            }))
             // 创建机器人接口
             .Build();
 
@@ -64,10 +79,61 @@ internal class Program
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 [TelegramController]
 public class TestController
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     [BotCommand("/Admin")]
-    public static async Task HelloWorld() => 
+    public static async Task HelloWorld() =>
         await Task.CompletedTask;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <param name="telegramUserContext"></param>
+    /// <returns></returns>
+    [BotCommand("/TimerTest", Description = "测试定时消息")]
+    public static async Task AddTimer(IServiceProvider serviceProvider, TelegramUserContext telegramUserContext)
+    {
+        var task = serviceProvider.GetKeyedService<ITask>("SendMessagesAtRegularIntervals");
+        await task.ExecuteAsync(new SendMessagesAtRegularIntervalsParamClass
+        {
+            BotClient = serviceProvider.GetRequiredService<ITelegramBotClient>(),
+            SendUser = telegramUserContext.ScopeChatID,
+        }, new System.Threading.CancellationTokenSource().Token);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <param name="telegramUserContext"></param>
+    /// <returns></returns>
+    [BotCommand("/TelegraphTest", Description = "TelegraphTest")]
+    public static async Task TelegraphTest(IServiceProvider serviceProvider, TelegramUserContext telegramUserContext)
+    {
+        var telegraphClient = serviceProvider.GetService<ITelegraphClient>();
+        var account = await telegraphClient.CreateAccountAsync("MyTest", "MyTestAuthorName");
+        telegraphClient.AccessToken = account.AccessToken;
+        TelegraphFile telegraphFile;
+        using (var bufferedStream = new BufferedStream(new FileStream("D:\\OneDrive\\同步文件夹\\头像\\Test.png", FileMode.OpenOrCreate), 2048))
+        {
+            telegraphFile = await telegraphClient.UploadFileAsync(FileToUpload.Png(bufferedStream));
+        }
+        
+        var page = await telegraphClient.CreatePageAsync("Test",
+        [
+            Node.Img(telegraphFile.Src)
+        ]);
+
+        var bot = serviceProvider.GetRequiredService<ITelegramBotClient>();
+        await bot.SendTextMessageAsync(telegramUserContext.ScopeChatID, page.Url);
+    }
 }

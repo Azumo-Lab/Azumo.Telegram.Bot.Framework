@@ -15,7 +15,10 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Telegram.Bot.Framework.Core.Execs;
-public abstract class ScheduledTasks : ITask
+public abstract class ScheduledTask : BackgroundTask
 {
-    public Task Exec() => throw new NotImplementedException();
+    protected override async Task BackGroundExecuteAsync(object? input, CancellationToken token)
+    {
+        await Task.CompletedTask;
+    }
 }

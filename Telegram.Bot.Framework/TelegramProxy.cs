@@ -61,6 +61,7 @@ internal class TelegramProxy(string host, int? port, string? username, string? p
 
         var httpClient = new HttpClient(new HttpClientHandler() { Proxy = webProxy, UseProxy = true });
 
+        _ = services.AddSingleton(webProxy);
         _ = services.AddSingleton(httpClient);
     }
 

@@ -50,11 +50,12 @@ internal class ParamManager : IParamManager
 
     public async Task<bool> Read(TelegramUserContext userContext)
     {
+        None:
         var param = getParams.FirstOrDefault();
         if (param == null)
             return true;
 
-        CATCHPARAM:
+        WaitForInput:
         (var result, var paramVal) = await pipelineController[_StateMachine.State].Invoke(new ParamPipelineModel
         {
             Param = param,
@@ -64,10 +65,14 @@ internal class ParamManager : IParamManager
         if (result)
         {
             if (_StateMachine.State == WaitForInput)
-                goto CATCHPARAM;
+                goto WaitForInput;
+
             _Param.Add(paramVal);
             getParams.RemoveAt(0);
         }
+
+        if (_StateMachine.State == None)
+            goto None;
 
         return result;
     }

@@ -30,9 +30,10 @@ internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
     {
         var logger = input.GetService<ILogger<InvokeStartTask>>();
         var tasks = input.GetServices<IStartTask>().ToList();
-        if (tasks.Count != 0)
+        var tasksCount = tasks.Count;
+        if (tasksCount != 0)
         {
-            logger?.LogInformation("总共找到 {A0} 个任务", tasks.Count);
+            logger?.LogInformation("总共找到 {A0} 个任务", tasksCount);
             foreach (var task in tasks)
             {
                 var name = (task as IName)?.Name;
@@ -41,7 +42,7 @@ internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
 
                 try
                 {
-                    await task.Exec();
+                    await task.ExecuteAsync(null, new CancellationTokenSource().Token);
                 }
                 catch (Exception)
                 {
