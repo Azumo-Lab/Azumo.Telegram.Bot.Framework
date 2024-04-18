@@ -17,10 +17,10 @@
 using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Core.Attributes;
@@ -100,14 +100,14 @@ public class TestController
     /// <param name="telegramUserContext"></param>
     /// <returns></returns>
     [BotCommand("/TimerTest", Description = "测试定时消息")]
-    public static async Task AddTimer(IServiceProvider serviceProvider, TelegramUserContext telegramUserContext)
+    public static async Task AddTimer(IServiceProvider serviceProvider, TelegramUserContext telegramUserContext, CancellationToken token)
     {
         var task = serviceProvider.GetKeyedService<ITask>("SendMessagesAtRegularIntervals");
         await task.ExecuteAsync(new SendMessagesAtRegularIntervalsParamClass
         {
             BotClient = serviceProvider.GetRequiredService<ITelegramBotClient>(),
             SendUser = telegramUserContext.ScopeChatID,
-        }, new System.Threading.CancellationTokenSource().Token);
+        }, token);
     }
 
     /// <summary>
@@ -117,23 +117,22 @@ public class TestController
     /// <param name="telegramUserContext"></param>
     /// <returns></returns>
     [BotCommand("/TelegraphTest", Description = "TelegraphTest")]
-    public static async Task TelegraphTest(IServiceProvider serviceProvider, TelegramUserContext telegramUserContext)
+    public static async Task TelegraphTest(IServiceProvider serviceProvider, TelegramUserContext telegramUserContext, CancellationToken cancellationToken)
     {
         var telegraphClient = serviceProvider.GetService<ITelegraphClient>();
-        var account = await telegraphClient.CreateAccountAsync("MyTest", "MyTestAuthorName");
+        var account = await telegraphClient.CreateAccountAsync("MyTest", "MyTestAuthorName", cancellationToken: cancellationToken);
         telegraphClient.AccessToken = account.AccessToken;
         TelegraphFile telegraphFile;
         using (var bufferedStream = new BufferedStream(new FileStream("D:\\OneDrive\\同步文件夹\\头像\\Test.png", FileMode.OpenOrCreate), 2048))
         {
-            telegraphFile = await telegraphClient.UploadFileAsync(FileToUpload.Png(bufferedStream));
+            telegraphFile = await telegraphClient.UploadFileAsync(FileToUpload.Png(bufferedStream), cancellationToken: cancellationToken);
         }
-        
-        var page = await telegraphClient.CreatePageAsync("Test",
-        [
+
+        var page = await telegraphClient.CreatePageAsync("Test", [
             Node.Img(telegraphFile.Src)
-        ]);
+        ], cancellationToken: cancellationToken);
 
         var bot = serviceProvider.GetRequiredService<ITelegramBotClient>();
-        await bot.SendTextMessageAsync(telegramUserContext.ScopeChatID, page.Url);
+        _ = await bot.SendTextMessageAsync(telegramUserContext.ScopeChatID, page.Url, cancellationToken: cancellationToken);
     }
 }
