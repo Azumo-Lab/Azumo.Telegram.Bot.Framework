@@ -23,5 +23,11 @@ namespace Telegram.Bot.Framework.Core.Users;
 /// </summary>
 public interface IContextFactory
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="botServiceProvider"></param>
+    /// <param name="update"></param>
+    /// <returns></returns>
     public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update);
 }

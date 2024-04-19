@@ -16,8 +16,15 @@
 
 namespace Telegram.Bot.Framework.SimpleAuthentication.Attributes;
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="roleName"></param>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = true)]
 public class AuthenticationAttribute(string roleName) : Attribute
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string RoleName { get; } = roleName;
 }

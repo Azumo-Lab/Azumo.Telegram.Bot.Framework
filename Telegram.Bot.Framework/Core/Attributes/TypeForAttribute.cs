@@ -16,8 +16,15 @@
 
 namespace Telegram.Bot.Framework.Core.Attributes;
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="type"></param>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class TypeForAttribute(Type type) : Attribute
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public Type ForType { get; } = type;
 }

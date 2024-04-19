@@ -18,11 +18,28 @@ using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Core.Controller;
+
+/// <summary>
+/// 
+/// </summary>
 public interface IGetParam
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public ParamAttribute? ParamAttribute { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public Task<bool> SendMessage(TelegramUserContext context);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public Task<object> GetParam(TelegramUserContext context);
 }

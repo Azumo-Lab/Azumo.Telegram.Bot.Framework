@@ -14,22 +14,38 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Telegram.Bot.Framework.Core.I18N;
+
+/// <summary>
+/// 
+/// </summary>
 public interface II18NManager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public const string Chinese = "Chinses";
 
+    /// <summary>
+    /// 
+    /// </summary>
     public II18N Current { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="i18N"></param>
     public void Add(II18N i18N);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
     public void Change(string name);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
     public void Remove(string name);
 }

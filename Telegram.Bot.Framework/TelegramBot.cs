@@ -132,6 +132,7 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder
     {
         StopAsync().Wait();
         (RuntimeServiceProvider as IDisposable)?.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -169,11 +170,11 @@ DateTime.Now.Year);
         // 执行后处理
         await PipelineProc<TelegramBotEndProcAttribute>();
 
-        if(wait)
+        if (wait)
         {
             var token = RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>();
             while (!token.Token.IsCancellationRequested)
-                await Task.Delay((int)TimeSpan.FromSeconds(0.5).TotalMilliseconds);
+                await Task.Delay(TimeSpan.FromMinutes(1), token.Token);
         }
     }
 
@@ -198,7 +199,15 @@ DateTime.Now.Year);
     /// <returns></returns>
     public async Task StopAsync()
     {
-        var botClient = RuntimeServiceProvider.GetRequiredService<ITelegramBotClient>();
-        await botClient.CloseAsync(RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>().Token);
+        try
+        {
+            RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>().CancelAfter(TimeSpan.FromSeconds(5));
+            var botClient = RuntimeServiceProvider.GetRequiredService<ITelegramBotClient>();
+            await botClient.CloseAsync(RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>().Token);
+        }
+        catch (Exception)
+        {
+
+        }
     }
 }

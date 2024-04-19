@@ -15,7 +15,19 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Azumo.SuperExtendedFramework.PipelineMiddleware;
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+/// <typeparam name="TResult"></typeparam>
 public interface IMiddleware<TInput, TResult>
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="Next"></param>
+    /// <returns></returns>
     public TResult Invoke(TInput input, PipelineMiddlewareDelegate<TInput, TResult> Next);
 }

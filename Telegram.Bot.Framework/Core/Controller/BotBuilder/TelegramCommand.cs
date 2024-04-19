@@ -63,8 +63,17 @@ internal class TelegramCommand(Delegate func) : ITelegramModule
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public static class TelegramCommandExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="func"></param>
+    /// <returns></returns>
     public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, Delegate func) =>
         builder.AddModule<TelegramCommand>(func);
 }

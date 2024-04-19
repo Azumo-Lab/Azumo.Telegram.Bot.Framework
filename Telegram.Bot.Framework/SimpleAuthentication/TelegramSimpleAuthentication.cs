@@ -35,8 +35,16 @@ internal class TelegramSimpleAuthentication : ITelegramModule
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public static class TelegramSimpleAuthenticationExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static ITelegramModuleBuilder UseSimpleAuthentication(this ITelegramModuleBuilder builder) => 
         builder.AddModule(new TelegramSimpleAuthentication());
 }

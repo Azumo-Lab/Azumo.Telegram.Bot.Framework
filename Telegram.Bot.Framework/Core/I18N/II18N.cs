@@ -21,13 +21,31 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Core.I18N;
+
+/// <summary>
+/// 
+/// </summary>
 public interface II18N
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string Name { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public string Description { get; set; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public string this[string key] { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void Load();
 }

@@ -19,25 +19,53 @@ using System.Reflection;
 
 namespace Azumo.SuperExtendedFramework;
 
+/// <summary>
+/// 
+/// </summary>
 public static class TypeExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static List<Type> AllTypes { get; } =
         AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static List<Type> GetAllSameType(this Type type) =>
         AllTypes.Where(x => type.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract).ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static List<(Type, Attribute[])> GetHasAttributeType(this Type type) =>
         AllTypes.Where(x => Attribute.IsDefined(x, type))
             .Select(x => (x, Attribute.GetCustomAttributes(x, type)!))
             .ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="Attr"></typeparam>
+    /// <param name="type"></param>
+    /// <param name="bindingFlags"></param>
+    /// <returns></returns>
     public static List<(MethodInfo, Attribute)> GetAttributeMethods<Attr>(this Type type, BindingFlags bindingFlags) where Attr : Attribute =>
         type.GetMethods(bindingFlags)
             .Where(x => Attribute.IsDefined(x, typeof(Attr)))
             .Select(x => (x, Attribute.GetCustomAttribute(x, typeof(Attr))!))
             .ToList();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="methodInfo"></param>
+    /// <returns></returns>
     public static Func<object, object[], object> BuildFunc(this MethodInfo methodInfo)
     {
         var parameters = methodInfo.GetParameters();
@@ -64,6 +92,11 @@ public static class TypeExtensions
         return Expression.Lambda<Func<object, object[], object>>(func, instance, param).Compile();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="nameSpace"></param>
+    /// <returns></returns>
     public static List<Type> GetAllTypeSameNameSpace(string nameSpace) => 
         AllTypes.Where(x => x.Namespace == nameSpace).ToList();
 }

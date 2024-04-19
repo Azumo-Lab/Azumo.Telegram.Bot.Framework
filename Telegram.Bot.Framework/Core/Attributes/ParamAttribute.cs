@@ -16,10 +16,19 @@
 
 namespace Telegram.Bot.Framework.Core.Attributes;
 
+/// <summary>
+/// 
+/// </summary>
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
 public class ParamAttribute : Attribute
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string Message { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Type? IGetParmType { get; set; }
 }

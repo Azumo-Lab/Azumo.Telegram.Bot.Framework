@@ -15,10 +15,57 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Telegram.Bot.Framework.Core.Execs;
+
+/// <summary>
+/// 
+/// </summary>
 public abstract class ScheduledTask : BackgroundTask
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly List<DateTime?> InvokeTimes = [];
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     protected override async Task BackGroundExecuteAsync(object? input, CancellationToken token)
     {
-        await Task.CompletedTask;
+        var orderTimes = InvokeTimes.OrderBy(x => x).ToList();
+        InvokeTimes.Clear();
+        InvokeTimes.AddRange(orderTimes);
+
+        while (!token.IsCancellationRequested)
+        {
+            var time = InvokeTimes.FirstOrDefault();
+            if (time == null)
+                return;
+
+            if (DateTime.Now >= time)
+            {
+                await ScheduledExecuteAsync(input, token);
+                InvokeTimes.Remove(time);
+                var newTime = time.Value.AddDays(1);
+                InvokeTimes.Add(newTime);
+            }
+        }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    protected abstract Task ScheduledExecuteAsync(object? input, CancellationToken token);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dateTime"></param>
+    protected void AddScheduled(DateTime dateTime) => 
+        InvokeTimes.Add(dateTime);
 }

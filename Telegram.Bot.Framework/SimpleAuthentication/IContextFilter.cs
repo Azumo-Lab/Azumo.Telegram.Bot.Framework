@@ -18,7 +18,16 @@ using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.SimpleAuthentication;
 
+/// <summary>
+/// 
+/// </summary>
 public interface IContextFilter
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userContext"></param>
+    /// <param name="roleNames"></param>
+    /// <returns></returns>
     public bool Filter(TelegramUserContext userContext, string[] roleNames);
 }

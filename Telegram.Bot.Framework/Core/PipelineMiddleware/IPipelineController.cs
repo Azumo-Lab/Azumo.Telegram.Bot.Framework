@@ -15,15 +15,41 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Azumo.SuperExtendedFramework.PipelineMiddleware;
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+/// <typeparam name="TResult"></typeparam>
 public interface IPipelineController<TInput, TResult>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public IPipeline<TInput, TResult> CurrentPipeline { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public IPipeline<TInput, TResult> this[object key] { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="pipeline"></param>
     public void Add(object key, IPipeline<TInput, TResult> pipeline);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
     public void Remove(object key);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void Clear();
 }

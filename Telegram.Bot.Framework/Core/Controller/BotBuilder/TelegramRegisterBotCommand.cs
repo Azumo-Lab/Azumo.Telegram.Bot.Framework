@@ -29,13 +29,21 @@ internal class TelegramRegisterBotCommand : ITelegramModule
                 .ToList();
 
             var botClient = serviceProvider.GetRequiredService<ITelegramBotClient>();
-            await botClient.SetMyCommandsAsync(botCommand);
+            await botClient.SetMyCommandsAsync(botCommand, cancellationToken: token);
         }
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public static class TelegramRegisterBotCommandExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static ITelegramModuleBuilder RegisterBotCommand(this ITelegramModuleBuilder builder) =>
         builder.AddModule<TelegramRegisterBotCommand>();
 }

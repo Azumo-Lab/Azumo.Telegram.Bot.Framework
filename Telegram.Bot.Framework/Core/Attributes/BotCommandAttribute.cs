@@ -22,10 +22,20 @@ namespace Telegram.Bot.Framework.Core.Attributes;
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate)]
 public class BotCommandAttribute : Attribute
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public string BotCommand { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public string Description { get; set; } = "No details";
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="botCommand"></param>
     public BotCommandAttribute(string botCommand)
     {
         ArgumentException.ThrowIfNullOrEmpty(botCommand, nameof(botCommand));

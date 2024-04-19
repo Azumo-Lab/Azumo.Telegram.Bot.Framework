@@ -40,8 +40,16 @@ internal class TelegramControllerBuilder : ITelegramModule
         .Build());
 }
 
+/// <summary>
+/// 
+/// </summary>
 public static class TelegramControllerBuilderExtensions
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static ITelegramModuleBuilder UseController(this ITelegramModuleBuilder builder) =>
         builder
         .AddModule(new TelegramControllerBuilder())

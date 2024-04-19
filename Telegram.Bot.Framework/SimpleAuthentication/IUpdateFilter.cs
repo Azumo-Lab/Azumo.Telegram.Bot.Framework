@@ -17,7 +17,16 @@
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.SimpleAuthentication;
+
+/// <summary>
+/// 
+/// </summary>
 public interface IUpdateFilter
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="update"></param>
+    /// <returns></returns>
     public bool Filter(Update update);
 }

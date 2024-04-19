@@ -21,6 +21,12 @@ namespace Telegram.Bot.Framework.Core.Execs;
 /// </summary>
 public abstract class BackgroundTask : ITask
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public virtual Task ExecuteAsync(object? input, CancellationToken token)
     {
         if (!token.IsCancellationRequested)
