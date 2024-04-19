@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -85,6 +85,9 @@ internal class TelegramToken<SettingModel>(Func<SettingModel, string> tokenFunc)
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
 public static class TelegramTokenExtensions
 {
     /// <summary>

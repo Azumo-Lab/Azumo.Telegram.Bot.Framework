@@ -1,5 +1,5 @@
 ﻿//  <Telegram.Bot.Framework>
-//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Telegram.Bot.Framework/>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework>
 //
 //  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -81,7 +81,8 @@ internal class TelegramConfiguration<SettingModel>(string path) : ITelegramModul
             throw new FileNotFoundException(ConfigPath);
 
         var config = new ConfigurationBuilder().AddJsonFile(ConfigPath).Build();
-        var setting = config.Get<SettingModel>() ?? throw new NullReferenceException("");
+        var setting = config.Get<SettingModel>() 
+            ?? throw new Exception($"无法将配置文件的数据赋值给 {typeof(SettingModel)}, 请检查配置文件是否正确");
 
         services.AddSingleton(setting);
         services.AddSingleton<IConfiguration>(config);
@@ -101,17 +102,21 @@ internal class TelegramConfiguration<SettingModel>(string path) : ITelegramModul
 }
 
 /// <summary>
-/// 
+/// 配置文件扩展方法
 /// </summary>
 public static class TelegramConfigurationExtensions
 {
     /// <summary>
     /// 添加配置文件
     /// </summary>
-    /// <typeparam name="SettingModel"></typeparam>
-    /// <param name="builder"></param>
-    /// <param name="path"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 向框架中添加配置文件，配置文件的类型为 <typeparamref name="SettingModel"/>。<br/>
+    /// 当添加配置文件后，可以使用 services.GetRequiredService{<typeparamref name="SettingModel"/>}() 来获取配置文件的实例。<br/>
+    /// </remarks>
+    /// <typeparam name="SettingModel">配置文件的类型</typeparam>
+    /// <param name="builder">创建器</param>
+    /// <param name="path">配置文件的路径位置</param>
+    /// <returns>创建器</returns>
     public static ITelegramModuleBuilder AddConfiguration<SettingModel>(this ITelegramModuleBuilder builder, string path) where SettingModel : class =>
         builder.AddModule(new TelegramConfiguration<SettingModel>(path));
 }
