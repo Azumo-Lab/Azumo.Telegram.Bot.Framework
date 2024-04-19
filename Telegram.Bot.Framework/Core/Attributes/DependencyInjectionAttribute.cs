@@ -14,26 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Telegram.Bot.Framework.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Telegram.Bot.Framework.TelegramBotProc;
+namespace Telegram.Bot.Framework.Core.Attributes;
 
-[TelegramBotEndProc]
-internal class ShowBotUsername : IMiddleware<IServiceProvider, Task>
+/// <summary>
+/// 
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class DependencyInjectionAttribute(ServiceLifetime serviceLifetime) : Attribute
 {
-    public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
-    {
-        var logger = input.GetService<ILogger<ShowBotUsername>>();
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? Key { get; set; }
 
-        var botClient = input.GetRequiredService<ITelegramBotClient>();
+    /// <summary>
+    /// 
+    /// </summary>
+    public Type? ServiceType { get; set; }
 
-        var user = await botClient.GetMeAsync();
-
-        logger?.LogInformation("用户名：@{A0}，ID：{A1}，名字：{A2}，正在执行中 ...", user.Username, user.Id, $"{user.FirstName} {user.LastName}");
-
-        await Next(input);
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    public ServiceLifetime Lifetime { get; } = serviceLifetime;
 }

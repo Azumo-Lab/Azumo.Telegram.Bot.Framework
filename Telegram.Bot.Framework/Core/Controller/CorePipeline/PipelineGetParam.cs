@@ -16,30 +16,18 @@
 
 using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Internal;
-using Telegram.Bot.Polling;
+using Telegram.Bot.Framework.Core.Controller.Controller;
+using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 
-namespace Telegram.Bot.Framework.TelegramBotProc;
-
-[TelegramBotProc]
-internal class BotStart : IMiddleware<IServiceProvider, Task>
+namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;
+internal class PipelineGetParam : IMiddleware<PipelineModel, Task>
 {
-    public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
     {
-        var _tokenSource = input.GetRequiredService<CancellationTokenSource>();
-
-        // Bot开始启动
-        var botClient = input.GetRequiredService<ITelegramBotClient>();
-
-        if (!await botClient.TestApiAsync(_tokenSource.Token))
-            throw new Exception();
-
-        botClient.StartReceiving(input.GetRequiredService<IUpdateHandler>(),
-            new ReceiverOptions
-            {
-                AllowedUpdates = []
-            },
-            _tokenSource.Token);
+        var paramManager = input.CommandScopeService.Service?.GetService<IParamManager>();
+        if (paramManager != null)
+            if (!await paramManager.Read(input.UserContext))
+                return;
 
         await Next(input);
     }

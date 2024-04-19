@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
@@ -27,6 +26,7 @@ using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller.BotBuilder;
 using Telegram.Bot.Framework.Core.Execs;
 using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Framework.Helpers;
 using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegraph.Sharp;
 using Telegraph.Sharp.Types;

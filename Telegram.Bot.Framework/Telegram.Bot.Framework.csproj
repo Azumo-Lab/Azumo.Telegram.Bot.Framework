@@ -9,6 +9,15 @@
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageId>Telegram.Bot.Framework</PackageId>
+    <Title>Telegram.Bot.Framework</Title>
+    <Version>1.0.1</Version>
+    <Authors>Sokushu</Authors>
+    <Company>Azumo</Company>
+    <Product>Telegram.Bot.Framework</Product>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Telegram;Telegram Bot;Telegram Framework</PackageTags>
+    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,11 +31,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BasicFramework\Telegram.Bot.Framework.Core.Controller\Telegram.Bot.Framework.Core.Controller.csproj" />
-    <ProjectReference Include="..\BasicFramework\Telegram.Bot.Framework.Core\Telegram.Bot.Framework.Core.csproj" />
+    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
 
 </Project>

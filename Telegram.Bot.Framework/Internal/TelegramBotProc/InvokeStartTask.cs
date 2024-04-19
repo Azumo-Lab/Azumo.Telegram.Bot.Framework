@@ -19,9 +19,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Execs;
-using Telegram.Bot.Framework.Internal;
 
-namespace Telegram.Bot.Framework.TelegramBotProc;
+namespace Telegram.Bot.Framework.Internal.TelegramBotProc;
 
 [TelegramBotStartProc]
 internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
