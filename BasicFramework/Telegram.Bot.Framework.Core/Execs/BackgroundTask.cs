@@ -61,5 +61,11 @@ public abstract class BackgroundTask : ITask
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     protected abstract Task BackGroundExecuteAsync(object? input, CancellationToken token);
 }
