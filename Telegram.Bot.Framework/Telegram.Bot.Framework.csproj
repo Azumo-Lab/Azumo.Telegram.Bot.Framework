@@ -11,7 +11,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageId>Telegram.Bot.Framework</PackageId>
     <Title>Telegram.Bot.Framework</Title>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Sokushu</Authors>
     <Company>Azumo</Company>
     <Product>Telegram.Bot.Framework</Product>

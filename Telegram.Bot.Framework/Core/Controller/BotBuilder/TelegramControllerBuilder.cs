@@ -37,6 +37,10 @@ internal class TelegramControllerBuilder : ITelegramModule
         .Use(new PipelineGetParam())
         .Use(new PipelineControllerInvoke())
         .CreatePipeline(UpdateType.Message)
+        .Use(new PipelineCallBack())
+        .CreatePipeline(UpdateType.CallbackQuery)
+        .Use(new PipelineMyChatMember())
+        .CreatePipeline(UpdateType.MyChatMember)
         .Build());
 }
 

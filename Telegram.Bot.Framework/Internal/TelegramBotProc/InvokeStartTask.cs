@@ -30,6 +30,7 @@ internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
     {
         var logger = input.GetService<ILogger<InvokeStartTask>>();
         var tasks = input.GetServices<IStartTask>().ToList();
+        var token = input.GetRequiredService<CancellationTokenSource>().Token;
         var tasksCount = tasks.Count;
         if (tasksCount != 0)
         {
@@ -42,7 +43,7 @@ internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
 
                 try
                 {
-                    await task.ExecuteAsync(null, new CancellationTokenSource().Token);
+                    await task.ExecuteAsync(null, token);
                 }
                 catch (Exception)
                 {
