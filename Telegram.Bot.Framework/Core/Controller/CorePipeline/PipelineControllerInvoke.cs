@@ -20,8 +20,18 @@ using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;
+
+/// <summary>
+/// 控制器执行流程
+/// </summary>
 internal class PipelineControllerInvoke : IMiddleware<PipelineModel, Task>
 {
+    /// <summary>
+    /// 执行控制器
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="Next"></param>
+    /// <returns></returns>
     public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
     {
         var paramManager = input.CommandScopeService.Service?.GetRequiredService<IParamManager>();
@@ -29,6 +39,7 @@ internal class PipelineControllerInvoke : IMiddleware<PipelineModel, Task>
 
         try
         {
+            // 获取指令
             if (exec != null)
                 await exec.Invoke(input.UserContext.UserServiceProvider, paramManager?.GetParam() ?? []);
             await Next(input);

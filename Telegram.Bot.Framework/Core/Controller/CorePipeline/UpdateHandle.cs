@@ -78,7 +78,7 @@ internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
             var pipeline = context.UserServiceProvider.GetRequiredService<IPipelineController<PipelineModel, Task>>();
 
             // 执行流水线
-            await pipeline[update.Type].Invoke(new PipelineModel
+            await pipeline[context.Type].Invoke(new PipelineModel
             {
                 UserContext = context,
                 CommandManager = BotServiceProvider.GetRequiredService<ICommandManager>(),
