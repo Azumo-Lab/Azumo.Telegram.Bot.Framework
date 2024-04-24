@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Example", "Example\Telegram.Bot.Example\Telegram.Bot.Example.csproj", "{8C481667-BFA8-4A31-994A-54EDA2BF402A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{237A0F2B-778D-4A54-9D12-C4E8CE5DA9A0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -12,10 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{237A0F2B-778
 		README.md = README.md
 		Telegram icon.jpg = Telegram icon.jpg
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{94B276AC-369D-4462-B4B8-528EFBF21AD3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "Test\TestProject\TestProject.csproj", "{F9847CF6-A846-450C-A8F6-F4566FB2069F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegram.Bot.Framework", "Telegram.Bot.Framework\Telegram.Bot.Framework.csproj", "{DE6D9F6E-D212-4721-A608-A1E0A64D58FD}"
 EndProject
@@ -25,14 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C481667-BFA8-4A31-994A-54EDA2BF402A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9847CF6-A846-450C-A8F6-F4566FB2069F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE6D9F6E-D212-4721-A608-A1E0A64D58FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE6D9F6E-D212-4721-A608-A1E0A64D58FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE6D9F6E-D212-4721-A608-A1E0A64D58FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,10 +26,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{8C481667-BFA8-4A31-994A-54EDA2BF402A} = {94B276AC-369D-4462-B4B8-528EFBF21AD3}
-		{F9847CF6-A846-450C-A8F6-F4566FB2069F} = {94B276AC-369D-4462-B4B8-528EFBF21AD3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F5DA2A38-6563-4A69-B975-3A1E78D88716}

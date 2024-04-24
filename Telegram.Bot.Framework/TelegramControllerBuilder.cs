@@ -20,11 +20,13 @@ using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.Controller.Install;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.Core.Controller.BotBuilder;
+namespace Telegram.Bot.Framework;
 
+/// <summary>
+/// 
+/// </summary>
 internal class TelegramControllerBuilder : ITelegramModule
 {
     public void AddBuildService(IServiceCollection services)

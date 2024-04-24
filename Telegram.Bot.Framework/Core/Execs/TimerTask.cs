@@ -17,32 +17,35 @@
 namespace Telegram.Bot.Framework.Core.Execs;
 
 /// <summary>
-/// 
+/// 按定时间隔执行的任务
 /// </summary>
-public abstract class TimerTask : BackgroundTask
+public abstract class TimerTask : BackGroundTask
 {
     /// <summary>
-    /// 
+    /// 任务执行的时间
     /// </summary>
     private DateTime ExecuteDatetime { get; set; }
 
     /// <summary>
-    /// 
+    /// 任务执行的间隔
     /// </summary>
     protected TimeSpan Interval { get; set; }
 
     /// <summary>
-    /// 
+    /// 开始执行后台任务
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <param name="input">传入参数</param>
+    /// <param name="token">Token</param>
+    /// <returns>异步任务</returns>
     protected override async Task BackGroundExecuteAsync(object? input, CancellationToken token)
     {
+        // 如果任务没有取消，则始终执行
         while (!token.IsCancellationRequested)
         {
+            // 如果当前时间大于等于执行时间，则执行任务
             if (DateTime.Now >= ExecuteDatetime)
             {
+                // 计算下一次执行的时间
                 ExecuteDatetime = DateTime.Now.Add(Interval);
                 await IntervalExecuteAsync(input, token);
             }
@@ -54,10 +57,10 @@ public abstract class TimerTask : BackgroundTask
     }
 
     /// <summary>
-    /// 
+    /// 执行定期间隔的任务
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <param name="input">传入参数</param>
+    /// <param name="token">Token</param>
+    /// <returns>异步任务</returns>
     protected abstract Task IntervalExecuteAsync(object? input, CancellationToken token);
 }

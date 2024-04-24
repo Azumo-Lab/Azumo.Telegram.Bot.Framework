@@ -22,9 +22,18 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Controller.Users;
 
+/// <summary>
+/// 
+/// </summary>
 [DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IContextFactory))]
 internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserContext>, IContextFactory
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="botServiceProvider"></param>
+    /// <param name="update"></param>
+    /// <returns></returns>
     public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
     {
         var filters = botServiceProvider.GetServices<IUpdateFilter>();

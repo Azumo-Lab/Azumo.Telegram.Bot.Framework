@@ -17,13 +17,15 @@
 namespace Telegram.Bot.Framework.Core.Execs;
 
 /// <summary>
-/// 
+/// 任务接口
 /// </summary>
 public interface ITask
 {
     /// <summary>
-    /// 
+    /// 执行接口的任务
     /// </summary>
-    /// <returns></returns>
+    /// <param name="input">传入参数</param>
+    /// <param name="token">token</param>
+    /// <returns>异步执行</returns>
     public Task ExecuteAsync(object? input, CancellationToken token);
 }

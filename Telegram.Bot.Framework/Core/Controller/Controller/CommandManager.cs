@@ -24,19 +24,38 @@ using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
+
+/// <summary>
+/// 
+/// </summary>
 internal class CommandManager : ICommandManager
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly Dictionary<string, IExecutor> CommandExecutor = [];
 
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly Dictionary<MessageType, IExecutor> MessageTypeExecutor = [];
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="executor"></param>
     public void AddExecutor(IExecutor executor)
     {
         BotCommandAttribute? botCommandAttribute;
         if ((botCommandAttribute = executor.Attributes.Where(x => x is BotCommandAttribute).Select(x => x as BotCommandAttribute).FirstOrDefault()) != null)
             CommandExecutor.Add(botCommandAttribute.BotCommand, executor);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userContext"></param>
+    /// <returns></returns>
     public IExecutor? GetExecutor(TelegramUserContext userContext)
     {
         var commands = userContext.GetCommand();
@@ -53,6 +72,10 @@ internal class CommandManager : ICommandManager
         return null;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public IReadOnlyList<IExecutor> GetExecutorList() =>
         CommandExecutor.Values.ToList();
 }

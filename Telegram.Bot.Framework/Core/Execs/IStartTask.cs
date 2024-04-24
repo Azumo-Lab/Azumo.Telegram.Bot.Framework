@@ -17,7 +17,7 @@
 namespace Telegram.Bot.Framework.Core.Execs;
 
 /// <summary>
-/// 
+/// 在Bot启动时执行的任务
 /// </summary>
 public interface IStartTask : ITask
 {

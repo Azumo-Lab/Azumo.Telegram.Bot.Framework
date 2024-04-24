@@ -45,7 +45,7 @@ internal class TelegramConfiguration(string path) : ITelegramModule
             throw new FileNotFoundException(ConfigPath);
 
         var config = new ConfigurationBuilder().AddJsonFile(ConfigPath).Build();
-        services.AddSingleton<IConfiguration>(config);
+        _ = services.AddSingleton<IConfiguration>(config);
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ internal class TelegramConfiguration(string path) : ITelegramModule
     /// </summary>
     /// <param name="services"></param>
     /// <param name="builderService"></param>
-    public void Build(IServiceCollection services, IServiceProvider builderService) => 
+    public void Build(IServiceCollection services, IServiceProvider builderService) =>
         services.TryAddSingleton(builderService.GetRequiredService<IConfiguration>());
 }
 
@@ -81,11 +81,11 @@ internal class TelegramConfiguration<SettingModel>(string path) : ITelegramModul
             throw new FileNotFoundException(ConfigPath);
 
         var config = new ConfigurationBuilder().AddJsonFile(ConfigPath).Build();
-        var setting = config.Get<SettingModel>() 
+        var setting = config.Get<SettingModel>()
             ?? throw new Exception($"无法将配置文件的数据赋值给 {typeof(SettingModel)}, 请检查配置文件是否正确");
 
-        services.AddSingleton(setting);
-        services.AddSingleton<IConfiguration>(config);
+        _ = services.AddSingleton(setting);
+        _ = services.AddSingleton<IConfiguration>(config);
     }
 
     /// <summary>

@@ -17,16 +17,19 @@
 namespace Telegram.Bot.Framework.Core.Execs;
 
 /// <summary>
-/// 
+/// 后台任务
 /// </summary>
-public abstract class BackgroundTask : ITask
+public abstract class BackGroundTask : ITask
 {
     /// <summary>
-    /// 
+    /// 执行接口的任务
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <remarks>
+    /// 向线程池中添加一个异步任务
+    /// </remarks>
+    /// <param name="input">传入参数</param>
+    /// <param name="token">token</param>
+    /// <returns>异步执行</returns>
     public virtual Task ExecuteAsync(object? input, CancellationToken token)
     {
         if (!token.IsCancellationRequested)
@@ -68,10 +71,10 @@ public abstract class BackgroundTask : ITask
     }
 
     /// <summary>
-    /// 
+    /// 开始执行后台任务
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <param name="input">传入参数</param>
+    /// <param name="token">Token <see cref="CancellationToken"/></param>
+    /// <returns>异步任务</returns>
     protected abstract Task BackGroundExecuteAsync(object? input, CancellationToken token);
 }

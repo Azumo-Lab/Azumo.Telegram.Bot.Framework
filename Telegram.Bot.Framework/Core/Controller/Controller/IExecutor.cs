@@ -14,21 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
+
+/// <summary>
+/// 
+/// </summary>
 internal interface IExecutor
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public Attribute[] Attributes { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public IReadOnlyList<IGetParam> Parameters { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public ISession Session { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <param name="param"></param>
+    /// <returns></returns>
     public Task Invoke(IServiceProvider serviceProvider, object?[] param);
 }

@@ -18,15 +18,37 @@ using Telegram.Bot.Framework.Core.Controller.Storage;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="func"></param>
+/// <param name="paramList"></param>
+/// <param name="attributes"></param>
 internal class FuncInvoker(Delegate func, List<IGetParam> paramList, Attribute[] attributes)
     : IExecutor
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public IReadOnlyList<IGetParam> Parameters { get; } = new List<IGetParam>(paramList);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Attribute[] Attributes { get; } = attributes;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public ISession Session { get; } = new SessionStorage();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <param name="param"></param>
+    /// <returns></returns>
     public Task Invoke(IServiceProvider serviceProvider, object?[] param) =>
         func.DynamicInvoke(param) is Task task ? task : Task.CompletedTask;
 }

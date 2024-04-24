@@ -19,19 +19,48 @@ using Telegram.Bot.Framework.Core.Controller.Storage;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.Core.Controller.Controller;
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="objectFactory"></param>
+/// <param name="func"></param>
+/// <param name="paramList"></param>
+/// <param name="attributes"></param>
 internal class BotCommandInvoker(ObjectFactory objectFactory, Func<object, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
     : IExecutor
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly ObjectFactory _objectFactory = objectFactory;
 
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly Func<object, object?[], object> _func = func;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public IReadOnlyList<IGetParam> Parameters { get; } = new List<IGetParam>(paramList);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public Attribute[] Attributes { get; } = attributes;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public ISession Session { get; } = new SessionStorage();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    /// <param name="param"></param>
+    /// <returns></returns>
     public Task Invoke(IServiceProvider serviceProvider, object?[] param)
     {
         var obj = _objectFactory(serviceProvider, []);

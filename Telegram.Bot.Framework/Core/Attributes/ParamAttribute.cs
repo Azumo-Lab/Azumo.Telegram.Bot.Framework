@@ -20,7 +20,7 @@ namespace Telegram.Bot.Framework.Core.Attributes;
 /// 
 /// </summary>
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-public class ParamAttribute : Attribute
+public class TypeForAttribute : Attribute
 {
     /// <summary>
     /// 

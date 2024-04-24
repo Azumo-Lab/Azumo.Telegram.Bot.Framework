@@ -11,13 +11,13 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageId>Telegram.Bot.Framework</PackageId>
     <Title>Telegram.Bot.Framework</Title>
-    <Version>1.0.2.2</Version>
+    <Version>1.0.2.5</Version>
     <Authors>Sokushu</Authors>
     <Company>Azumo</Company>
     <Product>Telegram.Bot.Framework</Product>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Telegram;Telegram Bot;Telegram Framework</PackageTags>
-    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
+    <PackageOutputPath>D:\NUGET自建</PackageOutputPath>
     <PackageProjectUrl>https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework</RepositoryUrl>
     <PackageIcon>Telegram icon.jpg</PackageIcon>

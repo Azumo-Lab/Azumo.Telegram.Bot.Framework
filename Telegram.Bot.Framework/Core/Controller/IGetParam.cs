@@ -27,7 +27,7 @@ public interface IGetParam
     /// <summary>
     /// 
     /// </summary>
-    public ParamAttribute? ParamAttribute { get; set; }
+    public TypeForAttribute? ParamAttribute { get; set; }
 
     /// <summary>
     /// 
