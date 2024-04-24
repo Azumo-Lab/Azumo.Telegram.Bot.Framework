@@ -18,11 +18,11 @@ using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Security.AccessControl;
+using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.Storage;
 using Telegram.Bot.Framework.SimpleAuthentication;
-using Telegram.Bot.Framework.SimpleAuthentication.Attributes;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;
 internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>

@@ -27,7 +27,7 @@ public abstract class BaseGetParamDirect : IGetParam
     /// <summary>
     /// 
     /// </summary>
-    public TypeForAttribute? ParamAttribute { get; set; }
+    public ParamAttribute? ParamAttribute { get; set; }
 
     /// <summary>
     /// 

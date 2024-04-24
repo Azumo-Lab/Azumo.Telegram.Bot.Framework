@@ -18,9 +18,11 @@ using Azumo.SuperExtendedFramework;
 using System.Reflection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.Install;
+using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework.Helpers;
+namespace Telegram.Bot.Framework;
 
 /// <summary>
 /// 
@@ -57,7 +59,7 @@ public static class Extensions
         Type iGetParamType = null!;
 
         // 从参数上获取 ParamAttribute 标签
-        var paramAttribute = Attribute.GetCustomAttribute(parameterInfo, typeof(TypeForAttribute)) as TypeForAttribute;
+        var paramAttribute = Attribute.GetCustomAttribute(parameterInfo, typeof(ParamAttribute)) as ParamAttribute;
         if (paramAttribute != null) // 能获取到就使用获取到的类型
             if (paramAttribute.IGetParmType != null)
                 iGetParamType = paramAttribute.IGetParmType;
@@ -91,4 +93,25 @@ public static class Extensions
             throw new Exception($"类型：{iGetParamType.FullName} 未实现接口 {nameof(IGetParam)}");
         return getParam;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private const string CommandKey = "{ADD76730-6FE8-4B6C-8E40-AAD5D6883DC8}";
+
+    /// <summary>
+    /// 向用户存储中添加指令
+    /// </summary>
+    /// <param name="session"></param>
+    /// <param name="executor"></param>
+    internal static void AddCommand(this ISession session, IExecutor executor) =>
+        session.AddOrUpdate(CommandKey, executor);
+
+    /// <summary>
+    /// 从用户存储中获取指令
+    /// </summary>
+    /// <param name="session"></param>
+    /// <returns></returns>
+    internal static IExecutor GetCommand(this ISession session) =>
+        session.Get<IExecutor>(CommandKey);
 }

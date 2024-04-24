@@ -22,7 +22,6 @@ using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.I18N;
 using Telegram.Bot.Framework.Core.Users;
-using Telegram.Bot.Framework.Helpers;
 
 namespace Telegram.Bot.Framework.Core.Controller.Install;
 
@@ -88,7 +87,7 @@ internal class ScanController : ITelegramModule
 /// </summary>
 internal class NullParam : IGetParam
 {
-    public TypeForAttribute? ParamAttribute { get; set; }
+    public ParamAttribute? ParamAttribute { get; set; }
 
     public Task<object> GetParam(TelegramUserContext context) =>
         Task.FromResult<object>(null!);

@@ -14,17 +14,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.SimpleAuthentication.Attributes;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Core.BotBuilder;
+
+namespace Telegram.Bot.Framework;
 
 /// <summary>
 /// 
 /// </summary>
-/// <param name="roleName"></param>
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = true)]
-public class AuthenticationAttribute(string roleName) : Attribute
+internal class TelegramSimpleAuthentication : ITelegramModule
+{
+    public void AddBuildService(IServiceCollection services)
+    {
+
+    }
+    public void Build(IServiceCollection services, IServiceProvider builderService)
+    {
+
+    }
+}
+
+/// <summary>
+/// 
+/// </summary>
+public static class TelegramSimpleAuthenticationExtensions
 {
     /// <summary>
     /// 
     /// </summary>
-    public string RoleName { get; } = roleName;
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static ITelegramModuleBuilder UseSimpleAuthentication(this ITelegramModuleBuilder builder) =>
+        builder.AddModule(new TelegramSimpleAuthentication());
 }
