@@ -21,6 +21,9 @@ using Telegram.Bot.Framework.Internal.Attritubes;
 
 namespace Telegram.Bot.Framework.Internal.TelegramBotProc;
 
+/// <summary>
+/// 
+/// </summary>
 [TelegramBotEndProc]
 internal class ShowBotUsername : IMiddleware<IServiceProvider, Task>
 {

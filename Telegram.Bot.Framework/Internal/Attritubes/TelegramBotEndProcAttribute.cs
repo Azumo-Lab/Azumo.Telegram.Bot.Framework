@@ -16,6 +16,9 @@
 
 namespace Telegram.Bot.Framework.Internal.Attritubes;
 
+/// <summary>
+/// 
+/// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 internal class TelegramBotEndProcAttribute : Attribute
 {

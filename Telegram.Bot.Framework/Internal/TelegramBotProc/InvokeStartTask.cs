@@ -23,6 +23,9 @@ using Telegram.Bot.Framework.Internal.Attritubes;
 
 namespace Telegram.Bot.Framework.Internal.TelegramBotProc;
 
+/// <summary>
+/// 
+/// </summary>
 [TelegramBotStartProc]
 internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
 {

@@ -21,6 +21,9 @@ using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Internal.Params;
 
+/// <summary>
+/// 
+/// </summary>
 [TypeFor(typeof(CancellationToken))]
 internal class ParamsCancellationToken : BaseGetParamDirect
 {

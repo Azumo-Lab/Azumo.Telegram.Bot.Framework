@@ -21,6 +21,9 @@ using Telegram.Bot.Polling;
 
 namespace Telegram.Bot.Framework.Internal.TelegramBotProc;
 
+/// <summary>
+/// 
+/// </summary>
 [TelegramBotProc]
 internal class BotStart : IMiddleware<IServiceProvider, Task>
 {

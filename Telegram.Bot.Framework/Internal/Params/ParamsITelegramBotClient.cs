@@ -20,6 +20,9 @@ using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Internal.Params;
 
+/// <summary>
+/// 
+/// </summary>
 [TypeFor(typeof(ITelegramBotClient))]
 internal class ParamsITelegramBotClient : BaseGetParamDirect
 {
