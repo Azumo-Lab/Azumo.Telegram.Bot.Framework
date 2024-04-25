@@ -16,6 +16,8 @@
 
 using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework;
 
@@ -28,5 +30,15 @@ public static partial class Extensions
     /// <param name="message"></param>
     /// <returns></returns>
     public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message) =>
-        await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message);
+        await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="telegramUserContext"></param>
+    /// <param name="message"></param>
+    /// <param name="buttons"></param>
+    /// <returns></returns>
+    public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) => 
+        await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
 }
