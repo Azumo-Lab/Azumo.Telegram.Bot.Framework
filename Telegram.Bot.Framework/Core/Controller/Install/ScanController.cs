@@ -50,18 +50,23 @@ internal class ScanController : ITelegramModule
 
         var commandManager = serviceProvider.GetRequiredService<ICommandManager>();
 
-        var controllerTypeList = typeof(TelegramControllerAttribute).GetHasAttributeType();
+        var controllerTypeList = typeof(TelegramControllerAttribute).GetTypesWithAttribute();
         foreach ((var controller, var _) in controllerTypeList)
         {
-            foreach ((var method, var attr) in controller.GetAttributeMethods<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+            foreach ((var method, var attr) in controller.GetMethodsWithAttribute<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
                 var attributes = new List<Attribute>
                 {
                     attr
                 };
                 attributes.AddRange(method.GetCustomAttributes());
+
+                ObjectFactory? objectFactory = null;
+                if (!method.IsStatic)
+                    objectFactory = ActivatorUtilities.CreateFactory(controller, []);
+
                 var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand,
-                    ActivatorUtilities.CreateFactory(controller, []),
+                    objectFactory,
                     method.BuildFunc(),
                     method.GetParameters().Select(x => x.GetParams()).ToList(),
                     attributes.ToArray());

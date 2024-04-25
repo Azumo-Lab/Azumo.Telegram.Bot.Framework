@@ -14,45 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework;
-using Microsoft.VisualBasic;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Core.Controller.Controller;
+using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
 public static partial class Extensions
 {
     /// <summary>
-    /// 
+    /// 向用户存储中添加指令
     /// </summary>
-    static Extensions()
-    {
-        IGetParamTypeList = typeof(IGetParam).GetAllSameType()
-            .Where(x => Attribute.IsDefined(x, typeof(TypeForAttribute)))
-            .Select(x => (x, (TypeForAttribute)Attribute.GetCustomAttribute(x, typeof(TypeForAttribute))!))
-            .ToList()!;
-
-        IGetParamTypeList ??= [];
-
-        AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
-    }
+    /// <param name="session">存储接口</param>
+    /// <param name="executor"></param>
+    internal static void AddCommand(this ISession session, IExecutor executor) =>
+        session.AddOrUpdate(CommandKey, executor);
 
     /// <summary>
-    /// 
+    /// 从用户存储中获取指令
     /// </summary>
-    private static readonly IReadOnlyList<(Type classType, TypeForAttribute ForType)> IGetParamTypeList;
+    /// <param name="session">存储接口</param>
+    /// <returns></returns>
+    internal static IExecutor GetCommand(this ISession session) =>
+        session.Get<IExecutor>(CommandKey);
 
     /// <summary>
-    /// 
+    /// 具有泛型的值获取方法
     /// </summary>
-    private const string CommandKey = "{ADD76730-6FE8-4B6C-8E40-AAD5D6883DC8}";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static List<Type> AllTypes { get; }
+    /// <typeparam name="T">泛型类型</typeparam>
+    /// <param name="session">存储接口</param>
+    /// <param name="key">键值</param>
+    /// <returns>转换为 <typeparamref name="T"/> 值的数据</returns>
+    public static T Get<T>(this ISession session, object key) =>
+        (T)session.Get(key);
 }

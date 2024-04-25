@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Telegram.Bot.Net": {
-      "commandName": "Project",
-      "commandLineArgs": "-setting D:\\OneDrive\\文件库\\AppSetting.json"
-    }
-  }
-}

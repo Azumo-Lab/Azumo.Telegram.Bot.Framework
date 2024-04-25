@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework;
 using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -160,7 +159,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-", 
+",
 DateTime.Now.Year);
 
         // 执行前处理
@@ -186,8 +185,8 @@ DateTime.Now.Year);
     private async Task PipelineProc<T>() where T : Attribute
     {
         var builder = PipelineFactory.GetPipelineBuilder<IServiceProvider, Task>(() => Task.CompletedTask);
-        foreach (var item in typeof(T).GetHasAttributeType())
-            if (ActivatorUtilities.CreateInstance(RuntimeServiceProvider, item.Item1, []) is IMiddleware<IServiceProvider, Task> middleware)
+        foreach (var (classType, attributes) in typeof(T).GetTypesWithAttribute())
+            if (ActivatorUtilities.CreateInstance(RuntimeServiceProvider, classType, []) is IMiddleware<IServiceProvider, Task> middleware)
                 _ = builder.Use(middleware);
         var controller = builder.Build();
         await controller.CurrentPipeline.Invoke(RuntimeServiceProvider);

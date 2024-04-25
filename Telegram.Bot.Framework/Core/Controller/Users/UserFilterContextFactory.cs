@@ -36,7 +36,7 @@ internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserConte
     /// <returns></returns>
     public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
     {
-        var filters = botServiceProvider.GetServices<IUpdateFilter>();
+        var filters = botServiceProvider.GetServices<IRequestFilter>();
         foreach (var filter in filters)
             if (!filter.Filter(update))
                 return null;

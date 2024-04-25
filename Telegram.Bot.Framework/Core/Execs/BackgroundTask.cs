@@ -22,6 +22,16 @@ namespace Telegram.Bot.Framework.Core.Execs;
 public abstract class BackGroundTask : ITask
 {
     /// <summary>
+    /// 发生错误的重试次数
+    /// </summary>
+    protected int ErrorCount { get; set; } = 3;
+
+    /// <summary>
+    /// 发生错误后的延迟时间
+    /// </summary>
+    protected TimeSpan ErrorDelay { get; set; } = TimeSpan.FromSeconds(30);
+
+    /// <summary>
     /// 执行接口的任务
     /// </summary>
     /// <remarks>
@@ -39,32 +49,29 @@ public abstract class BackGroundTask : ITask
             ReExecute:
                 try
                 {
-                    await BackGroundExecuteAsync(inputObj, token);
-                }
-                catch (TaskCanceledException)
-                {
-                    // 立刻结束
-                    return;
+                    // 开始执行后台任务
+                    if (!token.IsCancellationRequested)
+                        await BackGroundExecuteAsync(inputObj, token);
                 }
                 catch (Exception) when (token.IsCancellationRequested)
                 {
-                    // 立刻结束
-                    return;
+                    return; // 立刻结束
                 }
                 catch (Exception)
                 {
                     errorCount++;
-                    if (errorCount < 3)
-                    {
-                        // 重试3次
-                        await Task.Delay(TimeSpan.FromSeconds(5));
-                        goto ReExecute;
-                    }
+                    if (errorCount < ErrorCount)
+                        try
+                        {
+                            await Task.Delay(ErrorDelay, token); // 重试
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            return; // 立刻结束
+                        }
                     else
-                    {
-                        // 重试3次后放弃
-                        return;
-                    }
+                        return; // 重试后放弃
+                    goto ReExecute;
                 }
             }, input);
         return Task.CompletedTask;

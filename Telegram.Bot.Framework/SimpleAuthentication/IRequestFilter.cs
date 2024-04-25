@@ -16,18 +16,17 @@
 
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Core.Users;
+namespace Telegram.Bot.Framework.SimpleAuthentication;
 
 /// <summary>
-/// <see cref="TelegramUserContext"/> 创建接口
+/// 
 /// </summary>
-public interface IContextFactory
+public interface IRequestFilter
 {
     /// <summary>
-    /// 获取或创建用户上下文
+    /// 
     /// </summary>
-    /// <param name="botServiceProvider"></param>
     /// <param name="update"></param>
-    /// <returns><see cref="TelegramUserContext"/></returns>
-    public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update);
+    /// <returns></returns>
+    public bool Filter(Update update);
 }

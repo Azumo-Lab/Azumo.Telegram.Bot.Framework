@@ -16,6 +16,7 @@
 
 using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel;
 using System.Reflection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.BotBuilder;
@@ -56,7 +57,7 @@ internal class TelegramCommand(Delegate func) : ITelegramModule
         var exec = Factory.GetExecutorInstance(EnumCommandType.Func,
             _func,
             _func.Method.GetParameters().Select(x => x.GetParams()).ToList(),
-            Attribute.GetCustomAttributes(_func.Method));
+            TypeDescriptor.GetAttributes(_func.Method));
 
         manager.AddExecutor(exec);
     }
@@ -68,11 +69,24 @@ internal class TelegramCommand(Delegate func) : ITelegramModule
 public static class TelegramCommandExtensions
 {
     /// <summary>
-    /// 
+    /// 添加一个命令
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="func"></param>
     /// <returns></returns>
     public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, Delegate func) =>
         builder.AddModule<TelegramCommand>(func);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="commandName"></param>
+    /// <param name="func"></param>
+    /// <returns></returns>
+    public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, string commandName, Delegate func)
+    {
+        TypeDescriptor.AddAttributes(func.Method, new BotCommandAttribute(commandName));
+        return builder.AddCommand(func);
+    }
 }

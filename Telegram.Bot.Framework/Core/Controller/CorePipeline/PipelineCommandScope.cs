@@ -51,7 +51,7 @@ internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
         if ((roles = exec.Session.Get<List<string>>(RolesNameKey)) == null)
         {
             roles = [];
-            roles.AddRange(exec.Attributes.Where(x => x is AuthenticationAttribute).Cast<AuthenticationAttribute>().Select(x => x.RoleName));
+            roles.AddRange(exec.Attributes.Where(x => x is AuthenticationAttribute).Cast<AuthenticationAttribute>().SelectMany(x => x.RoleNames));
             exec.Session.AddOrUpdate(RolesNameKey, roles);
         }
         // 开始校验

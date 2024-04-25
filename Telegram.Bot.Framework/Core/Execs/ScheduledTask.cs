@@ -32,7 +32,7 @@ public abstract class ScheduledTask : BackGroundTask
     /// <remarks>
     /// 例如，这个值是一天的情况下，任务将会每天执行一次。
     /// </remarks>
-    private TimeSpan IntervalTimeSpan { get; set; } = TimeSpan.Zero;
+    protected TimeSpan IntervalTimeSpan { get; set; } = TimeSpan.Zero;
 
     /// <summary>
     /// 开始执行异步任务
@@ -84,11 +84,4 @@ public abstract class ScheduledTask : BackGroundTask
     /// <param name="second">秒</param>
     protected void AddScheduled(int hour, int minute = 0, int second = 0) => 
         InvokeTimes.Add(DateTime.Now.Date.AddHours(hour).AddMinutes(minute).AddSeconds(second));
-
-    /// <summary>
-    /// 设置间隔
-    /// </summary>
-    /// <param name="timeSpan">时间间隔</param>
-    protected void SetInterval(TimeSpan timeSpan) => 
-        IntervalTimeSpan = timeSpan;
 }

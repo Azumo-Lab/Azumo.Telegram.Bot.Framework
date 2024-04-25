@@ -14,21 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Controller.Controller;
-using Telegram.Bot.Framework.Core.Storage;
 using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
+
+/// <summary>
+/// 
+/// </summary>
 internal class PipelineModel
 {
-    public TelegramUserContext UserContext { get; set; } = null!;
+    /// <summary>
+    /// 
+    /// </summary>
+    public required TelegramUserContext UserContext { get; set; }
 
-    public ICommandManager CommandManager { get; set; } = null!;
+    /// <summary>
+    /// 
+    /// </summary>
+    public required ICommandManager CommandManager { get; set; }
 
-    public ICommandScopeService CommandScopeService { get; set; } = null!;
+    /// <summary>
+    /// 
+    /// </summary>
+    public required ICommandScopeService CommandScopeService { get; set; }
 }

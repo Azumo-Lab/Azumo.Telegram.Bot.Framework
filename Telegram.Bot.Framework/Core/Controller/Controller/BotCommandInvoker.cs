@@ -27,13 +27,13 @@ namespace Telegram.Bot.Framework.Core.Controller.Controller;
 /// <param name="func"></param>
 /// <param name="paramList"></param>
 /// <param name="attributes"></param>
-internal class BotCommandInvoker(ObjectFactory objectFactory, Func<object, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
+internal class BotCommandInvoker(ObjectFactory? objectFactory, Func<object, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
     : IExecutor
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly ObjectFactory _objectFactory = objectFactory;
+    private readonly ObjectFactory? _objectFactory = objectFactory;
 
     /// <summary>
     /// 
@@ -63,7 +63,9 @@ internal class BotCommandInvoker(ObjectFactory objectFactory, Func<object, objec
     /// <returns></returns>
     public Task Invoke(IServiceProvider serviceProvider, object?[] param)
     {
-        var obj = _objectFactory(serviceProvider, []);
+        object obj = null!;
+        if (_objectFactory != null)
+            obj = _objectFactory(serviceProvider, []);
         return _func(obj, param) is Task task ? task : Task.CompletedTask;
     }
 }

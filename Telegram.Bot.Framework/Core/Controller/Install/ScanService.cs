@@ -32,7 +32,7 @@ internal class ScanService : ITelegramModule
     }
     public void Build(IServiceCollection services, IServiceProvider builderService)
     {
-        var list = typeof(DependencyInjectionAttribute).GetHasAttributeType();
+        var list = Extensions.GetTypesWithAttribute<DependencyInjectionAttribute>();
         foreach ((var t, var attr) in list)
         {
             foreach (var item in attr)

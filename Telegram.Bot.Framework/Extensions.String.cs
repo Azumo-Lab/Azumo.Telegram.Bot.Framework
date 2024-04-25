@@ -14,20 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Types;
-
-namespace Telegram.Bot.Framework.Core.Users;
-
-/// <summary>
-/// <see cref="TelegramUserContext"/> 创建接口
-/// </summary>
-public interface IContextFactory
+namespace Telegram.Bot.Framework;
+public static partial class Extensions
 {
     /// <summary>
-    /// 获取或创建用户上下文
+    /// 
     /// </summary>
-    /// <param name="botServiceProvider"></param>
-    /// <param name="update"></param>
-    /// <returns><see cref="TelegramUserContext"/></returns>
-    public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update);
+    /// <param name="nameSpace"></param>
+    /// <returns></returns>
+    public static List<Type> GetAllTypeSameNameSpace(this string nameSpace) =>
+        AllTypes.Where(x => x.Namespace == nameSpace).ToList();
 }

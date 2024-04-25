@@ -18,14 +18,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 
 namespace Telegram.Bot.Framework.Core.Controller.Install;
+
+/// <summary>
+/// 
+/// </summary>
 internal class Factory
 {
-    public static IExecutor GetExecutorInstance(EnumCommandType enumCommandType, params object[] objects)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="enumCommandType"></param>
+    /// <param name="objects"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static IExecutor GetExecutorInstance(EnumCommandType enumCommandType, params object?[] objects)
     {
         IExecutor executor = enumCommandType switch
         {
             EnumCommandType.BotCommand => new BotCommandInvoker(
-                                (objects[0] as ObjectFactory)!,
+                                objects[0] as ObjectFactory,
                                 (objects[1] as Func<object, object?[], object>)!,
                                 (objects[2] as List<IGetParam>)!,
                                 (objects[3] as Attribute[])!),

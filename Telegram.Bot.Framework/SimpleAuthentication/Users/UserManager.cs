@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 using Telegram.Bot.Framework.Core.Users;
-using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
 
@@ -30,7 +29,7 @@ namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
 internal class UserManager : IUserManager, IContextFilter
 {
     private const string RoleKey = "{79973381-B239-4CD6-8F22-544FE7053866}";
-    public void ClearRole(TelegramUserContext userContext) => 
+    public void ClearRole(TelegramUserContext userContext) =>
         userContext.Session.Remove(RoleKey);
 
     public bool Filter(TelegramUserContext userContext, string[] roleNames)
@@ -60,6 +59,6 @@ internal class UserManager : IUserManager, IContextFilter
         list.Add(roleName);
         userContext.Session.AddOrUpdate(RoleKey, list);
     }
-    public bool Verify(TelegramUserContext userContext, string roleName) => 
+    public bool Verify(TelegramUserContext userContext, string roleName) =>
         Filter(userContext, [roleName]);
 }

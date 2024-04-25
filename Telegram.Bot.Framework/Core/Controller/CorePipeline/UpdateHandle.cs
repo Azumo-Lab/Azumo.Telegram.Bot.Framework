@@ -21,6 +21,7 @@ using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
@@ -57,6 +58,9 @@ internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
         await Task.CompletedTask;
     }
 
+    private readonly IEnumerable<IRequestFilter> requestFilters = serviceProvider.GetServices<IRequestFilter>() ?? [];
+    private readonly IContextFactory contextFactory = serviceProvider.GetRequiredService<IContextFactory>();
+
     /// <summary>
     /// 
     /// </summary>
@@ -66,14 +70,18 @@ internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
     /// <returns></returns>
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
-        // 创建 TelegramUserContext
-        var contextFactory = BotServiceProvider.GetRequiredService<IContextFactory>();
-        TelegramUserContext? context;
-        if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)
+        // 创建请求上下文
+        IRequestContext? requestContext;
+        if ((requestContext = update.GetRequestContext(BotServiceProvider, requestFilters)) == null)
             return;
 
         try
         {
+            // 创建用户上下文
+            TelegramUserContext? context;
+            if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)
+                return;
+
             // 获取用户的流水线
             var pipeline = context.UserServiceProvider.GetRequiredService<IPipelineController<PipelineModel, Task>>();
 
@@ -91,7 +99,7 @@ internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
         }
         finally
         {
-
+            requestContext.Dispose();
         }
     }
 }

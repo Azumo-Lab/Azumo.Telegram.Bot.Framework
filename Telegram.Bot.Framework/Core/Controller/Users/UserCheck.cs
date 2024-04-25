@@ -25,8 +25,8 @@ namespace Telegram.Bot.Framework.Core.Controller.Users;
 /// <summary>
 /// 
 /// </summary>
-[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IUpdateFilter))]
-internal class UserCheck : IUpdateFilter
+[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IRequestFilter))]
+internal class UserCheck : IRequestFilter
 {
     public bool Filter(Update update) =>
         update.GetUser() != null;

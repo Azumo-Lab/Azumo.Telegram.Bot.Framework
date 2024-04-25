@@ -56,7 +56,7 @@ public sealed class TelegramUserContext : Update, IDisposable, IUserContext
     /// <summary>
     /// 
     /// </summary>
-    public ChatId RequestChatID => TelegramUserContextExtensions.GetChatID(this);
+    public ChatId RequestChatID => Extensions.GetChatID(this);
 
     /// <summary>
     /// 
