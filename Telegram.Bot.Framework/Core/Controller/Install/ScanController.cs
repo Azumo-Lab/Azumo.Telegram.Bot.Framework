@@ -90,12 +90,8 @@ internal class ScanController : ITelegramModule
 /// <summary>
 /// 一个空的参数获取实现类
 /// </summary>
-internal class NullParam : IGetParam
+internal class NullParam : BaseGetParamDirect
 {
-    public ParamAttribute? ParamAttribute { get; set; }
-
-    public Task<object> GetParam(TelegramUserContext context) =>
+    public override Task<object> GetParam(TelegramUserContext context) =>
         Task.FromResult<object>(null!);
-    public Task<bool> SendMessage(TelegramUserContext context) =>
-        Task.FromResult(true);
 }

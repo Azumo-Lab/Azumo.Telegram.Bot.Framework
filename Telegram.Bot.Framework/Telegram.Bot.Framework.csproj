@@ -11,7 +11,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageId>Telegram.Bot.Framework</PackageId>
     <Title>Telegram.Bot.Framework</Title>
-    <Version>1.0.2.9</Version>
+    <Version>2.0.0.2</Version>
     <Authors>Sokushu</Authors>
     <Company>Azumo</Company>
     <Product>Telegram.Bot.Framework</Product>
@@ -25,6 +25,7 @@
     <Copyright>https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework</Copyright>
     <SignAssembly>False</SignAssembly>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Description>A simple framework that helps developers create powerful Telegram bots using .NET</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

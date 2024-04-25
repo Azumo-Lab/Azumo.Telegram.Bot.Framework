@@ -27,7 +27,7 @@ public abstract class BaseGetParamDirect : IGetParam
     /// <summary>
     /// 
     /// </summary>
-    public ParamAttribute? ParamAttribute { get; set; }
+    public virtual ParamAttribute? ParamAttribute { get; set; }
 
     /// <summary>
     /// 
@@ -41,6 +41,6 @@ public abstract class BaseGetParamDirect : IGetParam
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public Task<bool> SendMessage(TelegramUserContext context) =>
+    public virtual Task<bool> SendMessage(TelegramUserContext context) =>
         Task.FromResult(true);
 }
