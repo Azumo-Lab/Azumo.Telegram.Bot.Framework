@@ -30,6 +30,9 @@ namespace Telegram.Bot.Framework.Core.Controller.Install;
 /// </summary>
 internal class ScanController : ITelegramModule
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly IServiceCollection ScopeServices = new ServiceCollection();
     
     /// <summary>
