@@ -15,6 +15,10 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Telegram.Bot.Framework;
+
+/// <summary>
+/// 
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>
@@ -41,4 +45,20 @@ public static partial class Extensions
         var newPath = rename(directoryName, oldName, exName);
         fileInfo.Rename(newPath);
     }
+
+    /// <summary>
+    /// 变更文件扩展名
+    /// </summary>
+    /// <param name="fileInfo"></param>
+    /// <param name="newExtension"></param>
+    public static void ChangeExtension(this FileInfo fileInfo, string newExtension) =>
+        Rename(fileInfo, (directoryName, oldName, exName) => Path.Combine(directoryName, oldName + newExtension));
+
+    /// <summary>
+    /// 追加文件扩展名
+    /// </summary>
+    /// <param name="fileInfo"></param>
+    /// <param name="extensionName"></param>
+    public static void AppendExtension(this FileInfo fileInfo, string extensionName) =>
+        Rename(fileInfo, (directoryName, oldName, exName) => Path.Combine(directoryName, oldName + exName + extensionName));
 }

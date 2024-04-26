@@ -22,12 +22,12 @@ using Telegram.Bot.Framework.Core.Controller;
 namespace Telegram.Bot.Framework;
 
 /// <summary>
-/// 
+/// 扩展方法
 /// </summary>
 public static partial class Extensions
 {
     /// <summary>
-    /// 
+    /// 初始化
     /// </summary>
     static Extensions()
     {
@@ -44,7 +44,7 @@ public static partial class Extensions
     /// <summary>
     /// 
     /// </summary>
-    private static readonly IReadOnlyList<(Type classType, TypeForAttribute ForType)> IGetParamTypeList;
+    private static IReadOnlyList<(Type classType, TypeForAttribute ForType)> IGetParamTypeList { get; }
 
     /// <summary>
     /// 
@@ -52,7 +52,7 @@ public static partial class Extensions
     private const string CommandKey = "{ADD76730-6FE8-4B6C-8E40-AAD5D6883DC8}";
 
     /// <summary>
-    /// 
+    /// 程序全部的类型
     /// </summary>
-    public static List<Type> AllTypes { get; }
+    public static IReadOnlyList<Type> AllTypes { get; }
 }

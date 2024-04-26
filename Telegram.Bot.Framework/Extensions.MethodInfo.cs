@@ -15,11 +15,15 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Telegram.Bot.Framework;
+
+/// <summary>
+/// 
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>
@@ -27,14 +31,32 @@ public static partial class Extensions
     /// </summary>
     /// <param name="methodInfo"></param>
     /// <returns></returns>
-    public static Func<object, object[], object> BuildFunc(this MethodInfo methodInfo)
+    public static Func<IServiceProvider, object[], object> BuildFunc(this MethodInfo methodInfo)
     {
-        
+        // 创建对象创建工厂
+        var instanceType = methodInfo.DeclaringType;
+        var isStatic = methodInfo.IsStatic;
 
+        if (!isStatic && instanceType == null)
+            throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
 
+        // 创建对象工厂
+        Expression<Func<IServiceProvider, object>> objectFactoryFunc;
+        if (!isStatic)
+        {
+            var objectFactory = ActivatorUtilities.CreateFactory(instanceType!, []);
+            RuntimeHelpers.PrepareDelegate(objectFactory);
+
+            objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
+        }
+        else
+        {
+            objectFactoryFunc = (service) => null!;
+        }
+            
+        // 参数
         var parameters = methodInfo.GetParameters();
-
-        var instance = Expression.Parameter(typeof(object), "instance");
+        var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "serviceProvider");
         var param = Expression.Parameter(typeof(object[]), "param");
 
         var paramList = new Expression[parameters.Length];
@@ -42,7 +64,11 @@ public static partial class Extensions
         for (var i = 0; i < paramList.Length; i++)
             paramList[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameters[i].ParameterType);
 
-        var method = Expression.Call(methodInfo.IsStatic ? null : instance, methodInfo, paramList);
+        // 调用方法
+        RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+
+        var objectFactoryInvoke = Expression.Invoke(objectFactoryFunc, serviceProvider);
+        var method = Expression.Call(methodInfo.IsStatic ? objectFactoryInvoke : Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType!), methodInfo, paramList);
         Expression func;
         if (methodInfo.ReturnType.FullName == typeof(void).FullName)
         {
@@ -53,6 +79,9 @@ public static partial class Extensions
         {
             func = Expression.Block(method);
         }
-        return Expression.Lambda<Func<object, object[], object>>(func, instance, param).Compile();
+
+        var result = Expression.Lambda<Func<IServiceProvider, object[], object>>(func, serviceProvider, param).Compile();
+        RuntimeHelpers.PrepareDelegate(result);
+        return result;
     }
 }

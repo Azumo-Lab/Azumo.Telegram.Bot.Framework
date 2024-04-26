@@ -15,6 +15,10 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace Telegram.Bot.Framework;
+
+/// <summary>
+/// 
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>

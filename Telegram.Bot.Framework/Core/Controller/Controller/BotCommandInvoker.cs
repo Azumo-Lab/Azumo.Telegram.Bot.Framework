@@ -23,22 +23,16 @@ namespace Telegram.Bot.Framework.Core.Controller.Controller;
 /// <summary>
 /// 
 /// </summary>
-/// <param name="objectFactory"></param>
 /// <param name="func"></param>
 /// <param name="paramList"></param>
 /// <param name="attributes"></param>
-internal class BotCommandInvoker(ObjectFactory? objectFactory, Func<object, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
+internal class BotCommandInvoker(Func<IServiceProvider, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
     : IExecutor
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly ObjectFactory? _objectFactory = objectFactory;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private readonly Func<object, object?[], object> _func = func;
+    private readonly Func<IServiceProvider, object?[], object> _func = func;
 
     /// <summary>
     /// 
@@ -61,11 +55,6 @@ internal class BotCommandInvoker(ObjectFactory? objectFactory, Func<object, obje
     /// <param name="serviceProvider"></param>
     /// <param name="param"></param>
     /// <returns></returns>
-    public Task Invoke(IServiceProvider serviceProvider, object?[] param)
-    {
-        object obj = null!;
-        if (_objectFactory != null)
-            obj = _objectFactory(serviceProvider, []);
-        return _func(obj, param) is Task task ? task : Task.CompletedTask;
-    }
+    public Task Invoke(IServiceProvider serviceProvider, object?[] param) => 
+        _func(serviceProvider, param) is Task task ? task : Task.CompletedTask;
 }

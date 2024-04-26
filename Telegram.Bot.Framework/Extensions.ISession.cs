@@ -18,6 +18,10 @@ using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework;
+
+/// <summary>
+/// 
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>

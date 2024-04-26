@@ -20,6 +20,10 @@ using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework;
+
+/// <summary>
+/// 
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>
@@ -37,7 +41,7 @@ public static partial class Extensions
 
         var requestContext = serviceProvider.GetRequiredService<IRequestContext>();
 
-        requestContext.RequestUser = update.GetUser()!;
+        requestContext.RequestUser = update.GetUser();
         requestContext.RequestChatID = update.GetChatID();
 
         return requestContext;
