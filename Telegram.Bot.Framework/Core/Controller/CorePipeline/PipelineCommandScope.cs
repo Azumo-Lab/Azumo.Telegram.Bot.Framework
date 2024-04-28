@@ -14,14 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-using System.Security.AccessControl;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
-using Telegram.Bot.Framework.Core.Storage;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.SimpleAuthentication;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;
@@ -58,7 +55,7 @@ internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
         foreach (var item in input.UserContext.UserServiceProvider.GetServices<IContextFilter>() ?? [])
             if (!item.Filter(input.UserContext, [.. roles]))
                 return; // 不能通过认证，权限名称不对等情况
-    Next:
+            Next:
         // 开始执行下一个操作
         await Next(input);
     }

@@ -14,10 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;
 internal class PipelineGetParam : IMiddleware<PipelineModel, Task>

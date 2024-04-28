@@ -14,11 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.SimpleAuthentication;
-using Telegram.Bot.Framework.SimpleAuthentication.Users;
 
 namespace Telegram.Bot.Framework.Core.Attributes;
 
@@ -37,7 +36,7 @@ public class AuthenticationAttribute(params string[] roleName) : Attribute, IMid
     async Task IMiddleware<PipelineModel, Task>.Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
     {
         var userManager = input.UserContext.UserServiceProvider.GetRequiredService<IContextFilter>();
-        if(userManager.Filter(input.UserContext, RoleNames))
+        if (userManager.Filter(input.UserContext, RoleNames))
             await Next(input);
         return;
     }

@@ -14,7 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.SuperExtendedFramework.PipelineMiddleware.InternalPipeline;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
+
+namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware;
 
 /// <summary>
 /// 

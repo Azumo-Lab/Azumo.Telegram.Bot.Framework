@@ -59,5 +59,25 @@ namespace Telegram.Bot.Framework.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] en_US {
+            get {
+                object obj = ResourceManager.GetObject("en_US", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] zh_CN {
+            get {
+                object obj = ResourceManager.GetObject("zh_CN", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

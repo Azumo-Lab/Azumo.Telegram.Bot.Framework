@@ -14,17 +14,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.SuperExtendedFramework.PipelineMiddleware.InternalPipeline;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
+
+namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware;
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+/// <typeparam name="TResult"></typeparam>
+/// <param name="defVal"></param>
 internal class PipelineBuilder<TInput, TResult>(Func<TResult> defVal) : IPipelineBuilder<TInput, TResult>
 {
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly Dictionary<object, List<IMiddleware<TInput, TResult>>> pipelines = [];
+
+    /// <summary>
+    /// 
+    /// </summary>
     private readonly List<IMiddleware<TInput, TResult>> middleware = [];
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public IPipelineController<TInput, TResult> Build()
     {
         Dictionary<object, IPipeline<TInput, TResult>> pipelineDic = [];
         if (pipelines.Count == 0)
-            CreatePipeline(Guid.NewGuid().ToString());
+            _ = CreatePipeline(Guid.NewGuid().ToString());
         foreach (var item in pipelines)
         {
             PipelineMiddlewareDelegate<TInput, TResult> handleResult = input => defVal();
@@ -39,6 +59,12 @@ internal class PipelineBuilder<TInput, TResult>(Func<TResult> defVal) : IPipelin
         return PipelineFactory.GetPipelineController(pipelineDic);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public IPipelineBuilder<TInput, TResult> CreatePipeline(object key)
     {
         if (middleware.Count == 0)
@@ -48,6 +74,11 @@ internal class PipelineBuilder<TInput, TResult>(Func<TResult> defVal) : IPipelin
         return this;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="middleware"></param>
+    /// <returns></returns>
     public IPipelineBuilder<TInput, TResult> Use(IMiddleware<TInput, TResult> middleware)
     {
         this.middleware.Add(middleware);

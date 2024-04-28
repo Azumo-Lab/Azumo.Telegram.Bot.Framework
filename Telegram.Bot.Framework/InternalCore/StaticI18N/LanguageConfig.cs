@@ -14,38 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.I18N;
+using System.Text.Json.Serialization;
 
-/// <summary>
-/// 
-/// </summary>
-public interface II18NManager
+namespace Telegram.Bot.Framework.InternalCore.StaticI18N;
+internal class LanguageConfig
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public const string Chinese = "Chinses";
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public II18N Current { get; }
+    [JsonPropertyName("language")]
+    public Language? Language { get; set; }
+}
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="i18N"></param>
-    public void Add(II18N i18N);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="name"></param>
-    public void Change(string name);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="name"></param>
-    public void Remove(string name);
+internal class Language
+{
+    [JsonPropertyName("errornotfound")]
+    public string? Error_NotFound { get; set; }
 }

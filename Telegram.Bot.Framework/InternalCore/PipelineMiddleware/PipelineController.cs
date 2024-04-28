@@ -14,7 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Azumo.SuperExtendedFramework.PipelineMiddleware.InternalPipeline;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
+
+namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware;
+
+/// <summary>
+/// 
+/// </summary>
+/// <typeparam name="TInput"></typeparam>
+/// <typeparam name="TResult"></typeparam>
+/// <param name="pipelines"></param>
 internal class PipelineController<TInput, TResult>(Dictionary<object, IPipeline<TInput, TResult>> pipelines) : IPipelineController<TInput, TResult>
 {
     /// <summary>
@@ -22,7 +31,11 @@ internal class PipelineController<TInput, TResult>(Dictionary<object, IPipeline<
     /// </summary>
     private readonly Dictionary<object, IPipeline<TInput, TResult>> _Dic = new(pipelines);
 
+    /// <summary>
+    /// 
+    /// </summary>
     private object? _CurrentKey;
+
     /// <summary>
     /// 
     /// </summary>
@@ -61,19 +74,19 @@ internal class PipelineController<TInput, TResult>(Dictionary<object, IPipeline<
     /// </summary>
     /// <param name="key"></param>
     /// <param name="pipeline"></param>
-    public void Add(object key, IPipeline<TInput, TResult> pipeline) => 
+    public void Add(object key, IPipeline<TInput, TResult> pipeline) =>
         _Dic.TryAdd(key, pipeline);
 
     /// <summary>
     /// 
     /// </summary>
-    public void Clear() => 
+    public void Clear() =>
         _Dic.Clear();
-    
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="key"></param>
-    public void Remove(object key) => 
+    public void Remove(object key) =>
         _Dic.Remove(key);
 }

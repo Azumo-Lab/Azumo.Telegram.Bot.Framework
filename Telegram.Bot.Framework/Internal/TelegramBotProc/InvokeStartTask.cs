@@ -14,11 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework.PipelineMiddleware;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Execs;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.Internal.Attritubes;
 
 namespace Telegram.Bot.Framework.Internal.TelegramBotProc;

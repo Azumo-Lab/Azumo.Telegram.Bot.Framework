@@ -76,7 +76,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="InternalCore\" />
+    <None Update="Properties\i18N\zh_CN.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

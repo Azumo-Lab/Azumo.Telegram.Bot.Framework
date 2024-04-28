@@ -1,6 +1,6 @@
-﻿using Azumo.SuperExtendedFramework.PipelineMiddleware;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Controller.CorePipeline;

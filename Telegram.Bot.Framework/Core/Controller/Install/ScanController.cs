@@ -14,13 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller.Controller;
-using Telegram.Bot.Framework.Core.I18N;
 using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Core.Controller.Install;
@@ -34,14 +32,14 @@ internal class ScanController : ITelegramModule
     /// 
     /// </summary>
     private readonly IServiceCollection ScopeServices = new ServiceCollection();
-    
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="services"></param>
     public void AddBuildService(IServiceCollection services)
     {
-        ScopeServices.AddSingleton<ICommandManager, CommandManager>();
+        _ = ScopeServices.AddSingleton<ICommandManager, CommandManager>();
 
         var serviceProvider = ScopeServices.BuildServiceProvider();
 
@@ -54,7 +52,7 @@ internal class ScanController : ITelegramModule
         var commandManager = serviceProvider.GetRequiredService<ICommandManager>();
 
         var controllerTypeList = typeof(TelegramControllerAttribute).GetTypesWithAttribute();
-        foreach ((var controller, var _) in controllerTypeList)
+        foreach ((var controller, _) in controllerTypeList)
         {
             foreach ((var method, var attr) in controller.GetMethodsWithAttribute<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
@@ -77,7 +75,7 @@ internal class ScanController : ITelegramModule
             }
         }
 
-        services.AddSingleton(commandManager);
+        _ = services.AddSingleton(commandManager);
     }
 
     /// <summary>
@@ -86,7 +84,7 @@ internal class ScanController : ITelegramModule
     /// <param name="services"></param>
     /// <param name="builderService"></param>
     /// <exception cref="Exception"></exception>
-    public void Build(IServiceCollection services, IServiceProvider builderService) => 
+    public void Build(IServiceCollection services, IServiceProvider builderService) =>
         services.AddSingleton(builderService.GetRequiredService<ICommandManager>());
 }
 

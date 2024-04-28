@@ -14,13 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Azumo.SuperExtendedFramework;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
-using System.Reflection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.BotBuilder;
-using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.Controller.Controller;
 using Telegram.Bot.Framework.Core.Controller.Install;
 
@@ -86,7 +83,7 @@ public static class TelegramCommandExtensions
     /// <returns></returns>
     public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, string commandName, Delegate func)
     {
-        TypeDescriptor.AddAttributes(func.Method, new BotCommandAttribute(commandName));
+        _ = TypeDescriptor.AddAttributes(func.Method, new BotCommandAttribute(commandName));
         return builder.AddCommand(func);
     }
 }
