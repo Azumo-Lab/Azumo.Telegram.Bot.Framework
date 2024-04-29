@@ -16,7 +16,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Core.Controller;
 

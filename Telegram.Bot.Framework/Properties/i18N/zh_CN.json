@@ -1,3 +1,6 @@
 ﻿{
-  "": ""
+  "name": "中文",
+  "language": {
+    "errornotfound": "未找到"
+  }
 }

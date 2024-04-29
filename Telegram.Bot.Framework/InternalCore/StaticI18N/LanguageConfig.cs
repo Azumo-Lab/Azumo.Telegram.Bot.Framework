@@ -14,20 +14,36 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Text.Json.Serialization;
-
 namespace Telegram.Bot.Framework.InternalCore.StaticI18N;
+
+/// <summary>
+/// 
+/// </summary>
 internal class LanguageConfig
 {
-    [JsonPropertyName("name")]
+    /// <summary>
+    /// 
+    /// </summary>
     public string? Name { get; set; }
 
-    [JsonPropertyName("language")]
+    /// <summary>
+    /// 
+    /// </summary>
     public Language? Language { get; set; }
 }
 
+/// <summary>
+/// 
+/// </summary>
 internal class Language
 {
-    [JsonPropertyName("errornotfound")]
+    /// <summary>
+    /// 
+    /// </summary>
     public string? Error_NotFound { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string? Customize { get; set; } = "{A0}";
 }

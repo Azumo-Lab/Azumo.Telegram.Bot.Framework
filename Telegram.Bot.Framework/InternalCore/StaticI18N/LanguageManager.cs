@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using Telegram.Bot.Framework.Properties;
@@ -29,7 +28,7 @@ internal static class LanguageManager
     /// <summary>
     /// 
     /// </summary>
-    private readonly static Dictionary<string, LanguageConfig> LanguageDictionary = [];
+    private static readonly Dictionary<string, LanguageConfig> LanguageDictionary = [];
 
     /// <summary>
     /// 
@@ -41,9 +40,9 @@ internal static class LanguageManager
             DirPath.Create();
 
         StringBuilder stringBuilder = new();
-        stringBuilder.AppendLine("Please put the language files in this folder");
-        stringBuilder.AppendLine("请把语言文件放在这个文件夹中");
-        stringBuilder.AppendLine("言語ファイルをこのフォルダに入れてください");
+        _ = stringBuilder.AppendLine("Please put the language files in this folder");
+        _ = stringBuilder.AppendLine("请把语言文件放在这个文件夹中");
+        _ = stringBuilder.AppendLine("言語ファイルをこのフォルダに入れてください");
         File.WriteAllText(Path.Combine(DirPath.FullName, "README.TXT"), stringBuilder.ToString());
 
         List<string> json_List = [
@@ -70,7 +69,9 @@ internal static class LanguageManager
                 if (string.IsNullOrEmpty(config.Name))
                     continue;
 
-                LanguageDictionary.TryAdd(config.Name, config);
+                var addFlag = LanguageDictionary.TryAdd(config.Name, config);
+                if (!addFlag)
+                    LanguageDictionary[config.Name] = config;
 
                 if (LanguageDictionary.Count == 1)
                     Current = config;
@@ -92,8 +93,8 @@ internal static class LanguageManager
     /// </summary>
     /// <param name="func"></param>
     /// <returns></returns>
-    public static string TryGet(Func<LanguageConfig, string> func) =>
-        Current != null ? func.Invoke(Current) : string.Empty;
+    public static string TryGet(Func<LanguageConfig, string?> func) =>
+        Current != null ? func.Invoke(Current) ?? string.Empty : string.Empty;
 
     /// <summary>
     /// 

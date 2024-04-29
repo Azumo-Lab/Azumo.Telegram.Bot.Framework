@@ -16,10 +16,10 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.BotBuilder;
-using Telegram.Bot.Framework.Core.Controller.CorePipeline;
-using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.Controller.Install;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
+using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework;

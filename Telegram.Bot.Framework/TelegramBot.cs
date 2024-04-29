@@ -19,7 +19,8 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
-using Telegram.Bot.Framework.Internal.Attritubes;
+using Telegram.Bot.Framework.InternalCore.Attritubes;
+using Telegram.Bot.Framework.InternalCore.StaticI18N;
 
 namespace Telegram.Bot.Framework;
 
@@ -80,7 +81,24 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder, ITelegramModule
 ██╗██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗                 
 ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝                 
 ";
+    private const string License =
+@"
+<Telegram.Bot.Framework>
+Copyright (C) <2022 - {A0}>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework>
 
+This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+";
     #endregion
 
     #region 创建与销毁
@@ -120,24 +138,7 @@ public class TelegramBot : ITelegramBot, ITelegramModuleBuilder, ITelegramModule
         ArgumentNullException.ThrowIfNull(RuntimeServiceProvider, nameof(RuntimeServiceProvider));
 
         Logger?.LogInformation("{A0}", LogoType3);
-        Logger?.LogInformation(@"
-<Telegram.Bot.Framework>
-Copyright (C) <2022 - {A0}>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework>
-
-This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-",
-DateTime.Now.Year);
+        Logger?.LogInformation(License, DateTime.Now.Year);
 
         // 执行前处理
         await PipelineProc<TelegramBotStartProcAttribute>();

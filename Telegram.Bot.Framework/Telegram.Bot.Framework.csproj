@@ -4,14 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <IncludeSymbols>False</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageId>Telegram.Bot.Framework</PackageId>
     <Title>Telegram.Bot.Framework</Title>
-    <Version>2.0.0.4</Version>
+    <Version>2.0.0.5</Version>
     <Authors>Sokushu</Authors>
     <Company>Azumo</Company>
     <Product>Telegram.Bot.Framework</Product>

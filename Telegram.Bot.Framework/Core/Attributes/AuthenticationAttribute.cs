@@ -15,8 +15,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Core.Controller.CorePipeline.Model;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 using Telegram.Bot.Framework.SimpleAuthentication;
 
 namespace Telegram.Bot.Framework.Core.Attributes;

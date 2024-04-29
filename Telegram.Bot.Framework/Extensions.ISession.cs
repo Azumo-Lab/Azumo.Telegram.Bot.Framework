@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Core.Controller.Controller;
+using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework;

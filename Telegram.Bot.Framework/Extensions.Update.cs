@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework;
 
@@ -56,35 +57,35 @@ public static partial class Extensions
     {
         switch (update.Type)
         {
-            case Types.Enums.UpdateType.Unknown:
+            case UpdateType.Unknown:
                 break;
-            case Types.Enums.UpdateType.Message:
+            case UpdateType.Message:
                 return update.Message?.Chat?.Id!;
-            case Types.Enums.UpdateType.InlineQuery:
+            case UpdateType.InlineQuery:
                 break;
-            case Types.Enums.UpdateType.ChosenInlineResult:
+            case UpdateType.ChosenInlineResult:
                 break;
-            case Types.Enums.UpdateType.CallbackQuery:
+            case UpdateType.CallbackQuery:
                 return update.CallbackQuery!.Message!.Chat.Id;
-            case Types.Enums.UpdateType.EditedMessage:
+            case UpdateType.EditedMessage:
                 return update.EditedMessage!.Chat.Id;
-            case Types.Enums.UpdateType.ChannelPost:
+            case UpdateType.ChannelPost:
                 return update.ChannelPost!.Chat.Id;
-            case Types.Enums.UpdateType.EditedChannelPost:
+            case UpdateType.EditedChannelPost:
                 return update.EditedChannelPost!.Chat.Id;
-            case Types.Enums.UpdateType.ShippingQuery:
+            case UpdateType.ShippingQuery:
                 break;
-            case Types.Enums.UpdateType.PreCheckoutQuery:
+            case UpdateType.PreCheckoutQuery:
                 break;
-            case Types.Enums.UpdateType.Poll:
+            case UpdateType.Poll:
                 break;
-            case Types.Enums.UpdateType.PollAnswer:
+            case UpdateType.PollAnswer:
                 break;
-            case Types.Enums.UpdateType.MyChatMember:
+            case UpdateType.MyChatMember:
                 return update.MyChatMember!.Chat.Id;
-            case Types.Enums.UpdateType.ChatMember:
+            case UpdateType.ChatMember:
                 return update.ChatMember!.Chat.Id;
-            case Types.Enums.UpdateType.ChatJoinRequest:
+            case UpdateType.ChatJoinRequest:
                 return update.ChatJoinRequest!.Chat.Id;
         }
         return null!;
@@ -99,37 +100,85 @@ public static partial class Extensions
     {
         switch (update.Type)
         {
-            case Types.Enums.UpdateType.Unknown:
+            case UpdateType.Unknown:
                 break;
-            case Types.Enums.UpdateType.Message:
+            case UpdateType.Message:
                 return update.Message?.From;
-            case Types.Enums.UpdateType.InlineQuery:
+            case UpdateType.InlineQuery:
                 return update.InlineQuery?.From;
-            case Types.Enums.UpdateType.ChosenInlineResult:
+            case UpdateType.ChosenInlineResult:
                 return update.ChosenInlineResult?.From;
-            case Types.Enums.UpdateType.CallbackQuery:
+            case UpdateType.CallbackQuery:
                 return update.CallbackQuery?.From;
-            case Types.Enums.UpdateType.EditedMessage:
+            case UpdateType.EditedMessage:
                 return update.EditedMessage?.From;
-            case Types.Enums.UpdateType.ChannelPost:
+            case UpdateType.ChannelPost:
                 return update.ChannelPost?.From;
-            case Types.Enums.UpdateType.EditedChannelPost:
+            case UpdateType.EditedChannelPost:
                 return update.EditedChannelPost?.From;
-            case Types.Enums.UpdateType.ShippingQuery:
+            case UpdateType.ShippingQuery:
                 return update.ShippingQuery?.From;
-            case Types.Enums.UpdateType.PreCheckoutQuery:
+            case UpdateType.PreCheckoutQuery:
                 return update.PreCheckoutQuery?.From;
-            case Types.Enums.UpdateType.Poll: // 发起投票
+            case UpdateType.Poll: // 发起投票
                 break;
-            case Types.Enums.UpdateType.PollAnswer:
+            case UpdateType.PollAnswer:
                 return update.PollAnswer!.User;
-            case Types.Enums.UpdateType.MyChatMember:
+            case UpdateType.MyChatMember:
                 return update.MyChatMember!.From;
-            case Types.Enums.UpdateType.ChatMember:
+            case UpdateType.ChatMember:
                 return update.ChatMember!.From;
-            case Types.Enums.UpdateType.ChatJoinRequest:
+            case UpdateType.ChatJoinRequest:
                 return update.ChatJoinRequest!.From;
         }
         return null;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="update"></param>
+    /// <returns></returns>
+    public static (string command, string[] paramsArray) GetCommandWithArgs(this Update update)
+    {
+        // 初始化变量
+        var command = string.Empty;
+        List<string> paramsArray = [];
+
+        var entitiesList = update.Message?.Entities;
+        var entitiesValueList = update.Message?.EntityValues?.ToArray();
+
+        var entity = entitiesList?.FirstOrDefault();
+        if (entity == null)
+            return (command, paramsArray.ToArray());
+
+        if (entity.Type == MessageEntityType.BotCommand)
+            command = entitiesValueList?.FirstOrDefault() ?? string.Empty;
+
+        if (entitiesList != null && entitiesValueList != null)
+            for (var i = 1; i < entitiesList.Length; i++)
+                paramsArray.Add(entitiesValueList[i]);
+
+        return (command, paramsArray.ToArray());
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="update"></param>
+    /// <returns></returns>
+    public static string GetCommand(this Update update)
+    {
+        var entitiesList = update.Message?.Entities;
+        var entity = entitiesList?.FirstOrDefault();
+        if (entity == null)
+            return string.Empty;
+
+        if (entity.Type != MessageEntityType.BotCommand)
+            return string.Empty;
+
+        var command = update.Message?.EntityValues?.FirstOrDefault();
+
+        return command ?? string.Empty;
     }
 }

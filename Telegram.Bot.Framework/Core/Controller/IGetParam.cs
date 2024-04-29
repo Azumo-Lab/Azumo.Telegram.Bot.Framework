@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.Core.Controller;
 

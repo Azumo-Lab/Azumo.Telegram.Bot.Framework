@@ -15,9 +15,9 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
-using Telegram.Bot.Framework.Core.Users;
 
 namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
 

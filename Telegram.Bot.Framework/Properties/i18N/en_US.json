@@ -1,3 +1,6 @@
 ﻿{
-  
+  "name": "English",
+  "language": {
+    "errornotfound": "Not Found"
+  }
 }
