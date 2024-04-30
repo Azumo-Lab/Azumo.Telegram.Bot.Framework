@@ -85,22 +85,22 @@ internal class TelegramProxy(string host, int? port, string? username, string? p
 public static class TelegramProxyExtensions
 {
     /// <summary>
-    /// 
+    /// 使用代理
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="host"></param>
-    /// <param name="port"></param>
-    /// <param name="username"></param>
-    /// <param name="password"></param>
-    /// <returns></returns>
+    /// <param name="builder">模块构建器</param>
+    /// <param name="host">代理地址</param>
+    /// <param name="port">端口</param>
+    /// <param name="username">用户名</param>
+    /// <param name="password">密码</param>
+    /// <returns>模块构建器</returns>
     public static ITelegramModuleBuilder UseProxy(this ITelegramModuleBuilder builder, string host, int port, string? username = null, string? password = null) =>
         builder.AddModule(new TelegramProxy(host, port, username, password));
 
     /// <summary>
-    /// 
+    /// 使用 Clash 默认的代理端口
     /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
+    /// <param name="builder">模块构建器</param>
+    /// <returns>模块构建器</returns>
     public static ITelegramModuleBuilder UseClashDefaultProxy(this ITelegramModuleBuilder builder) =>
         builder.UseProxy("127.0.0.1", 7890);
 }

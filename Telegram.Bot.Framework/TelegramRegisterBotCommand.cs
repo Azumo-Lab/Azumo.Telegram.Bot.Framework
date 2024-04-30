@@ -28,13 +28,27 @@ namespace Telegram.Bot.Framework;
 /// </summary>
 internal class TelegramRegisterBotCommand : ITelegramModule
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
     public void AddBuildService(IServiceCollection services)
     {
 
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="builderService"></param>
     public void Build(IServiceCollection services, IServiceProvider builderService) =>
         services.AddSingleton<IStartTask, RegisterBotCommandExec>();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="serviceProvider"></param>
     private class RegisterBotCommandExec(IServiceProvider serviceProvider) : IStartTask
     {
         private readonly IServiceProvider serviceProvider = serviceProvider;

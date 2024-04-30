@@ -17,7 +17,7 @@
 namespace Telegram.Bot.Framework.Core.BotBuilder;
 
 /// <summary>
-/// Telegram模块创建器
+/// Telegram模块构建器
 /// </summary>
 public interface ITelegramModuleBuilder
 {
