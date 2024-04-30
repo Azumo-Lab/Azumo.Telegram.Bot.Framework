@@ -14,32 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Telegram.Bot.Framework.Core.Storage;
-
 namespace Telegram.Bot.Framework.Core.Controller;
 
 /// <summary>
-/// 
+/// 执行器
 /// </summary>
 internal interface IExecutor
 {
     /// <summary>
-    /// 
+    /// 可以使用的 Attribute
     /// </summary>
     public Attribute[] Attributes { get; }
 
     /// <summary>
-    /// 
+    /// 方法执行的参数
     /// </summary>
     public IReadOnlyList<IGetParam> Parameters { get; }
 
     /// <summary>
-    /// 
+    /// 缓存
     /// </summary>
-    public ISession Session { get; }
+    public Dictionary<string, object> Cache { get; }
 
     /// <summary>
-    /// 
+    /// 方法的执行
     /// </summary>
     /// <param name="serviceProvider"></param>
     /// <param name="param"></param>

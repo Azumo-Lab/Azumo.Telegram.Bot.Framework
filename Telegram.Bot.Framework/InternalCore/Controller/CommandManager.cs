@@ -17,7 +17,6 @@
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.InternalCore.Controller;
 

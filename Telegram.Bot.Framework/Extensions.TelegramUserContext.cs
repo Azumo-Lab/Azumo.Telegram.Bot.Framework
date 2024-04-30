@@ -42,6 +42,6 @@ public static partial class Extensions
     /// <param name="message"></param>
     /// <param name="buttons"></param>
     /// <returns></returns>
-    public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) => 
+    public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) =>
         await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
 }

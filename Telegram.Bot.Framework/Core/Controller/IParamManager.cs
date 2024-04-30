@@ -14,18 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Telegram.Bot.Framework.Core.Controller;
+
+/// <summary>
+/// 参数获取管理接口
+/// </summary>
 internal interface IParamManager
 {
+    /// <summary>
+    /// 设置参数列表
+    /// </summary>
+    /// <param name="paramList">参数列表</param>
     public void SetParamList(IEnumerable<IGetParam> paramList);
 
+    /// <summary>
+    /// 读取参数
+    /// </summary>
+    /// <param name="userContext">用户上下文</param>
+    /// <returns>参数是否读取完成</returns>
     public Task<bool> Read(TelegramUserContext userContext);
 
+    /// <summary>
+    /// 获取读取到的参数
+    /// </summary>
+    /// <returns>读取到的参数数组</returns>
     public object?[] GetParam();
 }

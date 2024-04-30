@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Storage;
-using Telegram.Bot.Framework.InternalCore.Storage;
 
 namespace Telegram.Bot.Framework.InternalCore.Controller;
 
@@ -42,7 +40,7 @@ internal class FuncInvoker(Delegate func, List<IGetParam> paramList, Attribute[]
     /// <summary>
     /// 
     /// </summary>
-    public ISession Session { get; } = new SessionStorage();
+    public Dictionary<string, object> Cache { get; } = [];
 
     /// <summary>
     /// 

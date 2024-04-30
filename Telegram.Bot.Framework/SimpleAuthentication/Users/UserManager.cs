@@ -17,7 +17,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
 

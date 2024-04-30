@@ -54,7 +54,7 @@ internal class BaseDictionary<K, V> where K : notnull
     /// <returns></returns>
     public V? Get(K key)
     {
-        TryGet(key, out var value);
+        _ = TryGet(key, out var value);
         return value;
     }
 
@@ -64,7 +64,7 @@ internal class BaseDictionary<K, V> where K : notnull
     /// <param name="key"></param>
     /// <param name="v"></param>
     /// <returns></returns>
-    public bool TryGet(K key, out V? v) => 
+    public bool TryGet(K key, out V? v) =>
         _dictionary.TryGetValue(key, out v);
 
     /// <summary>
@@ -88,6 +88,6 @@ internal class BaseDictionary<K, V> where K : notnull
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
-    public bool ContainsKey(K key) => 
+    public bool ContainsKey(K key) =>
         _dictionary.ContainsKey(key);
 }

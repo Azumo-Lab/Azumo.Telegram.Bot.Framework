@@ -19,12 +19,11 @@ using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework.Core;
 
 /// <summary>
-/// 
+/// TG用户上下文
 /// </summary>
 [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(TelegramUserContext))]
 public sealed class TelegramUserContext : Update, IDisposable, IUserContext

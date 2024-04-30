@@ -20,7 +20,6 @@ using System.Diagnostics;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
-using Telegram.Bot.Framework.InternalCore.StaticI18N;
 
 namespace Telegram.Bot.Framework;
 

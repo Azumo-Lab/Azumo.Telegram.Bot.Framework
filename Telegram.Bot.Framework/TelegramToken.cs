@@ -55,7 +55,7 @@ internal class TelegramToken(string token) : ITelegramModule
             ? new TelegramBotClient(Token, client)
             : new TelegramBotClient(Token);
 
-        services.AddSingleton<ITelegramBotClient>(botClient);
+        _ = services.AddSingleton<ITelegramBotClient>(botClient);
     }
 }
 

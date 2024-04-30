@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
@@ -43,13 +42,13 @@ internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
             }
 
         // 获取指令的认证条件
-        List<string> roles;
-        if ((roles = exec.Session.Get<List<string>>(RolesNameKey)) == null)
+        if (!(exec.Cache.TryGetValue(RolesNameKey, out var val) && val is List<string> roles))
         {
             roles = [];
             roles.AddRange(exec.Attributes.Where(x => x is AuthenticationAttribute).Cast<AuthenticationAttribute>().SelectMany(x => x.RoleNames));
-            exec.Session.AddOrUpdate(RolesNameKey, roles);
+            exec.Cache[RolesNameKey] = roles;
         }
+
         // 开始校验
         foreach (var item in input.UserContext.UserServiceProvider.GetServices<IContextFilter>() ?? [])
             if (!item.Filter(input.UserContext, [.. roles]))

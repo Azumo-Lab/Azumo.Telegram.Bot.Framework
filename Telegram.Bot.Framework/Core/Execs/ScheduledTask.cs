@@ -56,9 +56,9 @@ public abstract class ScheduledTask : BackGroundTask
             {
                 // 执行任务
                 await ScheduledExecuteAsync(input, token);
-                InvokeTimes.Remove(time);
+                _ = InvokeTimes.Remove(time);
                 var newTime = time.Value.Add(IntervalTimeSpan);
-                
+
                 // 添加新的执行时间
                 if (newTime > DateTime.Now)
                     InvokeTimes.Add(newTime);
@@ -82,6 +82,6 @@ public abstract class ScheduledTask : BackGroundTask
     /// <param name="hour">小时</param>
     /// <param name="minute">分钟</param>
     /// <param name="second">秒</param>
-    protected void AddScheduled(int hour, int minute = 0, int second = 0) => 
+    protected void AddScheduled(int hour, int minute = 0, int second = 0) =>
         InvokeTimes.Add(DateTime.Now.Date.AddHours(hour).AddMinutes(minute).AddSeconds(second));
 }

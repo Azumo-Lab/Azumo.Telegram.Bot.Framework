@@ -72,7 +72,7 @@ internal class TelegramScanService : ITelegramModule
     }
     public void Build(IServiceCollection services, IServiceProvider builderService)
     {
-        services.ScanService();
+        _ = services.ScanService();
         var list = Extensions.GetTypesWithAttribute<DependencyInjectionAttribute>();
         foreach ((var t, var attr) in list)
             foreach (var item in attr)

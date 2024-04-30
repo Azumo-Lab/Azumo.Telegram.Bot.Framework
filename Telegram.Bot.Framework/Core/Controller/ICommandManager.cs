@@ -17,12 +17,12 @@
 namespace Telegram.Bot.Framework.Core.Controller;
 
 /// <summary>
-/// 
+/// 指令管理器
 /// </summary>
 internal interface ICommandManager
 {
     /// <summary>
-    /// 
+    /// 获取
     /// </summary>
     /// <param name="userContext"></param>
     /// <returns></returns>

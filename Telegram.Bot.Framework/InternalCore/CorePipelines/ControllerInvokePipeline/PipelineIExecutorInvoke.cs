@@ -30,8 +30,5 @@ internal class PipelineIExecutorInvoke : IMiddleware<PipelineModel, Task>
     /// <param name="input"></param>
     /// <param name="Next"></param>
     /// <returns></returns>
-    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
-    {
-        await Task.CompletedTask;
-    }
+    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next) => await Task.CompletedTask;
 }
