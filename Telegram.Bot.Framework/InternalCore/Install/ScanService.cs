@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.BotBuilder;
 
-namespace Telegram.Bot.Framework.Core.Controller.Install;
+namespace Telegram.Bot.Framework.InternalCore.Install;
 
 /// <summary>
 /// 
@@ -33,7 +33,6 @@ internal class ScanService : ITelegramModule
     {
         var list = Extensions.GetTypesWithAttribute<DependencyInjectionAttribute>();
         foreach ((var t, var attr) in list)
-        {
             foreach (var item in attr)
             {
                 var attrDep = (DependencyInjectionAttribute)item;
@@ -79,6 +78,5 @@ internal class ScanService : ITelegramModule
                             break;
                     }
             }
-        }
     }
 }

@@ -17,7 +17,7 @@
 using System.Reflection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Controller.Install;
+using Telegram.Bot.Framework.InternalCore.Install;
 
 namespace Telegram.Bot.Framework;
 

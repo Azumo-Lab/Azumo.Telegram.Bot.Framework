@@ -16,11 +16,13 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.BotBuilder;
+using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.InternalCore.Controller;
 
-namespace Telegram.Bot.Framework.Core.Controller.Install;
+namespace Telegram.Bot.Framework.InternalCore.Install;
 
 /// <summary>
 /// 
@@ -52,7 +54,6 @@ internal class ScanController : ITelegramModule
 
         var controllerTypeList = typeof(TelegramControllerAttribute).GetTypesWithAttribute();
         foreach ((var controller, _) in controllerTypeList)
-        {
             foreach ((var method, var attr) in controller.GetMethodsWithAttribute<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
                 var attributes = new List<Attribute>
@@ -72,7 +73,6 @@ internal class ScanController : ITelegramModule
                     attributes.ToArray());
                 commandManager.AddExecutor(executor);
             }
-        }
 
         _ = services.AddSingleton(commandManager);
     }
