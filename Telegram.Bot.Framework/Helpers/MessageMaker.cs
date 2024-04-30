@@ -17,24 +17,24 @@
 namespace Telegram.Bot.Framework.Helpers;
 
 /// <summary>
-/// 
+/// Telegram 消息创建器
 /// </summary>
 public static class MessageMaker
 {
     /// <summary>
-    /// 
+    /// 创建一个带有连接的文本
     /// </summary>
-    /// <param name="text"></param>
-    /// <param name="url"></param>
-    /// <returns></returns>
+    /// <param name="text">显示的文本</param>
+    /// <param name="url">链接</param>
+    /// <returns>处理后的文本</returns>
     public static string Link(string text, string url) =>
         $"<a href=\"{url}\">{text}</a>";
 
     /// <summary>
-    /// 
+    /// 加粗文字
     /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
+    /// <param name="text">想要加粗的文字</param>
+    /// <returns>处理后的文本</returns>
     public static string Bold(string text) =>
         $"<b>{text}</b>";
 
@@ -42,7 +42,7 @@ public static class MessageMaker
     /// 
     /// </summary>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>处理后的文本</returns>
     public static string Italic(string text) =>
         $"<i>{text}</i>";
 
@@ -50,7 +50,7 @@ public static class MessageMaker
     /// 
     /// </summary>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>处理后的文本</returns>
     public static string Underline(string text) =>
         $"<u>{text}</u>";
 
@@ -58,7 +58,7 @@ public static class MessageMaker
     /// 
     /// </summary>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>处理后的文本</returns>
     public static string Strikethrough(string text) =>
         $"<s>{text}</s>";
 
@@ -66,15 +66,15 @@ public static class MessageMaker
     /// 
     /// </summary>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>处理后的文本</returns>
     public static string Spoiler(string text) =>
         $"<tg-spoiler>{text}</tg-spoiler>";
 
     /// <summary>
-    /// 
+    /// 代码文字块
     /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
+    /// <param name="text">代码文字</param>
+    /// <returns>处理后的文本</returns>
     public static string Code(string text) =>
         $"<code>{text}</code>";
 
@@ -82,7 +82,7 @@ public static class MessageMaker
     /// 
     /// </summary>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>处理后的文本</returns>
     public static string Pre(string text) =>
         $"<pre>{text}</pre>";
 
@@ -90,15 +90,15 @@ public static class MessageMaker
     /// 
     /// </summary>
     /// <param name="text"></param>
-    /// <returns></returns>
+    /// <returns>处理后的文本</returns>
     public static string Blockquote(string text) =>
         $"<blockquote>{text}</blockquote>";
 
     /// <summary>
-    /// 
+    /// Tag标签
     /// </summary>
-    /// <param name="text"></param>
-    /// <returns></returns>
+    /// <param name="text">标签内容</param>
+    /// <returns>处理后的文本</returns>
     public static string HashTag(string text) =>
         $"<a>{text}</a>";
 }

@@ -15,8 +15,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Controller.Storage;
 using Telegram.Bot.Framework.Core.Storage;
+using Telegram.Bot.Framework.InternalCore.Storage;
 
 namespace Telegram.Bot.Framework.InternalCore.Controller;
 

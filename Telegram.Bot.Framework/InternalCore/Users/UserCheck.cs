@@ -16,11 +16,10 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Core.Controller.Users;
+namespace Telegram.Bot.Framework.InternalCore.Users;
 
 /// <summary>
 /// 

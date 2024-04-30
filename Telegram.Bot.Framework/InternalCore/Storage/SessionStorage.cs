@@ -15,29 +15,32 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework.Core.Controller.Storage;
+namespace Telegram.Bot.Framework.InternalCore.Storage;
 
 /// <summary>
-/// 
+/// 一个临时存储实现
 /// </summary>
 [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ISession))]
+[DebuggerDisplay("Session:{ID}, Count:{Count}")]
 internal class SessionStorage : ISession
 {
     /// <summary>
-    /// 
+    /// 保存字典
     /// </summary>
-    private readonly Dictionary<object, object> _cache = [];
+    private readonly ConcurrentDictionary<object, object> _cache = [];
 
     /// <summary>
-    /// 
+    /// 这个临时存储的ID
     /// </summary>
     public string ID { get; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// 
+    /// 存储的总数
     /// </summary>
     public int Count => _cache.Count;
 
@@ -84,5 +87,5 @@ internal class SessionStorage : ISession
     /// 
     /// </summary>
     /// <param name="key"></param>
-    public void Remove(object key) => _cache.Remove(key);
+    public void Remove(object key) => _cache.Remove(key, out _);
 }
