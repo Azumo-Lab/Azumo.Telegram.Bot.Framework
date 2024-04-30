@@ -18,6 +18,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Framework.Core.Attributes;
 
 namespace Telegram.Bot.Framework;
+
+/// <summary>
+/// 
+/// </summary>
 public static partial class Extensions
 {
     /// <summary>
