@@ -14,32 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using Telegram.Bot.Types;
+using System.Linq;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Core.Filters;
 
-namespace Telegram.Bot.Framework.Core
+namespace Telegram.Bot.Framework.InternalCore.Filters
 {
     /// <summary>
-    /// Telegram 请求上下文
+    /// 
     /// </summary>
-    public interface IRequestContext : IDisposable
+    [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(IFilter))]
+    internal class InternalRoleFilter : RoleFilter
     {
         /// <summary>
-        /// 请求用户的ChatID
+        /// 
         /// </summary>
-        /// <remarks>
-        /// 向Bot发送请求的用户的ChatID
-        /// </remarks>
-        public ChatId? RequestChatID { get; set; }
-
-        /// <summary>
-        /// 请求的用户
-        /// </summary>
-        /// <remarks>
-        /// 向Bot发送请求的用户。<br></br>
-        /// 如果是私聊，这个值和 <see cref="RequestChatID"/> 的用户是一样的。<br></br>
-        /// 如果是群组或频道，这个值是向Bot发送消息的用户。<see cref="RequestChatID"/> 的值则是频道或群组
-        /// </remarks>
-        public User? RequestUser { get; set; }
+        /// <param name="userRoles"></param>
+        /// <param name="executorRoles"></param>
+        /// <returns></returns>
+        protected override Task<bool> RoleCheck(string[] userRoles, string[] executorRoles)
+        {
+            foreach (var item in executorRoles)
+                if (userRoles.Contains(item))
+                    return Task.FromResult(true);
+            return Task.FromResult(false);
+        }
     }
 }

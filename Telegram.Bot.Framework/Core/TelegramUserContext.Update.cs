@@ -30,7 +30,7 @@ namespace Telegram.Bot.Framework.Core
         /// 
         /// </summary>
         /// <param name="update"></param>
-        public void Copy(Update update)
+        public void CopyFrom(Update update)
         {
             Message = update.Message;
             InlineQuery = update.InlineQuery;
@@ -40,8 +40,11 @@ namespace Telegram.Bot.Framework.Core
             ChatJoinRequest = update.ChatJoinRequest;
             ChatMember = update.ChatMember;
             ChosenInlineResult = update.ChosenInlineResult;
+            EditedChannelPost = update.EditedChannelPost;
+            EditedMessage = update.EditedMessage;
+            Poll = update.Poll;
 
-            Update?.Invoke(null, update);
+            Update?.Invoke(this, update);
         }
     }
 }

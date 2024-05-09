@@ -65,7 +65,7 @@ namespace Telegram.Bot.Framework.InternalCore.Users
             else
                 telegramUserContext = new TelegramUserContext(botServiceProvider);
 
-            telegramUserContext.Copy(update);
+            telegramUserContext.CopyFrom(update);
             telegramUserContext.RequestChatID = requestChatID;
             return telegramUserContext;
         }

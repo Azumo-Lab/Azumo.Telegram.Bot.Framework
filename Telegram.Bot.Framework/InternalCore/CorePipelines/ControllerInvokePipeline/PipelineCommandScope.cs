@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Core.Filters;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 using Telegram.Bot.Framework.SimpleAuthentication;
@@ -45,6 +46,7 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipe
                     paramManager.SetParamList(exec.Parameters);
                 }
 
+            // 开始校验
             // 获取指令的认证条件
             if (!(exec.Cache.TryGetValue(RolesNameKey, out var val) && val is List<string> roles))
             {
@@ -60,11 +62,10 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipe
 #endif
                 exec.Cache[RolesNameKey] = roles;
             }
+            foreach (var item in input.UserContext.UserServiceProvider.GetServices<IFilter>())
+                if (!await item.InvokeAsync(input.UserContext, exec))
+                    return;
 
-            // 开始校验
-            foreach (var item in input.UserContext!.UserServiceProvider.GetServices<IContextFilter>() ?? new List<IContextFilter>())
-                if (!item.Filter(input.UserContext, roles.ToArray()))
-                    return; // 不能通过认证，权限名称不对等情况
                 Next:
             // 开始执行下一个操作
             await Next(input);

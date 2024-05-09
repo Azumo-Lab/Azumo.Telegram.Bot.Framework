@@ -77,6 +77,7 @@ namespace Telegram.Bot.Framework
                     .Where(x => x is BotCommandAttribute)
                     .Select(x => (BotCommandAttribute)x)
                     .Select(x => new BotCommand { Command = x.BotCommand, Description = x.Description })
+                    .Take(100)
                     .ToList();
 
                 var botClient = serviceProvider.GetRequiredService<ITelegramBotClient>();

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.Storage;
 
@@ -24,6 +25,9 @@ namespace Telegram.Bot.Framework
     /// </summary>
     public static partial class Extensions
     {
+        internal const string CommandKey = "{ADD76730-6FE8-4B6C-8E40-AAD5D6883DC8}";
+        internal const string RolesKey = "{7ED1518D-121F-4B74-BFE1-1D686DF1E5DF}";
+
         /// <summary>
         /// 向用户存储中添加指令
         /// </summary>
@@ -39,6 +43,34 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         internal static IExecutor GetCommand(this ISession session) =>
             session.Get<IExecutor>(CommandKey);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="strings"></param>
+        internal static void AddRoles(this ISession session, params string[] strings)
+        {
+            var list = session.Get<List<string>>(RolesKey);
+            list.AddRange(strings);
+            session.AddOrUpdate(RolesKey, list);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="strings"></param>
+        internal static void AddRole(this ISession session, string strings) =>
+            AddRoles(session, strings);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        internal static List<string> GetRoles(this ISession session) => 
+            session.Get<List<string>>(RolesKey) ?? new List<string>();
 
         /// <summary>
         /// 具有泛型的值获取方法

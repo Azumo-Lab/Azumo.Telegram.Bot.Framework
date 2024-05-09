@@ -52,11 +52,6 @@ namespace Telegram.Bot.Framework
         private static IReadOnlyList<(Type classType, TypeForAttribute ForType)> IGetParamTypeList { get; }
 
         /// <summary>
-        /// 
-        /// </summary>
-        private const string CommandKey = "{ADD76730-6FE8-4B6C-8E40-AAD5D6883DC8}";
-
-        /// <summary>
         /// 程序全部的类型
         /// </summary>
         public static IReadOnlyList<Type> AllTypes { get; }

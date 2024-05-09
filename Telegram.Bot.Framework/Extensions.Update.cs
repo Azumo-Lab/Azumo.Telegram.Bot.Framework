@@ -31,34 +31,12 @@ namespace Telegram.Bot.Framework
     public static partial class Extensions
     {
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="update"></param>
-        /// <param name="serviceProvider"></param>
-        /// <param name="updateFilters"></param>
-        /// <returns></returns>
-        internal static IRequestContext? GetRequestContext(this Update update, IServiceProvider serviceProvider, IEnumerable<IRequestFilter> updateFilters)
-        {
-            foreach (var item in updateFilters)
-                if (!item.Filter(update))
-                    return null;
-
-            var requestContext = serviceProvider.GetRequiredService<IRequestContext>();
-
-            requestContext.RequestUser = update.GetUser();
-            requestContext.RequestChatID = update.GetChatID();
-
-            return requestContext;
-        }
-
-        /// <summary>
         /// 从 <see cref="Update"/> 中获取 <see cref="ChatId"/> 对象
         /// </summary>
         /// <param name="update">传入的 <see cref="Update"/> 对象</param>
         /// <returns><see cref="ChatId"/> 对象</returns>
         public static ChatId GetChatID(this Update update)
         {
-#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
             switch (update.Type)
             {
                 case UpdateType.Unknown:
@@ -93,42 +71,6 @@ namespace Telegram.Bot.Framework
                     return update.ChatJoinRequest!.Chat.Id;
             }
             return null!;
-#else
-            switch (update.Type)
-            {
-                case UpdateType.Unknown:
-                    break;
-                case UpdateType.Message:
-                    return update.Message?.Chat?.Id;
-                case UpdateType.InlineQuery:
-                    break;
-                case UpdateType.ChosenInlineResult:
-                    break;
-                case UpdateType.CallbackQuery:
-                    return update.CallbackQuery.Message.Chat.Id;
-                case UpdateType.EditedMessage:
-                    return update.EditedMessage.Chat.Id;
-                case UpdateType.ChannelPost:
-                    return update.ChannelPost.Chat.Id;
-                case UpdateType.EditedChannelPost:
-                    return update.EditedChannelPost.Chat.Id;
-                case UpdateType.ShippingQuery:
-                    break;
-                case UpdateType.PreCheckoutQuery:
-                    break;
-                case UpdateType.Poll:
-                    break;
-                case UpdateType.PollAnswer:
-                    break;
-                case UpdateType.MyChatMember:
-                    return update.MyChatMember.Chat.Id;
-                case UpdateType.ChatMember:
-                    return update.ChatMember.Chat.Id;
-                case UpdateType.ChatJoinRequest:
-                    return update.ChatJoinRequest.Chat.Id;
-            }
-            return null;
-#endif
         }
 
         /// <summary>
@@ -138,7 +80,6 @@ namespace Telegram.Bot.Framework
         /// <returns><see cref="ChatId"/> 对象</returns>
         public static User GetUser(this Update update)
         {
-#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
             switch (update.Type)
             {
                 case UpdateType.Unknown:
@@ -173,42 +114,6 @@ namespace Telegram.Bot.Framework
                     return update.ChatJoinRequest!.From;
             }
             return null!;
-#else
-            switch (update.Type)
-            {
-                case UpdateType.Unknown:
-                    break;
-                case UpdateType.Message:
-                    return update.Message?.From;
-                case UpdateType.InlineQuery:
-                    return update.InlineQuery?.From;
-                case UpdateType.ChosenInlineResult:
-                    return update.ChosenInlineResult?.From;
-                case UpdateType.CallbackQuery:
-                    return update.CallbackQuery?.From;
-                case UpdateType.EditedMessage:
-                    return update.EditedMessage?.From;
-                case UpdateType.ChannelPost:
-                    return update.ChannelPost?.From;
-                case UpdateType.EditedChannelPost:
-                    return update.EditedChannelPost?.From;
-                case UpdateType.ShippingQuery:
-                    return update.ShippingQuery?.From;
-                case UpdateType.PreCheckoutQuery:
-                    return update.PreCheckoutQuery?.From;
-                case UpdateType.Poll: // 发起投票
-                    break;
-                case UpdateType.PollAnswer:
-                    return update.PollAnswer.User;
-                case UpdateType.MyChatMember:
-                    return update.MyChatMember.From;
-                case UpdateType.ChatMember:
-                    return update.ChatMember.From;
-                case UpdateType.ChatJoinRequest:
-                    return update.ChatJoinRequest.From;
-            }
-            return null;
-#endif
         }
 
         /// <summary>

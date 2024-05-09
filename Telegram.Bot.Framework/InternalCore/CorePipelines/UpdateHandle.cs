@@ -82,11 +82,6 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines
         /// <returns></returns>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            // 创建请求上下文
-            IRequestContext? requestContext;
-            if ((requestContext = update.GetRequestContext(BotServiceProvider, requestFilters)) == null)
-                return;
-
             try
             {
                 // 创建用户上下文
@@ -111,7 +106,7 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines
             }
             finally
             {
-                requestContext.Dispose();
+                
             }
         }
     }
