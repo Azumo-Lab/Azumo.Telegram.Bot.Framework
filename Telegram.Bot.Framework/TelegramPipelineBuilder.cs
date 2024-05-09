@@ -122,7 +122,7 @@ namespace Telegram.Bot.Framework
 
                     var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand,
                         objectFactory,
-                        method.BuildFunc(),
+                        method.BuildFuncFactory(),
                         method.GetParameters().Select(x => x.GetParams()).ToList(),
                         attributes.ToArray());
                     commandManager.AddExecutor(executor);

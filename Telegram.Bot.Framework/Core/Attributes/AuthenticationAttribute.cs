@@ -41,6 +41,12 @@ namespace Telegram.Bot.Framework.Core.Attributes
         public AuthenticationAttribute(params string[] roleName) =>
             RoleNames = roleName;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
         async Task IMiddleware<PipelineModel, Task>.Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
         {
             var userManager = input.UserContext!.UserServiceProvider.GetRequiredService<IContextFilter>();

@@ -46,9 +46,12 @@ namespace Telegram.Bot.Framework.Core.Controller
         public virtual async Task<bool> SendMessage(TelegramUserContext context)
         {
             if (ParamAttribute?.IGetParmType != null)
-                if (ActivatorUtilities.CreateInstance(context.UserServiceProvider, ParamAttribute.IGetParmType, Array.Empty<object>()) is IGetParam iGetParam)
+            {
+                var empty = Array.Empty<object>();
+                if (ActivatorUtilities.CreateInstance(context.UserServiceProvider, ParamAttribute.IGetParmType, empty) is IGetParam iGetParam)
                     return await iGetParam.SendMessage(context);
-            _ = await context.BotClient.SendTextMessageAsync(context.ScopeChatID, ParamAttribute?.Message ?? "请输入参数");
+            }
+            _ = await context.BotClient.SendTextMessageAsync(context.RequestChatID, ParamAttribute?.Message ?? "请输入参数");
             return false;
         }
     }

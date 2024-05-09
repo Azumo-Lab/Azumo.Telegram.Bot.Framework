@@ -14,31 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.BotBuilder
+using System;
+
+namespace Telegram.Bot.Framework.Core
 {
-    /// <summary>
-    /// Telegram模块构建器
-    /// </summary>
-    public interface ITelegramModuleBuilder
+    public sealed partial class TelegramUserContext : IDisposable
     {
         /// <summary>
-        /// 添加模块
+        /// 将资源进行销毁
         /// </summary>
-        /// <param name="module"></param>
-        /// <returns></returns>
-        public ITelegramModuleBuilder AddModule(ITelegramModule module);
-
-        /// <summary>
-        /// 添加模块
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public ITelegramModuleBuilder AddModule<T>(params object[] objects) where T : ITelegramModule;
-
-        /// <summary>
-        /// 开始创建
-        /// </summary>
-        /// <returns></returns>
-        public ITelegramBot Build();
+        public void Dispose() =>
+            UserServiceScope.Dispose();
     }
 }

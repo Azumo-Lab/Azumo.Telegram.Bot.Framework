@@ -14,50 +14,46 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Storage;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core
 {
-    /// <summary>
-    /// TG用户上下文
-    /// </summary>
-    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(TelegramUserContext))]
-    public sealed partial class TelegramUserContext
+    public sealed partial class TelegramUserContext : IChatContext
     {
         /// <summary>
         /// 
         /// </summary>
-        private readonly AsyncServiceScope UserServiceScope;
+        public ChatId RequestChatID { get; set; } = null!;
 
         /// <summary>
         /// 
         /// </summary>
-        public IServiceProvider UserServiceProvider => UserServiceScope.ServiceProvider;
+        public ChatId? RequestUserChatID => RequestUser?.Id == null ? null : new ChatId(RequestUser.Id);
 
         /// <summary>
         /// 
         /// </summary>
-        public ITelegramBotClient BotClient { get; }
+        public User? RequestUser => Extensions.GetUser(this);
 
         /// <summary>
         /// 
         /// </summary>
-        public ISession Session { get; }
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<Chat> RequestChat(CancellationToken cancellationToken) => 
+            await BotClient.GetChatAsync(RequestChatID, cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serviceProvider"></param>
-        public TelegramUserContext(IServiceProvider serviceProvider)
-        {
-            UserServiceScope = serviceProvider.CreateAsyncScope();
-
-            BotClient = UserServiceProvider.GetRequiredService<ITelegramBotClient>();
-            Session = UserServiceProvider.GetRequiredService<ISession>();
-        }
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<Chat?> RequestUserChat(CancellationToken cancellationToken) => 
+            RequestUserChatID == null ? null : await BotClient.GetChatAsync(RequestUserChatID, cancellationToken);
     }
 }

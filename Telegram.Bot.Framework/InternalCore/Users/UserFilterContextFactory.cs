@@ -44,20 +44,29 @@ namespace Telegram.Bot.Framework.InternalCore.Users
                 if (!filter.Filter(update))
                     return null;
 
-            var user = update.GetUser();
-            var userID = user!.Id;
+            var requestChatID = update.GetChatID();
+
+            if (requestChatID == null)
+                return null;
 
             TelegramUserContext telegramUserContext;
-            if (ContainsKey(userID))
-                telegramUserContext = Get(userID)!;
-            else
+            var longChatID = requestChatID.Identifier;
+            if (longChatID != null)
             {
-                telegramUserContext = new TelegramUserContext(botServiceProvider);
-                _ = TryAdd(userID, telegramUserContext);
+                var chatID = longChatID.Value;
+                if (ContainsKey(chatID))
+                    telegramUserContext = Get(chatID)!;
+                else
+                {
+                    telegramUserContext = new TelegramUserContext(botServiceProvider);
+                    _ = TryAdd(chatID, telegramUserContext);
+                }
             }
-            telegramUserContext.Copy(update);
-            telegramUserContext.ScopeUser = user;
+            else
+                telegramUserContext = new TelegramUserContext(botServiceProvider);
 
+            telegramUserContext.Copy(update);
+            telegramUserContext.RequestChatID = requestChatID;
             return telegramUserContext;
         }
     }

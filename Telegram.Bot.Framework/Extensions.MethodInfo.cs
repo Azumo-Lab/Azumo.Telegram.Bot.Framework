@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
-        public static Func<IServiceProvider, object[], object> BuildFunc(this MethodInfo methodInfo)
+        public static Func<IServiceProvider, object[], object?> BuildFuncFactory(this MethodInfo methodInfo)
         {
             // 创建对象创建工厂
             var instanceType = methodInfo.DeclaringType;
@@ -42,7 +42,7 @@ namespace Telegram.Bot.Framework
                 throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
 
             // 创建对象工厂
-            Expression<Func<IServiceProvider, object>> objectFactoryFunc;
+            Expression<Func<IServiceProvider, object?>> objectFactoryFunc;
             if (!isStatic)
             {
                 var objectFactory = ActivatorUtilities.CreateFactory
@@ -57,17 +57,12 @@ namespace Telegram.Bot.Framework
                 objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
             }
             else
-                objectFactoryFunc = (service) => null!;
+                objectFactoryFunc = (service) => null;
 
             // 参数
-            var parameters = methodInfo.GetParameters();
             var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "serviceProvider");
             var param = Expression.Parameter(typeof(object[]), "param");
-
-            var paramList = new Expression[parameters.Length];
-
-            for (var i = 0; i < paramList.Length; i++)
-                paramList[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameters[i].ParameterType);
+            var paramList = methodInfo.GetParameters().BuildParamters(param);
 
             // 调用方法
             RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
@@ -85,12 +80,7 @@ namespace Telegram.Bot.Framework
             Expression func;
             if (methodInfo.ReturnType.FullName == typeof(void).FullName)
             {
-                Expression<Func<object>> expression = () =>
-#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
-                null!;
-#else
-                null;
-#endif
+                Expression<Func<object?>> expression = () => null;
                 func = Expression.Block(method, expression);
             }
             else
@@ -98,9 +88,229 @@ namespace Telegram.Bot.Framework
                 func = Expression.Block(method);
             }
 
-            var result = Expression.Lambda<Func<IServiceProvider, object[], object>>(func, serviceProvider, param).Compile();
+            var result = Expression.Lambda<Func<IServiceProvider, object[], object?>>(func, serviceProvider, param).Compile();
             RuntimeHelpers.PrepareDelegate(result);
             return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Func<object, object[], object?> BuildFunc(this MethodInfo methodInfo)
+        {
+            // 创建对象创建工厂
+            var instanceType = methodInfo.DeclaringType;
+            var isStatic = methodInfo.IsStatic;
+
+            if (!isStatic && instanceType == null)
+                throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
+
+            // 创建对象工厂
+            Expression<Func<IServiceProvider, object?>> objectFactoryFunc;
+            if (!isStatic)
+            {
+                var objectFactory = ActivatorUtilities.CreateFactory
+#if NET8_0_OR_GREATER
+                    (instanceType!, []);
+#else
+                    (instanceType!, Array.Empty<Type>());
+#endif
+
+                RuntimeHelpers.PrepareDelegate(objectFactory);
+
+                objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
+            }
+            else
+                objectFactoryFunc = (service) => null;
+
+            // 参数
+            var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "serviceProvider");
+            var param = Expression.Parameter(typeof(object[]), "param");
+            var paramList = methodInfo.GetParameters().BuildParamters(param);
+
+            // 调用方法
+            RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+
+            var objectFactoryInvoke = Expression.Invoke(objectFactoryFunc, serviceProvider);
+            Expression instance;
+#if NET6_0_OR_GREATER
+            instance = methodInfo.IsStatic ? objectFactoryInvoke : Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType!);
+#else
+            instance = methodInfo.IsStatic ?
+                objectFactoryInvoke :
+                (Expression)Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType);
+#endif
+            var method = Expression.Call(instance, methodInfo, paramList);
+            Expression func;
+            if (methodInfo.ReturnType.FullName == typeof(void).FullName)
+            {
+                Expression<Func<object?>> expression = () => null;
+                func = Expression.Block(method, expression);
+            }
+            else
+            {
+                func = Expression.Block(method);
+            }
+
+            var result = Expression.Lambda<Func<object, object[], object?>>(func, serviceProvider, param).Compile();
+            RuntimeHelpers.PrepareDelegate(result);
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameterInfos"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public static Expression[] BuildParamters(this ParameterInfo[] parameterInfos, ParameterExpression parameter)
+        {
+            var paramList = new Expression[parameterInfos.Length];
+            for (var i = 0; i < paramList.Length; i++)
+                paramList[i] = Expression.Convert(Expression.ArrayIndex(parameter, Expression.Constant(i)), parameterInfos[i].ParameterType);
+            return paramList;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <param name="parameterExpression"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static Expression BuildInstance(this MethodInfo methodInfo, Expression parameterExpression)
+        {
+            Expression result;
+            if (methodInfo.IsStatic)
+                result = Expression.Constant(null, typeof(object));
+            else
+            {
+                if (methodInfo.DeclaringType == null)
+                    throw new Exception();
+
+                result = Expression.Convert(parameterExpression, methodInfo.DeclaringType);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Expression<Func<IServiceProvider, object?>> BuildObjectFactory(this MethodInfo methodInfo)
+        {
+            if (methodInfo.IsStatic)
+                return (service) => null;
+
+            var instanceType = methodInfo.DeclaringType;
+            if (instanceType == null)
+                return (service) => null;
+
+            var objectFactory =
+#if NET8_0_OR_GREATER
+                ActivatorUtilities.CreateFactory(instanceType, []);
+#else
+                ActivatorUtilities.CreateFactory(instanceType, Array.Empty<Type>());
+#endif
+            RuntimeHelpers.PrepareDelegate(objectFactory);
+            Expression<Func<IServiceProvider, object?>> objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
+            return objectFactoryFunc;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Action<object, object[]> BuildAction(this MethodInfo methodInfo)
+        {
+            static Delegate buildDelegate(MethodInfo methodInfoArgs)
+            {
+                if (methodInfoArgs.ReturnType.FullName != typeof(void).FullName)
+                    throw new Exception("The method must be void.");
+
+                var instance = Expression.Parameter(typeof(object), "instance");
+                var param = Expression.Parameter(typeof(object[]), "param");
+
+                var method = Expression.Call(
+                    methodInfoArgs.BuildInstance(instance),
+                    methodInfoArgs,
+                    methodInfoArgs.GetParameters().BuildParamters(param));
+
+                var result = Expression.Lambda<Action<object, object[]>>(method, instance, param).Compile();
+
+                return result;
+            }
+            return Build<Action<object, object[]>>(buildDelegate, methodInfo);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static Action<IServiceProvider, object[]> BuildActionFactory(this MethodInfo methodInfo)
+        {
+            static Delegate buildDelegate(MethodInfo methodInfoArgs)
+            {
+                if (methodInfoArgs.ReturnType.FullName != typeof(void).FullName)
+                    throw new Exception("The method must be void.");
+
+                var instance = Expression.Parameter(typeof(IServiceProvider), "instance");
+                var param = Expression.Parameter(typeof(object[]), "param");
+
+                var method = Expression.Call(
+                    methodInfoArgs.BuildInstance(Expression.Invoke(methodInfoArgs.BuildObjectFactory(), instance)),
+                    methodInfoArgs,
+                    methodInfoArgs.GetParameters().BuildParamters(param));
+
+                var result = Expression.Lambda<Action<object, object[]>>(method, instance, param).Compile();
+
+                return result;
+            }
+            return Build<Action<IServiceProvider, object[]>>(buildDelegate, methodInfo);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static Expression<Func<object?>> NullFunc() => 
+            () => null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        public static void PrepareMethod(this MethodInfo methodInfo) =>
+            RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateMethod"></param>
+        public static void PrepareDelegate(this Delegate delegateMethod) =>
+            RuntimeHelpers.PrepareDelegate(delegateMethod);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static T Build<T>(Func<MethodInfo, Delegate> func, MethodInfo methodInfo) where T : Delegate
+        {
+            methodInfo.PrepareMethod();
+            var delegateMethod = func.Invoke(methodInfo);
+            delegateMethod.PrepareDelegate();
+            return (delegateMethod as T) ?? throw new Exception();
         }
     }
 }

@@ -14,31 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.BotBuilder
+using System;
+using Telegram.Bot.Types;
+
+namespace Telegram.Bot.Framework.Core
 {
-    /// <summary>
-    /// Telegram模块构建器
-    /// </summary>
-    public interface ITelegramModuleBuilder
+    public sealed partial class TelegramUserContext : Update
     {
         /// <summary>
-        /// 添加模块
+        /// 
         /// </summary>
-        /// <param name="module"></param>
-        /// <returns></returns>
-        public ITelegramModuleBuilder AddModule(ITelegramModule module);
+        public event EventHandler<Update>? Update;
 
         /// <summary>
-        /// 添加模块
+        /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public ITelegramModuleBuilder AddModule<T>(params object[] objects) where T : ITelegramModule;
+        /// <param name="update"></param>
+        public void Copy(Update update)
+        {
+            Message = update.Message;
+            InlineQuery = update.InlineQuery;
+            MyChatMember = update.MyChatMember;
+            CallbackQuery = update.CallbackQuery;
+            ChannelPost = update.ChannelPost;
+            ChatJoinRequest = update.ChatJoinRequest;
+            ChatMember = update.ChatMember;
+            ChosenInlineResult = update.ChosenInlineResult;
 
-        /// <summary>
-        /// 开始创建
-        /// </summary>
-        /// <returns></returns>
-        public ITelegramBot Build();
+            Update?.Invoke(null, update);
+        }
     }
 }

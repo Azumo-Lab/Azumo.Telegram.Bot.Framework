@@ -14,39 +14,42 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Users
 {
     /// <summary>
-    /// 
+    /// 聊天信息上下文
     /// </summary>
-    public interface IUserContext
+    public interface IChatContext
     {
         /// <summary>
-        /// 
-        /// </summary>
-        public ChatId ScopeChatID { get; }
-
-        /// <summary>
-        /// 
+        /// 请求的聊天ID
         /// </summary>
         public ChatId RequestChatID { get; }
 
         /// <summary>
-        /// 
+        /// 请求用户的聊天ID
         /// </summary>
-        public Task<Chat> ScopeChat { get; }
+        public ChatId? RequestUserChatID { get; }
 
         /// <summary>
-        /// 
+        /// 请求用户的信息
         /// </summary>
-        public Task<Chat> RequestChat { get; }
+        public User? RequestUser { get; }
 
         /// <summary>
-        /// 
+        /// 请求的聊天信息
         /// </summary>
-        public User? ScopeUser { get; }
+        /// <returns>聊天信息</returns>
+        public Task<Chat> RequestChat(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// 请求的用户的聊天信息
+        /// </summary>
+        /// <returns>聊天信息</returns>
+        public Task<Chat?> RequestUserChat(CancellationToken cancellationToken);
     }
 }
