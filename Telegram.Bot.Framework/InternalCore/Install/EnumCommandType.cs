@@ -14,20 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.InternalCore.Install;
-
-/// <summary>
-/// 
-/// </summary>
-internal enum EnumCommandType
+namespace Telegram.Bot.Framework.InternalCore.Install
 {
     /// <summary>
     /// 
     /// </summary>
-    BotCommand,
+    internal enum EnumCommandType
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        BotCommand,
 
-    /// <summary>
-    /// 
-    /// </summary>
-    Func,
+        /// <summary>
+        /// 
+        /// </summary>
+        Func,
+    }
 }

@@ -14,26 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework;
+using System.Collections.Generic;
 
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 将数组转换成字典
+    /// 
     /// </summary>
-    /// <param name="args"></param>
-    /// <returns></returns>
-    public static Dictionary<string, string> ToDictionary(this string[] args)
+    public static partial class Extensions
     {
-        Dictionary<string, string> result = [];
-        for (var i = 0; i < args.Length; i++)
-            if (i + 1 >= args.Length)
-                result.Add(args[i], string.Empty);
-            else
-                result.Add(args[i], args[++i]);
-        return result;
+        /// <summary>
+        /// 将数组转换成字典
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ToDictionary(this string[] args)
+        {
+            var result = new Dictionary<string, string>();
+            for (var i = 0; i < args.Length; i++)
+                if (i + 1 >= args.Length)
+                    result.Add(args[i], string.Empty);
+                else
+                    result.Add(args[i], args[++i]);
+            return result;
+        }
     }
 }

@@ -14,29 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Controller;
+using System.Collections.Generic;
 
-/// <summary>
-/// 指令管理器
-/// </summary>
-internal interface ICommandManager
+namespace Telegram.Bot.Framework.Core.Controller
 {
     /// <summary>
-    /// 获取
+    /// 指令管理器
     /// </summary>
-    /// <param name="userContext"></param>
-    /// <returns></returns>
-    public IExecutor? GetExecutor(TelegramUserContext userContext);
+    internal interface ICommandManager
+    {
+        /// <summary>
+        /// 获取
+        /// </summary>
+        /// <param name="userContext"></param>
+        /// <returns></returns>
+        public IExecutor? GetExecutor(TelegramUserContext userContext);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="executor"></param>
-    public void AddExecutor(IExecutor executor);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="executor"></param>
+        public void AddExecutor(IExecutor executor);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public IReadOnlyList<IExecutor> GetExecutorList();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IReadOnlyList<IExecutor> GetExecutorList();
+    }
 }

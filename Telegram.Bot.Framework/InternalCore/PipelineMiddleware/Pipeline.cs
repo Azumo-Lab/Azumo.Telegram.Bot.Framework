@@ -16,26 +16,33 @@
 
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 
-namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware;
-
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <typeparam name="TResult"></typeparam>
-/// <param name="middleware"></param>
-internal class Pipeline<TInput, TResult>(PipelineMiddlewareDelegate<TInput, TResult> middleware) : IPipeline<TInput, TResult>
+namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly PipelineMiddlewareDelegate<TInput, TResult> middleware = middleware;
+    /// <typeparam name="TInput"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    internal class Pipeline<TInput, TResult> : IPipeline<TInput, TResult>
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="middleware"></param>
+        public Pipeline(PipelineMiddlewareDelegate<TInput, TResult> middleware) =>
+            this.middleware = middleware;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public TResult Invoke(TInput input) =>
-        middleware.Invoke(input);
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly PipelineMiddlewareDelegate<TInput, TResult> middleware;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public TResult Invoke(TInput input) =>
+            middleware.Invoke(input);
+    }
 }

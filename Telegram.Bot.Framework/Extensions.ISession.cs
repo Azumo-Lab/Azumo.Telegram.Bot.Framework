@@ -17,36 +17,37 @@
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
-    /// 向用户存储中添加指令
+    /// 
     /// </summary>
-    /// <param name="session">存储接口</param>
-    /// <param name="executor"></param>
-    internal static void AddCommand(this ISession session, IExecutor executor) =>
-        session.AddOrUpdate(CommandKey, executor);
+    public static partial class Extensions
+    {
+        /// <summary>
+        /// 向用户存储中添加指令
+        /// </summary>
+        /// <param name="session">存储接口</param>
+        /// <param name="executor"></param>
+        internal static void AddCommand(this ISession session, IExecutor executor) =>
+            session.AddOrUpdate(CommandKey, executor);
 
-    /// <summary>
-    /// 从用户存储中获取指令
-    /// </summary>
-    /// <param name="session">存储接口</param>
-    /// <returns></returns>
-    internal static IExecutor GetCommand(this ISession session) =>
-        session.Get<IExecutor>(CommandKey);
+        /// <summary>
+        /// 从用户存储中获取指令
+        /// </summary>
+        /// <param name="session">存储接口</param>
+        /// <returns></returns>
+        internal static IExecutor GetCommand(this ISession session) =>
+            session.Get<IExecutor>(CommandKey);
 
-    /// <summary>
-    /// 具有泛型的值获取方法
-    /// </summary>
-    /// <typeparam name="T">泛型类型</typeparam>
-    /// <param name="session">存储接口</param>
-    /// <param name="key">键值</param>
-    /// <returns>转换为 <typeparamref name="T"/> 值的数据</returns>
-    public static T Get<T>(this ISession session, object key) =>
-        (T)session.Get(key);
+        /// <summary>
+        /// 具有泛型的值获取方法
+        /// </summary>
+        /// <typeparam name="T">泛型类型</typeparam>
+        /// <param name="session">存储接口</param>
+        /// <param name="key">键值</param>
+        /// <returns>转换为 <typeparamref name="T"/> 值的数据</returns>
+        public static T Get<T>(this ISession session, object key) =>
+            (T)session.Get(key);
+    }
 }

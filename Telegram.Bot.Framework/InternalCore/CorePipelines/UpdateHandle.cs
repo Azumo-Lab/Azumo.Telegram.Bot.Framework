@@ -16,6 +16,10 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
@@ -26,81 +30,89 @@ using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="serviceProvider"></param>
-[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IUpdateHandler))]
-internal class UpdateHandle(IServiceProvider serviceProvider) : IUpdateHandler
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly IServiceProvider BotServiceProvider = serviceProvider;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private readonly ILogger<UpdateHandle>? _logger = serviceProvider.GetService<ILogger<UpdateHandle>>();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="botClient"></param>
-    /// <param name="exception"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    [DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IUpdateHandler))]
+    internal class UpdateHandle : IUpdateHandler
     {
-        // 发生错误，将信息写入Log中
-        _logger?.LogError("发生错误，错误类型：{A0}，错误信息：{A1}", exception.GetType().FullName, exception.ToString());
-        await Task.CompletedTask;
-    }
-
-    private readonly IEnumerable<IRequestFilter> requestFilters = serviceProvider.GetServices<IRequestFilter>() ?? [];
-    private readonly IContextFactory contextFactory = serviceProvider.GetRequiredService<IContextFactory>();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="botClient"></param>
-    /// <param name="update"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-    {
-        // 创建请求上下文
-        IRequestContext? requestContext;
-        if ((requestContext = update.GetRequestContext(BotServiceProvider, requestFilters)) == null)
-            return;
-
-        try
+        public UpdateHandle(IServiceProvider serviceProvider)
         {
-            // 创建用户上下文
-            TelegramUserContext? context;
-            if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)
+            BotServiceProvider = serviceProvider;
+            _logger = serviceProvider.GetService<ILogger<UpdateHandle>>();
+            requestFilters = serviceProvider.GetServices<IRequestFilter>() ?? new List<IRequestFilter>();
+            contextFactory = serviceProvider.GetRequiredService<IContextFactory>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IServiceProvider BotServiceProvider;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly ILogger<UpdateHandle>? _logger;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        {
+            // 发生错误，将信息写入Log中
+            _logger?.LogError("发生错误，错误类型：{A0}，错误信息：{A1}", exception.GetType().FullName, exception.ToString());
+            await Task.CompletedTask;
+        }
+
+        private readonly IEnumerable<IRequestFilter> requestFilters;
+        private readonly IContextFactory contextFactory;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="update"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            // 创建请求上下文
+            IRequestContext? requestContext;
+            if ((requestContext = update.GetRequestContext(BotServiceProvider, requestFilters)) == null)
                 return;
 
-            // 获取用户的流水线
-            var pipeline = context.UserServiceProvider.GetRequiredService<IPipelineController<PipelineModel, Task>>();
-
-            // 执行流水线
-            await pipeline[context.Type].Invoke(new PipelineModel
+            try
             {
-                UserContext = context,
-                CommandManager = BotServiceProvider.GetRequiredService<ICommandManager>(),
-                CommandScopeService = context.UserServiceProvider.GetRequiredService<ICommandScopeService>(),
-            });
-        }
-        catch (Exception ex)
-        {
-            await HandlePollingErrorAsync(botClient, ex, cancellationToken);
-        }
-        finally
-        {
-            requestContext.Dispose();
+                // 创建用户上下文
+                TelegramUserContext? context;
+                if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)
+                    return;
+
+                // 获取用户的流水线
+                var pipeline = context.UserServiceProvider.GetRequiredService<IPipelineController<PipelineModel, Task>>();
+
+                // 执行流水线
+                await pipeline[context.Type].Invoke(new PipelineModel
+                {
+                    UserContext = context,
+                    CommandManager = BotServiceProvider.GetRequiredService<ICommandManager>(),
+                    CommandScopeService = context.UserServiceProvider.GetRequiredService<ICommandScopeService>(),
+                });
+            }
+            catch (Exception ex)
+            {
+                await HandlePollingErrorAsync(botClient, ex, cancellationToken);
+            }
+            finally
+            {
+                requestContext.Dispose();
+            }
         }
     }
 }

@@ -15,102 +15,105 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Core;
-
-/// <summary>
-/// TG用户上下文
-/// </summary>
-[DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(TelegramUserContext))]
-public sealed class TelegramUserContext : Update, IDisposable, IUserContext
+namespace Telegram.Bot.Framework.Core
 {
     /// <summary>
-    /// 
+    /// TG用户上下文
     /// </summary>
-    private readonly AsyncServiceScope UserServiceScope;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public IServiceProvider UserServiceProvider => UserServiceScope.ServiceProvider;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public ITelegramBotClient BotClient { get; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public ISession Session { get; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public ChatId ScopeChatID => ScopeUser!.Id;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public ChatId RequestChatID => this.GetChatID();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public Task<Chat> ScopeChat => BotClient.GetChatAsync(ScopeChatID);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public Task<Chat> RequestChat => BotClient.GetChatAsync(RequestChatID);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public User? ScopeUser { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="serviceProvider"></param>
-    public TelegramUserContext(IServiceProvider serviceProvider)
+    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(TelegramUserContext))]
+    public sealed class TelegramUserContext : Update, IDisposable, IUserContext
     {
-        UserServiceScope = serviceProvider.CreateAsyncScope();
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly AsyncServiceScope UserServiceScope;
 
-        BotClient = UserServiceProvider.GetRequiredService<ITelegramBotClient>();
-        Session = UserServiceProvider.GetRequiredService<ISession>();
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IServiceProvider UserServiceProvider => UserServiceScope.ServiceProvider;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public event EventHandler<Update>? Update;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ITelegramBotClient BotClient { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Dispose() =>
-        UserServiceScope.Dispose();
+        /// <summary>
+        /// 
+        /// </summary>
+        public ISession Session { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="update"></param>
-    public void Copy(Update update)
-    {
-        Message = update.Message;
-        InlineQuery = update.InlineQuery;
-        MyChatMember = update.MyChatMember;
-        CallbackQuery = update.CallbackQuery;
-        ChannelPost = update.ChannelPost;
-        ChatJoinRequest = update.ChatJoinRequest;
-        ChatMember = update.ChatMember;
-        ChosenInlineResult = update.ChosenInlineResult;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ChatId ScopeChatID => ScopeUser!.Id;
 
-        Update?.Invoke(null, update);
+        /// <summary>
+        /// 
+        /// </summary>
+        public ChatId RequestChatID => this.GetChatID();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task<Chat> ScopeChat => BotClient.GetChatAsync(ScopeChatID);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task<Chat> RequestChat => BotClient.GetChatAsync(RequestChatID);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public User? ScopeUser { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public TelegramUserContext(IServiceProvider serviceProvider)
+        {
+            UserServiceScope = serviceProvider.CreateAsyncScope();
+
+            BotClient = UserServiceProvider.GetRequiredService<ITelegramBotClient>();
+            Session = UserServiceProvider.GetRequiredService<ISession>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<Update>? Update;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose() =>
+            UserServiceScope.Dispose();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="update"></param>
+        public void Copy(Update update)
+        {
+            Message = update.Message;
+            InlineQuery = update.InlineQuery;
+            MyChatMember = update.MyChatMember;
+            CallbackQuery = update.CallbackQuery;
+            ChannelPost = update.ChannelPost;
+            ChatJoinRequest = update.ChatJoinRequest;
+            ChatMember = update.ChatMember;
+            ChosenInlineResult = update.ChosenInlineResult;
+
+            Update?.Invoke(null, update);
+        }
     }
 }

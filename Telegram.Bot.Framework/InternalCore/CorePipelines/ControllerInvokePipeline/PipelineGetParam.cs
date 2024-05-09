@@ -15,20 +15,23 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
-internal class PipelineGetParam : IMiddleware<PipelineModel, Task>
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {
-    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+    internal class PipelineGetParam : IMiddleware<PipelineModel, Task>
     {
-        var paramManager = input.CommandScopeService.Service?.GetService<IParamManager>();
-        if (paramManager != null)
-            if (!await paramManager.Read(input.UserContext))
-                return;
+        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+        {
+            var paramManager = input.CommandScopeService!.Service?.GetService<IParamManager>();
+            if (paramManager != null)
+                if (!await paramManager.Read(input.UserContext!))
+                    return;
 
-        await Next(input);
+            await Next(input);
+        }
     }
 }

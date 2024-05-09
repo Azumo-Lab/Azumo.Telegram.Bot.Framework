@@ -15,38 +15,41 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Attributes;
 
-namespace Telegram.Bot.Framework.Core.Controller;
-
-/// <summary>
-/// 
-/// </summary>
-public abstract class BaseGetParam : IGetParam
+namespace Telegram.Bot.Framework.Core.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    public ParamAttribute? ParamAttribute { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public abstract Task<object> GetParam(TelegramUserContext context);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public virtual async Task<bool> SendMessage(TelegramUserContext context)
+    public abstract class BaseGetParam : IGetParam
     {
-        if (ParamAttribute?.IGetParmType != null)
-            if (ActivatorUtilities.CreateInstance(context.UserServiceProvider, ParamAttribute.IGetParmType, []) is IGetParam iGetParam)
-                return await iGetParam.SendMessage(context);
-        _ = await context.BotClient.SendTextMessageAsync(context.ScopeChatID, ParamAttribute?.Message ?? "请输入参数");
-        return false;
+        /// <summary>
+        /// 
+        /// </summary>
+        public ParamAttribute? ParamAttribute { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public abstract Task<object> GetParam(TelegramUserContext context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public virtual async Task<bool> SendMessage(TelegramUserContext context)
+        {
+            if (ParamAttribute?.IGetParmType != null)
+                if (ActivatorUtilities.CreateInstance(context.UserServiceProvider, ParamAttribute.IGetParmType, Array.Empty<object>()) is IGetParam iGetParam)
+                    return await iGetParam.SendMessage(context);
+            _ = await context.BotClient.SendTextMessageAsync(context.ScopeChatID, ParamAttribute?.Message ?? "请输入参数");
+            return false;
+        }
     }
 }

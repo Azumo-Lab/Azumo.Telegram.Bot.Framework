@@ -15,75 +15,86 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.InternalCore.Install;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="func"></param>
-internal class TelegramCommand(Delegate func) : ITelegramModule
+namespace Telegram.Bot.Framework
 {
-    private readonly Delegate _func = func;
-
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="services"></param>
-    public void AddBuildService(IServiceCollection services)
+    internal class TelegramCommand : ITelegramModule
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="func"></param>
+        public TelegramCommand(Delegate func) => _func = func;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Delegate _func;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        public void AddBuildService(IServiceCollection services)
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="builderService"></param>
+        /// <exception cref="NullReferenceException"></exception>
+        public void Build(IServiceCollection services, IServiceProvider builderService)
+        {
+            var manager = builderService.GetRequiredService<ICommandManager>();
+            var attr = Attribute.GetCustomAttribute(_func.Method, typeof(BotCommandAttribute)) ?? throw new NullReferenceException();
+
+            var exec = Factory.GetExecutorInstance(EnumCommandType.Func,
+                _func,
+                _func.Method.GetParameters().Select(x => x.GetParams()).ToList(),
+                TypeDescriptor.GetAttributes(_func.Method));
+
+            manager.AddExecutor(exec);
+        }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="builderService"></param>
-    /// <exception cref="NullReferenceException"></exception>
-    public void Build(IServiceCollection services, IServiceProvider builderService)
+    public static class TelegramCommandExtensions
     {
-        var manager = builderService.GetRequiredService<ICommandManager>();
-        var attr = Attribute.GetCustomAttribute(_func.Method, typeof(BotCommandAttribute)) ?? throw new NullReferenceException();
+        /// <summary>
+        /// 添加一个命令
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, Delegate func) =>
+            builder.AddModule<TelegramCommand>(func);
 
-        var exec = Factory.GetExecutorInstance(EnumCommandType.Func,
-            _func,
-            _func.Method.GetParameters().Select(x => x.GetParams()).ToList(),
-            TypeDescriptor.GetAttributes(_func.Method));
-
-        manager.AddExecutor(exec);
-    }
-}
-
-/// <summary>
-/// 
-/// </summary>
-public static class TelegramCommandExtensions
-{
-    /// <summary>
-    /// 添加一个命令
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="func"></param>
-    /// <returns></returns>
-    public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, Delegate func) =>
-        builder.AddModule<TelegramCommand>(func);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="commandName"></param>
-    /// <param name="func"></param>
-    /// <returns></returns>
-    public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, string commandName, Delegate func)
-    {
-        _ = TypeDescriptor.AddAttributes(func.Method, new BotCommandAttribute(commandName));
-        return builder.AddCommand(func);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="commandName"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, string commandName, Delegate func)
+        {
+            _ = TypeDescriptor.AddAttributes(func.Method, new BotCommandAttribute(commandName));
+            return builder.AddCommand(func);
+        }
     }
 }

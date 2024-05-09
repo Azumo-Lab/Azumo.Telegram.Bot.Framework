@@ -16,33 +16,36 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
 
-namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc;
-
-/// <summary>
-/// 
-/// </summary>
-[TelegramBotEndProc]
-internal class ShowBotUsername : IMiddleware<IServiceProvider, Task>
+namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="Next"></param>
-    /// <returns></returns>
-    public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+    [TelegramBotEndProc]
+    internal class ShowBotUsername : IMiddleware<IServiceProvider, Task>
     {
-        var logger = input.GetService<ILogger<ShowBotUsername>>();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
+        public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+        {
+            var logger = input.GetService<ILogger<ShowBotUsername>>();
 
-        var botClient = input.GetRequiredService<ITelegramBotClient>();
+            var botClient = input.GetRequiredService<ITelegramBotClient>();
 
-        var user = await botClient.GetMeAsync();
+            var user = await botClient.GetMeAsync();
 
-        logger?.LogInformation("用户名：@{A0}，ID：{A1}，名字：{A2}，正在执行中 ...", user.Username, user.Id, $"{user.FirstName} {user.LastName}");
+            logger?.LogInformation("用户名：@{A0}，ID：{A1}，名字：{A2}，正在执行中 ...", user.Username, user.Id, $"{user.FirstName} {user.LastName}");
 
-        await Next(input);
+            await Next(input);
+        }
     }
 }

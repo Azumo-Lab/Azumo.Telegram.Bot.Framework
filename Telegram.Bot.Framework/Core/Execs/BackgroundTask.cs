@@ -14,74 +14,79 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Execs;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-/// <summary>
-/// 后台任务
-/// </summary>
-public abstract class BackGroundTask : ITask
+namespace Telegram.Bot.Framework.Core.Execs
 {
     /// <summary>
-    /// 发生错误的重试次数
+    /// 后台任务
     /// </summary>
-    protected int ErrorCount { get; set; } = 3;
-
-    /// <summary>
-    /// 发生错误后的延迟时间
-    /// </summary>
-    protected TimeSpan ErrorDelay { get; set; } = TimeSpan.FromSeconds(30);
-
-    /// <summary>
-    /// 执行接口的任务
-    /// </summary>
-    /// <remarks>
-    /// 向线程池中添加一个异步任务
-    /// </remarks>
-    /// <param name="input">传入参数</param>
-    /// <param name="token">token</param>
-    /// <returns>异步执行</returns>
-    public virtual Task ExecuteAsync(object? input, CancellationToken token)
+    public abstract class BackGroundTask : ITask
     {
-        if (!token.IsCancellationRequested)
-            _ = ThreadPool.QueueUserWorkItem(async (inputObj) =>
-            {
-                var errorCount = 0;
-            ReExecute:
-                try
-                {
-                    // 开始执行后台任务
-                    if (!token.IsCancellationRequested)
-                        await BackGroundExecuteAsync(inputObj, token);
-                }
-                catch (Exception) when (token.IsCancellationRequested)
-                {
-                    return; // 立刻结束
-                }
-                catch (Exception)
-                {
-                    errorCount++;
-                    if (errorCount < ErrorCount)
-                        try
-                        {
-                            await Task.Delay(ErrorDelay, token); // 重试
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            return; // 立刻结束
-                        }
-                    else
-                        return; // 重试后放弃
-                    goto ReExecute;
-                }
-            }, input);
-        return Task.CompletedTask;
-    }
+        /// <summary>
+        /// 发生错误的重试次数
+        /// </summary>
+        protected int ErrorCount { get; set; } = 3;
 
-    /// <summary>
-    /// 开始执行后台任务
-    /// </summary>
-    /// <param name="input">传入参数</param>
-    /// <param name="token">Token <see cref="CancellationToken"/></param>
-    /// <returns>异步任务</returns>
-    protected abstract Task BackGroundExecuteAsync(object? input, CancellationToken token);
+        /// <summary>
+        /// 发生错误后的延迟时间
+        /// </summary>
+        protected TimeSpan ErrorDelay { get; set; } = TimeSpan.FromSeconds(30);
+
+        /// <summary>
+        /// 执行接口的任务
+        /// </summary>
+        /// <remarks>
+        /// 向线程池中添加一个异步任务
+        /// </remarks>
+        /// <param name="input">传入参数</param>
+        /// <param name="token">token</param>
+        /// <returns>异步执行</returns>
+        public virtual Task ExecuteAsync(object? input, CancellationToken token)
+        {
+            if (!token.IsCancellationRequested)
+                _ = ThreadPool.QueueUserWorkItem(async (inputObj) =>
+                {
+                    var errorCount = 0;
+                ReExecute:
+                    try
+                    {
+                        // 开始执行后台任务
+                        if (!token.IsCancellationRequested)
+                            await BackGroundExecuteAsync(inputObj, token);
+                    }
+                    catch (Exception) when (token.IsCancellationRequested)
+                    {
+                        return; // 立刻结束
+                    }
+                    catch (Exception)
+                    {
+                        errorCount++;
+                        if (errorCount < ErrorCount)
+                            try
+                            {
+                                await Task.Delay(ErrorDelay, token); // 重试
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                return; // 立刻结束
+                            }
+                        else
+                            return; // 重试后放弃
+                        goto ReExecute;
+                    }
+                }, input);
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 开始执行后台任务
+        /// </summary>
+        /// <param name="input">传入参数</param>
+        /// <param name="token">Token <see cref="CancellationToken"/></param>
+        /// <returns>异步任务</returns>
+        protected abstract Task BackGroundExecuteAsync(object? input, CancellationToken token);
+    }
 }

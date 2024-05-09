@@ -15,73 +15,92 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="methodInfo"></param>
-    /// <returns></returns>
-    public static Func<IServiceProvider, object[], object> BuildFunc(this MethodInfo methodInfo)
+    public static partial class Extensions
     {
-        // 创建对象创建工厂
-        var instanceType = methodInfo.DeclaringType;
-        var isStatic = methodInfo.IsStatic;
-
-        if (!isStatic && instanceType == null)
-            throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
-
-        // 创建对象工厂
-        Expression<Func<IServiceProvider, object>> objectFactoryFunc;
-        if (!isStatic)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Func<IServiceProvider, object[], object> BuildFunc(this MethodInfo methodInfo)
         {
-            var objectFactory = ActivatorUtilities.CreateFactory(instanceType!, []);
-            RuntimeHelpers.PrepareDelegate(objectFactory);
+            // 创建对象创建工厂
+            var instanceType = methodInfo.DeclaringType;
+            var isStatic = methodInfo.IsStatic;
 
-            objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
+            if (!isStatic && instanceType == null)
+                throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
+
+            // 创建对象工厂
+            Expression<Func<IServiceProvider, object>> objectFactoryFunc;
+            if (!isStatic)
+            {
+                var objectFactory = ActivatorUtilities.CreateFactory
+#if NET8_0_OR_GREATER
+                    (instanceType!, []);
+#else
+                    (instanceType!, Array.Empty<Type>());
+#endif
+
+                RuntimeHelpers.PrepareDelegate(objectFactory);
+
+                objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
+            }
+            else
+                objectFactoryFunc = (service) => null!;
+
+            // 参数
+            var parameters = methodInfo.GetParameters();
+            var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "serviceProvider");
+            var param = Expression.Parameter(typeof(object[]), "param");
+
+            var paramList = new Expression[parameters.Length];
+
+            for (var i = 0; i < paramList.Length; i++)
+                paramList[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameters[i].ParameterType);
+
+            // 调用方法
+            RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+
+            var objectFactoryInvoke = Expression.Invoke(objectFactoryFunc, serviceProvider);
+            Expression instance;
+#if NET6_0_OR_GREATER
+            instance = methodInfo.IsStatic ? objectFactoryInvoke : Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType!);
+#else
+            instance = methodInfo.IsStatic ?
+                objectFactoryInvoke :
+                (Expression)Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType);
+#endif
+            var method = Expression.Call(instance, methodInfo, paramList);
+            Expression func;
+            if (methodInfo.ReturnType.FullName == typeof(void).FullName)
+            {
+                Expression<Func<object>> expression = () =>
+#if NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER
+                null!;
+#else
+                null;
+#endif
+                func = Expression.Block(method, expression);
+            }
+            else
+            {
+                func = Expression.Block(method);
+            }
+
+            var result = Expression.Lambda<Func<IServiceProvider, object[], object>>(func, serviceProvider, param).Compile();
+            RuntimeHelpers.PrepareDelegate(result);
+            return result;
         }
-        else
-        {
-            objectFactoryFunc = (service) => null!;
-        }
-
-        // 参数
-        var parameters = methodInfo.GetParameters();
-        var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "serviceProvider");
-        var param = Expression.Parameter(typeof(object[]), "param");
-
-        var paramList = new Expression[parameters.Length];
-
-        for (var i = 0; i < paramList.Length; i++)
-            paramList[i] = Expression.Convert(Expression.ArrayIndex(param, Expression.Constant(i)), parameters[i].ParameterType);
-
-        // 调用方法
-        RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
-
-        var objectFactoryInvoke = Expression.Invoke(objectFactoryFunc, serviceProvider);
-        var method = Expression.Call(methodInfo.IsStatic ? objectFactoryInvoke : Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType!), methodInfo, paramList);
-        Expression func;
-        if (methodInfo.ReturnType.FullName == typeof(void).FullName)
-        {
-            Expression<Func<object>> expression = () => null!;
-            func = Expression.Block(method, expression);
-        }
-        else
-        {
-            func = Expression.Block(method);
-        }
-
-        var result = Expression.Lambda<Func<IServiceProvider, object[], object>>(func, serviceProvider, param).Compile();
-        RuntimeHelpers.PrepareDelegate(result);
-        return result;
     }
 }

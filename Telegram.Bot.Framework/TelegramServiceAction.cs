@@ -15,45 +15,57 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using Telegram.Bot.Framework.Core.BotBuilder;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="action"></param>
-internal class TelegramServiceAction(Action<IServiceCollection> action) : ITelegramModule
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="services"></param>
-    public void AddBuildService(IServiceCollection services)
+    internal class TelegramServiceAction : ITelegramModule
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Action<IServiceCollection> _action;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        public TelegramServiceAction(Action<IServiceCollection> action) => _action = action;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        public void AddBuildService(IServiceCollection services)
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="builderService"></param>
+        public void Build(IServiceCollection services, IServiceProvider builderService) =>
+            _action(services);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="builderService"></param>
-    public void Build(IServiceCollection services, IServiceProvider builderService) =>
-        action(services);
-}
-
-/// <summary>
-/// 
-/// </summary>
-public static class TelegramServiceActionExtensions
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="action"></param>
-    /// <returns></returns>
-    public static ITelegramModuleBuilder AddServiceAction(this ITelegramModuleBuilder builder, Action<IServiceCollection> action) =>
-        builder.AddModule(new TelegramServiceAction(action));
+    public static class TelegramServiceActionExtensions
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public static ITelegramModuleBuilder AddServiceAction(this ITelegramModuleBuilder builder, Action<IServiceCollection> action) =>
+            builder.AddModule(new TelegramServiceAction(action));
+    }
 }

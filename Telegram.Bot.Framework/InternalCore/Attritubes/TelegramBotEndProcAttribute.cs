@@ -14,12 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.InternalCore.Attritubes;
+using System;
 
-/// <summary>
-/// 
-/// </summary>
-[AttributeUsage(AttributeTargets.Class)]
-internal class TelegramBotEndProcAttribute : Attribute
+namespace Telegram.Bot.Framework.InternalCore.Attritubes
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    internal class TelegramBotEndProcAttribute : Attribute
+    {
+    }
 }

@@ -15,46 +15,59 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 using Telegram.Bot.Framework.SimpleAuthentication;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
-internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {
-    private const string RolesNameKey = "{84DB22B4-4450-432E-AA82-DAEF3E1F4C6B}";
-    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+    internal class PipelineCommandScope : IMiddleware<PipelineModel, Task>
     {
-        // 获取指令
-        var exec = input.CommandManager.GetExecutor(input.UserContext);
-        if (exec == null)   // 获取不到
-            if ((exec = input.CommandScopeService.Session?.GetCommand()) == null)
-                goto Next;  // 非指令，直接进行下一步操作
-            else
+        private const string RolesNameKey = "{84DB22B4-4450-432E-AA82-DAEF3E1F4C6B}";
+        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+        {
+            // 获取指令
+            var exec = input.CommandManager!.GetExecutor(input.UserContext!);
+            if (exec == null)   // 获取不到
+                if ((exec = input.CommandScopeService!.Session?.GetCommand()) == null)
+                    goto Next;  // 非指令，直接进行下一步操作
+                else
+                {
+                    // 创建新的指令级别的服务范围
+                    input.CommandScopeService.DeleteOldCreateNew();
+                    input.CommandScopeService.Session!.AddCommand(exec);
+                    var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
+                    paramManager.SetParamList(exec.Parameters);
+                }
+
+            // 获取指令的认证条件
+            if (!(exec.Cache.TryGetValue(RolesNameKey, out var val) && val is List<string> roles))
             {
-                // 创建新的指令级别的服务范围
-                input.CommandScopeService.DeleteOldCreateNew();
-                input.CommandScopeService.Session!.AddCommand(exec);
-                var paramManager = input.CommandScopeService.Service!.GetRequiredService<IParamManager>();
-                paramManager.SetParamList(exec.Parameters);
+                var roleNames = exec.Attributes.Where(x => x is AuthenticationAttribute).Cast<AuthenticationAttribute>().SelectMany(x => x.RoleNames);
+                roles =
+#if NET8_0_OR_GREATER
+                [
+                    .. roleNames,
+                ];
+#else
+                new List<string>();
+                roles.AddRange(roleNames);
+#endif
+                exec.Cache[RolesNameKey] = roles;
             }
 
-        // 获取指令的认证条件
-        if (!(exec.Cache.TryGetValue(RolesNameKey, out var val) && val is List<string> roles))
-        {
-            roles = [];
-            roles.AddRange(exec.Attributes.Where(x => x is AuthenticationAttribute).Cast<AuthenticationAttribute>().SelectMany(x => x.RoleNames));
-            exec.Cache[RolesNameKey] = roles;
+            // 开始校验
+            foreach (var item in input.UserContext!.UserServiceProvider.GetServices<IContextFilter>() ?? new List<IContextFilter>())
+                if (!item.Filter(input.UserContext, roles.ToArray()))
+                    return; // 不能通过认证，权限名称不对等情况
+                Next:
+            // 开始执行下一个操作
+            await Next(input);
         }
-
-        // 开始校验
-        foreach (var item in input.UserContext.UserServiceProvider.GetServices<IContextFilter>() ?? [])
-            if (!item.Filter(input.UserContext, [.. roles]))
-                return; // 不能通过认证，权限名称不对等情况
-            Next:
-        // 开始执行下一个操作
-        await Next(input);
     }
 }

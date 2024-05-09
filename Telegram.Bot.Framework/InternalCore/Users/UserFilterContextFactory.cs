@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
@@ -22,41 +23,42 @@ using Telegram.Bot.Framework.Core.Users;
 using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalCore.Users;
-
-/// <summary>
-/// 
-/// </summary>
-[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IContextFactory))]
-internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserContext>, IContextFactory
+namespace Telegram.Bot.Framework.InternalCore.Users
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="botServiceProvider"></param>
-    /// <param name="update"></param>
-    /// <returns></returns>
-    public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
+    [DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IContextFactory))]
+    internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserContext>, IContextFactory
     {
-        var filters = botServiceProvider.GetServices<IRequestFilter>();
-        foreach (var filter in filters)
-            if (!filter.Filter(update))
-                return null;
-
-        var user = update.GetUser();
-        var userID = user!.Id;
-
-        TelegramUserContext telegramUserContext;
-        if (ContainsKey(userID))
-            telegramUserContext = Get(userID)!;
-        else
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="botServiceProvider"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
         {
-            telegramUserContext = new TelegramUserContext(botServiceProvider);
-            _ = TryAdd(userID, telegramUserContext);
-        }
-        telegramUserContext.Copy(update);
-        telegramUserContext.ScopeUser = user;
+            var filters = botServiceProvider.GetServices<IRequestFilter>();
+            foreach (var filter in filters)
+                if (!filter.Filter(update))
+                    return null;
 
-        return telegramUserContext;
+            var user = update.GetUser();
+            var userID = user!.Id;
+
+            TelegramUserContext telegramUserContext;
+            if (ContainsKey(userID))
+                telegramUserContext = Get(userID)!;
+            else
+            {
+                telegramUserContext = new TelegramUserContext(botServiceProvider);
+                _ = TryAdd(userID, telegramUserContext);
+            }
+            telegramUserContext.Copy(update);
+            telegramUserContext.ScopeUser = user;
+
+            return telegramUserContext;
+        }
     }
 }

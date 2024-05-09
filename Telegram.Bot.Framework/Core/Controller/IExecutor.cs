@@ -14,33 +14,38 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Controller;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-/// <summary>
-/// 执行器
-/// </summary>
-internal interface IExecutor
+namespace Telegram.Bot.Framework.Core.Controller
 {
     /// <summary>
-    /// 可以使用的 Attribute
+    /// 执行器
     /// </summary>
-    public Attribute[] Attributes { get; }
+    internal interface IExecutor
+    {
+        /// <summary>
+        /// 可以使用的 Attribute
+        /// </summary>
+        public Attribute[] Attributes { get; }
 
-    /// <summary>
-    /// 方法执行的参数
-    /// </summary>
-    public IReadOnlyList<IGetParam> Parameters { get; }
+        /// <summary>
+        /// 方法执行的参数
+        /// </summary>
+        public IReadOnlyList<IGetParam> Parameters { get; }
 
-    /// <summary>
-    /// 缓存
-    /// </summary>
-    public Dictionary<string, object> Cache { get; }
+        /// <summary>
+        /// 缓存
+        /// </summary>
+        public Dictionary<string, object> Cache { get; }
 
-    /// <summary>
-    /// 方法的执行
-    /// </summary>
-    /// <param name="serviceProvider"></param>
-    /// <param name="param"></param>
-    /// <returns></returns>
-    public Task Invoke(IServiceProvider serviceProvider, object?[] param);
+        /// <summary>
+        /// 方法的执行
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public Task Invoke(IServiceProvider serviceProvider, object?[] param);
+    }
 }

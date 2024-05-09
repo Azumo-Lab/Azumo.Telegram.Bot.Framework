@@ -16,17 +16,18 @@
 
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.SimpleAuthentication;
-
-/// <summary>
-/// 
-/// </summary>
-public interface IRequestFilter
+namespace Telegram.Bot.Framework.SimpleAuthentication
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="update"></param>
-    /// <returns></returns>
-    public bool Filter(Update update);
+    public interface IRequestFilter
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        public bool Filter(Update update);
+    }
 }

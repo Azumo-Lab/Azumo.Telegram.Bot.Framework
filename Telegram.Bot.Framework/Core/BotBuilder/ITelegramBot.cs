@@ -14,25 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.BotBuilder;
+using System;
+using System.Threading.Tasks;
 
-/// <summary>
-/// Telegram Bot Interface
-/// </summary>
-/// <remarks>
-/// 用于定义一个Telegram Bot实现类
-/// </remarks>
-public interface ITelegramBot : IDisposable
+namespace Telegram.Bot.Framework.Core.BotBuilder
 {
     /// <summary>
-    /// 开始执行
+    /// Telegram Bot Interface
     /// </summary>
-    /// <returns></returns>
-    public Task StartAsync(bool wait = false);
+    /// <remarks>
+    /// 用于定义一个Telegram Bot实现类
+    /// </remarks>
+    public interface ITelegramBot : IDisposable
+    {
+        /// <summary>
+        /// 开始执行
+        /// </summary>
+        /// <returns></returns>
+        public Task StartAsync(bool wait = false);
 
-    /// <summary>
-    /// 停止执行
-    /// </summary>
-    /// <returns></returns>
-    public Task StopAsync();
+        /// <summary>
+        /// 停止执行
+        /// </summary>
+        /// <returns></returns>
+        public Task StopAsync();
+    }
 }

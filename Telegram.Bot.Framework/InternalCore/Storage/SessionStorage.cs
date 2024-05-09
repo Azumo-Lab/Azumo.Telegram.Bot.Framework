@@ -15,77 +15,85 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework.InternalCore.Storage;
-
-/// <summary>
-/// 一个临时存储实现
-/// </summary>
-[DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ISession))]
-[DebuggerDisplay("Session:{ID}, Count:{Count}")]
-internal class SessionStorage : ISession
+namespace Telegram.Bot.Framework.InternalCore.Storage
 {
     /// <summary>
-    /// 保存字典
+    /// 一个临时存储实现
     /// </summary>
-    private readonly ConcurrentDictionary<object, object> _cache = [];
-
-    /// <summary>
-    /// 这个临时存储的ID
-    /// </summary>
-    public string ID { get; } = Guid.NewGuid().ToString();
-
-    /// <summary>
-    /// 存储的总数
-    /// </summary>
-    public int Count => _cache.Count;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    public void Add(object key, object value) => _cache.TryAdd(key, value);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    public void AddOrUpdate(object key, object value)
+    [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ISession))]
+    [DebuggerDisplay("Session:{ID}, Count:{Count}")]
+    internal class SessionStorage : ISession
     {
-        if (!_cache.TryAdd(key, value))
-            _cache[key] = value;
+        /// <summary>
+        /// 保存字典
+        /// </summary>
+        private readonly ConcurrentDictionary<object, object> _cache =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new ConcurrentDictionary<object, object>();
+#endif
+
+        /// <summary>
+        /// 这个临时存储的ID
+        /// </summary>
+        public string ID { get; } = Guid.NewGuid().ToString();
+
+        /// <summary>
+        /// 存储的总数
+        /// </summary>
+        public int Count => _cache.Count;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void Add(object key, object value) => _cache.TryAdd(key, value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void AddOrUpdate(object key, object value)
+        {
+            if (!_cache.TryAdd(key, value))
+                _cache[key] = value;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Clear() => _cache.Clear();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose() => Clear();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public object Get(object key)
+        {
+            _ = _cache.TryGetValue(key, out var obj);
+            return obj!;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        public void Remove(object key) => _cache.Remove(key, out _);
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Clear() => _cache.Clear();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Dispose() => Clear();
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public object Get(object key)
-    {
-        _ = _cache.TryGetValue(key, out var obj);
-        return obj!;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="key"></param>
-    public void Remove(object key) => _cache.Remove(key, out _);
 }

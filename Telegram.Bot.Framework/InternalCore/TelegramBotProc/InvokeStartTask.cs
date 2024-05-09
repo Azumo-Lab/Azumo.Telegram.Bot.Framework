@@ -16,52 +16,57 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Execs;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
 
-namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc;
-
-/// <summary>
-/// 
-/// </summary>
-[TelegramBotStartProc]
-internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
+namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="Next"></param>
-    /// <returns></returns>
-    public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+    [TelegramBotStartProc]
+    internal class InvokeStartTask : IMiddleware<IServiceProvider, Task>
     {
-        var logger = input.GetService<ILogger<InvokeStartTask>>();
-        var tasks = input.GetServices<IStartTask>().ToList();
-        var token = input.GetRequiredService<CancellationTokenSource>().Token;
-        var tasksCount = tasks.Count;
-        if (tasksCount != 0)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
+        public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
         {
-            logger?.LogInformation("总共找到 {A0} 个任务", tasksCount);
-            foreach (var task in tasks)
+            var logger = input.GetService<ILogger<InvokeStartTask>>();
+            var tasks = input.GetServices<IStartTask>().ToList();
+            var token = input.GetRequiredService<CancellationTokenSource>().Token;
+            var tasksCount = tasks.Count;
+            if (tasksCount != 0)
             {
-                var name = (task as IName)?.Name;
-                if (!string.IsNullOrEmpty(name))
-                    logger?.LogInformation("开始执行任务：{A0}", name);
-
-                try
+                logger?.LogInformation("总共找到 {A0} 个任务", tasksCount);
+                foreach (var task in tasks)
                 {
-                    await task.ExecuteAsync(null, token);
-                }
-                catch (Exception)
-                {
+                    var name = (task as IName)?.Name;
                     if (!string.IsNullOrEmpty(name))
-                        logger?.LogError("任务执行失败：{A0}", name);
+                        logger?.LogInformation("开始执行任务：{A0}", name);
+
+                    try
+                    {
+                        await task.ExecuteAsync(null, token);
+                    }
+                    catch (Exception)
+                    {
+                        if (!string.IsNullOrEmpty(name))
+                            logger?.LogError("任务执行失败：{A0}", name);
+                    }
                 }
             }
-        }
 
-        await Next(input);
+            await Next(input);
+        }
     }
 }

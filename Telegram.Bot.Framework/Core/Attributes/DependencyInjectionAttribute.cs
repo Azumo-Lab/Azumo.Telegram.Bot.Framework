@@ -15,27 +15,36 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
-namespace Telegram.Bot.Framework.Core.Attributes;
-
-/// <summary>
-/// 
-/// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class DependencyInjectionAttribute(ServiceLifetime serviceLifetime) : Attribute
+namespace Telegram.Bot.Framework.Core.Attributes
 {
     /// <summary>
     /// 
     /// </summary>
-    public string? Key { get; set; }
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class DependencyInjectionAttribute : Attribute
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceLifetime"></param>
+        public DependencyInjectionAttribute(ServiceLifetime serviceLifetime) =>
+            Lifetime = serviceLifetime;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Type? ServiceType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Key { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ServiceLifetime Lifetime { get; } = serviceLifetime;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type? ServiceType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ServiceLifetime Lifetime { get; }
+    }
 }

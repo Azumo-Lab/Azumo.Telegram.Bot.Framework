@@ -14,17 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Attributes;
+using System;
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="type"></param>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class TypeForAttribute(Type type) : Attribute
+namespace Telegram.Bot.Framework.Core.Attributes
 {
     /// <summary>
     /// 
     /// </summary>
-    public Type ForType { get; } = type;
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class TypeForAttribute : Attribute
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forType"></param>
+        public TypeForAttribute(Type forType) => ForType = forType;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type ForType { get; }
+    }
 }

@@ -14,32 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.PipelineMiddleware;
-
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <typeparam name="TResult"></typeparam>
-public interface IPipelineBuilder<TInput, TResult>
+namespace Telegram.Bot.Framework.Core.PipelineMiddleware
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public IPipelineBuilder<TInput, TResult> CreatePipeline(object key);
+    /// <typeparam name="TInput"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public interface IPipelineBuilder<TInput, TResult>
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public IPipelineBuilder<TInput, TResult> CreatePipeline(object key);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="middleware"></param>
-    /// <returns></returns>
-    public IPipelineBuilder<TInput, TResult> Use(IMiddleware<TInput, TResult> middleware);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="middleware"></param>
+        /// <returns></returns>
+        public IPipelineBuilder<TInput, TResult> Use(IMiddleware<TInput, TResult> middleware);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public IPipelineController<TInput, TResult> Build();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IPipelineController<TInput, TResult> Build();
+    }
 }

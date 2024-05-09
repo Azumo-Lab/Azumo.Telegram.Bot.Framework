@@ -14,34 +14,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Attributes;
+using System;
 
-/// <summary>
-/// 
-/// </summary>
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate)]
-public class BotCommandAttribute : Attribute
+namespace Telegram.Bot.Framework.Core.Attributes
 {
     /// <summary>
     /// 
     /// </summary>
-    public string BotCommand { get; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public string Description { get; set; } = "No details";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="botCommand"></param>
-    public BotCommandAttribute(string botCommand)
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate)]
+    public class BotCommandAttribute : Attribute
     {
-        ArgumentException.ThrowIfNullOrEmpty(botCommand, nameof(botCommand));
+        /// <summary>
+        /// 
+        /// </summary>
+        public string BotCommand { get; }
 
-        if (!botCommand.StartsWith('/'))
-            botCommand = $"/{botCommand}";
-        BotCommand = botCommand.ToLower();
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Description { get; set; } = "No details";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="botCommand"></param>
+        public BotCommandAttribute(string botCommand)
+        {
+#if NET8_0_OR_GREATER
+            ArgumentException.ThrowIfNullOrEmpty(botCommand, nameof(botCommand));
+#else
+            if (string.IsNullOrEmpty(botCommand))
+                throw new ArgumentNullException(nameof(botCommand));
+#endif
+            if (!botCommand.StartsWith('/'))
+                botCommand = $"/{botCommand}";
+            BotCommand = botCommand.ToLower();
+        }
     }
 }

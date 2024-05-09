@@ -14,45 +14,63 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Controller;
 
-namespace Telegram.Bot.Framework.InternalCore.Controller;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="func"></param>
-/// <param name="paramList"></param>
-/// <param name="attributes"></param>
-internal class BotCommandInvoker(Func<IServiceProvider, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
-    : IExecutor
+namespace Telegram.Bot.Framework.InternalCore.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly Func<IServiceProvider, object?[], object> _func = func;
+    internal class BotCommandInvoker : IExecutor
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="paramList"></param>
+        /// <param name="attributes"></param>
+        public BotCommandInvoker(Func<IServiceProvider, object?[], object> func, List<IGetParam> paramList, Attribute[] attributes)
+        {
+            _func = func;
+            Parameters = paramList;
+            Attributes = attributes;
+#if NET8_0_OR_GREATER
+            Cache = [];
+#else
+            Cache = new Dictionary<string, object>();
+#endif
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public IReadOnlyList<IGetParam> Parameters { get; } = new List<IGetParam>(paramList);
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Func<IServiceProvider, object?[], object> _func;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Attribute[] Attributes { get; } = attributes;
+        /// <summary>
+        /// 
+        /// </summary>
+        public IReadOnlyList<IGetParam> Parameters { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Dictionary<string, object> Cache { get; } = [];
+        /// <summary>
+        /// 
+        /// </summary>
+        public Attribute[] Attributes { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="serviceProvider"></param>
-    /// <param name="param"></param>
-    /// <returns></returns>
-    public Task Invoke(IServiceProvider serviceProvider, object?[] param) =>
-        _func(serviceProvider, param) is Task task ? task : Task.CompletedTask;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Dictionary<string, object> Cache { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public Task Invoke(IServiceProvider serviceProvider, object?[] param) =>
+            _func(serviceProvider, param) is Task task ? task : Task.CompletedTask;
+    }
 }

@@ -14,37 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.InternalCore.Controller;
 
-namespace Telegram.Bot.Framework.InternalCore.Install;
-
-/// <summary>
-/// 
-/// </summary>
-internal class Factory
+namespace Telegram.Bot.Framework.InternalCore.Install
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="enumCommandType"></param>
-    /// <param name="objects"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    public static IExecutor GetExecutorInstance(EnumCommandType enumCommandType, params object?[] objects)
+    internal class Factory
     {
-        IExecutor executor = enumCommandType switch
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumCommandType"></param>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static IExecutor GetExecutorInstance(EnumCommandType enumCommandType, params object?[] objects)
         {
-            EnumCommandType.BotCommand => new BotCommandInvoker(
-                                (objects[0] as Func<IServiceProvider, object?[], object>)!,
-                                (objects[1] as List<IGetParam>)!,
-                                (objects[2] as Attribute[])!),
-            EnumCommandType.Func => new FuncInvoker(
-                                (objects[0] as Delegate)!,
-                                (objects[1] as List<IGetParam>)!,
-                                (objects[2] as Attribute[])!),
-            _ => throw new ArgumentException($"{nameof(enumCommandType)} 值非法"),
-        };
-        return executor;
+            IExecutor executor = enumCommandType switch
+            {
+                EnumCommandType.BotCommand => new BotCommandInvoker(
+                                    (objects[0] as Func<IServiceProvider, object?[], object>)!,
+                                    (objects[1] as List<IGetParam>)!,
+                                    (objects[2] as Attribute[])!),
+                EnumCommandType.Func => new FuncInvoker(
+                                    (objects[0] as Delegate)!,
+                                    (objects[1] as List<IGetParam>)!,
+                                    (objects[2] as Attribute[])!),
+                _ => throw new ArgumentException($"{nameof(enumCommandType)} 值非法"),
+            };
+            return executor;
+        }
     }
 }

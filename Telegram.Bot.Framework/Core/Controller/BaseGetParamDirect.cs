@@ -14,32 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Attributes;
 
-namespace Telegram.Bot.Framework.Core.Controller;
-
-/// <summary>
-/// 
-/// </summary>
-public abstract class BaseGetParamDirect : IGetParam
+namespace Telegram.Bot.Framework.Core.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    public virtual ParamAttribute? ParamAttribute { get; set; }
+    public abstract class BaseGetParamDirect : IGetParam
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual ParamAttribute? ParamAttribute { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public abstract Task<object> GetParam(TelegramUserContext context);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public abstract Task<object> GetParam(TelegramUserContext context);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public virtual Task<bool> SendMessage(TelegramUserContext context) =>
-        Task.FromResult(true);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public virtual Task<bool> SendMessage(TelegramUserContext context) =>
+            Task.FromResult(true);
+    }
 }

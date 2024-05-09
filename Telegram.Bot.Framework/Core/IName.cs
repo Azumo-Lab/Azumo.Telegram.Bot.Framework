@@ -14,15 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core;
-
-/// <summary>
-/// 
-/// </summary>
-public interface IName
+namespace Telegram.Bot.Framework.Core
 {
     /// <summary>
     /// 
     /// </summary>
-    public string Name { get; }
+    public interface IName
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get; }
+    }
 }

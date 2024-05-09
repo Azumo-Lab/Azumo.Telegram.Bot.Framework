@@ -14,40 +14,63 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Controller;
 
-namespace Telegram.Bot.Framework.InternalCore.Controller;
-
-/// <summary>
-/// 委托类型的执行
-/// </summary>
-/// <param name="func"></param>
-/// <param name="paramList"></param>
-/// <param name="attributes"></param>
-internal class FuncInvoker(Delegate func, List<IGetParam> paramList, Attribute[] attributes)
-    : IExecutor
+namespace Telegram.Bot.Framework.InternalCore.Controller
 {
     /// <summary>
-    /// 
+    /// 委托类型的执行
     /// </summary>
-    public IReadOnlyList<IGetParam> Parameters { get; } = new List<IGetParam>(paramList);
+    internal class FuncInvoker : IExecutor
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="paramList"></param>
+        /// <param name="attributes"></param>
+        public FuncInvoker(Delegate func, List<IGetParam> paramList, Attribute[] attributes)
+        {
+            _Fun = func;
+            Parameters = paramList;
+            Attributes = attributes;
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Attribute[] Attributes { get; } = attributes;
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly Delegate _Fun;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Dictionary<string, object> Cache { get; } = [];
+        /// <summary>
+        /// 
+        /// </summary>
+        public IReadOnlyList<IGetParam> Parameters { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="serviceProvider"></param>
-    /// <param name="param"></param>
-    /// <returns></returns>
-    public Task Invoke(IServiceProvider serviceProvider, object?[] param) =>
-        func.DynamicInvoke(param) is Task task ? task : Task.CompletedTask;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Attribute[] Attributes { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Dictionary<string, object> Cache { get; } =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new Dictionary<string, object>();
+#endif
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public Task Invoke(IServiceProvider serviceProvider, object?[] param) =>
+            _Fun.DynamicInvoke(param) is Task task ? task : Task.CompletedTask;
+    }
 }

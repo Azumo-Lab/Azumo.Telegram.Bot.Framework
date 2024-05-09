@@ -16,33 +16,35 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using Telegram.Bot.Framework.Core.BotBuilder;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-internal class TelegramSimpleConsole : ITelegramModule
-{
-    public void AddBuildService(IServiceCollection services)
-    {
-
-    }
-    public void Build(IServiceCollection services, IServiceProvider builderService) =>
-        services.AddLogging(x => x.AddSimpleConsole());
-}
-
-/// <summary>
-/// 
-/// </summary>
-public static class TelegramSimpleConsoleExtensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
-    public static ITelegramModuleBuilder AddSimpleConsole(this ITelegramModuleBuilder builder) =>
-        builder.AddModule<TelegramSimpleConsole>();
+    internal class TelegramSimpleConsole : ITelegramModule
+    {
+        public void AddBuildService(IServiceCollection services)
+        {
+
+        }
+        public void Build(IServiceCollection services, IServiceProvider builderService) =>
+            services.AddLogging(x => x.AddSimpleConsole());
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class TelegramSimpleConsoleExtensions
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ITelegramModuleBuilder AddSimpleConsole(this ITelegramModuleBuilder builder) =>
+            builder.AddModule<TelegramSimpleConsole>();
+    }
 }

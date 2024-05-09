@@ -15,56 +15,71 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework.InternalCore.Controller;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="serviceProvider"></param>
-[DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ICommandScopeService))]
-internal class CommandScopeService(IServiceProvider serviceProvider) : ICommandScopeService
+namespace Telegram.Bot.Framework.InternalCore.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly IServiceProvider UserScopeServiceProvider = serviceProvider;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private IServiceScope? _serviceScope;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public IServiceProvider? Service => _serviceScope?.ServiceProvider;
-
-    public ISession? Session { get; set; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Create()
+    [DependencyInjection(ServiceLifetime.Scoped, ServiceType = typeof(ICommandScopeService))]
+    internal class CommandScopeService : ICommandScopeService
     {
-        _serviceScope = UserScopeServiceProvider.CreateScope();
-        Session = Service!.GetRequiredService<ISession>();
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Delete()
-    {
-        _serviceScope?.Dispose();
-        _serviceScope = null;
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public CommandScopeService(IServiceProvider serviceProvider) =>
+            UserScopeServiceProvider = serviceProvider;
 
-    public void DeleteOldCreateNew()
-    {
-        Delete();
-        Create();
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IServiceProvider UserScopeServiceProvider;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private IServiceScope? _serviceScope;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IServiceProvider? Service => _serviceScope?.ServiceProvider;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ISession? Session { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Create()
+        {
+            _serviceScope = UserScopeServiceProvider.CreateScope();
+            Session = Service!.GetRequiredService<ISession>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Delete()
+        {
+            _serviceScope?.Dispose();
+            _serviceScope = null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void DeleteOldCreateNew()
+        {
+            Delete();
+            Create();
+        }
     }
 }

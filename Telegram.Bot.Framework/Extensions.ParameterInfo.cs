@@ -14,61 +14,71 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Linq;
 using System.Reflection;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="parameterInfo"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    /// <exception cref="NullReferenceException"></exception>
-    public static IGetParam GetParams(this ParameterInfo parameterInfo)
+    public static partial class Extensions
     {
-        Type iGetParamType = null!;
-
-        // 从参数上获取 ParamAttribute 标签
-        var paramAttribute = Attribute.GetCustomAttribute(parameterInfo, typeof(ParamAttribute)) as ParamAttribute;
-        if (paramAttribute != null) // 能获取到就使用获取到的类型
-            if (paramAttribute.IGetParmType != null)
-                iGetParamType = paramAttribute.IGetParmType;
-
-        // 使用默认逻辑
-        if (iGetParamType == null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameterInfo"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="NullReferenceException"></exception>
+        public static IGetParam GetParams(this ParameterInfo parameterInfo)
         {
-            var paramval = IGetParamTypeList
-                .Where(y => y.ForType.ForType.FullName == parameterInfo.ParameterType.FullName)
-                .Select(y => y.classType)
-                .FirstOrDefault() ?? typeof(NullParam);
-            iGetParamType = paramval;
+#if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            Type? iGetParamType = null;
+#else
+            Type iGetParamType = null;
+#endif
+            // 从参数上获取 ParamAttribute 标签
+            var paramAttribute = Attribute.GetCustomAttribute(parameterInfo, typeof(ParamAttribute)) as ParamAttribute;
+            if (paramAttribute != null) // 能获取到就使用获取到的类型
+                if (paramAttribute.IGetParmType != null)
+                    iGetParamType = paramAttribute.IGetParmType;
+
+            // 使用默认逻辑
+            if (iGetParamType == null)
+            {
+                var paramval = IGetParamTypeList
+                    .Where(y => y.ForType.ForType.FullName == parameterInfo.ParameterType.FullName)
+                    .Select(y => y.classType)
+                    .FirstOrDefault() ?? typeof(NullParam);
+                iGetParamType = paramval;
+            }
+
+            // 获取构造函数
+#if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            ConstructorInfo? constructorInfo;
+#else
+            ConstructorInfo constructorInfo;
+#endif
+            if ((constructorInfo = iGetParamType.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault()) == null)
+                throw new Exception("没有找到对应的初始化方法");
+
+            // 判断是否有参数
+            if (constructorInfo.GetParameters().Length != 0)
+                throw new Exception("无法生成带有参数的类");
+
+            // 实例化
+            var result = constructorInfo.Invoke(Array.Empty<object>());
+            if (result is IGetParam getParam)
+                getParam.ParamAttribute = paramAttribute;
+            else if (result == null)
+                throw new NullReferenceException($"类型：{iGetParamType.FullName} 无法实例化");
+            else
+                throw new Exception($"类型：{iGetParamType.FullName} 未实现接口 {nameof(IGetParam)}");
+            return getParam;
         }
-
-        // 获取构造函数
-        ConstructorInfo? constructorInfo;
-        if ((constructorInfo = iGetParamType.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault()) == null)
-            throw new Exception("没有找到对应的初始化方法");
-
-        // 判断是否有参数
-        if (constructorInfo.GetParameters().Length != 0)
-            throw new Exception("无法生成带有参数的类");
-
-        // 实例化
-        var result = constructorInfo.Invoke([]);
-        if (result is IGetParam getParam)
-            getParam.ParamAttribute = paramAttribute;
-        else if (result == null)
-            throw new NullReferenceException($"类型：{iGetParamType.FullName} 无法实例化");
-        else
-            throw new Exception($"类型：{iGetParamType.FullName} 未实现接口 {nameof(IGetParam)}");
-        return getParam;
     }
 }

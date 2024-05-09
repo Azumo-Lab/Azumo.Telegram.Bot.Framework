@@ -15,40 +15,94 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Concurrent;
 using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework.InternalCore.Storage;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="memoryCache"></param>
-internal class MemorySessionStorage(IMemoryCache memoryCache) : ISession
+namespace Telegram.Bot.Framework.InternalCore.Storage
 {
-    private readonly IMemoryCache memoryCache = memoryCache;
-
-    private readonly ConcurrentQueue<object> queue = new();
-
-    public string ID { get; } = Guid.NewGuid().ToString();
-
-    public int Count => queue.Count;
-
-    public void Add(object key, object value)
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class MemorySessionStorage : ISession
     {
-        queue.Enqueue(key);
-        _ = memoryCache.Set(key, value);
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="memoryCache"></param>
+        public MemorySessionStorage(IMemoryCache memoryCache) =>
+            this.memoryCache = memoryCache;
 
-    public void AddOrUpdate(object key, object value) => Add(key, value);
-    public void Clear()
-    {
-        foreach (var item in queue)
-            memoryCache.Remove(item);
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly IMemoryCache memoryCache;
 
-        queue.Clear();
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly ConcurrentQueue<object> queue =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new ConcurrentQueue<object>();
+#endif
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ID { get; } = Guid.NewGuid().ToString();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Count => queue.Count;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void Add(object key, object value)
+        {
+            queue.Enqueue(key);
+            _ = memoryCache.Set(key, value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void AddOrUpdate(object key, object value) => Add(key, value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Clear()
+        {
+            foreach (var item in queue)
+                memoryCache.Remove(item);
+
+            queue.Clear();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose() => Clear();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public object Get(object key) => memoryCache.Get(key)!;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        public void Remove(object key) => memoryCache.Remove(key);
     }
-    public void Dispose() => Clear();
-    public object Get(object key) => memoryCache.Get(key)!;
-    public void Remove(object key) => memoryCache.Remove(key);
 }

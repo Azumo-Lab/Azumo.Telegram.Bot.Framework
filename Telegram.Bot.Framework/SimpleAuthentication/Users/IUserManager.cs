@@ -16,31 +16,32 @@
 
 using Telegram.Bot.Framework.Core;
 
-namespace Telegram.Bot.Framework.SimpleAuthentication.Users;
-
-/// <summary>
-/// 
-/// </summary>
-public interface IUserManager
+namespace Telegram.Bot.Framework.SimpleAuthentication.Users
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="userContext"></param>
-    /// <param name="roleName"></param>
-    /// <returns></returns>
-    public bool Verify(TelegramUserContext userContext, string roleName);
+    public interface IUserManager
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userContext"></param>
+        /// <param name="roleName"></param>
+        /// <returns></returns>
+        public bool Verify(TelegramUserContext userContext, string roleName);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userContext"></param>
-    /// <param name="roleName"></param>
-    public void SetRole(TelegramUserContext userContext, string roleName);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userContext"></param>
+        /// <param name="roleName"></param>
+        public void SetRole(TelegramUserContext userContext, string roleName);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userContext"></param>
-    public void ClearRole(TelegramUserContext userContext);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userContext"></param>
+        public void ClearRole(TelegramUserContext userContext);
+    }
 }

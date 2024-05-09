@@ -14,30 +14,31 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.BotBuilder;
-
-/// <summary>
-/// Telegram模块构建器
-/// </summary>
-public interface ITelegramModuleBuilder
+namespace Telegram.Bot.Framework.Core.BotBuilder
 {
     /// <summary>
-    /// 添加模块
+    /// Telegram模块构建器
     /// </summary>
-    /// <param name="module"></param>
-    /// <returns></returns>
-    public ITelegramModuleBuilder AddModule(ITelegramModule module);
+    public interface ITelegramModuleBuilder
+    {
+        /// <summary>
+        /// 添加模块
+        /// </summary>
+        /// <param name="module"></param>
+        /// <returns></returns>
+        ITelegramModuleBuilder AddModule(ITelegramModule module);
 
-    /// <summary>
-    /// 添加模块
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public ITelegramModuleBuilder AddModule<T>(params object[] objects) where T : ITelegramModule;
+        /// <summary>
+        /// 添加模块
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        ITelegramModuleBuilder AddModule<T>(params object[] objects) where T : ITelegramModule;
 
-    /// <summary>
-    /// 开始创建
-    /// </summary>
-    /// <returns></returns>
-    public ITelegramBot Build();
+        /// <summary>
+        /// 开始创建
+        /// </summary>
+        /// <returns></returns>
+        ITelegramBot Build();
+    }
 }

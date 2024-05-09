@@ -17,25 +17,43 @@
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Controller;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
-
-/// <summary>
-/// 用于流水线输入的参数
-/// </summary>
-internal class PipelineModel
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines.Models
 {
     /// <summary>
-    /// 
+    /// 用于流水线输入的参数
     /// </summary>
-    public required TelegramUserContext UserContext { get; set; }
+    internal class PipelineModel
+    {
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// 
+        /// </summary>
+        public required TelegramUserContext UserContext { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public required ICommandManager CommandManager { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public required ICommandManager CommandManager { get; set; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public required ICommandScopeService CommandScopeService { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public required ICommandScopeService CommandScopeService { get; set; }
+#else
+        /// <summary>
+        /// 
+        /// </summary>
+        public TelegramUserContext UserContext { get; set; } = null!;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICommandManager CommandManager { get; set; } = null!;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICommandScopeService CommandScopeService { get; set; } = null!;
+#endif
+    }
 }

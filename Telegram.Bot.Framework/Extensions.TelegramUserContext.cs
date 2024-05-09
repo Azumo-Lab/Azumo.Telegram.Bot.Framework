@@ -14,34 +14,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="telegramUserContext"></param>
-    /// <param name="message"></param>
-    /// <returns></returns>
-    public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message) =>
-        await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html);
+    public static partial class Extensions
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramUserContext"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message) =>
+            await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html);
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="telegramUserContext"></param>
-    /// <param name="message"></param>
-    /// <param name="buttons"></param>
-    /// <returns></returns>
-    public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) =>
-        await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramUserContext"></param>
+        /// <param name="message"></param>
+        /// <param name="buttons"></param>
+        /// <returns></returns>
+        public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) =>
+            await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
+    }
 }

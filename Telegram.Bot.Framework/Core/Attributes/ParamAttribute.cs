@@ -14,21 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Attributes;
+using System;
 
-/// <summary>
-/// 
-/// </summary>
-[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-public class ParamAttribute : Attribute
+namespace Telegram.Bot.Framework.Core.Attributes
 {
     /// <summary>
     /// 
     /// </summary>
-    public string Message { get; set; } = string.Empty;
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
+    public class ParamAttribute : Attribute
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Message { get; set; } = string.Empty;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Type? IGetParmType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type? IGetParmType { get; set; }
+    }
 }

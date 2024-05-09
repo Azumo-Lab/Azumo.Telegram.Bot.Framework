@@ -15,18 +15,21 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
 
-namespace Telegram.Bot.Framework.InternalCore.Params;
-
-/// <summary>
-/// 
-/// </summary>
-[TypeFor(typeof(CancellationTokenSource))]
-internal class ParamsCancellationTokenSource : BaseGetParamDirect
+namespace Telegram.Bot.Framework.InternalCore.Params
 {
-    public override Task<object> GetParam(TelegramUserContext context) =>
-        Task.FromResult<object>(context.UserServiceProvider.GetRequiredService<CancellationTokenSource>());
+    /// <summary>
+    /// 
+    /// </summary>
+    [TypeFor(typeof(CancellationTokenSource))]
+    internal class ParamsCancellationTokenSource : BaseGetParamDirect
+    {
+        public override Task<object> GetParam(TelegramUserContext context) =>
+            Task.FromResult<object>(context.UserServiceProvider.GetRequiredService<CancellationTokenSource>());
+    }
 }

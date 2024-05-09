@@ -14,37 +14,39 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Core.Users;
-
-/// <summary>
-/// 
-/// </summary>
-public interface IUserContext
+namespace Telegram.Bot.Framework.Core.Users
 {
     /// <summary>
     /// 
     /// </summary>
-    public ChatId ScopeChatID { get; }
+    public interface IUserContext
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public ChatId ScopeChatID { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ChatId RequestChatID { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public ChatId RequestChatID { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Task<Chat> ScopeChat { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task<Chat> ScopeChat { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public Task<Chat> RequestChat { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task<Chat> RequestChat { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public User? ScopeUser { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public User? ScopeUser { get; }
+    }
 }

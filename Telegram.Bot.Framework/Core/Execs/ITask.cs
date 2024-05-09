@@ -14,18 +14,22 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Execs;
+using System.Threading;
+using System.Threading.Tasks;
 
-/// <summary>
-/// 任务接口
-/// </summary>
-public interface ITask
+namespace Telegram.Bot.Framework.Core.Execs
 {
     /// <summary>
-    /// 执行接口的任务
+    /// 任务接口
     /// </summary>
-    /// <param name="input">传入参数</param>
-    /// <param name="token">token</param>
-    /// <returns>异步执行</returns>
-    public Task ExecuteAsync(object? input, CancellationToken token);
+    public interface ITask
+    {
+        /// <summary>
+        /// 执行接口的任务
+        /// </summary>
+        /// <param name="input">传入参数</param>
+        /// <param name="token">token</param>
+        /// <returns>异步执行</returns>
+        public Task ExecuteAsync(object? input, CancellationToken token);
+    }
 }

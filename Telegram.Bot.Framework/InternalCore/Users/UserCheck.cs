@@ -19,14 +19,15 @@ using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.InternalCore.Users;
-
-/// <summary>
-/// 
-/// </summary>
-[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IRequestFilter))]
-internal class UserCheck : IRequestFilter
+namespace Telegram.Bot.Framework.InternalCore.Users
 {
-    public bool Filter(Update update) =>
-        update.GetUser() != null;
+    /// <summary>
+    /// 
+    /// </summary>
+    [DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IRequestFilter))]
+    internal class UserCheck : IRequestFilter
+    {
+        public bool Filter(Update update) =>
+            update.GetUser() != null;
+    }
 }

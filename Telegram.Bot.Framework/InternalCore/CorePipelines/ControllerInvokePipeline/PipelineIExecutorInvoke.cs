@@ -14,21 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
-
-/// <summary>
-/// 
-/// </summary>
-internal class PipelineIExecutorInvoke : IMiddleware<PipelineModel, Task>
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="Next"></param>
-    /// <returns></returns>
-    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next) => await Task.CompletedTask;
+    internal class PipelineIExecutorInvoke : IMiddleware<PipelineModel, Task>
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
+        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next) => await Task.CompletedTask;
+    }
 }

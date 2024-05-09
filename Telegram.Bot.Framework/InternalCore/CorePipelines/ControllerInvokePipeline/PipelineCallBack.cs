@@ -1,8 +1,11 @@
-﻿using Telegram.Bot.Framework.Core.PipelineMiddleware;
+﻿using System.Threading.Tasks;
+using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
-internal class PipelineCallBack : IMiddleware<PipelineModel, Task>
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {
-    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next) => await Task.CompletedTask;
+    internal class PipelineCallBack : IMiddleware<PipelineModel, Task>
+    {
+        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next) => await Task.CompletedTask;
+    }
 }

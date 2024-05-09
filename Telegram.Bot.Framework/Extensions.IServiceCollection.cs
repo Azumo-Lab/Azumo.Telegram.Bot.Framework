@@ -15,64 +15,100 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 using Telegram.Bot.Framework.Core.Attributes;
 
-namespace Telegram.Bot.Framework;
-
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="services"></param>
-    /// <exception cref="Exception"></exception>
-    public static IServiceCollection ScanService(this IServiceCollection services)
+    public static partial class Extensions
     {
-        var dependencyInjectionType = typeof(DependencyInjectionAttribute);
-        foreach (var item in AllTypes)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <exception cref="Exception"></exception>
+        public static IServiceCollection ScanService(this IServiceCollection services)
         {
-            if (Attribute.IsDefined(item, dependencyInjectionType))
+            var dependencyInjectionType = typeof(DependencyInjectionAttribute);
+            foreach (var item in AllTypes)
             {
-                Attribute.GetCustomAttributes(item, dependencyInjectionType).Select(dependencyInjectionType => (DependencyInjectionAttribute)dependencyInjectionType).ToList().ForEach(dependencyInjection =>
+                if (Attribute.IsDefined(item, dependencyInjectionType))
                 {
-                    var type = dependencyInjection.ServiceType;
-                    if (type == null)
+                    Attribute.GetCustomAttributes(item, dependencyInjectionType).Select(dependencyInjectionTypeLinq => (DependencyInjectionAttribute)dependencyInjectionTypeLinq).ToList().ForEach(dependencyInjection =>
                     {
-                        var interfaces = item.GetInterfaces();
-                        if (interfaces.Length == 0)
-                            type = item.BaseType ?? item;
-                        else if (interfaces.Length == 1)
+                        var type = dependencyInjection.ServiceType;
+                        if (type == null)
                         {
-                            type = interfaces.First();
-                            if (item.BaseType != null && item.BaseType.IsAbstract)
-                                throw new Exception($"类型：{item.FullName} 在 {item.BaseType.FullName} 和 {type.FullName} 之间不明确");
+                            var interfaces = item.GetInterfaces();
+                            if (interfaces.Length == 0)
+                                type = item.BaseType ?? item;
+                            else if (interfaces.Length == 1)
+                            {
+                                type = interfaces.First();
+                                if (item.BaseType != null && item.BaseType.IsAbstract)
+                                    throw new Exception($"类型：{item.FullName} 在 {item.BaseType.FullName} 和 {type.FullName} 之间不明确");
+                            }
+                            else throw new Exception($"发现复数的接口，请明确指定");
                         }
-                        else throw new Exception($"发现复数的接口，请明确指定");
-                    }
 
-                    var key = dependencyInjection.Key;
+                        var key = dependencyInjection.Key;
 
-                    _ = string.IsNullOrEmpty(key)
-                        ? dependencyInjection.Lifetime switch
-                        {
-                            ServiceLifetime.Singleton => services.AddSingleton(type, item),
-                            ServiceLifetime.Scoped => services.AddScoped(type, item),
-                            ServiceLifetime.Transient => services.AddTransient(type, item),
-                            _ => throw new Exception(),
-                        }
-                        : dependencyInjection.Lifetime switch
-                        {
-                            ServiceLifetime.Singleton => services.AddKeyedSingleton(type, key, item),
-                            ServiceLifetime.Scoped => services.AddKeyedScoped(type, key, item),
-                            ServiceLifetime.Transient => services.AddKeyedTransient(type, key, item),
-                            _ => throw new Exception(),
-                        };
-                });
+#if NET6_0_OR_GREATER
+                        _ = string.IsNullOrEmpty(key)
+                           ? dependencyInjection.Lifetime switch
+                           {
+                               ServiceLifetime.Singleton => services.AddSingleton(type, item),
+                               ServiceLifetime.Scoped => services.AddScoped(type, item),
+                               ServiceLifetime.Transient => services.AddTransient(type, item),
+                               _ => throw new Exception(),
+                           }
+                           : dependencyInjection.Lifetime switch
+                           {
+                               ServiceLifetime.Singleton => services.AddKeyedSingleton(type, key, item),
+                               ServiceLifetime.Scoped => services.AddKeyedScoped(type, key, item),
+                               ServiceLifetime.Transient => services.AddKeyedTransient(type, key, item),
+                               _ => throw new Exception(),
+                           };
+#else
+                        if (string.IsNullOrEmpty(key))
+                            switch (dependencyInjection.Lifetime)
+                            {
+                                case ServiceLifetime.Singleton:
+                                    services.AddSingleton(type, item);
+                                    break;
+                                case ServiceLifetime.Scoped:
+                                    services.AddScoped(type, item);
+                                    break;
+                                case ServiceLifetime.Transient:
+                                    services.AddTransient(type, item);
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+                        else
+                            switch (dependencyInjection.Lifetime)
+                            {
+                                case ServiceLifetime.Singleton:
+                                    services.AddKeyedSingleton(type, key, item);
+                                    break;
+                                case ServiceLifetime.Scoped:
+                                    services.AddKeyedScoped(type, key, item);
+                                    break;
+                                case ServiceLifetime.Transient:
+                                    services.AddKeyedTransient(type, key, item);
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+#endif
+                    });
+                }
             }
+            return services;
         }
-        return services;
     }
 }

@@ -15,42 +15,45 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
-
-/// <summary>
-/// 控制器执行流程
-/// </summary>
-internal class PipelineControllerInvoke : IMiddleware<PipelineModel, Task>
+namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {
     /// <summary>
-    /// 执行控制器
+    /// 控制器执行流程
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="Next"></param>
-    /// <returns></returns>
-    public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+    internal class PipelineControllerInvoke : IMiddleware<PipelineModel, Task>
     {
-        var paramManager = input.CommandScopeService.Service?.GetRequiredService<IParamManager>();
-        var exec = input.CommandScopeService.Session?.GetCommand();
+        /// <summary>
+        /// 执行控制器
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
+        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+        {
+            var paramManager = input.CommandScopeService!.Service?.GetRequiredService<IParamManager>();
+            var exec = input.CommandScopeService.Session?.GetCommand();
 
-        try
-        {
-            // 获取指令
-            if (exec != null)
-                await exec.Invoke(input.UserContext.UserServiceProvider, paramManager?.GetParam() ?? []);
-            await Next(input);
-        }
-        catch (Exception)
-        {
+            try
+            {
+                // 获取指令
+                if (exec != null)
+                    await exec.Invoke(input.UserContext!.UserServiceProvider, paramManager?.GetParam() ?? Array.Empty<object>());
+                await Next(input);
+            }
+            catch (Exception)
+            {
 
-        }
-        finally
-        {
-            input.CommandScopeService.Delete();
+            }
+            finally
+            {
+                input.CommandScopeService.Delete();
+            }
         }
     }
 }

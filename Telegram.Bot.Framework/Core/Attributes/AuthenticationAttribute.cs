@@ -15,29 +15,38 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 using Telegram.Bot.Framework.SimpleAuthentication;
 
-namespace Telegram.Bot.Framework.Core.Attributes;
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="roleName"></param>
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = true)]
-public class AuthenticationAttribute(params string[] roleName) : Attribute, IMiddleware<PipelineModel, Task>
+namespace Telegram.Bot.Framework.Core.Attributes
 {
     /// <summary>
     /// 
     /// </summary>
-    public string[] RoleNames { get; } = roleName;
-
-    async Task IMiddleware<PipelineModel, Task>.Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = true)]
+    public class AuthenticationAttribute : Attribute, IMiddleware<PipelineModel, Task>
     {
-        var userManager = input.UserContext.UserServiceProvider.GetRequiredService<IContextFilter>();
-        if (userManager.Filter(input.UserContext, RoleNames))
-            await Next(input);
-        return;
+        /// <summary>
+        /// 
+        /// </summary>
+        public string[] RoleNames { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleName"></param>
+        public AuthenticationAttribute(params string[] roleName) =>
+            RoleNames = roleName;
+
+        async Task IMiddleware<PipelineModel, Task>.Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
+        {
+            var userManager = input.UserContext!.UserServiceProvider.GetRequiredService<IContextFilter>();
+            if (userManager.Filter(input.UserContext, RoleNames))
+                await Next(input);
+            return;
+        }
     }
 }

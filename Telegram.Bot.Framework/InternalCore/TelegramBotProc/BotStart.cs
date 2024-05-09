@@ -15,42 +15,47 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Types.Enums;
 
-namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc;
-
-/// <summary>
-/// 
-/// </summary>
-[TelegramBotProc]
-internal class BotStart : IMiddleware<IServiceProvider, Task>
+namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="Next"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+    [TelegramBotProc]
+    internal class BotStart : IMiddleware<IServiceProvider, Task>
     {
-        var _tokenSource = input.GetRequiredService<CancellationTokenSource>();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+        {
+            var _tokenSource = input.GetRequiredService<CancellationTokenSource>();
 
-        // Bot开始启动
-        var botClient = input.GetRequiredService<ITelegramBotClient>();
+            // Bot开始启动
+            var botClient = input.GetRequiredService<ITelegramBotClient>();
 
-        if (!await botClient.TestApiAsync(_tokenSource.Token))
-            throw new Exception();
+            if (!await botClient.TestApiAsync(_tokenSource.Token))
+                throw new Exception();
 
-        botClient.StartReceiving(input.GetRequiredService<IUpdateHandler>(),
-            new ReceiverOptions
-            {
-                AllowedUpdates = []
-            },
-            _tokenSource.Token);
+            botClient.StartReceiving(input.GetRequiredService<IUpdateHandler>(),
+                new ReceiverOptions
+                {
+                    AllowedUpdates = Array.Empty<UpdateType>(),
+                },
+                _tokenSource.Token);
 
-        await Next(input);
+            await Next(input);
+        }
     }
 }

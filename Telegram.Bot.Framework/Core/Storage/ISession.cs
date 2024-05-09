@@ -14,52 +14,55 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Storage;
+using System;
 
-/// <summary>
-/// 用户区域的存储接口
-/// </summary>
-public interface ISession : IDisposable
+namespace Telegram.Bot.Framework.Core.Storage
 {
     /// <summary>
-    /// 存储ID
+    /// 用户区域的存储接口
     /// </summary>
-    public string ID { get; }
+    public interface ISession : IDisposable
+    {
+        /// <summary>
+        /// 存储ID
+        /// </summary>
+        public string ID { get; }
 
-    /// <summary>
-    /// 存储数量
-    /// </summary>
-    public int Count { get; }
+        /// <summary>
+        /// 存储数量
+        /// </summary>
+        public int Count { get; }
 
-    /// <summary>
-    /// 添加新的键值对
-    /// </summary>
-    /// <param name="key">Key</param>
-    /// <param name="value">值</param>
-    public void Add(object key, object value);
+        /// <summary>
+        /// 添加新的键值对
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="value">值</param>
+        public void Add(object key, object value);
 
-    /// <summary>
-    /// 移除指定的数据
-    /// </summary>
-    /// <param name="key">Key</param>
-    public void Remove(object key);
+        /// <summary>
+        /// 移除指定的数据
+        /// </summary>
+        /// <param name="key">Key</param>
+        public void Remove(object key);
 
-    /// <summary>
-    /// 清除所有的数据
-    /// </summary>
-    public void Clear();
+        /// <summary>
+        /// 清除所有的数据
+        /// </summary>
+        public void Clear();
 
-    /// <summary>
-    /// 获取指定的数据
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <returns>获得指定的数据</returns>
-    public object Get(object key);
+        /// <summary>
+        /// 获取指定的数据
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <returns>获得指定的数据</returns>
+        public object Get(object key);
 
-    /// <summary>
-    /// 添加或更新数据
-    /// </summary>
-    /// <param name="key">键</param>
-    /// <param name="value">要添加或更新的值</param>
-    public void AddOrUpdate(object key, object value);
+        /// <summary>
+        /// 添加或更新数据
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="value">要添加或更新的值</param>
+        public void AddOrUpdate(object key, object value);
+    }
 }

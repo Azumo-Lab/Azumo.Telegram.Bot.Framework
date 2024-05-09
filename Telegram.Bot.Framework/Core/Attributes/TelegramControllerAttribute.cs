@@ -14,12 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.Attributes;
+using System;
 
-/// <summary>
-/// 
-/// </summary>
-[AttributeUsage(AttributeTargets.Class)]
-public class TelegramControllerAttribute : Attribute
+namespace Telegram.Bot.Framework.Core.Attributes
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class TelegramControllerAttribute : Attribute
+    {
+    }
 }

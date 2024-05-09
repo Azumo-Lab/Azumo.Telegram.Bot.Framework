@@ -14,20 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.Core.PipelineMiddleware;
-
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="TInput"></typeparam>
-/// <typeparam name="TResult"></typeparam>
-public interface IMiddleware<TInput, TResult>
+namespace Telegram.Bot.Framework.Core.PipelineMiddleware
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="input"></param>
-    /// <param name="Next"></param>
-    /// <returns></returns>
-    public TResult Invoke(TInput input, PipelineMiddlewareDelegate<TInput, TResult> Next);
+    /// <typeparam name="TInput"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public interface IMiddleware<TInput, TResult>
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="Next"></param>
+        /// <returns></returns>
+        public TResult Invoke(TInput input, PipelineMiddlewareDelegate<TInput, TResult> Next);
+    }
 }

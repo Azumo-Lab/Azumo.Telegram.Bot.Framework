@@ -14,18 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using Telegram.Bot.Framework.Core.Storage;
 
-namespace Telegram.Bot.Framework.Core.Controller;
-internal interface ICommandScopeService
+namespace Telegram.Bot.Framework.Core.Controller
 {
-    public IServiceProvider? Service { get; }
+    internal interface ICommandScopeService
+    {
+        public IServiceProvider? Service { get; }
 
-    public ISession? Session { get; }
+        public ISession? Session { get; }
 
-    public void Create();
+        public void Create();
 
-    public void Delete();
+        public void Delete();
 
-    public void DeleteOldCreateNew();
+        public void DeleteOldCreateNew();
+    }
 }

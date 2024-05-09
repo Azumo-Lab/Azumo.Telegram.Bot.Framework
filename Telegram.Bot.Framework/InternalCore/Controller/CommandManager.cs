@@ -14,51 +14,59 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
+using System.Linq;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
 
-namespace Telegram.Bot.Framework.InternalCore.Controller;
-
-/// <summary>
-/// 
-/// </summary>
-internal class CommandManager : ICommandManager
+namespace Telegram.Bot.Framework.InternalCore.Controller
 {
     /// <summary>
     /// 
     /// </summary>
-    private readonly Dictionary<string, IExecutor> CommandExecutor = [];
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="executor"></param>
-    public void AddExecutor(IExecutor executor)
+    internal class CommandManager : ICommandManager
     {
-        BotCommandAttribute? botCommandAttribute;
-        if ((botCommandAttribute = executor.Attributes.Where(x => x is BotCommandAttribute).Select(x => x as BotCommandAttribute).FirstOrDefault()) != null)
-            CommandExecutor.Add(botCommandAttribute.BotCommand, executor);
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Dictionary<string, IExecutor> CommandExecutor =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new Dictionary<string, IExecutor>();
+#endif
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userContext"></param>
-    /// <returns></returns>
-    public IExecutor? GetExecutor(TelegramUserContext userContext)
-    {
-        var commands = userContext.GetCommand();
-        if (!string.IsNullOrEmpty(commands))
-            if (CommandExecutor.TryGetValue(commands, out var executor))
-                return executor;
-        return null;
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="executor"></param>
+        public void AddExecutor(IExecutor executor)
+        {
+            BotCommandAttribute? botCommandAttribute;
+            if ((botCommandAttribute = executor.Attributes.Where(x => x is BotCommandAttribute).Select(x => x as BotCommandAttribute).FirstOrDefault()) != null)
+                CommandExecutor.Add(botCommandAttribute.BotCommand, executor);
+        }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public IReadOnlyList<IExecutor> GetExecutorList() =>
-        CommandExecutor.Values.ToList();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userContext"></param>
+        /// <returns></returns>
+        public IExecutor? GetExecutor(TelegramUserContext userContext)
+        {
+            var commands = userContext.GetCommand();
+            if (!string.IsNullOrEmpty(commands))
+                if (CommandExecutor.TryGetValue(commands, out var executor))
+                    return executor;
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IReadOnlyList<IExecutor> GetExecutorList() =>
+            CommandExecutor.Values.ToList();
+    }
 }

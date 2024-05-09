@@ -14,18 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-/// <summary>
-/// 
-/// </summary>
-public static partial class Extensions
+namespace Telegram.Bot.Framework
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="nameSpace"></param>
-    /// <returns></returns>
-    public static List<Type> GetAllTypeSameNameSpace(this string nameSpace) =>
-        AllTypes.Where(x => x.Namespace == nameSpace).ToList();
+    public static partial class Extensions
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nameSpace"></param>
+        /// <returns></returns>
+        public static List<Type> GetAllTypeSameNameSpace(this string nameSpace) =>
+            AllTypes.Where(x => x.Namespace == nameSpace).ToList();
+    }
 }
