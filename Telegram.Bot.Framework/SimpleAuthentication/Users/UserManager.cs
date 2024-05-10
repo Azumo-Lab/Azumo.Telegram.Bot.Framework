@@ -32,17 +32,6 @@ namespace Telegram.Bot.Framework.SimpleAuthentication.Users
         /// <summary>
         /// 
         /// </summary>
-
-        /* 项目“Telegram.Bot.Framework (net8.0)”的未合并的更改
-        在此之前:
-            private const string RoleKey = "{79973381-B239-4CD6-8F22-544FE7053866}";
-
-            /// <summary>
-        在此之后:
-            private const string RoleKey = "{79973381-B239-4CD6-8F22-544FE7053866}";
-
-            /// <summary>
-        */
         private const string RoleKey = "{79973381-B239-4CD6-8F22-544FE7053866}";
 
         /// <summary>

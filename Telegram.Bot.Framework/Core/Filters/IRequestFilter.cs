@@ -16,7 +16,7 @@
 
 using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.SimpleAuthentication
+namespace Telegram.Bot.Framework.Core.Filters
 {
     /// <summary>
     /// 
