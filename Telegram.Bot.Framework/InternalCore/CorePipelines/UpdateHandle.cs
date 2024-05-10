@@ -84,6 +84,11 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines
         {
             try
             {
+                // 请求过滤器
+                foreach (var item in requestFilters)
+                    if (!item.Filter(update))
+                        return;
+
                 // 创建用户上下文
                 TelegramUserContext? context;
                 if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)

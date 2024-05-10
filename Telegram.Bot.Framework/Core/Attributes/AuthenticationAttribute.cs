@@ -19,7 +19,6 @@ using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
-using Telegram.Bot.Framework.SimpleAuthentication;
 
 namespace Telegram.Bot.Framework.Core.Attributes
 {
@@ -27,7 +26,7 @@ namespace Telegram.Bot.Framework.Core.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = true)]
-    public class AuthenticationAttribute : Attribute, IMiddleware<PipelineModel, Task>
+    public class AuthenticationAttribute : Attribute
     {
         /// <summary>
         /// 
@@ -40,19 +39,5 @@ namespace Telegram.Bot.Framework.Core.Attributes
         /// <param name="roleName"></param>
         public AuthenticationAttribute(params string[] roleName) =>
             RoleNames = roleName;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="Next"></param>
-        /// <returns></returns>
-        async Task IMiddleware<PipelineModel, Task>.Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
-        {
-            var userManager = input.UserContext!.UserServiceProvider.GetRequiredService<IContextFilter>();
-            if (userManager.Filter(input.UserContext, RoleNames))
-                await Next(input);
-            return;
-        }
     }
 }

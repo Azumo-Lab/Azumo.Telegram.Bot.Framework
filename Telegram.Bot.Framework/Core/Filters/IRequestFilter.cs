@@ -19,7 +19,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Core.Filters
 {
     /// <summary>
-    /// 
+    /// 请求过滤器
     /// </summary>
     public interface IRequestFilter
     {

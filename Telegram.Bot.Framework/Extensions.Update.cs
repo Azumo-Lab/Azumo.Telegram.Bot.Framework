@@ -14,12 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.SimpleAuthentication;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 

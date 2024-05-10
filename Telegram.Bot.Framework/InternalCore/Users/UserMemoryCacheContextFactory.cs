@@ -51,11 +51,6 @@ namespace Telegram.Bot.Framework.InternalCore.Users
         /// <returns></returns>
         public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
         {
-            var filters = botServiceProvider.GetServices<IRequestFilter>();
-            foreach (var filter in filters)
-                if (!filter.Filter(update))
-                    return null;
-
             var requestChatID = update.GetChatID();
 
             if (requestChatID == null)
