@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework
     public static partial class Extensions
     {
         /// <summary>
-        /// 
+        /// 发送消息
         /// </summary>
         /// <param name="telegramUserContext"></param>
         /// <param name="message"></param>
@@ -38,7 +38,7 @@ namespace Telegram.Bot.Framework
             await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html);
 
         /// <summary>
-        /// 
+        /// 发送消息
         /// </summary>
         /// <param name="telegramUserContext"></param>
         /// <param name="message"></param>
