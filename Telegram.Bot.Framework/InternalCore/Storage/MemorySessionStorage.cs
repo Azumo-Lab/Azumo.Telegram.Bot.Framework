@@ -16,9 +16,7 @@
 
 using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 using Telegram.Bot.Framework.Core.Storage;
 
 namespace Telegram.Bot.Framework.InternalCore.Storage
@@ -67,7 +65,7 @@ namespace Telegram.Bot.Framework.InternalCore.Storage
         /// <param name="value"></param>
         public void Add(object key, object value)
         {
-            queue.Add(key);
+            _ = queue.Add(key);
             _ = memoryCache.Set(key, value);
         }
 
