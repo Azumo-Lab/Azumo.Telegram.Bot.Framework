@@ -23,49 +23,29 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    internal class TelegramServiceAction : ITelegramModule
+    internal class TelegramSimpleAuthentication : ITelegramModule
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Action<IServiceCollection> _action;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="action"></param>
-        public TelegramServiceAction(Action<IServiceCollection> action) => _action = action;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
         public void AddBuildService(IServiceCollection services)
         {
 
         }
+        public void Build(IServiceCollection services, IServiceProvider builderService)
+        {
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="builderService"></param>
-        public void Build(IServiceCollection services, IServiceProvider builderService) =>
-            _action(services);
+        }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramServiceActionExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="action"></param>
         /// <returns></returns>
-        public static ITelegramModuleBuilder AddServiceAction(this ITelegramModuleBuilder builder, Action<IServiceCollection> action) =>
-            builder.AddModule(new TelegramServiceAction(action));
+        public static ITelegramModuleBuilder UseSimpleAuthentication(this ITelegramModuleBuilder builder) =>
+            builder.AddModule(new TelegramSimpleAuthentication());
     }
 }

@@ -95,7 +95,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramProxyExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 使用代理

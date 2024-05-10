@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using Telegram.Bot.Framework.Core.BotBuilder;
 
@@ -24,27 +23,49 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    internal class TelegramSimpleConsole : ITelegramModule
+    internal class TelegramServiceAction : ITelegramModule
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly Action<IServiceCollection> _action;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        public TelegramServiceAction(Action<IServiceCollection> action) => _action = action;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public void AddBuildService(IServiceCollection services)
         {
 
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService) =>
-            services.AddLogging(x => x.AddSimpleConsole());
+            _action(services);
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramSimpleConsoleExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="builder"></param>
+        /// <param name="action"></param>
         /// <returns></returns>
-        public static ITelegramModuleBuilder AddSimpleConsole(this ITelegramModuleBuilder builder) =>
-            builder.AddModule<TelegramSimpleConsole>();
+        public static ITelegramModuleBuilder AddServiceAction(this ITelegramModuleBuilder builder, Action<IServiceCollection> action) =>
+            builder.AddModule(new TelegramServiceAction(action));
     }
 }

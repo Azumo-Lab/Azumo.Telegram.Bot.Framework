@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using Telegram.Bot.Framework.Core.BotBuilder;
 
@@ -23,29 +24,27 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    internal class TelegramSimpleAuthentication : ITelegramModule
+    internal class TelegramSimpleConsole : ITelegramModule
     {
         public void AddBuildService(IServiceCollection services)
         {
 
         }
-        public void Build(IServiceCollection services, IServiceProvider builderService)
-        {
-
-        }
+        public void Build(IServiceCollection services, IServiceProvider builderService) =>
+            services.AddLogging(x => x.AddSimpleConsole());
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramSimpleAuthenticationExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static ITelegramModuleBuilder UseSimpleAuthentication(this ITelegramModuleBuilder builder) =>
-            builder.AddModule(new TelegramSimpleAuthentication());
+        public static ITelegramModuleBuilder AddSimpleConsole(this ITelegramModuleBuilder builder) =>
+            builder.AddModule<TelegramSimpleConsole>();
     }
 }

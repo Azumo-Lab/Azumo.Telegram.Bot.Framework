@@ -25,13 +25,33 @@ using Telegram.Bot.Framework.Core.BotBuilder;
 namespace Telegram.Bot.Framework
 {
     /// <summary>
+    /// 配置文件扩展方法
+    /// </summary>
+    public static partial class TelegramModuleExtensions
+    {
+        /// <summary>
+        /// 添加配置文件
+        /// </summary>
+        /// <remarks>
+        /// 向框架中添加配置文件，配置文件的类型为 <typeparamref name="SettingModel"/>。<br/>
+        /// 当添加配置文件后，可以使用 services.GetRequiredService{<typeparamref name="SettingModel"/>}() 来获取配置文件的实例。<br/>
+        /// </remarks>
+        /// <typeparam name="SettingModel">配置文件的类型</typeparam>
+        /// <param name="builder">创建器</param>
+        /// <param name="path">配置文件的路径位置</param>
+        /// <returns>创建器</returns>
+        public static ITelegramModuleBuilder AddConfiguration<SettingModel>(this ITelegramModuleBuilder builder, string path) where SettingModel : class =>
+            builder.AddModule(new TelegramConfiguration<SettingModel>(path));
+    }
+
+    /// <summary>
     /// 进行配置文件的配置造作
     /// </summary>
     [DebuggerDisplay("配置路径：“{ConfigPath}”，存在与否：“{File.Exists(ConfigPath)}”")]
     internal class TelegramConfiguration : ITelegramModule
     {
         /// <summary>
-        /// 
+        /// 初始化
         /// </summary>
         /// <param name="path">配置文件的路径</param>
         public TelegramConfiguration(string path) => ConfigPath = path;
@@ -111,25 +131,5 @@ namespace Telegram.Bot.Framework
             services.TryAddSingleton(builderService.GetRequiredService<SettingModel>());
             services.TryAddSingleton(builderService.GetRequiredService<IConfiguration>());
         }
-    }
-
-    /// <summary>
-    /// 配置文件扩展方法
-    /// </summary>
-    public static class TelegramConfigurationExtensions
-    {
-        /// <summary>
-        /// 添加配置文件
-        /// </summary>
-        /// <remarks>
-        /// 向框架中添加配置文件，配置文件的类型为 <typeparamref name="SettingModel"/>。<br/>
-        /// 当添加配置文件后，可以使用 services.GetRequiredService{<typeparamref name="SettingModel"/>}() 来获取配置文件的实例。<br/>
-        /// </remarks>
-        /// <typeparam name="SettingModel">配置文件的类型</typeparam>
-        /// <param name="builder">创建器</param>
-        /// <param name="path">配置文件的路径位置</param>
-        /// <returns>创建器</returns>
-        public static ITelegramModuleBuilder AddConfiguration<SettingModel>(this ITelegramModuleBuilder builder, string path) where SettingModel : class =>
-            builder.AddModule(new TelegramConfiguration<SettingModel>(path));
     }
 }

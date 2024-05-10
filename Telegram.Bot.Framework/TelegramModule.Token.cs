@@ -105,7 +105,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramTokenExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 使用指定的 <see cref="Func{T, TResult}"/> 方法，来生成指定类型: <typeparamref name="SettingModel"/> 的数据

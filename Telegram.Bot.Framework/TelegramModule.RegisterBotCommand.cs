@@ -89,7 +89,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramRegisterBotCommandExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 

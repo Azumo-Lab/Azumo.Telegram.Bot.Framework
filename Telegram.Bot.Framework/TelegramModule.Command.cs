@@ -73,7 +73,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramCommandExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 添加一个命令

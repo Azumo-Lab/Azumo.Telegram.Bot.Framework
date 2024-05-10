@@ -153,7 +153,7 @@ namespace Telegram.Bot.Framework
     /// <summary>
     /// 
     /// </summary>
-    public static class TelegramControllerBuilderExtensions
+    public static partial class TelegramModuleExtensions
     {
         /// <summary>
         /// 
