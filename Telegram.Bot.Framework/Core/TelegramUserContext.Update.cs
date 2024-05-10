@@ -22,14 +22,14 @@ namespace Telegram.Bot.Framework.Core
     public sealed partial class TelegramUserContext : Update
     {
         /// <summary>
-        /// 
+        /// <see cref="Telegram.Bot.Types.Update"/> 对象更新时触发的事件
         /// </summary>
         public event EventHandler<Update>? Update;
 
         /// <summary>
-        /// 
+        /// 将 <see cref="Telegram.Bot.Types.Update"/> 对象的属性复制到当前对象
         /// </summary>
-        /// <param name="update"></param>
+        /// <param name="update">要进行复制的对象</param>
         public void CopyFrom(Update update)
         {
             Message = update.Message;
