@@ -23,7 +23,15 @@ namespace Telegram.Bot.Framework.Core
         /// <summary>
         /// 将资源进行销毁
         /// </summary>
-        public void Dispose() =>
+        public void Dispose()
+#if NET8_0_OR_GREATER
+            => UserContextDispose();
+#else
+        {
+            Session.Dispose();
             UserServiceScope.Dispose();
+        }
+#endif
+
     }
 }

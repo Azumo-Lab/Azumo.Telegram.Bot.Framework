@@ -1,9 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Text;
-using Telegram.Bot.Framework;
-using Telegram.Bot.Types;
-
 //var telegramBot = TelegramBot.CreateBuilder()
 //    .UseClashDefaultProxy()
 //    .UseToken("<Token>")
@@ -11,11 +7,37 @@ using Telegram.Bot.Types;
 
 //await telegramBot.StartAsync(true);
 
-var command = "!$#@~!@#$%^&***+_(手上(_*";
-// 对指令进行验证
-foreach (var item in command)
+using System.Runtime.CompilerServices;
+
+static T Instance<T>() where T : new() => new();
+
+RuntimeHelpers.PrepareDelegate(Instance<List<string>>);
+
+long S1;
+long S2;
+long B1;
+long B2;
+
+List<List<string>> list = [];
+Console.WriteLine("S1 = " + (S1 = DateTime.Now.Ticks));
+for (var i = 0; i < 9999999; i++)
 {
-    if (item is not <= (char)sbyte.MaxValue or not >= (char)0)
-        throw new Exception("Not ASCII Command");
+    var itemList = Instance<List<string>>();
+    itemList.Add(i.ToString());
+    list.Add(itemList);
 }
-Console.WriteLine("OK");
+Console.WriteLine("S2 = " + (S2 = DateTime.Now.Ticks));
+list.Clear();
+Console.WriteLine("B1 = " + (B1 = DateTime.Now.Ticks));
+for (var i = 0; i < 9999999; i++)
+{
+    var itemList = new List<string>
+    {
+        i.ToString()
+    };
+    list.Add(itemList);
+}
+Console.WriteLine("B2 = " + (B2 = DateTime.Now.Ticks));
+
+Console.WriteLine("S = " + (S2 - S1));
+Console.WriteLine("B = " + (B2 - B1));

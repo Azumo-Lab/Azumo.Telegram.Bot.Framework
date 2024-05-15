@@ -59,5 +59,21 @@ namespace Telegram.Bot.Framework.Core
             BotClient = UserServiceProvider.GetRequiredService<ITelegramBotClient>();
             Session = UserServiceProvider.GetRequiredService<ISession>();
         }
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// 
+        /// </summary>
+        public partial void UserContextDispose();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public partial void UserContextDispose()
+        {
+            Session.Dispose();
+            UserServiceScope.Dispose();
+        }
+#endif
     }
 }

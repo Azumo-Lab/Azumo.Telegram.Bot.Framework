@@ -23,13 +23,19 @@ using Telegram.Bot.Framework.Args;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Authentication;
 using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Helpers;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core
 {
     public sealed partial class TelegramUserContext : IAuthentication
     {
-        private readonly HashSet<string> __Roles = new HashSet<string>();
+        private readonly HashSet<string> __Roles =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new HashSet<string>();
+#endif
 
         /// <summary>
         /// 
@@ -62,7 +68,12 @@ namespace Telegram.Bot.Framework.Core
             foreach (var item in list)
                 if (!(item.Cache.TryGetValue(Extensions.RolesKey, out var roles) && roles is List<string> rolesList))
                 {
-                    rolesList = new List<string>();
+                    rolesList =
+#if NET8_0_OR_GREATER
+                        [];
+#else
+                        new List<string>();
+#endif
                     var authList = Get<AuthenticationAttribute>(item);
                     var botcommandAttr = Get<BotCommandAttribute>(item);
                     foreach (var auth in authList)
@@ -102,7 +113,11 @@ namespace Telegram.Bot.Framework.Core
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public string[] GetRoles() =>
+#if NET8_0_OR_GREATER
+            [.. __Roles];
+#else
             __Roles.ToArray();
+#endif
 
         /// <summary>
         /// 
