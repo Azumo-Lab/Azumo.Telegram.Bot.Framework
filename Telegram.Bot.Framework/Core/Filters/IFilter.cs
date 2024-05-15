@@ -30,6 +30,6 @@ namespace Telegram.Bot.Framework.Core.Filters
         /// <param name="context"></param>
         /// <param name="executor"></param>
         /// <returns></returns>
-        public Task<bool> InvokeAsync(TelegramUserContext context, IExecutor executor);
+        public Task<bool> InvokeAsync(TelegramContext context, IExecutor executor);
     }
 }

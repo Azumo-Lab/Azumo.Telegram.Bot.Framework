@@ -1,0 +1,146 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Telegram.Bot.Framework.Controller.Models;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+
+namespace Telegram.Bot.Framework.Controller
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class TelegramRequest : Update
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? MessageText { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? BotCommand
+        {
+            get
+            {
+                if (MessageEntities.Count == 0)
+                    return null;
+                var messageInfo = MessageEntities[0];
+                return messageInfo != null && messageInfo.Type == MessageEntityType.BotCommand ? messageInfo.Value : null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MessageEntityInfo[] Params => MessageEntities.Skip(1).ToArray();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly List<MessageEntityInfo> _messageEntities =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new List<MessageEntityInfo>();
+#endif
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IReadOnlyList<MessageEntityInfo> MessageEntities => _messageEntities;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="update"></param>
+        internal TelegramRequest(Update update)
+        {
+            Message = update.Message;
+            Id = update.Id;
+            EditedMessage = update.EditedMessage;
+            ChannelPost = update.ChannelPost;
+            CallbackQuery = update.CallbackQuery;
+            ChatJoinRequest = update.ChatJoinRequest;
+            ChatMember = update.ChatMember;
+            ChosenInlineResult = update.ChosenInlineResult;
+            MyChatMember = update.MyChatMember;
+            PollAnswer = update.PollAnswer;
+            Poll = update.Poll;
+            PreCheckoutQuery = update.PreCheckoutQuery;
+            ShippingQuery = update.ShippingQuery;
+            InlineQuery = update.InlineQuery;
+            EditedChannelPost = update.EditedChannelPost;
+
+            switch (Type)
+            {
+                case UpdateType.Unknown:
+                    return;
+                case UpdateType.Message:
+                    List<MessageEntity> messageEntity;
+                    List<string> messageEntityValues;
+#if NET8_0_OR_GREATER
+                    messageEntity = new List<MessageEntity>(Message?.Entities ?? []);
+                    messageEntityValues = new List<string>(Message?.EntityValues ?? []);
+#else
+                    messageEntity = new List<MessageEntity>(Message?.Entities ?? new MessageEntity[0]);
+                    messageEntityValues = new List<string>(Message?.EntityValues ?? new string[0]);
+#endif
+                    var size = messageEntity.Count;
+
+                    if (size != messageEntityValues.Count)
+                        return;
+                    
+                    for (var i = 0; i < size; i++)
+                    {
+                        var item = messageEntity[i];
+                        if (item is null)
+                            continue;
+                        _messageEntities.Add(new MessageEntityInfo
+                        {
+                            Value = messageEntityValues[i],
+                            CustomEmojiId = item.CustomEmojiId,
+                            Language = item.Language,
+                            Length = item.Length,   
+                            Offset = item.Offset,
+                            Type = item.Type,
+                            Url = item.Url,
+                            User = item.User
+                        });
+                    }
+                    return;
+                case UpdateType.InlineQuery:
+
+                    return;
+                case UpdateType.ChosenInlineResult:
+                    break;
+                case UpdateType.CallbackQuery:
+                    break;
+                case UpdateType.EditedMessage:
+                    break;
+                case UpdateType.ChannelPost:
+                    break;
+                case UpdateType.EditedChannelPost:
+                    break;
+                case UpdateType.ShippingQuery:
+                    break;
+                case UpdateType.PreCheckoutQuery:
+                    break;
+                case UpdateType.Poll:
+                    break;
+                case UpdateType.PollAnswer:
+                    break;
+                case UpdateType.MyChatMember:
+                    break;
+                case UpdateType.ChatMember:
+                    break;
+                case UpdateType.ChatJoinRequest:
+                    
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}

@@ -146,7 +146,7 @@ namespace Telegram.Bot.Framework
     /// </summary>
     internal class NullParam : BaseGetParamDirect
     {
-        public override Task<object> GetParam(TelegramUserContext context) =>
+        public override Task<object> GetParam(TelegramContext context) =>
             Task.FromResult<object>(null!);
     }
 

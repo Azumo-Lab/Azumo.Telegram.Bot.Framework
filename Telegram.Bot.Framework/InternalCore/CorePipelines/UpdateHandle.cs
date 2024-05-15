@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
@@ -84,13 +85,15 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines
         {
             try
             {
+                var request = new TelegramRequest(update);
+
                 // 请求过滤器
                 foreach (var item in requestFilters)
-                    if (!item.Filter(update))
+                    if (!item.Filter(request))
                         return;
 
                 // 创建用户上下文
-                TelegramUserContext? context;
+                TelegramContext? context;
                 if ((context = contextFactory.GetOrCreateUserContext(BotServiceProvider, update)) == null)
                     return;
 

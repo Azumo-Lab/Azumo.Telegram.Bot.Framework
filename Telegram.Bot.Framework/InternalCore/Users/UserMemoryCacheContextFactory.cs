@@ -49,21 +49,21 @@ namespace Telegram.Bot.Framework.InternalCore.Users
         /// <param name="botServiceProvider"></param>
         /// <param name="update"></param>
         /// <returns></returns>
-        public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
+        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
         {
             var requestChatID = update.GetChatID();
 
             if (requestChatID == null)
                 return null;
 
-            TelegramUserContext? telegramUserContext = null;
+            TelegramContext? telegramUserContext = null;
             var longChatID = requestChatID.Identifier;
             if (longChatID != null)
             {
                 var chatID = longChatID.Value;
                 telegramUserContext = memoryCache.GetOrCreate(chatID, (cache) =>
                 {
-                    var telegramUserContext = new TelegramUserContext(botServiceProvider);
+                    var telegramUserContext = new TelegramContext(botServiceProvider);
                     _ = cache.SetPriority(CacheItemPriority.NeverRemove);
                     _ = cache.SetValue(telegramUserContext);
                     return telegramUserContext;
@@ -74,14 +74,14 @@ namespace Telegram.Bot.Framework.InternalCore.Users
                 var username = requestChatID.Username;
                 telegramUserContext = memoryCache.GetOrCreate(username, (cache) =>
                 {
-                    var telegramUserContext = new TelegramUserContext(botServiceProvider);
+                    var telegramUserContext = new TelegramContext(botServiceProvider);
                     _ = cache.SetPriority(CacheItemPriority.NeverRemove);
                     _ = cache.SetValue(telegramUserContext);
                     return telegramUserContext;
                 });
             }
 
-            telegramUserContext ??= new TelegramUserContext(botServiceProvider);
+            telegramUserContext ??= new TelegramContext(botServiceProvider);
             telegramUserContext.CopyFrom(update);
             telegramUserContext.RequestChatID = requestChatID;
             return telegramUserContext;

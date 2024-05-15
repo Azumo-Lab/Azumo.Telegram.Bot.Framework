@@ -19,7 +19,7 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core
 {
-    public sealed partial class TelegramUserContext : Update
+    public sealed partial class TelegramContext : Update
     {
         /// <summary>
         /// <see cref="Telegram.Bot.Types.Update"/> 对象更新时触发的事件

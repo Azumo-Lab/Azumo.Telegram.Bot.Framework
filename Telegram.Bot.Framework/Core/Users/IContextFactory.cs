@@ -20,7 +20,7 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Core.Users
 {
     /// <summary>
-    /// <see cref="TelegramUserContext"/> 创建接口
+    /// <see cref="TelegramContext"/> 创建接口
     /// </summary>
     public interface IContextFactory
     {
@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.Core.Users
         /// </summary>
         /// <param name="botServiceProvider"></param>
         /// <param name="update"></param>
-        /// <returns><see cref="TelegramUserContext"/></returns>
-        public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update);
+        /// <returns><see cref="TelegramContext"/></returns>
+        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update);
     }
 }

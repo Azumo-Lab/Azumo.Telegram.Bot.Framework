@@ -34,7 +34,7 @@ namespace Telegram.Bot.Framework
         /// <param name="telegramUserContext"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message) =>
+        public static async Task<Message> SendTextMessageAsync(this TelegramContext telegramUserContext, string message) =>
             await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html);
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Telegram.Bot.Framework
         /// <param name="message"></param>
         /// <param name="buttons"></param>
         /// <returns></returns>
-        public static async Task<Message> SendTextMessageAsync(this TelegramUserContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) =>
+        public static async Task<Message> SendTextMessageAsync(this TelegramContext telegramUserContext, string message, List<InlineKeyboardButton> buttons) =>
             await telegramUserContext.BotClient.SendTextMessageAsync(telegramUserContext.RequestChatID, message, parseMode: ParseMode.Html, replyMarkup: new InlineKeyboardMarkup(buttons));
     }
 }

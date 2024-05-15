@@ -93,7 +93,7 @@ namespace Telegram.Bot.Framework.InternalCore.Controller
         /// </summary>
         /// <param name="userContext">用户上下文</param>
         /// <returns>参数是否读取完成</returns>
-        public async Task<bool> Read(TelegramUserContext userContext)
+        public async Task<bool> Read(TelegramContext userContext)
         {
         // 无状态
         None:
@@ -179,7 +179,7 @@ namespace Telegram.Bot.Framework.InternalCore.Controller
             /// <summary>
             /// 用户上下文
             /// </summary>
-            public TelegramUserContext UserContext { get; set; } = null!;
+            public TelegramContext UserContext { get; set; } = null!;
 
             /// <summary>
             /// 简易状态机器

@@ -28,7 +28,7 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core
 {
-    public sealed partial class TelegramUserContext : IAuthentication
+    public sealed partial class TelegramContext : IAuthentication
     {
         private readonly HashSet<string> __Roles =
 #if NET8_0_OR_GREATER

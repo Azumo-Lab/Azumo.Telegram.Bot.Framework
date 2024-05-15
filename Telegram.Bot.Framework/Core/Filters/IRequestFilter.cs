@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core.Filters
@@ -26,8 +27,8 @@ namespace Telegram.Bot.Framework.Core.Filters
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="update"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public bool Filter(Update update);
+        public bool Filter(TelegramRequest request);
     }
 }

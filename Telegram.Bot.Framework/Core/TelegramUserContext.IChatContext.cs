@@ -22,7 +22,7 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Core
 {
-    public sealed partial class TelegramUserContext : IChatContext
+    public sealed partial class TelegramContext : IChatContext
     {
         /// <summary>
         /// 

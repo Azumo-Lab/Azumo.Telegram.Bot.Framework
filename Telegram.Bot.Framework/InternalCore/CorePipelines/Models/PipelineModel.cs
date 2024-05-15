@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines.Models
         /// <summary>
         /// 
         /// </summary>
-        public required TelegramUserContext UserContext { get; set; }
+        public required TelegramContext UserContext { get; set; }
 
         /// <summary>
         /// 
@@ -43,7 +43,7 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines.Models
         /// <summary>
         /// 
         /// </summary>
-        public TelegramUserContext UserContext { get; set; } = null!;
+        public TelegramContext UserContext { get; set; } = null!;
 
         /// <summary>
         /// 

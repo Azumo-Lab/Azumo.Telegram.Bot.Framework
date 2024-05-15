@@ -18,7 +18,7 @@ using System;
 
 namespace Telegram.Bot.Framework.Core
 {
-    public sealed partial class TelegramUserContext : IDisposable
+    public sealed partial class TelegramContext : IDisposable
     {
         /// <summary>
         /// 将资源进行销毁

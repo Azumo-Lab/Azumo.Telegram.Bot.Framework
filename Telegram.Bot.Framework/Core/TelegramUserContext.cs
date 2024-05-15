@@ -25,8 +25,8 @@ namespace Telegram.Bot.Framework.Core
     /// <summary>
     /// TG用户上下文
     /// </summary>
-    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(TelegramUserContext))]
-    public sealed partial class TelegramUserContext
+    [DependencyInjection(ServiceLifetime.Transient, ServiceType = typeof(TelegramContext))]
+    public sealed partial class TelegramContext
     {
         /// <summary>
         /// 
@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.Core
         /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
-        public TelegramUserContext(IServiceProvider serviceProvider)
+        public TelegramContext(IServiceProvider serviceProvider)
         {
             UserServiceScope = serviceProvider.CreateAsyncScope();
 

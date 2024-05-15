@@ -8,7 +8,7 @@ namespace Example.ExampleControllers;
 public class SimpleController
 {
     [BotCommand("/SayHello", Description = "A simple message reply")]
-    public static async Task HelloWorld(TelegramUserContext userContext)
+    public static async Task HelloWorld(TelegramContext userContext)
     {
         var str = userContext.Message?.Text ?? string.Empty;
         _ = await userContext.SendTextMessageAsync($"Hello World! What you sent is {str}");

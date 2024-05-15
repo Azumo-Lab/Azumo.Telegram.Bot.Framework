@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.InternalCore.Users
     /// 
     /// </summary>
     //[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IContextFactory))]
-    internal class UserFilterContextFactory : BaseDictionary<long, TelegramUserContext>, IContextFactory
+    internal class UserFilterContextFactory : BaseDictionary<long, TelegramContext>, IContextFactory
     {
         /// <summary>
         /// 
@@ -36,14 +36,14 @@ namespace Telegram.Bot.Framework.InternalCore.Users
         /// <param name="botServiceProvider"></param>
         /// <param name="update"></param>
         /// <returns></returns>
-        public TelegramUserContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
+        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
         {
             var requestChatID = update.GetChatID();
 
             if (requestChatID == null)
                 return null;
 
-            TelegramUserContext telegramUserContext;
+            TelegramContext telegramUserContext;
             var longChatID = requestChatID.Identifier;
             if (longChatID != null)
             {
@@ -52,12 +52,12 @@ namespace Telegram.Bot.Framework.InternalCore.Users
                     telegramUserContext = Get(chatID)!;
                 else
                 {
-                    telegramUserContext = new TelegramUserContext(botServiceProvider);
+                    telegramUserContext = new TelegramContext(botServiceProvider);
                     _ = TryAdd(chatID, telegramUserContext);
                 }
             }
             else
-                telegramUserContext = new TelegramUserContext(botServiceProvider);
+                telegramUserContext = new TelegramContext(botServiceProvider);
 
             telegramUserContext.CopyFrom(update);
             telegramUserContext.RequestChatID = requestChatID;

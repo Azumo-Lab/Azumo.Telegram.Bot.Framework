@@ -53,7 +53,7 @@ namespace Telegram.Bot.Framework.InternalCore.Controller
         /// </summary>
         /// <param name="userContext"></param>
         /// <returns></returns>
-        public IExecutor? GetExecutor(TelegramUserContext userContext)
+        public IExecutor? GetExecutor(TelegramContext userContext)
         {
             var commands = userContext.GetCommand();
             if (!string.IsNullOrEmpty(commands))

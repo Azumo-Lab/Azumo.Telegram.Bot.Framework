@@ -34,14 +34,14 @@ namespace Telegram.Bot.Framework.Core.Controller
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public abstract Task<object> GetParam(TelegramUserContext context);
+        public abstract Task<object> GetParam(TelegramContext context);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public virtual Task<bool> SendMessage(TelegramUserContext context) =>
+        public virtual Task<bool> SendMessage(TelegramContext context) =>
             Task.FromResult(true);
     }
 }

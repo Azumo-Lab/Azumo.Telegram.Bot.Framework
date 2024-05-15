@@ -28,7 +28,7 @@ namespace Telegram.Bot.Framework.Core.Controller
         /// </summary>
         /// <param name="userContext"></param>
         /// <returns></returns>
-        public IExecutor? GetExecutor(TelegramUserContext userContext);
+        public IExecutor? GetExecutor(TelegramContext userContext);
 
         /// <summary>
         /// 

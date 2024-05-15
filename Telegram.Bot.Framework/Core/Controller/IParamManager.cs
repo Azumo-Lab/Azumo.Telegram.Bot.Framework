@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework.Core.Controller
         /// </summary>
         /// <param name="userContext">用户上下文</param>
         /// <returns>参数是否读取完成</returns>
-        public Task<bool> Read(TelegramUserContext userContext);
+        public Task<bool> Read(TelegramContext userContext);
 
         /// <summary>
         /// 获取读取到的参数
