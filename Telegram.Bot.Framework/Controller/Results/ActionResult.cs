@@ -31,7 +31,7 @@ namespace Telegram.Bot.Framework.Controller.Results
                 var bytes = new byte[maxMessageLength];
                 var size = messageFragment.Data[0].Read(bytes);
                 if (size == maxMessageLength)
-
+                    return;
             },
         };
 
