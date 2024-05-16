@@ -21,9 +21,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.BotBuilder;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.BotBuilder;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
+using Telegram.Bot.Framework.PipelineMiddleware;
 
 namespace Telegram.Bot.Framework
 {

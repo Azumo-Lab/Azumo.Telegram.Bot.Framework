@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Telegram.Bot.Framework.Core.BotBuilder;
+using Telegram.Bot.Framework.BotBuilder;
 
 namespace Telegram.Bot.Framework
 {

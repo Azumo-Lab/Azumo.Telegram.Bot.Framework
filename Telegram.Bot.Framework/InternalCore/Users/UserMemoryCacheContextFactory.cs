@@ -17,10 +17,11 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Attributes;
 using Telegram.Bot.Framework.Core.Filters;
-using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Framework.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalCore.Users

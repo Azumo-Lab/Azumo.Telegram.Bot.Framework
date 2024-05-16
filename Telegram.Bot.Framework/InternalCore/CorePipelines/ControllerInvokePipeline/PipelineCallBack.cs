@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
+using Telegram.Bot.Framework.PipelineMiddleware;
 
 namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {

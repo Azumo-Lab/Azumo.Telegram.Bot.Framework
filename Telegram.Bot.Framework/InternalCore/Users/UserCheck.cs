@@ -15,9 +15,9 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Filters;
-using Telegram.Bot.Types;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Filters;
 
 namespace Telegram.Bot.Framework.InternalCore.Users
 {
@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.InternalCore.Users
     [DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IRequestFilter))]
     internal class UserCheck : IRequestFilter
     {
-        public bool Filter(Update update) =>
+        public bool Filter(TelegramRequest update) =>
             update.GetUser() != null;
     }
 }

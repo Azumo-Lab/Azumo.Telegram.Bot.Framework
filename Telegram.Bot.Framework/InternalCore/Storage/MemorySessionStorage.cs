@@ -17,7 +17,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using Telegram.Bot.Framework.Core.Storage;
+using Telegram.Bot.Framework.Storage;
 
 namespace Telegram.Bot.Framework.InternalCore.Storage
 {

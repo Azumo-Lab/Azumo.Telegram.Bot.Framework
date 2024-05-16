@@ -18,8 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
+using Telegram.Bot.Framework.PipelineMiddleware;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 

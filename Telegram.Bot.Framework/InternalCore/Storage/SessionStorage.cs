@@ -20,7 +20,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Storage;
+using Telegram.Bot.Framework.Storage;
 
 namespace Telegram.Bot.Framework.InternalCore.Storage
 {

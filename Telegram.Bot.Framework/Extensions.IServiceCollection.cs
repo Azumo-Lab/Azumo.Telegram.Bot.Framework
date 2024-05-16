@@ -17,7 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Attributes;
 
 namespace Telegram.Bot.Framework
 {

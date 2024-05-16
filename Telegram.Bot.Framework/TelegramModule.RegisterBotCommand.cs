@@ -19,10 +19,10 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.BotBuilder;
-using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Execs;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.BotBuilder;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Execs;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework

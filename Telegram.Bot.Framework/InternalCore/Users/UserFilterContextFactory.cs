@@ -16,10 +16,11 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Core;
 using Telegram.Bot.Framework.Core.Controller;
 using Telegram.Bot.Framework.Core.Filters;
-using Telegram.Bot.Framework.Core.Users;
+using Telegram.Bot.Framework.Users;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalCore.Users
@@ -34,11 +35,11 @@ namespace Telegram.Bot.Framework.InternalCore.Users
         /// 
         /// </summary>
         /// <param name="botServiceProvider"></param>
-        /// <param name="update"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
+        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, TelegramRequest request)
         {
-            var requestChatID = update.GetChatID();
+            var requestChatID = request.ChatId;
 
             if (requestChatID == null)
                 return null;
@@ -52,15 +53,12 @@ namespace Telegram.Bot.Framework.InternalCore.Users
                     telegramUserContext = Get(chatID)!;
                 else
                 {
-                    telegramUserContext = new TelegramContext(botServiceProvider);
+                    telegramUserContext = new TelegramContext(botServiceProvider, request);
                     _ = TryAdd(chatID, telegramUserContext);
                 }
             }
             else
-                telegramUserContext = new TelegramContext(botServiceProvider);
-
-            telegramUserContext.CopyFrom(update);
-            telegramUserContext.RequestChatID = requestChatID;
+                telegramUserContext = new TelegramContext(botServiceProvider, request);
             return telegramUserContext;
         }
     }

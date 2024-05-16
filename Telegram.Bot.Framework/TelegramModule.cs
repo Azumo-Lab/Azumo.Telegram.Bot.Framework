@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Diagnostics;
 using System.IO;
-using Telegram.Bot.Framework.Core.BotBuilder;
+using Telegram.Bot.Framework.BotBuilder;
 
 namespace Telegram.Bot.Framework
 {

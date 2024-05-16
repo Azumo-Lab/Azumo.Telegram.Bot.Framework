@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.PipelineMiddleware;
 
 namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware
 {

@@ -20,10 +20,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Execs;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.Execs;
 using Telegram.Bot.Framework.InternalCore.Attritubes;
+using Telegram.Bot.Framework.PipelineMiddleware;
 
 namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc
 {

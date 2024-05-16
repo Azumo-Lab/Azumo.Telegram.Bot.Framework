@@ -18,11 +18,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Filters;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.Filters;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
+using Telegram.Bot.Framework.PipelineMiddleware;
 
 namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
 {

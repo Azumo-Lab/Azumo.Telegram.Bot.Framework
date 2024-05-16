@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
+using Telegram.Bot.Framework.PipelineMiddleware;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline

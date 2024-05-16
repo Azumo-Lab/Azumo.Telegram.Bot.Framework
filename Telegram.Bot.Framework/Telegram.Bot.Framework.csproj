@@ -120,7 +120,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Attributes\" />
+    <Folder Include="InternalCore\Controller\" />
   </ItemGroup>
 
 </Project>

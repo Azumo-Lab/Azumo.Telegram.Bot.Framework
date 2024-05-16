@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Authentication;
 using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Authentication;
 using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalCore.Authentication

@@ -36,6 +36,8 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         public MessageEntityInfo[] Params => MessageEntities.Skip(1).ToArray();
 
+        public ITelegramBotClient TelegramBotClient { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -45,6 +47,12 @@ namespace Telegram.Bot.Framework.Controller
 #else
             new List<MessageEntityInfo>();
 #endif
+
+        public ChatId ChatId { get; }
+
+        public User RequestUser { get; }
+
+        public Chat Chat { get; }
 
         /// <summary>
         /// 

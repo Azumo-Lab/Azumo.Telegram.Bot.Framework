@@ -20,15 +20,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.BotBuilder;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.BotBuilder;
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.PipelineMiddleware;
-using Telegram.Bot.Framework.InternalCore.Controller;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
 using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
 using Telegram.Bot.Framework.InternalCore.Install;
+using Telegram.Bot.Framework.PipelineMiddleware;
 using Telegram.Bot.Types.Enums;
 
 namespace Telegram.Bot.Framework
@@ -116,13 +116,8 @@ namespace Telegram.Bot.Framework
                     };
                     attributes.AddRange(method.GetCustomAttributes());
 
-                    ObjectFactory? objectFactory = null;
-                    if (!method.IsStatic)
-                        objectFactory = ActivatorUtilities.CreateFactory(controller, Array.Empty<Type>());
-
                     var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand,
-                        objectFactory,
-                        method.BuildFuncFactory(),
+                        method.BuildFunc(),
                         method.GetParameters().Select(x => x.GetParams()).ToList(),
                         attributes.ToArray());
                     commandManager.AddExecutor(executor);

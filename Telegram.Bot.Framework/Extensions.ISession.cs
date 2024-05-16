@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Storage;
+using Telegram.Bot.Framework.Storage;
 
 namespace Telegram.Bot.Framework
 {
