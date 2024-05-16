@@ -14,34 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System;
+using System.Collections.Generic;
 
-namespace Telegram.Bot.Framework.Controller.Results
+namespace Telegram.Bot.Framework
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class ButtonResult
+    public static partial class Extensions
     {
         /// <summary>
         /// 
         /// </summary>
-        public string Text { get; set; }
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static bool OnlyOne<T>(this List<T> list) =>
+            list.Count == 1;
 
         /// <summary>
         /// 
         /// </summary>
-        public Delegate Delegate { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="delegate"></param>
-        public ButtonResult(string text, Delegate @delegate)
-        {
-            Text = text;
-            Delegate = @delegate;
-        }
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static bool Empty<T>(this List<T> list) =>
+            list.Count == 0;
     }
 }

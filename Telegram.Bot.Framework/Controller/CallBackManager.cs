@@ -15,7 +15,7 @@ namespace Telegram.Bot.Framework.Controller
         public CallBackManager(IServiceProvider serviceProvider) => 
             this.serviceProvider = serviceProvider;
 
-        public InlineKeyboardButton CreateCallBackButton(ButtonResult buttonResult)
+        public InlineKeyboardButton CreateCallBackButton(ActionButtonResult buttonResult)
         {
             var callbackData = $"c{Guid.NewGuid().ToString().ToLower().Replace("-", string.Empty)}" ;
 

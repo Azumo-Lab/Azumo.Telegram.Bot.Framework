@@ -14,48 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using Telegram.Bot.Framework.Storage;
 
-namespace Telegram.Bot.Framework.Controller
+namespace Telegram.Bot.Framework.Controller.Results
 {
     /// <summary>
-    /// 
+    /// Telegram 动作按钮
     /// </summary>
-    public sealed class TelegramContext
+    public class ActionButtonResult
     {
         /// <summary>
-        /// 
+        /// 按钮显示文字
         /// </summary>
-        public TelegramRequest TelegramRequest { get; }
+        public string Text { get; set; }
 
         /// <summary>
-        /// 
+        /// 点击按钮执行的动作
         /// </summary>
-        public ISession Session { get; }
+        public Delegate Delegate { get; set; }
 
         /// <summary>
-        /// 
+        /// 初始化按钮
         /// </summary>
-        public IServiceScope ServiceScope { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IServiceProvider ServiceProvider => ServiceScope.ServiceProvider;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="telegramRequest"></param>
-        internal TelegramContext(IServiceProvider serviceProvider, TelegramRequest telegramRequest)
+        /// <param name="text">按钮文本</param>
+        /// <param name="delegate">按钮动作</param>
+        public ActionButtonResult(string text, Delegate @delegate)
         {
-            Session = serviceProvider.GetRequiredService<ISession>();
-
-            ServiceScope = serviceProvider.CreateScope();
-            TelegramRequest = telegramRequest;
+            Text = text;
+            Delegate = @delegate;
         }
     }
 }

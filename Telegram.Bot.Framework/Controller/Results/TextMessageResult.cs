@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -34,16 +35,16 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <summary>
         /// 
         /// </summary>
-        private readonly ButtonResult[]? buttonResults;
+        private readonly ActionButtonResult[]? buttonResults;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="text"></param>
         /// <param name="buttonResult"></param>
-        public TextMessageResult(string text, ButtonResult[]? buttonResult = null)
+        public TextMessageResult(string text, ActionButtonResult[]? buttonResult = null)
         {
-             Text = text;
+            Text = text;
             buttonResults = buttonResult;
         }
 
@@ -51,21 +52,20 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// 
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override async Task ExecuteResultAsync(TelegramActionContext context)
+        public override async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
         {
             if (buttonResults == null)
-            {
-                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, Text);
-            }
+                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, Text, cancellationToken: cancellationToken);
             else
             {
                 var manager = context.ServiceProvider.GetRequiredService<ICallBackManager>();
                 var buttonList = new List<InlineKeyboardButton>();
                 foreach (var button in buttonResults)
                     buttonList.Add(manager.CreateCallBackButton(button));
-                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, Text, 
-                    replyMarkup: new InlineKeyboardMarkup(buttonList));
+                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, Text,
+                    replyMarkup: new InlineKeyboardMarkup(buttonList), cancellationToken: cancellationToken);
             }
         }
     }

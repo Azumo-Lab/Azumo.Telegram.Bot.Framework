@@ -1,16 +1,15 @@
 ﻿using Telegram.Bot.Framework;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Results;
 
-namespace Example.ExampleControllers;
-
-[TelegramController]
-public class SimpleController
+namespace Example.ExampleControllers
 {
-    [BotCommand("/SayHello", Description = "A simple message reply")]
-    public static async Task HelloWorld(TelegramContext userContext)
+    public class SimpleController : TelegramController
     {
-        var str = userContext.Message?.Text ?? string.Empty;
-        _ = await userContext.SendTextMessageAsync($"Hello World! What you sent is {str}");
+        [BotCommand("/SayHello", Description = "A simple message reply")]
+        public Task<IActionResult> HelloWorld()
+        {
+            return MessageResultAsync("Hello World");
+        }
     }
 }

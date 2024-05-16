@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework.Controller.Results
@@ -27,7 +28,8 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// 
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task ExecuteResultAsync(TelegramActionContext context);
+        public Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken);
     }
 }

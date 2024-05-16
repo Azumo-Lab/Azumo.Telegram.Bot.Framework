@@ -97,7 +97,7 @@ namespace Telegram.Bot.Framework
         /// <param name="message"></param>
         /// <returns></returns>
         protected virtual Task<IActionResult> MessageResultAsync(string message) =>
-            Task.FromResult<IActionResult>(new MessageResult(new TextMessage(message)));
+            Task.FromResult<IActionResult>(new TextMessageResult(message));
 
         /// <summary>
         /// 

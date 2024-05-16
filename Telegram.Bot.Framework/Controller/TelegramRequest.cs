@@ -1,4 +1,19 @@
-﻿using System;
+﻿//  <Telegram.Bot.Framework>
+//  Copyright (C) <2022 - 2024>  <Azumo-Lab> see <https://github.com/Azumo-Lab/Azumo.Telegram.Bot.Framework>
+//
+//  This file is part of <Telegram.Bot.Framework>: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Linq;
 using Telegram.Bot.Framework.Controller.Models;
@@ -99,7 +114,7 @@ namespace Telegram.Bot.Framework.Controller
 
                     if (size != messageEntityValues.Count)
                         return;
-                    
+
                     for (var i = 0; i < size; i++)
                     {
                         var item = messageEntity[i];
@@ -110,7 +125,7 @@ namespace Telegram.Bot.Framework.Controller
                             Value = messageEntityValues[i],
                             CustomEmojiId = item.CustomEmojiId,
                             Language = item.Language,
-                            Length = item.Length,   
+                            Length = item.Length,
                             Offset = item.Offset,
                             Type = item.Type,
                             Url = item.Url,
@@ -144,7 +159,7 @@ namespace Telegram.Bot.Framework.Controller
                 case UpdateType.ChatMember:
                     break;
                 case UpdateType.ChatJoinRequest:
-                    
+
                     break;
                 default:
                     break;
