@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Controller.Fragments;
 using Telegram.Bot.Framework.Controller.Results;
+using Telegram.Bot.Framework.Helpers;
 
 namespace Telegram.Bot.Framework
 {
@@ -52,7 +53,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected virtual Task<IActionResult> MessageResultAsync(string message) =>
+        protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message) =>
             Task.FromResult<IActionResult>(new TextMessageResult(message));
 
         /// <summary>
@@ -61,8 +62,8 @@ namespace Telegram.Bot.Framework
         /// <param name="message"></param>
         /// <param name="images"></param>
         /// <returns></returns>
-        protected virtual Task<IActionResult> MessageResultAsync(string message, string images) =>
-            Task.FromResult<IActionResult>(new MessageResult(new TextMessage(message), new ImageMessage(images)));
+        protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message, string images) =>
+            Task.FromResult<IActionResult>(new PhotoMessageResult(images, message));
 
     }
 }

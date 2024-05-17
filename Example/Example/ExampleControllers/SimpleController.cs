@@ -1,6 +1,7 @@
 ﻿using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Controller.Results;
+using Telegram.Bot.Framework.Helpers;
 
 namespace Example.ExampleControllers
 {
@@ -9,7 +10,10 @@ namespace Example.ExampleControllers
         [BotCommand("/SayHello", Description = "A simple message reply")]
         public Task<IActionResult> HelloWorld()
         {
-            return MessageResultAsync("Hello World");
+            var message = TelegramMessageBuilder.Html
+                .Bold("Hello World");
+
+            return MessageResultAsync(message);
         }
     }
 }

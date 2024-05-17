@@ -95,7 +95,7 @@ namespace Telegram.Bot.Framework.Controller.Params
         public async Task<(bool read, IActionResult? actionResult)> Read(TelegramActionContext actionContext)
         {
             var paramsMessage = actionContext.TelegramRequest.Params;
-            if (paramsMessage != null && paramsMessage.Length != 0)
+            if (paramsMessage != null && paramsMessage.Count != 0)
             {
                 getParams.Clear();
                 _Param.AddRange(paramsMessage.Select(x => x.Value));

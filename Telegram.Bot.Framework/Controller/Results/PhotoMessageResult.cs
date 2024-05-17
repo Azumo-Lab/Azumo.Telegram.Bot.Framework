@@ -39,7 +39,7 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <summary>
         /// 要发送的图片的说明
         /// </summary>
-        private readonly string? Caption;
+        private readonly TelegramMessageBuilder? Caption;
 
         /// <summary>
         /// 动作按钮
@@ -52,7 +52,7 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <param name="photoPath"></param>
         /// <param name="caption"></param>
         /// <param name="buttonResults"></param>
-        public PhotoMessageResult(string photoPath, string? caption = null, ActionButtonResult[]? buttonResults = null)
+        public PhotoMessageResult(string photoPath, TelegramMessageBuilder? caption = null, ActionButtonResult[]? buttonResults = null)
         {
             PhotoPaths = new string[] { photoPath };
             Caption = caption;
@@ -67,7 +67,7 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// </remarks>
         /// <param name="photoPaths">图片组路径</param>
         /// <param name="caption">说明信息</param>
-        public PhotoMessageResult(string[] photoPaths, string? caption = null)
+        public PhotoMessageResult(string[] photoPaths, TelegramMessageBuilder? caption = null)
         {
             PhotoPaths = photoPaths;
             Caption = caption;
@@ -93,11 +93,11 @@ namespace Telegram.Bot.Framework.Controller.Results
                 await using (var bufferedStream = new BufferedStream(new FileStream(PhotoPaths[0], FileMode.Open), Consts.BUFFED_STREAM_CACHE_128KB))
                 {
                     if (buttons.Count == 0)
-                        await context.TelegramBotClient.SendPhotoAsync(context.ChatId, InputFile.FromStream(bufferedStream), caption: Caption, 
-                            parseMode: Types.Enums.ParseMode.Html, cancellationToken: cancellationToken);
+                        await context.TelegramBotClient.SendPhotoAsync(context.ChatId, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(), 
+                            parseMode: Caption?.ParseMode, cancellationToken: cancellationToken);
                     else
-                        await context.TelegramBotClient.SendPhotoAsync(context.ChatId, InputFile.FromStream(bufferedStream), caption: Caption, 
-                            replyMarkup: new InlineKeyboardMarkup(buttons), cancellationToken: cancellationToken);
+                        await context.TelegramBotClient.SendPhotoAsync(context.ChatId, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(), 
+                            parseMode: Caption?.ParseMode, replyMarkup: new InlineKeyboardMarkup(buttons), cancellationToken: cancellationToken);
                 }
             }
             else
@@ -108,7 +108,7 @@ namespace Telegram.Bot.Framework.Controller.Results
                         streams.Add(new BufferedStream(new FileStream(stream, FileMode.Open), Consts.BUFFED_STREAM_CACHE_128KB));
 
                     await context.TelegramBotClient.SendMediaGroupAsync(context.ChatId,
-                        streams.Select(x => new InputMediaPhoto(InputFile.FromStream(x)) { Caption = Caption, ParseMode = Types.Enums.ParseMode.Html }).ToArray(),
+                        streams.Select(x => new InputMediaPhoto(InputFile.FromStream(x)) { Caption = Caption?.ToString(), ParseMode = Caption?.ParseMode }).ToArray(),
                         cancellationToken: cancellationToken);
                 }
             }

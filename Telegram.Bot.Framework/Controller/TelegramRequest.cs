@@ -49,7 +49,7 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public MessageEntityInfo[] Params => MessageEntities.Skip(1).ToArray();
+        public IReadOnlyList<MessageEntityInfo> Params => MessageEntities.Skip(1).ToList();
 
         /// <summary>
         /// 
@@ -120,6 +120,9 @@ namespace Telegram.Bot.Framework.Controller
                 case UpdateType.Message:
                     List<MessageEntity> messageEntity;
                     List<string> messageEntityValues;
+
+                    MessageText = Message?.Text;
+
 #if NET8_0_OR_GREATER
                     messageEntity = new List<MessageEntity>(Message?.Entities ?? []);
                     messageEntityValues = new List<string>(Message?.EntityValues ?? []);
