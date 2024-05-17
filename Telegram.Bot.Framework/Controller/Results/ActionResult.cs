@@ -50,7 +50,7 @@ namespace Telegram.Bot.Framework.Controller.Results
                     if (item.Data == null)
                         continue;
 
-                    await combination[item.FragmentType](context, item);
+                    //await combination[item.FragmentType](context, item);
                 }
             }
             finally

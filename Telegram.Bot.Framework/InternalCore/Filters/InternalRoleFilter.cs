@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Filters;
 
 namespace Telegram.Bot.Framework.InternalCore.Filters

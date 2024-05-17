@@ -23,10 +23,8 @@ using System.Threading.Tasks;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.BotBuilder;
 using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline;
-using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
+using Telegram.Bot.Framework.Controller.Params;
+using Telegram.Bot.Framework.CorePipelines;
 using Telegram.Bot.Framework.InternalCore.Install;
 using Telegram.Bot.Framework.PipelineMiddleware;
 using Telegram.Bot.Types.Enums;
@@ -53,15 +51,10 @@ namespace Telegram.Bot.Framework
         /// <param name="services"></param>
         /// <param name="builderService"></param>
         public void Build(IServiceCollection services, IServiceProvider builderService) =>
-            services.AddScoped(x => PipelineFactory.GetPipelineBuilder<PipelineModel, Task>(() => Task.CompletedTask)
-            .Use(new PipelineCommandScope())
-            .Use(new PipelineGetParam())
-            .Use(new PipelineControllerInvoke())
+            services.AddScoped(x => PipelineFactory.GetPipelineBuilder<TelegramActionContext, Task>(() => Task.CompletedTask)
+            .Use(new ControllerPipelineGetCommand())
+            .Use(new ControllerPipelineControllerInvoker())
             .CreatePipeline(UpdateType.Message)
-            .Use(new PipelineCallBack())
-            .CreatePipeline(UpdateType.CallbackQuery)
-            .Use(new PipelineMyChatMember())
-            .CreatePipeline(UpdateType.MyChatMember)
             .Build());
     }
 
@@ -117,6 +110,7 @@ namespace Telegram.Bot.Framework
                     attributes.AddRange(method.GetCustomAttributes());
 
                     var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand,
+                        ActivatorUtilities.CreateFactory(controller, new Type[] { }),
                         method.BuildFunc(),
                         method.GetParameters().Select(x => x.GetParams()).ToList(),
                         attributes.ToArray());
@@ -141,7 +135,7 @@ namespace Telegram.Bot.Framework
     /// </summary>
     internal class NullParam : BaseGetParamDirect
     {
-        public override Task<object> GetParam(TelegramContext context) =>
+        public override Task<object> GetParam(TelegramActionContext context) =>
             Task.FromResult<object>(null!);
     }
 

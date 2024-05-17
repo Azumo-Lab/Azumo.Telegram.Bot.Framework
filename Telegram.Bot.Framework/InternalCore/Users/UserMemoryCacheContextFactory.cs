@@ -17,10 +17,8 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Filters;
 using Telegram.Bot.Framework.Users;
 using Telegram.Bot.Types;
 
@@ -48,11 +46,12 @@ namespace Telegram.Bot.Framework.InternalCore.Users
         /// 
         /// </summary>
         /// <param name="botServiceProvider"></param>
-        /// <param name="update"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, Update update)
+        /// <exception cref="NotImplementedException"></exception>
+        public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, TelegramRequest request)
         {
-            var requestChatID = update.GetChatID();
+            var requestChatID = request.ChatId;
 
             if (requestChatID == null)
                 return null;
@@ -64,7 +63,7 @@ namespace Telegram.Bot.Framework.InternalCore.Users
                 var chatID = longChatID.Value;
                 telegramUserContext = memoryCache.GetOrCreate(chatID, (cache) =>
                 {
-                    var telegramUserContext = new TelegramContext(botServiceProvider);
+                    var telegramUserContext = new TelegramContext(botServiceProvider, request);
                     _ = cache.SetPriority(CacheItemPriority.NeverRemove);
                     _ = cache.SetValue(telegramUserContext);
                     return telegramUserContext;
@@ -75,16 +74,14 @@ namespace Telegram.Bot.Framework.InternalCore.Users
                 var username = requestChatID.Username;
                 telegramUserContext = memoryCache.GetOrCreate(username, (cache) =>
                 {
-                    var telegramUserContext = new TelegramContext(botServiceProvider);
+                    var telegramUserContext = new TelegramContext(botServiceProvider, request);
                     _ = cache.SetPriority(CacheItemPriority.NeverRemove);
                     _ = cache.SetValue(telegramUserContext);
                     return telegramUserContext;
                 });
             }
 
-            telegramUserContext ??= new TelegramContext(botServiceProvider);
-            telegramUserContext.CopyFrom(update);
-            telegramUserContext.RequestChatID = requestChatID;
+            telegramUserContext ??= new TelegramContext(botServiceProvider, request);
             return telegramUserContext;
         }
     }

@@ -14,35 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Controller;
 
-namespace Telegram.Bot.Framework.Core.Controller
+namespace Telegram.Bot.Framework.Controller.Results
 {
     /// <summary>
     /// 
     /// </summary>
-    public abstract class BaseGetParamDirect : IGetParam
+    public class NullActionResult : ActionResult
     {
         /// <summary>
         /// 
         /// </summary>
-        public virtual ParamAttribute? ParamAttribute { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="context"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public abstract Task<object> GetParam(TelegramContext context);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public virtual Task<bool> SendMessage(TelegramContext context) =>
-            Task.FromResult(true);
+        public override Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
+            Task.CompletedTask;
     }
 }

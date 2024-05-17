@@ -14,46 +14,41 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Controller.Results;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.Models
+namespace Telegram.Bot.Framework.Filters
 {
     /// <summary>
-    /// 用于流水线输入的参数
+    /// 
     /// </summary>
-    internal class PipelineModel
+    public abstract class OnControllerExecute : IOnControllerExecute
     {
-#if NET8_0_OR_GREATER
         /// <summary>
         /// 
         /// </summary>
-        public required TelegramContext UserContext { get; set; }
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public abstract Task<IActionResult> OnForbidden(TelegramActionContext telegramActionContext);
 
         /// <summary>
         /// 
         /// </summary>
-        public required ICommandManager CommandManager { get; set; }
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public Task<IActionResult> OnParamterError(TelegramActionContext telegramActionContext) => 
+            Task.FromResult<IActionResult>(new TextMessageResult("您输入的参数错误"));
 
         /// <summary>
         /// 
         /// </summary>
-        public required ICommandScopeService CommandScopeService { get; set; }
-#else
-        /// <summary>
-        /// 
-        /// </summary>
-        public TelegramContext UserContext { get; set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ICommandManager CommandManager { get; set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ICommandScopeService CommandScopeService { get; set; } = null!;
-#endif
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public abstract Task<IActionResult> OnUnauthorized(TelegramActionContext telegramActionContext);
     }
 }

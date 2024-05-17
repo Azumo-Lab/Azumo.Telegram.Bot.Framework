@@ -15,15 +15,20 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using Telegram.Bot.Framework.Controller.Params;
 using Telegram.Bot.Framework.Storage;
 
 namespace Telegram.Bot.Framework.Controller
 {
     internal interface ICommandScopeService
     {
-        public IServiceProvider? Service { get; }
+        public IServiceProvider Service { get; }
 
-        public ISession? Session { get; }
+        public IExecutor Executor { get; set; }
+
+        public IParamManager ParamManager { get; }
+
+        public ISession Session { get; }
 
         public void Create();
 

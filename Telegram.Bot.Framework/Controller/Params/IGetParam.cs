@@ -14,21 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.PipelineMiddleware
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Results;
+
+namespace Telegram.Bot.Framework.Controller.Params
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="TInput"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    public interface IMiddleware<TInput, TResult>
+    public interface IGetParam
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="Next"></param>
+        public ParamAttribute? ParamAttribute { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         /// <returns></returns>
-        public TResult Execute(TInput input, PipelineMiddlewareDelegate<TInput, TResult> Next);
+        public Task<IActionResult?> SendMessage(TelegramActionContext context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<object> GetParam(TelegramActionContext context);
     }
 }

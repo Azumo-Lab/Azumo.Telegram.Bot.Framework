@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Controller.Params;
 
 namespace Telegram.Bot.Framework
 {

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller.Params;
 using Telegram.Bot.Framework.Controller.Results;
 
 namespace Telegram.Bot.Framework.Controller
@@ -42,11 +43,17 @@ namespace Telegram.Bot.Framework.Controller
         public Dictionary<string, object> Cache { get; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext);
+
+        /// <summary>
         /// 方法的执行
         /// </summary>
-        /// <param name="telegramController">控制器实例</param>
-        /// <param name="param">参数列表</param>
+        /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public Task<object?> Invoke(TelegramController telegramController, object?[] param);
+        public Task<object?> Invoke(TelegramActionContext telegramActionContext);
     }
 }

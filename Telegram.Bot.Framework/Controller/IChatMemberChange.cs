@@ -32,6 +32,6 @@ namespace Telegram.Bot.Framework.Controller
         /// <param name="fromUser"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Task ChatMemberChangeAsync(TelegramContext telegramUserContext, ChatMember newChatMember, ChatId fromUser, ChatId user);
+        public Task ChatMemberChangeAsync(TelegramActionContext telegramUserContext, ChatMember newChatMember, ChatId fromUser, ChatId user);
     }
 }

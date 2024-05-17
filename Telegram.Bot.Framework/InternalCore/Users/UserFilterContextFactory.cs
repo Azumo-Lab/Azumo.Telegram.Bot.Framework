@@ -14,14 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.Core.Filters;
 using Telegram.Bot.Framework.Users;
-using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.InternalCore.Users
 {

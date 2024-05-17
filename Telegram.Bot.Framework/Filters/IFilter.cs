@@ -16,7 +16,6 @@
 
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Core.Controller;
 
 namespace Telegram.Bot.Framework.Filters
 {
@@ -31,6 +30,6 @@ namespace Telegram.Bot.Framework.Filters
         /// <param name="context"></param>
         /// <param name="executor"></param>
         /// <returns></returns>
-        public Task<bool> InvokeAsync(TelegramContext context, IExecutor executor);
+        public Task<bool> InvokeAsync(TelegramActionContext context, IExecutor executor);
     }
 }

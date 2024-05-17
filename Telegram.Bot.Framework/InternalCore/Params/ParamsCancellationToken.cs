@@ -17,9 +17,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Controller.Params;
 
 namespace Telegram.Bot.Framework.InternalCore.Params
 {
@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.InternalCore.Params
     [TypeFor(typeof(CancellationToken))]
     internal class ParamsCancellationToken : BaseGetParamDirect
     {
-        public override Task<object> GetParam(TelegramContext context) =>
-            Task.FromResult<object>(context.UserServiceProvider.GetRequiredService<CancellationTokenSource>().Token);
+        public override Task<object> GetParam(TelegramActionContext context) =>
+            Task.FromResult<object>(context.ServiceProvider.GetRequiredService<CancellationTokenSource>().Token);
     }
 }

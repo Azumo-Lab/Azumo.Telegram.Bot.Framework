@@ -14,10 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Params;
 using Telegram.Bot.Framework.Controller.Results;
+using Telegram.Bot.Framework.Filters;
 
 namespace Telegram.Bot.Framework.Controller
 {
@@ -67,15 +72,62 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="telegramController"></param>
-        /// <param name="param"></param>
+        private readonly string GUID = Guid.NewGuid().ToString();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public Task<object?> Invoke(TelegramController telegramController, object?[] param)
+        public async Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext)
         {
-            object? result;
-            return (result = _Fun.DynamicInvoke(param)) != null
-                ? result is Task<IActionResult?> resultObj ? resultObj : Task.FromResult<IActionResult?>(result)
-                : Task.FromResult<IActionResult?>(null);
+            var commandScope = telegramActionContext.CommandScopeService;
+            var obj = commandScope.Session.Get(GUID);
+            if (obj == null)
+            {
+                var authFilters = telegramActionContext.ServiceProvider.GetServices<IAuthFilter>();
+                foreach (var item in authFilters)
+                    if (!await item.IsAuthorizedAsync(telegramActionContext))
+                        return (ControllerResult.Forbidden, null);
+
+                var authList = Extensions.GetOrCache(this, "{BB890BEF-1823-48A3-AAA3-6FA4C10EA4EC}", () =>
+                Attributes.Where(x => x is AuthenticationAttribute)
+                    .Select(x => (AuthenticationAttribute)x)
+                    .ToList());
+
+                if (!authList.IsEmpty())
+                {
+                    var authRoles = Extensions.GetOrCache(this, "{1BB22534-322A-447E-B759-307FD81D5209}", () =>
+                    authList.SelectMany(x => x.RoleNames).ToHashSet());
+
+                    var user = telegramActionContext.TelegramRequest.UserPermissions;
+                    if (user.Roles.IsEmpty())
+                        return (ControllerResult.Unauthorized, null);
+                    foreach (var item in user.Roles)
+                        if (!authRoles.Contains(item))
+                            return (ControllerResult.Forbidden, null);
+
+                    commandScope.Session.Add(GUID, GUID);
+                }
+            }
+
+            var paramManager = commandScope.ParamManager;
+            var (read, actionResult) = await paramManager.Read(telegramActionContext);
+            return read ? (ControllerResult.Success, actionResult) : (ControllerResult.WaitParamter, actionResult);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public async Task<object?> Invoke(TelegramActionContext telegramActionContext)
+        {
+            var paramManager = telegramActionContext.ServiceProvider.GetRequiredService<IParamManager>();
+
+            var result = _Fun.DynamicInvoke(paramManager.GetParam());
+
+            return result is Task<object?> actionResult ? await actionResult : result;
         }
     }
 }

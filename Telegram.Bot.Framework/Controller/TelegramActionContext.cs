@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading;
 using Telegram.Bot.Framework.Storage;
 using Telegram.Bot.Types;
 
@@ -24,7 +25,7 @@ namespace Telegram.Bot.Framework.Controller
     /// <summary>
     /// 
     /// </summary>
-    public sealed class TelegramActionContext : IDisposable
+    public sealed class TelegramActionContext
     {
         /// <summary>
         /// 
@@ -39,19 +40,20 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public IServiceProvider ServiceProvider { get; }
+        public IServiceProvider ServiceProvider => TelegramContext.ServiceProvider;
 
         /// <summary>
         /// 
         /// </summary>
-        internal TelegramActionContext(TelegramContext telegramContext, TelegramRequest telegramRequest)
+        internal TelegramActionContext(TelegramContext telegramContext, TelegramRequest telegramRequest, CancellationToken cancellationToken)
         {
-            ServiceProvider = telegramContext.ServiceProvider;
+            TelegramContext = telegramContext;
             TelegramRequest = telegramRequest;
+            CancellationToken = cancellationToken;
 
-            Session = ServiceProvider.GetRequiredService<ISession>();
             ChatId = telegramRequest.ChatId;
             TelegramBotClient = telegramRequest.TelegramBotClient;
+            CommandScopeService = ServiceProvider.GetRequiredService<ICommandScopeService>();
         }
 
         /// <summary>
@@ -59,12 +61,15 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         public ChatId ChatId { get; }
 
-        internal IExecutor Executor { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        internal ICommandScopeService CommandScopeService { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public ISession Session { get; }
+        public ISession Session => TelegramContext.Session;
 
         /// <summary>
         /// 
@@ -74,7 +79,6 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public void Dispose() =>
-            Session.Dispose();
+        public CancellationToken CancellationToken { get; }
     }
 }

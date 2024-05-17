@@ -14,21 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Telegram.Bot.Framework.PipelineMiddleware
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Controller.Results;
+
+namespace Telegram.Bot.Framework.Filters
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="TInput"></typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    public interface IMiddleware<TInput, TResult>
+    public interface IOnControllerExecute
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="Next"></param>
+        /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public TResult Execute(TInput input, PipelineMiddlewareDelegate<TInput, TResult> Next);
+        public Task<IActionResult> OnUnauthorized(TelegramActionContext telegramActionContext);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public Task<IActionResult> OnForbidden(TelegramActionContext telegramActionContext);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
+        public Task<IActionResult> OnParamterError(TelegramActionContext telegramActionContext);
     }
 }

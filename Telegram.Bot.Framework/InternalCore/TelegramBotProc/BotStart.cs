@@ -38,7 +38,7 @@ namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc
         /// <param name="Next"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+        public async Task Execute(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
         {
             var _tokenSource = input.GetRequiredService<CancellationTokenSource>();
 

@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
-using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Storage;
 
 namespace Telegram.Bot.Framework
@@ -69,7 +69,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="session"></param>
         /// <returns></returns>
-        internal static List<string> GetRoles(this ISession session) => 
+        internal static List<string> GetRoles(this ISession session) =>
             session.Get<List<string>>(RolesKey) ?? new List<string>();
 
         /// <summary>

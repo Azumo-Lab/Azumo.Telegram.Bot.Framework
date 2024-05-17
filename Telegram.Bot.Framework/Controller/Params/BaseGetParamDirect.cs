@@ -14,24 +14,35 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core.Controller;
-using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
-using Telegram.Bot.Framework.PipelineMiddleware;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Results;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
+namespace Telegram.Bot.Framework.Controller.Params
 {
-    internal class PipelineGetParam : IMiddleware<PipelineModel, Task>
+    /// <summary>
+    /// 
+    /// </summary>
+    public abstract class BaseGetParamDirect : IGetParam
     {
-        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next)
-        {
-            var paramManager = input.CommandScopeService!.Service?.GetService<IParamManager>();
-            if (paramManager != null)
-                if (!await paramManager.Read(input.UserContext!))
-                    return;
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual ParamAttribute? ParamAttribute { get; set; }
 
-            await Next(input);
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public abstract Task<object> GetParam(TelegramActionContext context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public virtual Task<IActionResult?> SendMessage(TelegramActionContext context) =>
+            Task.FromResult<IActionResult?>(null);
     }
 }

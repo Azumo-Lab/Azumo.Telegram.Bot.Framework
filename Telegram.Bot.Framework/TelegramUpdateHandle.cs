@@ -96,7 +96,7 @@ namespace Telegram.Bot.Framework
                     return;
 
                 // 创建Telegram动作上下文
-                var actionContext = new TelegramActionContext(telegramContext, request);
+                var actionContext = new TelegramActionContext(telegramContext, request, cancellationToken);
 
                 // 获取用户的流水线
                 var pipeline = actionContext.ServiceProvider.GetRequiredService<IPipelineController<TelegramActionContext, Task>>();

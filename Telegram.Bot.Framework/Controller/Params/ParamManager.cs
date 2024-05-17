@@ -19,9 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Results;
 using Telegram.Bot.Framework.PipelineMiddleware;
 
-namespace Telegram.Bot.Framework.Controller
+namespace Telegram.Bot.Framework.Controller.Params
 {
     /// <summary>
     /// 参数获取管理器实现类
@@ -63,7 +64,7 @@ namespace Telegram.Bot.Framework.Controller
         private const string WaitForInput = nameof(WaitForInput);
 
         // 参数流水线
-        private readonly IPipelineController<ParamPipelineModel, Task<(bool result, object? paramVal)>> pipelineController;
+        private readonly IPipelineController<ParamPipelineModel, Task<(IActionResult? result, object? paramVal)>> pipelineController;
 
         /// <summary>
         /// 初始化
@@ -72,7 +73,7 @@ namespace Telegram.Bot.Framework.Controller
         {
             _StateMachine = new StateMachine();
             _StateMachine.StateList.AddRange(new List<string> { None, WaitForInput });
-            pipelineController = PipelineFactory.GetPipelineBuilder<ParamPipelineModel, Task<(bool result, object? paramVal)>>(() => Task.FromResult<(bool, object?)>((false, null)))
+            pipelineController = PipelineFactory.GetPipelineBuilder<ParamPipelineModel, Task<(IActionResult? result, object? paramVal)>>(() => Task.FromResult<(IActionResult?, object?)>((null, null)))
                 .Use(new NoneState())
                 .CreatePipeline(None)
                 .Use(new WaitForInputState())
@@ -89,15 +90,23 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 读取参数
         /// </summary>
-        /// <param name="userContext">用户上下文</param>
+        /// <param name="actionContext">用户上下文</param>
         /// <returns>参数是否读取完成</returns>
-        public async Task<bool> Read(TelegramContext userContext)
+        public async Task<(bool read, IActionResult? actionResult)> Read(TelegramActionContext actionContext)
         {
+            var paramsMessage = actionContext.TelegramRequest.Params;
+            if (paramsMessage != null && paramsMessage.Length != 0)
+            {
+                getParams.Clear();
+                _Param.AddRange(paramsMessage.Select(x => x.Value));
+                return (true, null);
+            }
+
         // 无状态
         None:
             var param = getParams.FirstOrDefault();
             if (param == null)
-                return true;
+                return (true, null);
 
             // 输入等待状态
             WaitForInput:
@@ -105,9 +114,9 @@ namespace Telegram.Bot.Framework.Controller
             {
                 Param = param,
                 StateMachine = _StateMachine,
-                UserContext = userContext,
+                ActionContext = actionContext,
             });
-            if (result)
+            if (result == null)
             {
                 // 第一次，发送提示消息时候，如果不需要提示消息，可以直接跳过
                 // 进入输入模式
@@ -123,7 +132,7 @@ namespace Telegram.Bot.Framework.Controller
             if (_StateMachine.State == None)
                 goto None;
 
-            return result;
+            return (result == null, result);
         }
 
         /// <summary>
@@ -139,11 +148,11 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 无状态
         /// </summary>
-        private class NoneState : IMiddleware<ParamPipelineModel, Task<(bool result, object? paramVal)>>
+        private class NoneState : IMiddleware<ParamPipelineModel, Task<(IActionResult? result, object? paramVal)>>
         {
-            public async Task<(bool result, object? paramVal)> Invoke(ParamPipelineModel input, PipelineMiddlewareDelegate<ParamPipelineModel, Task<(bool result, object? paramVal)>> Next)
+            public async Task<(IActionResult? result, object? paramVal)> Execute(ParamPipelineModel input, PipelineMiddlewareDelegate<ParamPipelineModel, Task<(IActionResult? result, object? paramVal)>> Next)
             {
-                var result = await input.Param.SendMessage(input.UserContext);
+                var result = await input.Param.SendMessage(input.ActionContext);
                 input.StateMachine.NextState();
 
                 return (result, null);
@@ -153,14 +162,14 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 等待输入状态
         /// </summary>
-        private class WaitForInputState : IMiddleware<ParamPipelineModel, Task<(bool result, object? paramVal)>>
+        private class WaitForInputState : IMiddleware<ParamPipelineModel, Task<(IActionResult? result, object? paramVal)>>
         {
-            public async Task<(bool result, object? paramVal)> Invoke(ParamPipelineModel input, PipelineMiddlewareDelegate<ParamPipelineModel, Task<(bool result, object? paramVal)>> Next)
+            public async Task<(IActionResult? result, object? paramVal)> Execute(ParamPipelineModel input, PipelineMiddlewareDelegate<ParamPipelineModel, Task<(IActionResult? result, object? paramVal)>> Next)
             {
-                var result = await input.Param.GetParam(input.UserContext);
+                var result = await input.Param.GetParam(input.ActionContext);
                 input.StateMachine.Reset();
 
-                return (true, result);
+                return (null, result);
             }
         }
 
@@ -177,7 +186,7 @@ namespace Telegram.Bot.Framework.Controller
             /// <summary>
             /// 用户上下文
             /// </summary>
-            public TelegramContext UserContext { get; set; } = null!;
+            public TelegramActionContext ActionContext { get; set; } = null!;
 
             /// <summary>
             /// 简易状态机器

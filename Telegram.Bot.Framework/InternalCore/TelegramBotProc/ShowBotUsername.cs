@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework.InternalCore.TelegramBotProc
         /// <param name="input"></param>
         /// <param name="Next"></param>
         /// <returns></returns>
-        public async Task Invoke(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
+        public async Task Execute(IServiceProvider input, PipelineMiddlewareDelegate<IServiceProvider, Task> Next)
         {
             var logger = input.GetService<ILogger<ShowBotUsername>>();
 

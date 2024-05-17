@@ -16,8 +16,9 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller.Results;
 
-namespace Telegram.Bot.Framework.Controller
+namespace Telegram.Bot.Framework.Controller.Params
 {
     /// <summary>
     /// 参数获取管理接口
@@ -33,9 +34,9 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 读取参数
         /// </summary>
-        /// <param name="userContext">用户上下文</param>
+        /// <param name="telegramActionContext">用户上下文</param>
         /// <returns>参数是否读取完成</returns>
-        public Task<bool> Read(TelegramContext userContext);
+        public Task<(bool read, IActionResult? actionResult)> Read(TelegramActionContext telegramActionContext);
 
         /// <summary>
         /// 获取读取到的参数

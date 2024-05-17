@@ -14,16 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.InternalCore.CorePipelines.Models;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.PipelineMiddleware;
 
-namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipeline
+namespace Telegram.Bot.Framework.CorePipelines
 {
     /// <summary>
     /// 
     /// </summary>
-    internal class PipelineIExecutorInvoke : IMiddleware<PipelineModel, Task>
+    internal class ControllerPipelineGetCommand : IMiddleware<TelegramActionContext, Task>
     {
         /// <summary>
         /// 
@@ -31,6 +32,20 @@ namespace Telegram.Bot.Framework.InternalCore.CorePipelines.ControllerInvokePipe
         /// <param name="input"></param>
         /// <param name="Next"></param>
         /// <returns></returns>
-        public async Task Invoke(PipelineModel input, PipelineMiddlewareDelegate<PipelineModel, Task> Next) => await Task.CompletedTask;
+        public async Task Execute(TelegramActionContext input, PipelineMiddlewareDelegate<TelegramActionContext, Task> Next)
+        {
+            var commandManager = input.ServiceProvider.GetRequiredService<ICommandManager>();
+            var exec = commandManager.GetExecutor(input.TelegramRequest);
+
+            if (exec != null)
+            {
+                input.CommandScopeService.DeleteOldCreateNew();
+
+                input.CommandScopeService.Executor = exec;
+                input.CommandScopeService.ParamManager.SetParamList(exec.Parameters);
+            }
+
+            await Next(input);
+        }
     }
 }

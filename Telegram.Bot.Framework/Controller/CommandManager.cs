@@ -16,10 +16,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Telegram.Bot.Framework;
 using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Controller;
 
 namespace Telegram.Bot.Framework.Controller
 {
@@ -49,19 +46,19 @@ namespace Telegram.Bot.Framework.Controller
                 CommandExecutor.Add(botCommandAttribute.BotCommand, executor);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userContext"></param>
-        /// <returns></returns>
-        public IExecutor? GetExecutor(TelegramContext userContext)
+        public void AddExecutor(string name, IExecutor executor) =>
+            CommandExecutor.TryAdd(name, executor);
+
+        public IExecutor? GetExecutor(TelegramRequest telegramRequest)
         {
-            var commands = userContext.GetCommand();
+            var commands = telegramRequest.BotCommand;
             if (!string.IsNullOrEmpty(commands))
                 if (CommandExecutor.TryGetValue(commands, out var executor))
                     return executor;
             return null;
         }
+        public IExecutor? GetExecutor(string name) =>
+            CommandExecutor.TryGetValue(name, out var executor) ? executor : null;
 
         /// <summary>
         /// 

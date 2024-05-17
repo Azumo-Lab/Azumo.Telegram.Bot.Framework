@@ -27,27 +27,27 @@ using Telegram.Bot.Types.ReplyMarkups;
 namespace Telegram.Bot.Framework.Controller.Results
 {
     /// <summary>
-    /// 
+    /// 发送带有图片的消息
     /// </summary>
-    internal class PhotoMessageResult : MessageResult
+    public class PhotoMessageResult : MessageResult
     {
         /// <summary>
-        /// 
+        /// 要发送的图片路径
         /// </summary>
         private readonly string[] PhotoPaths;
 
         /// <summary>
-        /// 
+        /// 要发送的图片的说明
         /// </summary>
         private readonly string? Caption;
 
         /// <summary>
-        /// 
+        /// 动作按钮
         /// </summary>
         private readonly ActionButtonResult[]? ButtonResults;
 
         /// <summary>
-        /// 
+        /// 发送单张图片
         /// </summary>
         /// <param name="photoPath"></param>
         /// <param name="caption"></param>
@@ -60,16 +60,17 @@ namespace Telegram.Bot.Framework.Controller.Results
         }
 
         /// <summary>
-        /// 
+        /// 发送图片组
         /// </summary>
-        /// <param name="photoPaths"></param>
-        /// <param name="caption"></param>
-        /// <param name="buttonResults"></param>
-        public PhotoMessageResult(string[] photoPaths, string? caption = null, ActionButtonResult[]? buttonResults = null)
+        /// <remarks>
+        /// 发送图片组，只有第一张图片有对应说明，不支持动作按钮
+        /// </remarks>
+        /// <param name="photoPaths">图片组路径</param>
+        /// <param name="caption">说明信息</param>
+        public PhotoMessageResult(string[] photoPaths, string? caption = null)
         {
             PhotoPaths = photoPaths;
             Caption = caption;
-            ButtonResults = buttonResults;
         }
 
         /// <summary>

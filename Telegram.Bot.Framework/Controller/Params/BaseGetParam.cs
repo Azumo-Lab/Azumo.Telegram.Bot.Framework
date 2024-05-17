@@ -18,8 +18,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Results;
 
-namespace Telegram.Bot.Framework.Controller
+namespace Telegram.Bot.Framework.Controller.Params
 {
     /// <summary>
     /// 
@@ -36,14 +37,14 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public abstract Task<object> GetParam(TelegramContext context);
+        public abstract Task<object> GetParam(TelegramActionContext context);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public virtual async Task<bool> SendMessage(TelegramContext context)
+        public virtual async Task<IActionResult?> SendMessage(TelegramActionContext context)
         {
             if (ParamAttribute?.IGetParmType != null)
             {
@@ -51,8 +52,7 @@ namespace Telegram.Bot.Framework.Controller
                 if (ActivatorUtilities.CreateInstance(context.ServiceProvider, ParamAttribute.IGetParmType, empty) is IGetParam iGetParam)
                     return await iGetParam.SendMessage(context);
             }
-            _ = await context.BotClient.SendTextMessageAsync(context.RequestChatID, ParamAttribute?.Message ?? "请输入参数");
-            return false;
+            return new TextMessageResult(ParamAttribute?.Message ?? "请输入参数");
         }
     }
 }

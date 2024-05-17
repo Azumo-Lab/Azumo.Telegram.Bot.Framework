@@ -74,7 +74,7 @@ namespace Telegram.Bot.Framework.InternalCore.PipelineMiddleware
                 PipelineMiddlewareDelegate<TInput, TResult> handleResult = input => defVal();
                 var list = new List<Func<PipelineMiddlewareDelegate<TInput, TResult>, PipelineMiddlewareDelegate<TInput, TResult>>>();
                 foreach (var middleware in item.Value)
-                    list.Add(handle => input => middleware.Invoke(input, handle));
+                    list.Add(handle => input => middleware.Execute(input, handle));
                 foreach (var handle in list.Reverse<Func<PipelineMiddlewareDelegate<TInput, TResult>, PipelineMiddlewareDelegate<TInput, TResult>>>())
                     handleResult = handle(handleResult);
 

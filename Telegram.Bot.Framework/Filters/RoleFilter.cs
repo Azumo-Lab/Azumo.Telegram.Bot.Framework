@@ -32,7 +32,7 @@ namespace Telegram.Bot.Framework.Filters
         /// <param name="context"></param>
         /// <param name="executor"></param>
         /// <returns></returns>
-        async Task<bool> IFilter.InvokeAsync(TelegramContext context, IExecutor executor) =>
+        async Task<bool> IFilter.InvokeAsync(TelegramActionContext context, IExecutor executor) =>
             !executor.Cache.TryGetValue(Extensions.RolesKey, out var roleObject)
             || !(roleObject is List<string> roleList)
             || await RoleCheck(context.Session.GetRoles().ToArray(), roleList.ToArray());

@@ -23,17 +23,17 @@ using Telegram.Bot.Types.Enums;
 namespace Telegram.Bot.Framework.Controller
 {
     /// <summary>
-    /// 
+    /// Telegram 一个请求
     /// </summary>
     public sealed class TelegramRequest : Update
     {
         /// <summary>
-        /// 
+        /// 发送的消息内容
         /// </summary>
         public string? MessageText { get; }
 
         /// <summary>
-        /// 
+        /// 机器人指令
         /// </summary>
         public string? BotCommand
         {
@@ -51,7 +51,15 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         public MessageEntityInfo[] Params => MessageEntities.Skip(1).ToArray();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITelegramBotClient TelegramBotClient { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public UserPermissions UserPermissions { get; } = new UserPermissions();
 
         /// <summary>
         /// 
@@ -63,10 +71,19 @@ namespace Telegram.Bot.Framework.Controller
             new List<MessageEntityInfo>();
 #endif
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ChatId ChatId { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public User RequestUser { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Chat Chat { get; }
 
         /// <summary>

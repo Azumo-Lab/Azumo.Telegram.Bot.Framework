@@ -35,7 +35,7 @@ namespace Telegram.Bot.Framework
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool Empty<T>(this List<T> list) =>
+        public static bool IsEmpty<T>(this List<T> list) =>
             list.Count == 0;
     }
 }

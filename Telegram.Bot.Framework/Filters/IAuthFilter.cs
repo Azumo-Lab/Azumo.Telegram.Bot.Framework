@@ -15,32 +15,20 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller;
 
-namespace Telegram.Bot.Framework.Controller
+namespace Telegram.Bot.Framework.Filters
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IGetParam
+    public interface IAuthFilter
     {
         /// <summary>
         /// 
         /// </summary>
-        public ParamAttribute? ParamAttribute { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
+        /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public Task<bool> SendMessage(TelegramContext context);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public Task<object> GetParam(TelegramContext context);
+        public Task<bool> IsAuthorizedAsync(TelegramActionContext telegramActionContext);
     }
 }

@@ -16,8 +16,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller.Params;
 using Telegram.Bot.Framework.Storage;
 
 namespace Telegram.Bot.Framework.Controller
@@ -48,12 +48,19 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public IServiceProvider? Service => _serviceScope?.ServiceProvider;
+        public IServiceProvider Service => _serviceScope?.ServiceProvider!;
 
         /// <summary>
         /// 
         /// </summary>
-        public ISession? Session { get; set; }
+        public ISession Session { get; set; } = null!;
+        public IExecutor Executor
+        {
+            get => Session.GetCommand();
+            set => Session.AddCommand(value);
+        }
+
+        public IParamManager ParamManager { get; set; } = null!;
 
         /// <summary>
         /// 
@@ -61,7 +68,9 @@ namespace Telegram.Bot.Framework.Controller
         public void Create()
         {
             _serviceScope = UserScopeServiceProvider.CreateScope();
-            Session = Service!.GetRequiredService<ISession>();
+
+            Session = Service.GetRequiredService<ISession>();
+            ParamManager = Service.GetRequiredService<IParamManager>();
         }
 
         /// <summary>

@@ -14,9 +14,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using Telegram.Bot.Framework.InternalCore.Controller;
+using Telegram.Bot.Framework.Controller.Params;
 using Telegram.Bot.Framework.InternalCore.Install;
 
 namespace Telegram.Bot.Framework.Controller
@@ -38,9 +39,10 @@ namespace Telegram.Bot.Framework.Controller
             IExecutor executor = enumCommandType switch
             {
                 EnumCommandType.BotCommand => new BotCommandInvoker(
-                                    (objects[0] as Func<object, object?[], object>)!,
-                                    (objects[1] as List<IGetParam>)!,
-                                    (objects[2] as Attribute[])!),
+                                    (objects[0] as ObjectFactory)!,
+                                    (objects[1] as Func<object, object?[], object?>)!,
+                                    (objects[2] as List<IGetParam>)!,
+                                    (objects[3] as Attribute[])!),
                 EnumCommandType.Func => new FuncInvoker(
                                     (objects[0] as Delegate)!,
                                     (objects[1] as List<IGetParam>)!,

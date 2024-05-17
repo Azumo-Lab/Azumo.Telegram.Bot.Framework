@@ -15,8 +15,9 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Authentication;
-using Telegram.Bot.Framework.Core.Attributes;
+using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Filters;
 using Telegram.Bot.Types;
 
@@ -42,9 +43,9 @@ namespace Telegram.Bot.Framework.InternalCore.Filters
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="update"></param>
+        /// <param name="telegramRequest"></param>
         /// <returns></returns>
-        public bool Filter(Update update) =>
-            !banList.IsBanned(update.GetChatID());
+        public bool Filter(TelegramRequest telegramRequest) =>
+            !banList.IsBanned(telegramRequest.ChatId);
     }
 }

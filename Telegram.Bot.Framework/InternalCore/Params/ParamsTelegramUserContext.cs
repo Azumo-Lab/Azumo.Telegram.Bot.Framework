@@ -15,9 +15,9 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Threading.Tasks;
-using Telegram.Bot.Framework.Core;
-using Telegram.Bot.Framework.Core.Attributes;
-using Telegram.Bot.Framework.Core.Controller;
+using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.Controller.Params;
 
 namespace Telegram.Bot.Framework.InternalCore.Params
 {
@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.InternalCore.Params
     [TypeFor(typeof(TelegramContext))]
     internal class ParamsTelegramUserContext : BaseGetParamDirect
     {
-        public override Task<object> GetParam(TelegramContext context) =>
+        public override Task<object> GetParam(TelegramActionContext context) =>
             Task.FromResult<object>(context);
     }
 }
