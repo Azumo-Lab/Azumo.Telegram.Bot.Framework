@@ -74,17 +74,17 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public ChatId ChatId { get; }
+        public ChatId? ChatId { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public User RequestUser { get; }
+        public User? RequestUser { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Chat Chat { get; }
+        public Chat? Chat { get; }
 
         /// <summary>
         /// 
@@ -95,7 +95,8 @@ namespace Telegram.Bot.Framework.Controller
         /// 
         /// </summary>
         /// <param name="update"></param>
-        internal TelegramRequest(Update update)
+        /// <param name="telegramBotClient"></param>
+        internal TelegramRequest(Update update, ITelegramBotClient telegramBotClient)
         {
             Message = update.Message;
             Id = update.Id;
@@ -112,6 +113,8 @@ namespace Telegram.Bot.Framework.Controller
             ShippingQuery = update.ShippingQuery;
             InlineQuery = update.InlineQuery;
             EditedChannelPost = update.EditedChannelPost;
+
+            TelegramBotClient = telegramBotClient;
 
             switch (Type)
             {

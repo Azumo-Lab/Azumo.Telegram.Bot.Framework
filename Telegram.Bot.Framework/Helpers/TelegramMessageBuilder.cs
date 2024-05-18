@@ -107,6 +107,13 @@ namespace Telegram.Bot.Framework.Helpers
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="text"></param>
+        public static implicit operator TelegramMessageBuilder(string text) => 
+            Html.Append(text);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         public override string ToString() => 
             stringBuilder.ToString();
@@ -201,6 +208,7 @@ namespace Telegram.Bot.Framework.Helpers
         /// 
         /// </summary>
         /// <param name="text"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
         public abstract TelegramMessageBuilder PreCode(string text, Language language);
 

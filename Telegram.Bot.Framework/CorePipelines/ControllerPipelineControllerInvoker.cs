@@ -72,7 +72,7 @@ namespace Telegram.Bot.Framework.CorePipelines
                         }
                         else
                         {
-                            throw ex;
+                            throw;
                         }
                     }
                     break;

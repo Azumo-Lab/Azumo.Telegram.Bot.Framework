@@ -83,7 +83,7 @@ namespace Telegram.Bot.Framework
             try
             {
                 // 创建请求
-                var request = new TelegramRequest(update);
+                var request = new TelegramRequest(update, botClient);
 
                 // 请求过滤器
                 foreach (var item in requestFilters)
