@@ -19,10 +19,21 @@ using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Authentication
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal interface IBanList
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public HashSet<ChatId> ChatIds { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chatId"></param>
+        /// <returns></returns>
         public bool IsBanned(ChatId? chatId);
     }
 }

@@ -59,7 +59,7 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public ChatId ChatId { get; }
+        public ChatId? ChatId { get; }
 
         /// <summary>
         /// 
