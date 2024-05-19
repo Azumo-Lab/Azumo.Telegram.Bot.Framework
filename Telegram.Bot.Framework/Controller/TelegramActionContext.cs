@@ -23,17 +23,17 @@ using Telegram.Bot.Types;
 namespace Telegram.Bot.Framework.Controller
 {
     /// <summary>
-    /// 
+    /// Telegram 指令 上下文
     /// </summary>
     public sealed class TelegramActionContext
     {
         /// <summary>
-        /// 
+        /// Telegram请求
         /// </summary>
         public TelegramRequest TelegramRequest { get; }
 
         /// <summary>
-        /// 
+        /// Telegram上下文
         /// </summary>
         public TelegramContext TelegramContext { get; }
 

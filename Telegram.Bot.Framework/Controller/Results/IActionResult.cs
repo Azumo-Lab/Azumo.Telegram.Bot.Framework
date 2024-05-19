@@ -20,16 +20,16 @@ using System.Threading.Tasks;
 namespace Telegram.Bot.Framework.Controller.Results
 {
     /// <summary>
-    /// 
+    /// 指令执行结果
     /// </summary>
     public interface IActionResult
     {
         /// <summary>
-        /// 
+        /// 开始执行结果的处理
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">指令上下文</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>异步执行</returns>
         public Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken);
     }
 }
