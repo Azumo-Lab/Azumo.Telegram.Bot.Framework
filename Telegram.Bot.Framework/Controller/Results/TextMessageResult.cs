@@ -31,22 +31,22 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <summary>
         /// 
         /// </summary>
-        private readonly TelegramMessageBuilder Text;
+        private readonly TelegramMessageBuilder _Text;
 
         /// <summary>
         /// 
         /// </summary>
-        private readonly ActionButtonResult[]? buttonResults;
+        private readonly ActionButtonResult[]? _ButtonResults;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="text"></param>
-        /// <param name="buttonResult"></param>
-        public TextMessageResult(TelegramMessageBuilder text, ActionButtonResult[]? buttonResult = null)
+        /// <param name="buttonResults"></param>
+        public TextMessageResult(TelegramMessageBuilder text, ActionButtonResult[]? buttonResults = null)
         {
-            Text = text;
-            buttonResults = buttonResult;
+            _Text = text;
+            _ButtonResults = buttonResults;
         }
 
         /// <summary>
@@ -57,15 +57,15 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <returns></returns>
         public override async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
         {
-            if (buttonResults == null)
-                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, Text.ToString(), parseMode: Text.ParseMode, cancellationToken: cancellationToken);
+            if (_ButtonResults == null)
+                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, _Text.ToString(), parseMode: _Text.ParseMode, cancellationToken: cancellationToken);
             else
             {
                 var manager = context.ServiceProvider.GetRequiredService<ICallBackManager>();
                 var buttonList = new List<InlineKeyboardButton>();
-                foreach (var button in buttonResults)
+                foreach (var button in _ButtonResults)
                     buttonList.Add(manager.CreateCallBackButton(button));
-                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, Text.ToString(), parseMode: Text.ParseMode,
+                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, _Text.ToString(), parseMode: _Text.ParseMode,
                     replyMarkup: new InlineKeyboardMarkup(buttonList), cancellationToken: cancellationToken);
             }
         }

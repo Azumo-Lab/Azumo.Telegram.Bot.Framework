@@ -25,27 +25,32 @@ namespace Telegram.Bot.Framework.Helpers
     public abstract class TelegramMessageBuilder
     {
         /// <summary>
-        /// 
+        /// 解析模式
         /// </summary>
         public ParseMode ParseMode { get; protected set; }
 
         /// <summary>
-        /// 
+        /// 字符拼接
         /// </summary>
         private readonly StringBuilder stringBuilder = new StringBuilder();
 
         /// <summary>
-        /// 
+        /// 第二代MD格式
         /// </summary>
-        public static TelegramMessageBuilder Markdown => new MarkdownV2MessageBuilder();
+        public static TelegramMessageBuilder MarkdownV2 => new MarkdownV2MessageBuilder();
 
         /// <summary>
-        /// 
+        /// HTML格式
         /// </summary>
         public static TelegramMessageBuilder Html => new HtmlMessageBuilder();
 
         /// <summary>
-        /// 
+        /// 第一代MD格式
+        /// </summary>
+        public static TelegramMessageBuilder Markdown => new MarkdownMessageBuilder();
+
+        /// <summary>
+        /// HTML消息创建器
         /// </summary>
         private class HtmlMessageBuilder : TelegramMessageBuilder
         {
@@ -60,12 +65,15 @@ namespace Telegram.Bot.Framework.Helpers
             public override TelegramMessageBuilder Link(string text, string url) => Append($"<a href=\"{url}\">{text}</a>");
             public override TelegramMessageBuilder LinkUser(string text, long userid) => throw new System.NotImplementedException();
             public override TelegramMessageBuilder Pre(string text) => Append($"<pre>{text}</pre>");
-            public override TelegramMessageBuilder PreCode(string text, Language language) => throw new System.NotImplementedException();
+            public override TelegramMessageBuilder PreCode(string text, Language language) => Append($"{text}");
             public override TelegramMessageBuilder Spoiler(string text) => Append($"<tg-spoiler>{text}</tg-spoiler>");
             public override TelegramMessageBuilder Strikethrough(string text) => Append($"<s>{text}</s>");
             public override TelegramMessageBuilder Underline(string text) => Append($"<u>{text}</u>");
         }
 
+        /// <summary>
+        /// MD2代消息创建器
+        /// </summary>
         private class MarkdownV2MessageBuilder : TelegramMessageBuilder
         {
             public MarkdownV2MessageBuilder() : base() =>
@@ -85,6 +93,9 @@ namespace Telegram.Bot.Framework.Helpers
             public override TelegramMessageBuilder Underline(string text) => throw new System.NotImplementedException();
         }
 
+        /// <summary>
+        /// MD1代消息创建器
+        /// </summary>
         private class MarkdownMessageBuilder : TelegramMessageBuilder
         {
             public MarkdownMessageBuilder() : base() =>
@@ -228,7 +239,7 @@ namespace Telegram.Bot.Framework.Helpers
     }
 
     /// <summary>
-    /// 
+    /// 程序语言类型
     /// </summary>
     public enum Language
     {

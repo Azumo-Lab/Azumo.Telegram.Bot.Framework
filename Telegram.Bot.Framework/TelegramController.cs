@@ -65,5 +65,23 @@ namespace Telegram.Bot.Framework
         protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message, string images) =>
             Task.FromResult<IActionResult>(new PhotoMessageResult(images, message));
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="actionButtonResults"></param>
+        /// <returns></returns>
+        protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message, params ActionButtonResult[] actionButtonResults) =>
+            Task.FromResult<IActionResult>(new TextMessageResult(message, actionButtonResults));
+
+        /// <summary>
+        /// 空结果
+        /// </summary>
+        /// <remarks>
+        /// 空结果，不进行任何的处理
+        /// </remarks>
+        /// <returns>返回空执行结果</returns>
+        protected virtual Task<IActionResult> EmptyResultAsync() =>
+            Task.FromResult<IActionResult>(new NullActionResult());
     }
 }
