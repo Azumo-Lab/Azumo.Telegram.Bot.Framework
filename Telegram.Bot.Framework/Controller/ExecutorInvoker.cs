@@ -35,12 +35,12 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        private MethodInfo MethodInfo { get; set; } = null!;
+        protected MethodInfo MethodInfo { get; set; } = null!;
 
         /// <summary>
         /// 
         /// </summary>
-        public Func<object, object?[]?, object?> InvokerFunc { get; private set; } = null!;
+        protected Func<object, object?[]?, object?> InvokerFunc { get; set; } = null!;
 
         /// <summary>
         /// 
@@ -60,22 +60,13 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        private readonly List<IGetParam> _parameters = new List<IGetParam>();
+        protected readonly List<IGetParam> _parameters = new List<IGetParam>();
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="methodInfo"></param>
-        public void Analyze(MethodInfo methodInfo)
-        {
-            MethodInfo = methodInfo;
-            InvokerFunc = BuildTaskFunc(methodInfo);
-            foreach (var item in methodInfo.GetParameters())
-            {
-                var getParam = CreateIGetParam(item);
-                _parameters.Add(getParam);
-            }
-        }
+        /// <param name="obj"></param>
+        public abstract void Analyze(object obj);
 
         /// <summary>
         /// 
@@ -94,11 +85,7 @@ namespace Telegram.Bot.Framework.Controller
         /// <exception cref="NullReferenceException"></exception>
         public static IGetParam CreateIGetParam(ParameterInfo parameterInfo)
         {
-#if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             Type? iGetParamType = null;
-#else
-            Type iGetParamType = null;
-#endif
             // 从参数上获取 ParamAttribute 标签
             var paramAttribute = Attribute.GetCustomAttribute(parameterInfo, typeof(ParamAttribute)) as ParamAttribute;
             if (paramAttribute != null) // 能获取到就使用获取到的类型
@@ -116,11 +103,7 @@ namespace Telegram.Bot.Framework.Controller
             }
 
             // 获取构造函数
-#if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             ConstructorInfo? constructorInfo;
-#else
-            ConstructorInfo constructorInfo;
-#endif
             if ((constructorInfo = iGetParamType.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault()) == null)
                 throw new Exception("没有找到对应的初始化方法");
 
@@ -259,7 +242,18 @@ namespace Telegram.Bot.Framework.Controller
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
         public abstract Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="telegramActionContext"></param>
+        /// <returns></returns>
         public abstract Task<object?> Invoke(TelegramActionContext telegramActionContext);
     }
 }

@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework
             IGetParamTypeList ??=
 #if NET8_0_OR_GREATER
             [];
-#elif NETSTANDARD2_1_OR_GREATER
+#else
             new List<(Type classType, TypeForAttribute ForType)>();
 #endif
             AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
