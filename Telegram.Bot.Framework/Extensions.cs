@@ -49,11 +49,11 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 
         /// </summary>
-        private static IReadOnlyList<(Type classType, TypeForAttribute ForType)> IGetParamTypeList { get; }
+        internal static IReadOnlyList<(Type classType, TypeForAttribute ForType)> IGetParamTypeList { get; }
 
         /// <summary>
         /// 程序全部的类型
         /// </summary>
-        public static IReadOnlyList<Type> AllTypes { get; }
+        internal static IReadOnlyList<Type> AllTypes { get; }
     }
 }

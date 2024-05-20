@@ -1,43 +1,81 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-//var telegramBot = TelegramBot.CreateBuilder()
+﻿//var telegramBot = TelegramBot.CreateBuilder()
 //    .UseClashDefaultProxy()
 //    .UseToken("<Token>")
 //    .Build();
 
 //await telegramBot.StartAsync(true);
 
+using Example;
+using System;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
-static T Instance<T>() where T : new() => new();
-
-RuntimeHelpers.PrepareDelegate(Instance<List<string>>);
-
-long S1;
-long S2;
-long B1;
-long B2;
-
-List<List<string>> list = [];
-Console.WriteLine("S1 = " + (S1 = DateTime.Now.Ticks));
-for (var i = 0; i < 9999999; i++)
+internal class Program
 {
-    var itemList = Instance<List<string>>();
-    itemList.Add(i.ToString());
-    list.Add(itemList);
-}
-Console.WriteLine("S2 = " + (S2 = DateTime.Now.Ticks));
-list.Clear();
-Console.WriteLine("B1 = " + (B1 = DateTime.Now.Ticks));
-for (var i = 0; i < 9999999; i++)
-{
-    var itemList = new List<string>
+    internal static async Task ConvertTo(Task task) =>
+        await task;
+
+    private static async Task Main(string[] args)
     {
-        i.ToString()
-    };
-    list.Add(itemList);
-}
-Console.WriteLine("B2 = " + (B2 = DateTime.Now.Ticks));
+        var methodinfo = typeof(Program).GetMethod("TaskStart", BindingFlags.Static | BindingFlags.Public)!;
 
-Console.WriteLine("S = " + (S2 - S1));
-Console.WriteLine("B = " + (B2 - B1));
+        var returnType = methodinfo.ReturnType;
+
+        var list = new List<Expression>();
+
+        Expression CreateExpression(Type type)
+        {
+            // Task<Task<string>>
+            // 把 Task 类型 转换为 Task<Task<string>>，并调用Result
+            var TaskAwait = Expression.Parameter(typeof(Task), "TaskAwait");
+            var TaskConvert = Expression.Convert(TaskAwait, type);
+            // Task<string>
+            var result = Expression.Property(TaskConvert, nameof(Task<object>.Result));
+            Expression resuFunc = Expression.Lambda<Func<Task, object?>>(result, TaskAwait);
+            return resuFunc;
+        }
+
+        var methodReturnInstance = Expression.Parameter(returnType);
+        var convertTo = typeof(Program).GetMethod(nameof(ConvertTo), BindingFlags.Static | BindingFlags.NonPublic)!;
+        
+        // 呼叫ConvertTo方法
+        var taskMethodResult = Expression.Call(null, convertTo, methodReturnInstance);
+        Expression convertValue = Expression.Invoke(CreateExpression(returnType), methodReturnInstance);
+        // 呼叫ConvertTo方法
+        var tt = Expression.Block(taskMethodResult, convertValue);
+
+        list.Add(tt);
+
+        var childType = returnType.GetGenericArguments();
+        var expression = convertValue;
+        NEXT:
+        foreach (var item in childType)// Task<string>
+        {
+            // 泛型依然是Task<>类型
+            if (item.IsGenericType && item.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                // 将Object类型转换为 内部的 泛型
+                var taskValue = Expression.Convert(expression, item);
+                // 呼叫ConvertTo方法，并将新参数传入
+                var aa = Expression.Call(null, convertTo, taskValue);
+                // 返回新的泛型类型
+                expression = Expression.Invoke(CreateExpression(item), taskValue);
+                var cc = Expression.Block(aa, taskValue);
+
+                list.Add(cc);
+                childType = item.GetGenericArguments();
+                goto NEXT;
+            }
+        }
+
+        list.Add(expression);
+
+        var ttee = Expression.Lambda(Expression.Block(list), methodReturnInstance).Compile();
+        RuntimeHelpers.PrepareDelegate(ttee);
+
+    }
+
+    public static async Task<Task<Task<Task<Task<Task<Task<string>>>>>>> TaskStart() =>
+        await Task.FromResult(Task.FromResult(Task.FromResult(Task.FromResult(Task.FromResult(Task.FromResult(Task.FromResult("123")))))));
+}

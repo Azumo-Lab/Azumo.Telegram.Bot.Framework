@@ -8,7 +8,7 @@ namespace Example.ExampleControllers
     public class SimpleController : TelegramController
     {
         [BotCommand("/SayHello", Description = "A simple message reply")]
-        public Task<IActionResult> HelloWorld()
+        public IActionResult HelloWorld()
         {
             var message = TelegramMessageBuilder.Html
                 .Bold("Hello World");

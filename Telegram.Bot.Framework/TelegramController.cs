@@ -14,9 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-using System.Threading.Tasks;
 using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Controller.Fragments;
 using Telegram.Bot.Framework.Controller.Results;
 using Telegram.Bot.Framework.Helpers;
 
@@ -53,8 +51,8 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message) =>
-            Task.FromResult<IActionResult>(new TextMessageResult(message));
+        protected virtual IActionResult MessageResultAsync(TelegramMessageBuilder message) =>
+            new TextMessageResult(message);
 
         /// <summary>
         /// 
@@ -62,8 +60,8 @@ namespace Telegram.Bot.Framework
         /// <param name="message"></param>
         /// <param name="images"></param>
         /// <returns></returns>
-        protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message, string images) =>
-            Task.FromResult<IActionResult>(new PhotoMessageResult(images, message));
+        protected virtual IActionResult MessageResultAsync(TelegramMessageBuilder message, string images) =>
+            new PhotoMessageResult(images, message);
 
         /// <summary>
         /// 
@@ -71,8 +69,8 @@ namespace Telegram.Bot.Framework
         /// <param name="message"></param>
         /// <param name="actionButtonResults"></param>
         /// <returns></returns>
-        protected virtual Task<IActionResult> MessageResultAsync(TelegramMessageBuilder message, params ActionButtonResult[] actionButtonResults) =>
-            Task.FromResult<IActionResult>(new TextMessageResult(message, actionButtonResults));
+        protected virtual IActionResult MessageResultAsync(TelegramMessageBuilder message, params ActionButtonResult[] actionButtonResults) =>
+            new TextMessageResult(message, actionButtonResults);
 
         /// <summary>
         /// 空结果
@@ -81,7 +79,7 @@ namespace Telegram.Bot.Framework
         /// 空结果，不进行任何的处理
         /// </remarks>
         /// <returns>返回空执行结果</returns>
-        protected virtual Task<IActionResult> EmptyResultAsync() =>
-            Task.FromResult<IActionResult>(new NullActionResult());
+        protected virtual IActionResult EmptyResultAsync() =>
+            new NullActionResult();
     }
 }

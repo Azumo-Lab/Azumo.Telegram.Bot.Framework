@@ -19,6 +19,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Telegram.Bot.Framework
 {
@@ -93,12 +94,68 @@ namespace Telegram.Bot.Framework
             return result;
         }
 
+        
+        private readonly static Func<Task<object?>> NullResult = 
+            () => Task.FromResult<object?>(null);
+
+        //private readonly static Func<object, Task<object?>> TaskResult = 
+        //    (obj) =>
+        //    {
+        //        if (obj == null)
+        //            return NullResult();
+        //        if (obj is )
+        //        {
+
+        //        }
+        //    }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="methodInfo"></param>
         /// <returns></returns>
         public static Func<object, object[], object?> BuildFunc(this MethodInfo methodInfo)
+        {
+            RuntimeHelpers.PrepareDelegate(NullResult);
+
+            // 创建对象创建工厂
+            var instanceType = methodInfo.DeclaringType;
+            var isStatic = methodInfo.IsStatic;
+
+            if (!isStatic && instanceType == null)
+                throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
+
+            // 参数
+            var instance = Expression.Parameter(typeof(object), "instance");
+            var param = Expression.Parameter(typeof(object[]), "param");
+            var paramList = methodInfo.GetParameters().BuildParamters(param);
+
+            // 调用方法
+            RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+
+            var method = Expression.Call(instance, methodInfo, paramList);
+            Expression func;
+            if (methodInfo.ReturnType.FullName == typeof(void).FullName)
+            {
+                Expression<Func<Task<object?>>> nullResult = () => Task.FromResult<object?>(null);
+                func = Expression.Block(method, nullResult);
+            }
+            else
+            {
+                func = Expression.Block(method);
+            }
+
+            var result = Expression.Lambda<Func<object, object[], object?>>(func, null, param).Compile();
+            RuntimeHelpers.PrepareDelegate(result);
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <returns></returns>
+        public static Func<object, object[], Task<object?>> BuildTaskFunc(this MethodInfo methodInfo)
         {
             // 创建对象创建工厂
             var instanceType = methodInfo.DeclaringType;
@@ -107,54 +164,82 @@ namespace Telegram.Bot.Framework
             if (!isStatic && instanceType == null)
                 throw new InvalidOperationException("Cannot create factory for static method with null declaring type.");
 
-            // 创建对象工厂
-            Expression<Func<IServiceProvider, object?>> objectFactoryFunc;
-            if (!isStatic)
-            {
-                var objectFactory = ActivatorUtilities.CreateFactory
-#if NET8_0_OR_GREATER
-                    (instanceType!, []);
-#else
-                    (instanceType!, Array.Empty<Type>());
-#endif
-
-                RuntimeHelpers.PrepareDelegate(objectFactory);
-
-                objectFactoryFunc = (service) => objectFactory(service, Array.Empty<object>());
-            }
-            else
-                objectFactoryFunc = (service) => null;
-
             // 参数
-            var serviceProvider = Expression.Parameter(typeof(IServiceProvider), "serviceProvider");
+            var instance = Expression.Parameter(typeof(object), "instance");
             var param = Expression.Parameter(typeof(object[]), "param");
             var paramList = methodInfo.GetParameters().BuildParamters(param);
 
             // 调用方法
             RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
 
-            var objectFactoryInvoke = Expression.Invoke(objectFactoryFunc, serviceProvider);
-            Expression instance;
-#if NET6_0_OR_GREATER
-            instance = methodInfo.IsStatic ? objectFactoryInvoke : Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType!);
-#else
-            instance = methodInfo.IsStatic ?
-                objectFactoryInvoke :
-                (Expression)Expression.Convert(objectFactoryInvoke, methodInfo.DeclaringType);
-#endif
             var method = Expression.Call(instance, methodInfo, paramList);
+
             Expression func;
-            if (methodInfo.ReturnType.FullName == typeof(void).FullName)
+            var MethodResultType = methodInfo.ReturnType;
+            Type GenericType;
+            // Void 返回值
+            if (MethodResultType == typeof(void))
             {
                 Expression<Func<object?>> expression = () => null;
                 func = Expression.Block(method, expression);
             }
+            // 带泛型的返回值
+            else if (MethodResultType.IsGenericType && (GenericType = MethodResultType.GetGenericTypeDefinition()) == typeof(Task<>))
+            {
+                foreach (var item in GenericType.GetGenericArguments())
+                {
+                    if (!(item.IsGenericType && item.GetGenericTypeDefinition() == typeof(Task<>)))
+                    {
+                        goto 创建函数;
+                    }
+                }
+
+                var taskAwaitType = Expression.Parameter(MethodResultType, "taskAwaitType");
+
+                var taskAwaiter = typeof(TaskAwaiter<>).MakeGenericType(MethodResultType.GetGenericArguments());
+                var getAwaiter = Expression.Call(param, MethodResultType.GetMethod(nameof(Task.GetAwaiter))!);
+                var getResult = Expression.Call(getAwaiter, taskAwaiter.GetMethod(nameof(TaskAwaiter.GetResult))!);
+
+                MethodInfo MethodGetAwaiter;
+                MethodInfo MethodGetResult;
+
+                var processTaskType = MethodResultType;
+            设置Task泛型:
+                foreach (var item in processTaskType.GetGenericArguments())
+                {
+                    if (item.IsGenericType && item.GetGenericTypeDefinition() == typeof(Task<>))
+                    {
+                        foreach (var item2 in item.GetGenericArguments())
+                        {
+                            if (!(item.IsGenericType && item.GetGenericTypeDefinition() == typeof(Task<>)))
+                            {
+
+                            }
+                        } 
+                        MethodGetAwaiter = item.GetMethod(nameof(Task.GetAwaiter))!;
+                        MethodGetResult = typeof(TaskAwaiter<>).MakeGenericType(item.GetGenericArguments()).GetMethod(nameof(TaskAwaiter.GetResult))!;
+
+                        getAwaiter = Expression.Call(getResult, MethodGetAwaiter);
+                        getResult = Expression.Call(getAwaiter, MethodGetResult);
+
+                        processTaskType = item;
+                        goto 设置Task泛型;
+                    }
+                }
+
+                var MethodResultFunc = Expression.Lambda(getResult, param).Compile();
+
+                RuntimeHelpers.PrepareDelegate(MethodResultFunc);
+            }
+            // Object 返回值
             else
             {
-                func = Expression.Block(method);
+                
             }
 
-            var result = Expression.Lambda<Func<object, object[], object?>>(func, serviceProvider, param).Compile();
+        创建函数:
+
+            var result = Expression.Lambda<Func<object, object[], Task<object?>>>(null, null, param).Compile();
             RuntimeHelpers.PrepareDelegate(result);
             return result;
         }
