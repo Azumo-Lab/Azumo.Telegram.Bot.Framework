@@ -29,7 +29,7 @@ namespace Telegram.Bot.Framework.InternalCore.Params
     [TypeFor(typeof(CancellationTokenSource))]
     internal class ParamsCancellationTokenSource : BaseGetParamDirect
     {
-        public override Task<object> GetParam(TelegramActionContext context) =>
-            Task.FromResult<object>(context.ServiceProvider.GetRequiredService<CancellationTokenSource>());
+        public override Task<object?> GetParam(TelegramActionContext context) =>
+            Task.FromResult<object?>(context.ServiceProvider.GetRequiredService<CancellationTokenSource>());
     }
 }

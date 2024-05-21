@@ -13,8 +13,11 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Helpers;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.Controller.Results
@@ -29,7 +33,7 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 发送带有图片的消息
     /// </summary>
-    public class PhotoMessageResult : MessageResult
+    public class PhotoMessageResult : ActionResult
     {
         /// <summary>
         /// 要发送的图片路径
@@ -77,9 +81,11 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// 
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="BotClient"></param>
+        /// <param name="ServiceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
+        protected override async Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken)
         {
             var buttons = new List<InlineKeyboardButton>();
             if (ButtonResults != null && ButtonResults.Length > 0)
@@ -93,11 +99,19 @@ namespace Telegram.Bot.Framework.Controller.Results
                 await using (var bufferedStream = new BufferedStream(new FileStream(PhotoPaths[0], FileMode.Open), Consts.BUFFED_STREAM_CACHE_128KB))
                 {
                     if (buttons.Count == 0)
-                        await context.TelegramBotClient.SendPhotoAsync(context.ChatId, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(), 
+                    {
+                        var resultMessage = await context.TelegramBotClient.SendPhotoAsync(context.ChatId!, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(),
                             parseMode: Caption?.ParseMode, cancellationToken: cancellationToken);
+                        
+                        return new Message[] { resultMessage };
+                    }
                     else
-                        await context.TelegramBotClient.SendPhotoAsync(context.ChatId, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(), 
+                    {
+                        var resultMessage = await context.TelegramBotClient.SendPhotoAsync(context.ChatId!, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(),
                             parseMode: Caption?.ParseMode, replyMarkup: new InlineKeyboardMarkup(buttons), cancellationToken: cancellationToken);
+
+                        return new Message[] { resultMessage };
+                    }
                 }
             }
             else
@@ -107,11 +121,20 @@ namespace Telegram.Bot.Framework.Controller.Results
                     foreach (var stream in PhotoPaths)
                         streams.Add(new BufferedStream(new FileStream(stream, FileMode.Open), Consts.BUFFED_STREAM_CACHE_128KB));
 
-                    await context.TelegramBotClient.SendMediaGroupAsync(context.ChatId,
+                    return await context.TelegramBotClient.SendMediaGroupAsync(context.ChatId!,
                         streams.Select(x => new InputMediaPhoto(InputFile.FromStream(x)) { Caption = Caption?.ToString(), ParseMode = Caption?.ParseMode }).ToArray(),
                         cancellationToken: cancellationToken);
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected override Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
+            context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.UploadPhoto, cancellationToken: cancellationToken);
     }
 }

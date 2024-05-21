@@ -13,33 +13,27 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
-using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
-namespace Telegram.Bot.Framework.Controller.Fragments
+namespace Telegram.Bot.Framework.Controller
 {
-    internal class ImageMessage : IMessageFragment
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IMessageResultHandler
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="imagePath"></param>
-        /// <exception cref="FileNotFoundException"></exception>
-        public ImageMessage(string imagePath)
-        {
-            if (string.IsNullOrEmpty(imagePath) || !File.Exists(imagePath))
-                throw new FileNotFoundException(imagePath);
-
-            Data = new Stream[]
-            {
-                new BufferedStream(new FileStream(imagePath, FileMode.Open, FileAccess.Read), 4096),
-            };
-            DataInfo = Path.GetFileName(imagePath);
-        }
-        public FragmentType FragmentType => FragmentType.IsPhoto;
-
-        public string DataInfo { get; set; }
-
-        public Stream[]? Data { get; set; }
+        /// <param name="context"></param>
+        /// <param name="result"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task HandleResultAsync(TelegramActionContext context, Message result, CancellationToken cancellationToken);
     }
 }

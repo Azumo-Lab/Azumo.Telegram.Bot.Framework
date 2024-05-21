@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 
     /// </summary>
-    public class NullActionResult : ActionResult
+    public class NullActionResult : IActionResult
     {
         /// <summary>
         /// 
@@ -30,7 +32,7 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
+        public Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
             Task.CompletedTask;
     }
 }

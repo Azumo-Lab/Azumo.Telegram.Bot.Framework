@@ -27,7 +27,7 @@ namespace Telegram.Bot.Framework.InternalCore.Params
     [TypeFor(typeof(TelegramContext))]
     internal class ParamsTelegramUserContext : BaseGetParamDirect
     {
-        public override Task<object> GetParam(TelegramActionContext context) =>
-            Task.FromResult<object>(context);
+        public override Task<object?> GetParam(TelegramActionContext context) =>
+            Task.FromResult<object?>(context);
     }
 }

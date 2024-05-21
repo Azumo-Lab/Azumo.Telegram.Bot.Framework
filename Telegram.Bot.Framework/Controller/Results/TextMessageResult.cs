@@ -13,12 +13,17 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Helpers;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.Controller.Results
@@ -26,7 +31,7 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 
     /// </summary>
-    public class TextMessageResult : MessageResult
+    public class TextMessageResult : ActionResult
     {
         /// <summary>
         /// 
@@ -53,21 +58,38 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// 
         /// </summary>
         /// <param name="context"></param>
+        /// <param name="BotClient"></param>
+        /// <param name="ServiceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
+        protected override async Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken)
         {
             if (_ButtonResults == null)
-                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, _Text.ToString(), parseMode: _Text.ParseMode, cancellationToken: cancellationToken);
+            {
+                var resultMessage = await BotClient.SendTextMessageAsync(context.ChatId!, _Text.ToString(), parseMode: _Text.ParseMode, cancellationToken: cancellationToken);
+                return new Message[] { resultMessage };
+            }
             else
             {
-                var manager = context.ServiceProvider.GetRequiredService<ICallBackManager>();
+                var manager = ServiceProvider.GetRequiredService<ICallBackManager>();
                 var buttonList = new List<InlineKeyboardButton>();
                 foreach (var button in _ButtonResults)
                     buttonList.Add(manager.CreateCallBackButton(button));
-                await context.TelegramBotClient.SendTextMessageAsync(context.ChatId, _Text.ToString(), parseMode: _Text.ParseMode,
+
+                var resultMessage = await BotClient.SendTextMessageAsync(context.ChatId!, _Text.ToString(), parseMode: _Text.ParseMode,
                     replyMarkup: new InlineKeyboardMarkup(buttonList), cancellationToken: cancellationToken);
+
+                return new Message[] { resultMessage };
             }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected override async Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) => 
+            await context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.Typing, cancellationToken: cancellationToken);
     }
 }

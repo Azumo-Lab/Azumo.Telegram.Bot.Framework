@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -33,40 +34,70 @@ namespace Telegram.Bot.Framework.Controller
     internal abstract class ExecutorInvoker : IExecutor
     {
         /// <summary>
-        /// 
+        /// 指令方法信息
         /// </summary>
         protected MethodInfo MethodInfo { get; set; } = null!;
 
         /// <summary>
-        /// 
+        /// 指令方法编译后的委托
         /// </summary>
+        /// <remarks>
+        /// <code>Func&lt;object, object?[]?, object?&gt;</code>
+        /// 参数1：object 实例对象<br></br>
+        /// 参数2：object?[]? 参数数组<br></br>
+        /// 返回值：object? 方法返回值<br></br>
+        /// </remarks>
         protected Func<object, object?[]?, object?> InvokerFunc { get; set; } = null!;
 
         /// <summary>
-        /// 
+        /// 类和方法的 <see cref="Attribute"/>
         /// </summary>
-        public Attribute[] Attributes { get; set; } = null!;
+        public Attribute[] Attributes { get; protected set; } = null!;
 
         /// <summary>
-        /// 
+        /// 方法参数的 <see cref="IGetParam"/> 接口列表
         /// </summary>
-        public IReadOnlyList<IGetParam> Parameters => _parameters;
+        public IReadOnlyList<IGetParam> Parameters => ParametersList;
 
         /// <summary>
-        /// 
+        /// 缓存
         /// </summary>
         public Dictionary<string, object> Cache { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// 
+        /// 可修改的参数列表
         /// </summary>
-        protected readonly List<IGetParam> _parameters = new List<IGetParam>();
+        protected List<IGetParam> ParametersList { get; } = new List<IGetParam>();
 
         /// <summary>
-        /// 
+        /// <see cref="Delegate"/> 类型的实例对象
         /// </summary>
-        /// <param name="obj"></param>
-        public abstract void Analyze(object obj);
+        protected object? Target { get; set; }
+
+        /// <summary>
+        /// 解析指令方法
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <param name="target"></param>
+        public virtual void Analyze(MethodInfo methodInfo, object? target = null)
+        {
+            MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
+            InvokerFunc = BuildTaskFunc(methodInfo);
+            Target = target;
+
+            var parameters = methodInfo.GetParameters();
+            foreach (var parameterInfo in parameters)
+            {
+                var getParam = CreateIGetParam(parameterInfo);
+                ParametersList.Add(getParam);
+            }
+
+            var attributes = new List<Attribute>();
+            attributes.AddRange(TypeDescriptor.GetAttributes(methodInfo).Cast<Attribute>());
+            if (methodInfo.DeclaringType != null)
+                attributes.AddRange(TypeDescriptor.GetAttributes(methodInfo.DeclaringType).Cast<Attribute>());
+            Attributes = attributes.ToArray();
+        }
 
         /// <summary>
         /// 

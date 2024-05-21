@@ -13,19 +13,24 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 namespace Telegram.Bot.Framework.Controller.Results
 {
     /// <summary>
     /// 
     /// </summary>
-    public class MessageResult : ActionResult
+    public class ActionResultOption
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="entities"></param>
-        public MessageResult(params IMessageFragment[] entities) =>
-            MessageFragments.AddRange(entities);
+        public bool DisableNotification { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int ReplyToMessageId { get; set; }
     }
 }

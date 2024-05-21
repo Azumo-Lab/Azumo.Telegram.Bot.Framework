@@ -37,7 +37,7 @@ namespace Telegram.Bot.Framework.Controller.Params
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public abstract Task<object> GetParam(TelegramActionContext context);
+        public abstract Task<object?> GetParam(TelegramActionContext context);
 
         /// <summary>
         /// 

@@ -145,7 +145,7 @@ namespace Telegram.Bot.Framework
                 func = Expression.Block(method);
             }
 
-            var result = Expression.Lambda<Func<object, object[], object?>>(func, null, param).Compile();
+            var result = Expression.Lambda<Func<object, object[], object?>>(func, null!, param).Compile();
             RuntimeHelpers.PrepareDelegate(result);
             return result;
         }
@@ -239,7 +239,7 @@ namespace Telegram.Bot.Framework
 
         创建函数:
 
-            var result = Expression.Lambda<Func<object, object[], Task<object?>>>(null, null, param).Compile();
+            var result = Expression.Lambda<Func<object, object[], Task<object?>>>(null!, null!, param).Compile();
             RuntimeHelpers.PrepareDelegate(result);
             return result;
         }
