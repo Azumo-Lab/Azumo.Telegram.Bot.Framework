@@ -16,14 +16,13 @@
 //
 //  Author: 牛奶
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Helpers;
+using Telegram.Bot.Requests;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -33,7 +32,7 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 发送带有图片的消息
     /// </summary>
-    public class PhotoMessageResult : ActionResult
+    public class PhotoMessageResult : ActionResult<Message>
     {
         /// <summary>
         /// 要发送的图片路径
@@ -81,60 +80,26 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="BotClient"></param>
-        /// <param name="ServiceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected override async Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken)
-        {
-            var buttons = new List<InlineKeyboardButton>();
-            if (ButtonResults != null && ButtonResults.Length > 0)
-            {
-                var callbackManager = context.ServiceProvider.GetRequiredService<ICallBackManager>();
-                foreach (var item in ButtonResults)
-                    buttons.Add(callbackManager.CreateCallBackButton(item));
-            }
-            if (PhotoPaths.Length == 1)
-            {
-                await using (var bufferedStream = new BufferedStream(new FileStream(PhotoPaths[0], FileMode.Open), Consts.BUFFED_STREAM_CACHE_128KB))
-                {
-                    if (buttons.Count == 0)
-                    {
-                        var resultMessage = await context.TelegramBotClient.SendPhotoAsync(context.ChatId!, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(),
-                            parseMode: Caption?.ParseMode, cancellationToken: cancellationToken);
-                        
-                        return new Message[] { resultMessage };
-                    }
-                    else
-                    {
-                        var resultMessage = await context.TelegramBotClient.SendPhotoAsync(context.ChatId!, InputFile.FromStream(bufferedStream), caption: Caption?.ToString(),
-                            parseMode: Caption?.ParseMode, replyMarkup: new InlineKeyboardMarkup(buttons), cancellationToken: cancellationToken);
-
-                        return new Message[] { resultMessage };
-                    }
-                }
-            }
-            else
-            {
-                await using (var streams = new ListAsyncDisposable<BufferedStream>())
-                {
-                    foreach (var stream in PhotoPaths)
-                        streams.Add(new BufferedStream(new FileStream(stream, FileMode.Open), Consts.BUFFED_STREAM_CACHE_128KB));
-
-                    return await context.TelegramBotClient.SendMediaGroupAsync(context.ChatId!,
-                        streams.Select(x => new InputMediaPhoto(InputFile.FromStream(x)) { Caption = Caption?.ToString(), ParseMode = Caption?.ParseMode }).ToArray(),
-                        cancellationToken: cancellationToken);
-                }
-            }
-        }
+        protected override Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
+            context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.UploadPhoto, cancellationToken: cancellationToken);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected override Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
-            context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.UploadPhoto, cancellationToken: cancellationToken);
+        /// <exception cref="NotImplementedException"></exception>
+        protected override IRequest<Message> ExecuteResultAsync(TelegramActionContext context)
+        {
+            var chatID = context.ChatId;
+            return new SendPhotoRequest(chatID!, InputFile.FromStream(Files[0], Path.GetFileName(PhotoPaths[0])))
+            {
+                Caption = Caption?.ToString(),
+                ParseMode = Caption?.ParseMode,
+                ReplyMarkup = ButtonResults == null ? null : new InlineKeyboardMarkup(GetInlineKeyboardButtons(context, ButtonResults)),
+            };
+        }
     }
 }

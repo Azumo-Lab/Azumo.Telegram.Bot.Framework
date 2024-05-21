@@ -18,18 +18,21 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Helpers;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Telegram.Bot.Framework.Controller.Results
 {
     /// <summary>
     /// 
     /// </summary>
-    public abstract class ActionResult : IActionResult
+    public abstract class ActionResult<TResponse> : IActionResult
     {
         /// <summary>
         /// 
@@ -49,6 +52,11 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <summary>
         /// 
         /// </summary>
+        protected IRequest<TResponse> Request { get; set; } = null!;
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="actionResultOption"></param>
         protected ActionResult(ActionResultOption? actionResultOption = null) => 
             Option = actionResultOption ?? new ActionResultOption();
@@ -61,23 +69,26 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <returns></returns>
         public async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
         {
-            Message[] resultMessages;
+            object? response = null;
             try
             {
+                var BotClient = context.TelegramBotClient;
+
                 await using (Files)
                 {
                     // 设置输入动作
                     await ExecuteChatActionAsync(context, cancellationToken);
+                    // 设置请求
+                    Request = ExecuteResultAsync(context);
                     // 进行处理
-                    resultMessages = await ExecuteResultAsync(context, context.TelegramBotClient, context.ServiceProvider, cancellationToken);
+                    response = await BotClient.MakeRequestAsync(Request, cancellationToken).ConfigureAwait(false);
                 }
 
                 // 处理结果
                 var messagesResultHandlers = context.ServiceProvider.GetServices<IMessageResultHandler>();
                 if (messagesResultHandlers != null)
-                    foreach (var message in resultMessages)
-                        foreach (var item in messagesResultHandlers)
-                            await item.HandleResultAsync(context, message, cancellationToken);
+                    foreach (var item in messagesResultHandlers)
+                        await item.HandleResultAsync(context, response, cancellationToken);
             }
             catch (Exception)
             {
@@ -101,10 +112,22 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="BotClient"></param>
-        /// <param name="ServiceProvider"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected abstract Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken);
+        protected abstract IRequest<TResponse> ExecuteResultAsync(TelegramActionContext context);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="actionButtonResults"></param>
+        /// <returns></returns>
+        protected static List<InlineKeyboardButton> GetInlineKeyboardButtons(TelegramActionContext context, params ActionButtonResult[] actionButtonResults)
+        {
+            var callbackManager = context.ServiceProvider.GetRequiredService<ICallBackManager>();
+            var buttons = new List<InlineKeyboardButton>();
+            foreach (var item in actionButtonResults)
+                buttons.Add(callbackManager.CreateCallBackButton(item));
+            return buttons;
+        }
     }
 }

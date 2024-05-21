@@ -34,6 +34,6 @@ namespace Telegram.Bot.Framework.Controller
         /// <param name="result"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task HandleResultAsync(TelegramActionContext context, Message result, CancellationToken cancellationToken);
+        public Task HandleResultAsync(TelegramActionContext context, object? result, CancellationToken cancellationToken);
     }
 }
