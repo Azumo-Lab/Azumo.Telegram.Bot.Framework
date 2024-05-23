@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Attributes;
+using Telegram.Bot.Framework.Authentication;
 using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Filters;
 using Telegram.Bot.Framework.PipelineMiddleware;
@@ -105,6 +106,7 @@ namespace Telegram.Bot.Framework
                     if (_TelegramContext == null)
                     {
                         // 出现错误，暂时屏蔽掉这个用户
+                        Ban(BotServiceProvider, _TelegramRequest.ChatId!);
                         return;
                     }
                 }
@@ -139,6 +141,17 @@ namespace Telegram.Bot.Framework
                     _TelegramContext?.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="chatId"></param>
+        private static void Ban(IServiceProvider serviceProvider, ChatId chatId)
+        {
+            var banList = serviceProvider.GetService<IBanList>();
+            banList?.ChatIds.Add(chatId);
         }
     }
 }

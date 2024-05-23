@@ -275,11 +275,16 @@ namespace Telegram.Bot.Framework.Controller
             var paramArrays = Expression.Parameter(typeof(object[]), "param");
             var itemParamList = BuildParamters(methodInfo.GetParameters(), paramArrays);
 
+            // 实例类型转换
+            Expression? instanceConvert = null;
+            if (instanceType != null && !isStatic)
+                instanceConvert = Expression.Convert(instance, instanceType);
+
             // 调用方法
             RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
 
             // 呼叫函数
-            var methodResultObject = Expression.Call(Expression.Convert(instance, instanceType), methodInfo, itemParamList);
+            var methodResultObject = Expression.Call(instanceConvert, methodInfo, itemParamList);
 
             // 返回值处理
             var returnResult = ReturnType(methodInfo, methodResultObject);
