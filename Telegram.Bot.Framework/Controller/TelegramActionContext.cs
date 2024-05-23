@@ -40,7 +40,7 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public IServiceProvider ServiceProvider => TelegramContext.ServiceProvider;
+        public IServiceProvider ServiceProvider => TelegramContext.ScopeServiceProvider;
 
         /// <summary>
         /// 

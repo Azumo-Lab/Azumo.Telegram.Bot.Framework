@@ -31,22 +31,14 @@ namespace Telegram.Bot.Framework.Controller
         /// 
         /// </summary>
         /// <param name="enumCommandType"></param>
-        /// <param name="objects"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static IExecutor GetExecutorInstance(EnumCommandType enumCommandType, params object?[] objects)
+        public static ExecutorInvoker GetExecutorInstance(EnumCommandType enumCommandType)
         {
-            IExecutor executor = enumCommandType switch
+            ExecutorInvoker executor = enumCommandType switch
             {
-                EnumCommandType.BotCommand => new BotCommandInvoker(
-                                    (objects[0] as ObjectFactory)!,
-                                    (objects[1] as Func<object, object?[], object?>)!,
-                                    (objects[2] as List<IGetParam>)!,
-                                    (objects[3] as Attribute[])!),
-                EnumCommandType.Func => new FuncInvoker(
-                                    (objects[0] as Delegate)!,
-                                    (objects[1] as List<IGetParam>)!,
-                                    (objects[2] as Attribute[])!),
+                EnumCommandType.BotCommand => new BotCommandInvoker(),
+                EnumCommandType.Func => new FuncInvoker(),
                 _ => throw new ArgumentException($"{nameof(enumCommandType)} 值非法"),
             };
             return executor;

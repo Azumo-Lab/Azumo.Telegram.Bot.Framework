@@ -13,9 +13,12 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Telegram.Bot.Framework
@@ -32,5 +35,16 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public static List<Type> GetAllTypeSameNameSpace(this string nameSpace) =>
             AllTypes.Where(x => x.Namespace == nameSpace).ToList();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        public static Stream OpenBufferedStream(this string filePath) => 
+            !File.Exists(filePath) || string.IsNullOrEmpty(filePath)
+                ? throw new FileNotFoundException("File not found", filePath)
+                : (Stream)new BufferedStream(new FileStream(filePath, FileMode.Open), Consts.BUFFED_STREAM_CACHE_256KB);
     }
 }

@@ -59,13 +59,9 @@ namespace Telegram.Bot.Framework
         public void Build(IServiceCollection services, IServiceProvider builderService)
         {
             var manager = builderService.GetRequiredService<ICommandManager>();
-            var attr = Attribute.GetCustomAttribute(_func.Method, typeof(BotCommandAttribute)) ?? throw new NullReferenceException();
 
-            var exec = Factory.GetExecutorInstance(EnumCommandType.Func,
-                _func,
-                _func.Method.GetParameters().Select(x => x.GetParams()).ToList(),
-                TypeDescriptor.GetAttributes(_func.Method));
-
+            var exec = Factory.GetExecutorInstance(EnumCommandType.Func);
+            exec.Analyze(_func.Method, _func.Target);
             manager.AddExecutor(exec);
         }
     }
@@ -81,7 +77,7 @@ namespace Telegram.Bot.Framework
         /// <param name="builder"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, Delegate func) =>
+        internal static ITelegramModuleBuilder AddCommand(this ITelegramModuleBuilder builder, Delegate func) =>
             builder.AddModule<TelegramCommand>(func);
 
         /// <summary>

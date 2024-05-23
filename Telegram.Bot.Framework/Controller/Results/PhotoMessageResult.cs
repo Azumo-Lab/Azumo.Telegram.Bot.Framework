@@ -35,47 +35,24 @@ namespace Telegram.Bot.Framework.Controller.Results
     public class PhotoMessageResult : ActionResult<Message>
     {
         /// <summary>
-        /// 要发送的图片路径
+        /// 
         /// </summary>
-        private readonly string[] PhotoPaths;
+        private readonly string PhotoName;
 
         /// <summary>
-        /// 要发送的图片的说明
+        /// 
         /// </summary>
-        private readonly TelegramMessageBuilder? Caption;
-
-        /// <summary>
-        /// 动作按钮
-        /// </summary>
-        private readonly ActionButtonResult[]? ButtonResults;
-
-        /// <summary>
-        /// 发送单张图片
-        /// </summary>
+        /// <param name="message"></param>
         /// <param name="photoPath"></param>
-        /// <param name="caption"></param>
         /// <param name="buttonResults"></param>
-        public PhotoMessageResult(string photoPath, TelegramMessageBuilder? caption = null, ActionButtonResult[]? buttonResults = null)
+        public PhotoMessageResult(TelegramMessageBuilder message, string photoPath, ActionButtonResult[]? buttonResults = null)
         {
-            PhotoPaths = new string[] { photoPath };
-            Caption = caption;
-            ButtonResults = buttonResults;
-        }
+            Text = message;
+            Files.Add(photoPath.OpenBufferedStream());
+            ButtonResults.AddRange(buttonResults ?? Array.Empty<ActionButtonResult>());
 
-        /// <summary>
-        /// 发送图片组
-        /// </summary>
-        /// <remarks>
-        /// 发送图片组，只有第一张图片有对应说明，不支持动作按钮
-        /// </remarks>
-        /// <param name="photoPaths">图片组路径</param>
-        /// <param name="caption">说明信息</param>
-        public PhotoMessageResult(string[] photoPaths, TelegramMessageBuilder? caption = null)
-        {
-            PhotoPaths = photoPaths;
-            Caption = caption;
+            PhotoName = Path.GetFileName(photoPath);
         }
-
         /// <summary>
         /// 
         /// </summary>
@@ -94,11 +71,13 @@ namespace Telegram.Bot.Framework.Controller.Results
         protected override IRequest<Message> ExecuteResultAsync(TelegramActionContext context)
         {
             var chatID = context.ChatId;
-            return new SendPhotoRequest(chatID!, InputFile.FromStream(Files[0], Path.GetFileName(PhotoPaths[0])))
+            return new SendPhotoRequest(chatID!, InputFile.FromStream(Files[0], PhotoName))
             {
-                Caption = Caption?.ToString(),
-                ParseMode = Caption?.ParseMode,
-                ReplyMarkup = ButtonResults == null ? null : new InlineKeyboardMarkup(GetInlineKeyboardButtons(context, ButtonResults)),
+                Caption = Text?.ToString(),
+                ParseMode = Text?.ParseMode,
+                ReplyMarkup = ButtonResults == null ? null : new InlineKeyboardMarkup(GetInlineKeyboardButtons(context, ButtonResults.ToArray())),
+                DisableNotification = Option?.DisableNotification,
+                ReplyToMessageId = Option?.ReplyToMessageId,
             };
         }
     }

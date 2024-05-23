@@ -16,24 +16,20 @@
 //
 //  Author: 牛奶
 
-using System;
+using System.Threading.Tasks;
+using Telegram.Bot.Framework.Controller;
+using Telegram.Bot.Framework.PipelineMiddleware;
 
-namespace Telegram.Bot.Framework.Attributes
+namespace Telegram.Bot.Framework.CorePipelines
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
-    public class ParamAttribute : Attribute
+    internal class ControllerPipelineCallBackAnswer : IMiddleware<TelegramActionContext, Task>
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Message { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Type? IGetParmType { get; set; }
+        public async Task Execute(TelegramActionContext input, PipelineMiddlewareDelegate<TelegramActionContext, Task> Next)
+        {
+            string? answerID;
+            if (!string.IsNullOrEmpty(answerID = input.TelegramRequest.CallbackQuery?.Id))
+                await input.TelegramBotClient.AnswerCallbackQueryAsync(answerID);
+            await Next(input);
+        }
     }
 }

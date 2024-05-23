@@ -21,6 +21,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Helpers;
+using Telegram.Bot.Requests;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -29,9 +31,12 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 
     /// </summary>
-    public class FileMessageResult : ActionResult
+    public class FileMessageResult : ActionResult<Message>
     {
-        private readonly string? File_ID;
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly string? FileName_FileID;
         
         /// <summary>
         /// 
@@ -45,9 +50,12 @@ namespace Telegram.Bot.Framework.Controller.Results
                 throw new ArgumentNullException(file);
 
             if(System.IO.File.Exists(file))
-                Files.Add(new BufferedStream(new FileStream(file, FileMode.Open), Consts.BUFFED_STREAM_CACHE_256KB));
+            {
+                Files.Add(file.OpenBufferedStream());
+                FileName_FileID = Path.GetFileName(file);
+            }
             else 
-                File_ID = file;
+                FileName_FileID = file;
 
             if (message != null)
                 Text = message;
@@ -61,26 +69,26 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <returns></returns>
         protected override async Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) => 
             await context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.UploadDocument, cancellationToken: cancellationToken);
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="BotClient"></param>
-        /// <param name="ServiceProvider"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected override async Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken)
+        protected override IRequest<Message> ExecuteResultAsync(TelegramActionContext context)
         {
-            var resultMessage = string.IsNullOrEmpty(File_ID) && !Files.IsEmpty()
-                ? await BotClient.SendDocumentAsync(context.ChatId!,
-                    InputFile.FromStream(Files[0]), caption: Text?.ToString(), parseMode: Text?.ParseMode, cancellationToken: cancellationToken)
-                : await BotClient.SendDocumentAsync(context.ChatId!,
-                    InputFile.FromFileId(File_ID!),
-                    caption: Text?.ToString(), parseMode: Text?.ParseMode,
-                    cancellationToken: cancellationToken);
-
-            return new Message[] { resultMessage };
+            var chatID = context.ChatId;
+            return Files.IsEmpty()
+                ? new SendDocumentRequest(chatID!, InputFile.FromFileId(FileName_FileID!))
+                {
+                    Caption = Text?.ToString(),
+                    ParseMode = Text?.ParseMode
+                }
+                : new SendDocumentRequest(chatID!, InputFile.FromStream(Files[0], FileName_FileID))
+                {
+                    Caption = Text?.ToString(),
+                    ParseMode = Text?.ParseMode
+                };
         }
     }
 }

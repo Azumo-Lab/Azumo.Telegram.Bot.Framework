@@ -35,31 +35,29 @@ namespace Telegram.Bot.Framework.Controller.Results
     public abstract class ActionResult<TResponse> : IActionResult
     {
         /// <summary>
-        /// 
+        /// 发送的消息
         /// </summary>
         protected TelegramMessageBuilder? Text { get; set; }
 
         /// <summary>
-        /// 
+        /// 发送的文件
         /// </summary>
         protected ListAsyncDisposable<Stream> Files { get; } = new ListAsyncDisposable<Stream>();
 
         /// <summary>
-        /// 
+        /// 发送的按钮
         /// </summary>
-        protected ActionResultOption Option { get; }
+        protected List<ActionButtonResult> ButtonResults { get; } = new List<ActionButtonResult>();
 
         /// <summary>
-        /// 
+        /// 发送选项
+        /// </summary>
+        public ActionResultOption? Option { get; set; }
+
+        /// <summary>
+        /// 发送请求
         /// </summary>
         protected IRequest<TResponse> Request { get; set; } = null!;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="actionResultOption"></param>
-        protected ActionResult(ActionResultOption? actionResultOption = null) => 
-            Option = actionResultOption ?? new ActionResultOption();
 
         /// <summary>
         /// 
@@ -67,7 +65,7 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
+        public virtual async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
         {
             object? response = null;
             try

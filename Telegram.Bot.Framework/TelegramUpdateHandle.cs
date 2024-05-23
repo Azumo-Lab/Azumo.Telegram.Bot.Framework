@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -80,37 +82,62 @@ namespace Telegram.Bot.Framework
         /// <returns></returns>
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            TelegramRequest _TelegramRequest;
+            TelegramContext _TelegramContext = null!;
+            TelegramActionContext _TelegramActionContext;
+
+            IServiceScope? _ScopeService = null;
+
             try
             {
                 // 创建请求
-                var request = new TelegramRequest(update, botClient);
+                _TelegramRequest = new TelegramRequest(update, botClient);
 
                 // 请求过滤器
                 foreach (var item in requestFilters)
-                    if (!item.Filter(request))
+                    if (!item.Filter(_TelegramRequest))
                         return;
 
                 // 创建Telegram上下文
-                var telegramContext = contextFactory.GetOrCreateUserContext(BotServiceProvider, request);
-                if (telegramContext == null)
-                    return;
+                if (_TelegramRequest.NeedTelegramContext)
+                {
+                    _TelegramContext = contextFactory.GetOrCreateUserContext(BotServiceProvider, _TelegramRequest)!;
+                    if (_TelegramContext == null)
+                    {
+                        // 出现错误，暂时屏蔽掉这个用户
+                        return;
+                    }
+                }
+                else
+                {
+                    _ScopeService = BotServiceProvider.CreateScope();
+                    _TelegramContext = contextFactory.GetOneTimeUserContext(_ScopeService, _TelegramRequest);
+                }
 
                 // 创建Telegram动作上下文
-                var actionContext = new TelegramActionContext(telegramContext, request, cancellationToken);
+                _TelegramActionContext = new TelegramActionContext(_TelegramContext, _TelegramRequest, cancellationToken);
 
                 // 获取用户的流水线
-                var pipeline = actionContext.ServiceProvider.GetRequiredService<IPipelineController<TelegramActionContext, Task>>();
+                var pipeline = _TelegramActionContext.ServiceProvider.GetRequiredService<IPipelineController<TelegramActionContext, Task>>();
 
                 // 执行流水线
-                await pipeline[request.Type].Invoke(actionContext);
+                await pipeline[_TelegramRequest.Type].Invoke(_TelegramActionContext);
             }
             catch (Exception ex)
             {
                 await HandlePollingErrorAsync(botClient, ex, cancellationToken);
+#if DEBUG
+                // 如果是调试模式，将异常抛出
+                throw;
+#endif
             }
             finally
             {
-
+                if (_ScopeService != null)
+                {
+                    _ScopeService.Dispose();
+                    _TelegramContext?.Dispose();
+                }
             }
         }
     }

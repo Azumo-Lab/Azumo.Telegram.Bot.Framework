@@ -16,12 +16,13 @@
 //
 //  Author: 牛奶
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Framework.Helpers;
+using Telegram.Bot.Requests;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -31,65 +32,42 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 
     /// </summary>
-    public class TextMessageResult : ActionResult
+    public class TextMessageResult : ActionResult<Message>
     {
         /// <summary>
         /// 
         /// </summary>
-        private readonly TelegramMessageBuilder _Text;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly ActionButtonResult[]? _ButtonResults;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="buttonResults"></param>
-        public TextMessageResult(TelegramMessageBuilder text, ActionButtonResult[]? buttonResults = null)
+        /// <param name="message"></param>
+        /// <param name="actionButtonResults"></param>
+        public TextMessageResult(TelegramMessageBuilder message, params ActionButtonResult[] actionButtonResults)
         {
-            _Text = text;
-            _ButtonResults = buttonResults;
+            Text = message;
+            ButtonResults.AddRange(actionButtonResults);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="BotClient"></param>
-        /// <param name="ServiceProvider"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected override async Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken)
-        {
-            if (_ButtonResults == null)
-            {
-                var resultMessage = await BotClient.SendTextMessageAsync(context.ChatId!, _Text.ToString(), parseMode: _Text.ParseMode, cancellationToken: cancellationToken);
-                return new Message[] { resultMessage };
-            }
-            else
-            {
-                var manager = ServiceProvider.GetRequiredService<ICallBackManager>();
-                var buttonList = new List<InlineKeyboardButton>();
-                foreach (var button in _ButtonResults)
-                    buttonList.Add(manager.CreateCallBackButton(button));
-
-                var resultMessage = await BotClient.SendTextMessageAsync(context.ChatId!, _Text.ToString(), parseMode: _Text.ParseMode,
-                    replyMarkup: new InlineKeyboardMarkup(buttonList), cancellationToken: cancellationToken);
-
-                return new Message[] { resultMessage };
-            }
-        }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        protected override async Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) => 
+        protected override async Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
             await context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.Typing, cancellationToken: cancellationToken);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        protected override IRequest<Message> ExecuteResultAsync(TelegramActionContext context)
+        {
+            var chatID = context.ChatId;
+            return new SendMessageRequest(chatID!, Text!.ToString())
+            {
+                ParseMode = Text.ParseMode,
+                ReplyMarkup = new InlineKeyboardMarkup(GetInlineKeyboardButtons(context, ButtonResults.ToArray()))
+            };
+        }
     }
 }

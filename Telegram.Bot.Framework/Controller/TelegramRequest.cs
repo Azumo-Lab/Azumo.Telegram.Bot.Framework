@@ -34,6 +34,11 @@ namespace Telegram.Bot.Framework.Controller
         public string? MessageText { get; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool NeedTelegramContext { get; private set; }
+
+        /// <summary>
         /// 机器人指令
         /// </summary>
         /// <remarks>
@@ -50,10 +55,45 @@ namespace Telegram.Bot.Framework.Controller
         {
             get
             {
-                if (MessageEntities.Count == 0)
-                    return null;
-                var messageInfo = MessageEntities[0];
-                return messageInfo != null && messageInfo.Type == MessageEntityType.BotCommand ? messageInfo.Value : null;
+                switch (Type)
+                {
+                    case UpdateType.Unknown:
+                        break;
+                    case UpdateType.Message:
+                        if (MessageEntities.Count == 0)
+                            return null;
+                        var messageInfo = MessageEntities[0];
+                        return messageInfo != null && messageInfo.Type == MessageEntityType.BotCommand ? messageInfo.Value : null;
+                    case UpdateType.InlineQuery:
+                        break;
+                    case UpdateType.ChosenInlineResult:
+                        break;
+                    case UpdateType.CallbackQuery:
+                        return $"/{CallbackQuery?.Data}";
+                    case UpdateType.EditedMessage:
+                        break;
+                    case UpdateType.ChannelPost:
+                        break;
+                    case UpdateType.EditedChannelPost:
+                        break;
+                    case UpdateType.ShippingQuery:
+                        break;
+                    case UpdateType.PreCheckoutQuery:
+                        break;
+                    case UpdateType.Poll:
+                        break;
+                    case UpdateType.PollAnswer:
+                        break;
+                    case UpdateType.MyChatMember:
+                        break;
+                    case UpdateType.ChatMember:
+                        break;
+                    case UpdateType.ChatJoinRequest:
+                        break;
+                    default:
+                        break;
+                }
+                return null;
             }
         }
 
@@ -195,6 +235,11 @@ namespace Telegram.Bot.Framework.Controller
                 case UpdateType.ChosenInlineResult:
                     break;
                 case UpdateType.CallbackQuery:
+                    var message = CallbackQuery?.Message;
+                    if (message != null)
+                    {
+                        ReadMessage(CallbackQuery?.Message!, out messageText, out chat, out chatId, out requestUser, ref _messageEntities);
+                    }
                     break;
                 case UpdateType.EditedMessage:
                     ReadMessage(EditedMessage!, out messageText, out chat, out chatId, out requestUser, ref _messageEntities);

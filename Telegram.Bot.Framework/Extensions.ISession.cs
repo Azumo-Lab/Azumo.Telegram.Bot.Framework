@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using System.Collections.Generic;
 using Telegram.Bot.Framework.Controller;
@@ -41,8 +43,8 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="session">存储接口</param>
         /// <returns></returns>
-        internal static IExecutor GetCommand(this ISession session) =>
-            session.Get<IExecutor>(CommandKey);
+        internal static IExecutor GetCommand(this ISession session) => 
+            session?.Get<IExecutor>(CommandKey)!;
 
         /// <summary>
         /// 

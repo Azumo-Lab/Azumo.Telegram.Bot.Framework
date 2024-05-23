@@ -23,7 +23,7 @@ namespace Telegram.Bot.Framework.Controller
     /// <summary>
     /// 
     /// </summary>
-    public sealed class TelegramContext
+    public sealed class TelegramContext : IDisposable
     {
         /// <summary>
         /// 
@@ -43,19 +43,32 @@ namespace Telegram.Bot.Framework.Controller
         /// <summary>
         /// 
         /// </summary>
-        public IServiceProvider ServiceProvider => ServiceScope.ServiceProvider;
+        public IServiceProvider ScopeServiceProvider => ServiceScope.ServiceProvider;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <param name="telegramRequest"></param>
-        internal TelegramContext(IServiceProvider serviceProvider, TelegramRequest telegramRequest)
-        {
-            Session = serviceProvider.GetRequiredService<ISession>();
+        internal TelegramContext(IServiceProvider serviceProvider, TelegramRequest telegramRequest) : this(serviceProvider.CreateScope(), telegramRequest) { }
 
-            ServiceScope = serviceProvider.CreateScope();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceScope"></param>
+        /// <param name="telegramRequest"></param>
+        internal TelegramContext(IServiceScope serviceScope, TelegramRequest telegramRequest)
+        {
+            ServiceScope = serviceScope;
+
+            Session = ScopeServiceProvider.GetRequiredService<ISession>();
             TelegramRequest = telegramRequest;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose() => 
+            ServiceScope.Dispose();
     }
 }

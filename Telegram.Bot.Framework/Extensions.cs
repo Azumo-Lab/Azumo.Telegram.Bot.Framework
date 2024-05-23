@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using System;
 using System.Collections.Generic;
@@ -32,6 +34,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         static Extensions()
         {
+            AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
             IGetParamTypeList = typeof(IGetParam).GetAllSameType()
                 .Where(x => Attribute.IsDefined(x, typeof(TypeForAttribute)))
                 .Select(x => (x, (TypeForAttribute)Attribute.GetCustomAttribute(x, typeof(TypeForAttribute))!))
@@ -43,7 +46,6 @@ namespace Telegram.Bot.Framework
 #else
             new List<(Type classType, TypeForAttribute ForType)>();
 #endif
-            AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
         }
 
         /// <summary>

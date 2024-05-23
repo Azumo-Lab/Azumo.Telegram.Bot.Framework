@@ -29,46 +29,8 @@ namespace Telegram.Bot.Framework.Controller
     /// <summary>
     /// 委托类型的执行
     /// </summary>
-    internal class FuncInvoker : IExecutor
+    internal class FuncInvoker : ExecutorInvoker
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="func"></param>
-        /// <param name="paramList"></param>
-        /// <param name="attributes"></param>
-        public FuncInvoker(Delegate func, List<IGetParam> paramList, Attribute[] attributes)
-        {
-            _Fun = func;
-            Parameters = paramList;
-            Attributes = attributes;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public readonly Delegate _Fun;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IReadOnlyList<IGetParam> Parameters { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Attribute[] Attributes { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<string, object> Cache { get; } =
-#if NET8_0_OR_GREATER
-            [];
-#else
-            new Dictionary<string, object>();
-#endif
-
         /// <summary>
         /// 
         /// </summary>
@@ -79,7 +41,7 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public async Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext)
+        public override async Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext)
         {
             var commandScope = telegramActionContext.CommandScopeService;
             var obj = commandScope.Session.Get(GUID);
@@ -121,11 +83,11 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public async Task<object?> Invoke(TelegramActionContext telegramActionContext)
+        public override async Task<object?> Invoke(TelegramActionContext telegramActionContext)
         {
             var paramManager = telegramActionContext.ServiceProvider.GetRequiredService<IParamManager>();
 
-            var result = _Fun.DynamicInvoke(paramManager.GetParam());
+            var result = InvokerFunc(Target!, paramManager.GetParam());
 
             return result is Task<object?> actionResult ? await actionResult : result;
         }

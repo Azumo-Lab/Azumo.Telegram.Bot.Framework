@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Users;
@@ -26,6 +27,8 @@ namespace Telegram.Bot.Framework.InternalCore.Users
     //[DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IContextFactory))]
     internal class UserFilterContextFactory : BaseDictionary<long, TelegramContext>, IContextFactory
     {
+        public TelegramContext GetOneTimeUserContext(IServiceScope serviceScope, TelegramRequest telegramRequest) => throw new NotImplementedException();
+
         /// <summary>
         /// 
         /// </summary>

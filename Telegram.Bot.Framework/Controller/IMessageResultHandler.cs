@@ -18,13 +18,16 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
 
 namespace Telegram.Bot.Framework.Controller
 {
     /// <summary>
-    /// 
+    /// 发送消息后，接收到的消息结果处理<br></br>
+    /// After sending the message, process the received message result.<br></br>
     /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
     public interface IMessageResultHandler
     {
         /// <summary>

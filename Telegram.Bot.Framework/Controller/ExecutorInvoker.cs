@@ -13,7 +13,10 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -60,6 +63,11 @@ namespace Telegram.Bot.Framework.Controller
         public IReadOnlyList<IGetParam> Parameters => ParametersList;
 
         /// <summary>
+        /// 
+        /// </summary>
+        protected ObjectFactory ObjectFactory { get; private set; } = null!;
+
+        /// <summary>
         /// 缓存
         /// </summary>
         public Dictionary<string, object> Cache { get; } = new Dictionary<string, object>();
@@ -82,10 +90,10 @@ namespace Telegram.Bot.Framework.Controller
         public virtual void Analyze(MethodInfo methodInfo, object? target = null)
         {
             MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
-            InvokerFunc = BuildTaskFunc(methodInfo);
+            InvokerFunc = BuildTaskFunc(MethodInfo);
             Target = target;
 
-            var parameters = methodInfo.GetParameters();
+            var parameters = MethodInfo.GetParameters();
             foreach (var parameterInfo in parameters)
             {
                 var getParam = CreateIGetParam(parameterInfo);
@@ -93,10 +101,19 @@ namespace Telegram.Bot.Framework.Controller
             }
 
             var attributes = new List<Attribute>();
-            attributes.AddRange(TypeDescriptor.GetAttributes(methodInfo).Cast<Attribute>());
-            if (methodInfo.DeclaringType != null)
-                attributes.AddRange(TypeDescriptor.GetAttributes(methodInfo.DeclaringType).Cast<Attribute>());
+            attributes.AddRange(TypeDescriptor.GetAttributes(MethodInfo).Cast<Attribute>());
+            attributes.AddRange(Attribute.GetCustomAttributes(MethodInfo));
+            if (MethodInfo.DeclaringType != null)
+            {
+                attributes.AddRange(TypeDescriptor.GetAttributes(MethodInfo.DeclaringType).Cast<Attribute>());
+                attributes.AddRange(Attribute.GetCustomAttributes(MethodInfo.DeclaringType));
+            }
             Attributes = attributes.ToArray();
+
+            if (!(MethodInfo.IsStatic && MethodInfo.DeclaringType == null))
+            {
+                ObjectFactory = ActivatorUtilities.CreateFactory(MethodInfo.DeclaringType!, Array.Empty<Type>());
+            }
         }
 
         /// <summary>
@@ -262,7 +279,7 @@ namespace Telegram.Bot.Framework.Controller
             RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
 
             // 呼叫函数
-            var methodResultObject = Expression.Call(instance, methodInfo, itemParamList);
+            var methodResultObject = Expression.Call(Expression.Convert(instance, instanceType), methodInfo, itemParamList);
 
             // 返回值处理
             var returnResult = ReturnType(methodInfo, methodResultObject);

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using Telegram.Bot.Framework.Controller;
 
@@ -31,5 +32,13 @@ namespace Telegram.Bot.Framework.Users
         /// <param name="request"></param>
         /// <returns><see cref="TelegramContext"/></returns>
         public TelegramContext? GetOrCreateUserContext(IServiceProvider botServiceProvider, TelegramRequest request);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceScope"></param>
+        /// <param name="telegramRequest"></param>
+        /// <returns></returns>
+        public TelegramContext GetOneTimeUserContext(IServiceScope serviceScope, TelegramRequest telegramRequest);
     }
 }

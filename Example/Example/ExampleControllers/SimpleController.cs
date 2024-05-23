@@ -13,7 +13,13 @@ namespace Example.ExampleControllers
             var message = TelegramMessageBuilder.Html
                 .Bold("Hello World");
 
-            return MessageResultAsync(message);
+            var btns = new ActionButtonResult[]
+            {
+                new("Say Hello", () => MessageResult(message)),
+                new("Empty Btn", () => { })
+            };
+
+            return MessageResult(message, btns);
         }
     }
 }

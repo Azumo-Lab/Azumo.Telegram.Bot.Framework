@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -29,50 +31,8 @@ namespace Telegram.Bot.Framework.Controller
     /// <summary>
     /// 
     /// </summary>
-    internal class BotCommandInvoker : IExecutor
+    internal class BotCommandInvoker : ExecutorInvoker
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="objectFactory"></param>
-        /// <param name="func"></param>
-        /// <param name="paramList"></param>
-        /// <param name="attributes"></param>
-        public BotCommandInvoker(ObjectFactory objectFactory, Func<object, object?[], object?> func, List<IGetParam> paramList, Attribute[] attributes)
-        {
-            _objectFactory = objectFactory;
-            _func = func;
-            Parameters = paramList;
-            Attributes = attributes;
-#if NET8_0_OR_GREATER
-            Cache = [];
-#else
-            Cache = new Dictionary<string, object>();
-#endif
-        }
-
-        private readonly ObjectFactory _objectFactory;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private readonly Func<object, object?[], object?> _func;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IReadOnlyList<IGetParam> Parameters { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Attribute[] Attributes { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<string, object> Cache { get; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -83,9 +43,9 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public async Task<object?> Invoke(TelegramActionContext telegramActionContext)
+        public override Task<object?> Invoke(TelegramActionContext telegramActionContext)
         {
-            var instance = _objectFactory(telegramActionContext.ServiceProvider, Array.Empty<object>());
+            var instance = ObjectFactory(telegramActionContext.ServiceProvider, Array.Empty<object>());
 
             var paramManager = telegramActionContext.ServiceProvider.GetRequiredService<IParamManager>();
 
@@ -93,13 +53,13 @@ namespace Telegram.Bot.Framework.Controller
             if (instance is TelegramController controller)
             {
                 controller.OnActionExecutionAsync(telegramActionContext);
-                result = _func(controller, paramManager.GetParam());
+                result = InvokerFunc(controller, paramManager.GetParam());
             }
             else
             {
-                result = _func(instance, paramManager.GetParam());
+                result = InvokerFunc(instance, paramManager.GetParam());
             }
-            return result is Task<object?> actionResult ? await actionResult : result;
+            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -107,7 +67,7 @@ namespace Telegram.Bot.Framework.Controller
         /// </summary>
         /// <param name="telegramActionContext"></param>
         /// <returns></returns>
-        public async Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext)
+        public override async Task<(ControllerResult, IActionResult?)> ActionExecute(TelegramActionContext telegramActionContext)
         {
             var commandScope = telegramActionContext.CommandScopeService;
             var obj = commandScope.Session.Get(GUID);

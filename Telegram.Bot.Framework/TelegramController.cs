@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using Telegram.Bot.Framework.Controller;
 using Telegram.Bot.Framework.Controller.Results;
@@ -40,7 +42,7 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="actionContext"></param>
         /// <returns></returns>
-        public virtual void OnActionExecutionAsync(TelegramActionContext actionContext)
+        internal void OnActionExecutionAsync(TelegramActionContext actionContext)
         {
             TelegramContext = actionContext.TelegramContext;
             User = actionContext.TelegramRequest.UserPermissions;
@@ -51,17 +53,8 @@ namespace Telegram.Bot.Framework
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected virtual IActionResult MessageResultAsync(TelegramMessageBuilder message) =>
+        protected virtual IActionResult MessageResult(TelegramMessageBuilder message) =>
             new TextMessageResult(message);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="images"></param>
-        /// <returns></returns>
-        protected virtual IActionResult MessageResultAsync(TelegramMessageBuilder message, string images) =>
-            new PhotoMessageResult(images, message);
 
         /// <summary>
         /// 
@@ -69,8 +62,35 @@ namespace Telegram.Bot.Framework
         /// <param name="message"></param>
         /// <param name="actionButtonResults"></param>
         /// <returns></returns>
-        protected virtual IActionResult MessageResultAsync(TelegramMessageBuilder message, params ActionButtonResult[] actionButtonResults) =>
+        protected virtual IActionResult MessageResult(TelegramMessageBuilder message, params ActionButtonResult[] actionButtonResults) =>
             new TextMessageResult(message, actionButtonResults);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="images"></param>
+        /// <returns></returns>
+        protected virtual IActionResult PhotoResult(TelegramMessageBuilder message, string images) =>
+            new PhotoMessageResult(message, images);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="images"></param>
+        /// <param name="actionButtonResults"></param>
+        /// <returns></returns>
+        protected virtual IActionResult PhotoResult(TelegramMessageBuilder message, string images, params ActionButtonResult[] actionButtonResults) =>
+            new PhotoMessageResult(message, images, actionButtonResults);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        protected virtual IActionResult ComboResult(params IActionResult[] items) =>
+            new ComboaMessageResult(items);
 
         /// <summary>
         /// 空结果
@@ -79,7 +99,7 @@ namespace Telegram.Bot.Framework
         /// 空结果，不进行任何的处理
         /// </remarks>
         /// <returns>返回空执行结果</returns>
-        protected virtual IActionResult EmptyResultAsync() =>
+        protected virtual IActionResult EmptyResult() =>
             new NullActionResult();
     }
 }

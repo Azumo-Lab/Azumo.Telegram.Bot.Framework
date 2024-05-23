@@ -116,6 +116,8 @@ namespace Telegram.Bot.Framework.CorePipelines
                     }
                 }
             }
+
+            await Next(input);
         }
     }
 }

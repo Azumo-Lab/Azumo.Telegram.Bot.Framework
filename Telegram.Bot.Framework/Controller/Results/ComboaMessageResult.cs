@@ -18,10 +18,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Requests.Abstractions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -30,7 +29,7 @@ namespace Telegram.Bot.Framework.Controller.Results
     /// <summary>
     /// 
     /// </summary>
-    public class ComboaMessageResult : ActionResult
+    public class ComboaMessageResult : ActionResult<Message[]>
     {
         private readonly List<IActionResult> items = new List<IActionResult>();
 
@@ -55,21 +54,26 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <returns></returns>
         protected override async Task ExecuteChatActionAsync(TelegramActionContext context, CancellationToken cancellationToken) =>
             await context.TelegramBotClient.SendChatActionAsync(context.ChatId!, ChatAction.Typing, cancellationToken: cancellationToken);
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="BotClient"></param>
-        /// <param name="ServiceProvider"></param>
+        /// <returns></returns>
+        protected override IRequest<Message[]> ExecuteResultAsync(TelegramActionContext context) =>
+            throw new NotImplementedException();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        protected override async Task<Message[]> ExecuteResultAsync(TelegramActionContext context, ITelegramBotClient BotClient, IServiceProvider ServiceProvider, CancellationToken cancellationToken)
+        public override async Task ExecuteResultAsync(TelegramActionContext context, CancellationToken cancellationToken)
         {
+            await ExecuteChatActionAsync(context, cancellationToken);
             foreach (var item in items)
-                await item.ExecuteResultAsync(context, cancellationToken);
-
-            return Array.Empty<Message>();
+                await item.ExecuteResultAsync(context, context.CancellationToken);
         }
     }
 }

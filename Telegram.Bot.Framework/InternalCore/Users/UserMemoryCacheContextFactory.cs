@@ -42,6 +42,9 @@ namespace Telegram.Bot.Framework.InternalCore.Users
         public UserMemoryCacheContextFactory(IMemoryCache memoryCache) =>
             this.memoryCache = memoryCache;
 
+        public TelegramContext GetOneTimeUserContext(IServiceScope serviceScope, TelegramRequest telegramRequest) => 
+            new TelegramContext(serviceScope, telegramRequest);
+
         /// <summary>
         /// 
         /// </summary>

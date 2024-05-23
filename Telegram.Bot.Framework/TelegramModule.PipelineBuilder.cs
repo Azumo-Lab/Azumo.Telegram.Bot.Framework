@@ -55,6 +55,10 @@ namespace Telegram.Bot.Framework
             .Use(new ControllerPipelineGetCommand())
             .Use(new ControllerPipelineControllerInvoker())
             .CreatePipeline(UpdateType.Message)
+            .Use(new ControllerPipelineGetCommand())
+            .Use(new ControllerPipelineControllerInvoker())
+            .Use(new ControllerPipelineCallBackAnswer())
+            .CreatePipeline(UpdateType.CallbackQuery)
             .Build());
     }
 
@@ -79,45 +83,36 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 
         /// </summary>
-        private readonly IServiceCollection ScopeServices = new ServiceCollection();
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="services"></param>
         public void AddBuildService(IServiceCollection services)
         {
-            _ = ScopeServices.AddSingleton<ICommandManager, CommandManager>();
+            var controllerType = typeof(TelegramController);
+            var commandList = new List<IExecutor>();
+            foreach (var type in Extensions.AllTypes)
+            {
+                if (!(Attribute.GetCustomAttribute(type, typeof(TelegramControllerAttribute)) != null
+                    || (controllerType.IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)))
+                    continue;
 
-            var serviceProvider = ScopeServices.BuildServiceProvider();
-
-            // 获取参数实现类
-            var getparamTypeList = typeof(IGetParam).GetAllSameType()
-                .Where(x => Attribute.IsDefined(x, typeof(TypeForAttribute)))
-                .Select(x => (x, (TypeForAttribute)Attribute.GetCustomAttribute(x, typeof(TypeForAttribute))!))
-                .ToList();
-
-            var commandManager = serviceProvider.GetRequiredService<ICommandManager>();
-
-            var controllerTypeList = typeof(TelegramControllerAttribute).GetTypesWithAttribute();
-            foreach ((var controller, _) in controllerTypeList)
-                foreach ((var method, var attr) in controller.GetMethodsWithAttribute<BotCommandAttribute>(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+                var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                foreach (var item in methods)
                 {
-                    var attributes = new List<Attribute>
-                    {
-                        attr
-                    };
-                    attributes.AddRange(method.GetCustomAttributes());
+                    if (!Attribute.IsDefined(item, typeof(BotCommandAttribute)))
+                        continue;
 
-                    var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand,
-                        ActivatorUtilities.CreateFactory(controller, new Type[] { }),
-                        method.BuildFunc(),
-                        method.GetParameters().Select(x => x.GetParams()).ToList(),
-                        attributes.ToArray());
-                    commandManager.AddExecutor(executor);
+                    var executor = Factory.GetExecutorInstance(EnumCommandType.BotCommand);
+                    executor.Analyze(item);
+                    commandList.Add(executor);
                 }
+            }
+            services.AddSingleton(x =>
+            {
+                ICommandManager commandManager = new CommandManager();
+                foreach (var item in commandList)
+                    commandManager.AddExecutor(item);
 
-            _ = services.AddSingleton(commandManager);
+                return commandManager;
+            });
         }
 
         /// <summary>
