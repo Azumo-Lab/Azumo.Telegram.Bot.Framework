@@ -16,12 +16,16 @@
 
 using System.Text;
 using Telegram.Bot.Types.Enums;
+using static System.Net.WebRequestMethods;
 
 namespace Telegram.Bot.Framework.Helpers
 {
     /// <summary>
     /// Telegram 消息创建器
     /// </summary>
+    /// <remarks>
+    /// <seealso href="https://core.telegram.org/bots/api#sendmessage">消息发送方法详细</seealso>
+    /// </remarks>
     public abstract class TelegramMessageBuilder
     {
         /// <summary>
@@ -32,7 +36,12 @@ namespace Telegram.Bot.Framework.Helpers
         /// <summary>
         /// 字符拼接
         /// </summary>
-        private readonly StringBuilder stringBuilder = new StringBuilder();
+        private readonly StringBuilder stringBuilder =
+#if NET8_0_OR_GREATER
+            new();
+#else
+            new StringBuilder();
+#endif
 
         /// <summary>
         /// 第二代MD格式
@@ -50,6 +59,11 @@ namespace Telegram.Bot.Framework.Helpers
         public static TelegramMessageBuilder Markdown => new MarkdownMessageBuilder();
 
         /// <summary>
+        /// 默认的实现
+        /// </summary>
+        public static TelegramMessageBuilder Default => Html;
+
+        /// <summary>
         /// HTML消息创建器
         /// </summary>
         private class HtmlMessageBuilder : TelegramMessageBuilder
@@ -63,7 +77,7 @@ namespace Telegram.Bot.Framework.Helpers
             public override TelegramMessageBuilder HashTag(string text) => Append($"<a>{text}</a>");
             public override TelegramMessageBuilder Italic(string text) => Append($"<i>{text}</i>");
             public override TelegramMessageBuilder Link(string text, string url) => Append($"<a href=\"{url}\">{text}</a>");
-            public override TelegramMessageBuilder LinkUser(string text, long userid) => throw new System.NotImplementedException();
+            public override TelegramMessageBuilder LinkUser(string text, long userid) => Append($"<a href=\"tg://user?id={userid}\">{text}</a>");
             public override TelegramMessageBuilder Pre(string text) => Append($"<pre>{text}</pre>");
             public override TelegramMessageBuilder PreCode(string text, Language language) => Append($"{text}");
             public override TelegramMessageBuilder Spoiler(string text) => Append($"<tg-spoiler>{text}</tg-spoiler>");
@@ -141,9 +155,9 @@ namespace Telegram.Bot.Framework.Helpers
         }
          
         /// <summary>
-        /// 
+        /// 添加新行
         /// </summary>
-        /// <returns></returns>
+        /// <returns>处理后的文本</returns>
         public virtual TelegramMessageBuilder NewLine()
         {
             stringBuilder.AppendLine();
