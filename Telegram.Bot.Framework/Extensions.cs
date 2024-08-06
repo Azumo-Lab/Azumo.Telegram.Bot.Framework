@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Controller.Params;
@@ -57,5 +58,58 @@ namespace Telegram.Bot.Framework
         /// 程序全部的类型
         /// </summary>
         internal static IReadOnlyList<Type> AllTypes { get; }
+
+        /// <summary>
+        /// 获取文件类型
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static FileTypeEnum GetFileType(string fileName)
+        {
+            var extension = Path.GetExtension(fileName);
+
+            var Image = new[] { ".JPG", ".JPEG", ".PNG", ".GIF", ".BMP", ".WEBP" };
+            var Audio = new[] { ".MP3", ".WAV", ".OGG", ".M4A" };
+            var Video = new[] { ".MP4", ".AVI", ".MKV", ".MOV", ".WMV" };
+
+            var dic = new Dictionary<FileTypeEnum, string[]>
+            {
+                { FileTypeEnum.Image, Image },
+                { FileTypeEnum.Audio, Audio },
+                { FileTypeEnum.Video, Video }
+            };
+
+            if (string.IsNullOrEmpty(extension))
+                return FileTypeEnum.File;
+
+            foreach (var item in dic)
+                if (item.Value.Contains(extension))
+                    return item.Key;
+
+            return FileTypeEnum.File;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum FileTypeEnum
+    {
+        /// <summary>
+        /// 图片
+        /// </summary>
+        Image,
+        /// <summary>
+        /// 音频
+        /// </summary>
+        Audio,
+        /// <summary>
+        /// 视频
+        /// </summary>
+        Video,
+        /// <summary>
+        /// 文件
+        /// </summary>
+        File
     }
 }

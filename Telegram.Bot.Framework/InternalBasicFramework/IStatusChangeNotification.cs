@@ -16,20 +16,15 @@
 //
 //  Author: 牛奶
 
-using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Framework.Attributes;
-using Telegram.Bot.Framework.Controller;
-using Telegram.Bot.Framework.Filters;
-
-namespace Telegram.Bot.Framework.InternalCore.Users
+namespace Telegram.Bot.Framework.InternalBasicFramework
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [DependencyInjection(ServiceLifetime.Singleton, ServiceType = typeof(IRequestFilter))]
-    internal class UserCheck : IRequestFilter
+    internal interface IStatusChangeNotification<TState>
     {
-        public bool Filter(TelegramRequest update) =>
-            update.GetUser() != null;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldState"></param>
+        /// <param name="newState"></param>
+        public void OnStateChange(TState oldState, TState newState);
     }
 }

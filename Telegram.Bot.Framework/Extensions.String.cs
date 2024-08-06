@@ -42,9 +42,29 @@ namespace Telegram.Bot.Framework
         /// <param name="filePath"></param>
         /// <returns></returns>
         /// <exception cref="FileNotFoundException"></exception>
-        public static Stream OpenBufferedStream(this string filePath) => 
-            !File.Exists(filePath) || string.IsNullOrEmpty(filePath)
-                ? throw new FileNotFoundException("File not found", filePath)
-                : (Stream)new BufferedStream(new FileStream(filePath, FileMode.Open), Consts.BUFFED_STREAM_CACHE_256KB);
+        public static Stream OpenBufferedStream(this string filePath)
+        {
+            if(string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                throw new FileNotFoundException(filePath);
+
+            var bufferedSize = Consts.BUFFED_STREAM_CACHE_128KB;
+            switch (GetFileType(filePath))
+            {
+                case FileTypeEnum.Image:
+                    bufferedSize = Consts.BUFFED_STREAM_CACHE_256KB;
+                    break;
+                case FileTypeEnum.Audio:
+                    bufferedSize = Consts.BUFFED_STREAM_CACHE_1MB;
+                    break;
+                case FileTypeEnum.Video:
+                    bufferedSize = Consts.BUFFED_STREAM_CACHE_4MB;
+                    break;
+                case FileTypeEnum.File:
+                    bufferedSize = Consts.BUFFED_STREAM_CACHE_256KB;
+                    break;
+            }
+
+            return new BufferedStream(new FileStream(filePath, FileMode.Open), bufferedSize);
+        }
     }
 }

@@ -49,8 +49,11 @@ namespace Telegram.Bot.Framework.Controller.Results
         {
             Text = message;
             Files.Add(photoPath.OpenBufferedStream());
+#if NET8_0_OR_GREATER
+            ButtonResults.AddRange(buttonResults ?? []);
+#else
             ButtonResults.AddRange(buttonResults ?? Array.Empty<ActionButtonResult>());
-
+#endif
             PhotoName = Path.GetFileName(photoPath);
         }
         /// <summary>
@@ -75,7 +78,11 @@ namespace Telegram.Bot.Framework.Controller.Results
             {
                 Caption = Text?.ToString(),
                 ParseMode = Text?.ParseMode,
+#if NET8_0_OR_GREATER
+                ReplyMarkup = ButtonResults == null ? null : new InlineKeyboardMarkup(GetInlineKeyboardButtons(context, [.. ButtonResults])),
+#else
                 ReplyMarkup = ButtonResults == null ? null : new InlineKeyboardMarkup(GetInlineKeyboardButtons(context, ButtonResults.ToArray())),
+#endif
                 DisableNotification = Option?.DisableNotification,
                 ReplyToMessageId = Option?.ReplyToMessageId,
             };
