@@ -13,11 +13,10 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using Telegram.Bot.Framework.Controller.Params;
 using Telegram.Bot.Framework.InternalCore.Install;
 
 namespace Telegram.Bot.Framework.Controller

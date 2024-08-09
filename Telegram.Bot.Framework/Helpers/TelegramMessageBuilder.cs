@@ -13,6 +13,8 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+//  Author: 牛奶
 
 using System.Text;
 using Telegram.Bot.Types.Enums;
@@ -79,7 +81,7 @@ namespace Telegram.Bot.Framework.Helpers
             public override TelegramMessageBuilder Link(string text, string url) => Append($"<a href=\"{url}\">{text}</a>");
             public override TelegramMessageBuilder LinkUser(string text, long userid) => Append($"<a href=\"tg://user?id={userid}\">{text}</a>");
             public override TelegramMessageBuilder Pre(string text) => Append($"<pre>{text}</pre>");
-            public override TelegramMessageBuilder PreCode(string text, Language language) => Append($"{text}");
+            public override TelegramMessageBuilder PreCode(string text, CodeLanguage language) => Append($"<pre><code class=\"language-{language.GetClass()}\">{text}</code></pre>");
             public override TelegramMessageBuilder Spoiler(string text) => Append($"<tg-spoiler>{text}</tg-spoiler>");
             public override TelegramMessageBuilder Strikethrough(string text) => Append($"<s>{text}</s>");
             public override TelegramMessageBuilder Underline(string text) => Append($"<u>{text}</u>");
@@ -101,7 +103,7 @@ namespace Telegram.Bot.Framework.Helpers
             public override TelegramMessageBuilder Link(string text, string url) => throw new System.NotImplementedException();
             public override TelegramMessageBuilder LinkUser(string text, long userid) => throw new System.NotImplementedException();
             public override TelegramMessageBuilder Pre(string text) => throw new System.NotImplementedException();
-            public override TelegramMessageBuilder PreCode(string text, Language language) => throw new System.NotImplementedException();
+            public override TelegramMessageBuilder PreCode(string text, CodeLanguage language) => throw new System.NotImplementedException();
             public override TelegramMessageBuilder Spoiler(string text) => throw new System.NotImplementedException();
             public override TelegramMessageBuilder Strikethrough(string text) => throw new System.NotImplementedException();
             public override TelegramMessageBuilder Underline(string text) => throw new System.NotImplementedException();
@@ -123,7 +125,7 @@ namespace Telegram.Bot.Framework.Helpers
             public override TelegramMessageBuilder Link(string text, string url) => Append($"[{text}]({url})");
             public override TelegramMessageBuilder LinkUser(string text, long userid) => Append($"[{text}](tg://user?id={userid})");
             public override TelegramMessageBuilder Pre(string text) => Append($"```").NewLine().Append(text).NewLine().Append("```");
-            public override TelegramMessageBuilder PreCode(string text, Language language) => Append($"```{language.ToString().ToLower()}").NewLine().Append(text).NewLine().Append("```");
+            public override TelegramMessageBuilder PreCode(string text, CodeLanguage language) => Append($"```{language.ToString().ToLower()}").NewLine().Append(text).NewLine().Append("```");
             public override TelegramMessageBuilder Spoiler(string text) => Append(string.Empty);
             public override TelegramMessageBuilder Strikethrough(string text) => Append(string.Empty);
             public override TelegramMessageBuilder Underline(string text) => Append(string.Empty);
@@ -235,7 +237,7 @@ namespace Telegram.Bot.Framework.Helpers
         /// <param name="text"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public abstract TelegramMessageBuilder PreCode(string text, Language language);
+        public abstract TelegramMessageBuilder PreCode(string text, CodeLanguage language);
 
         /// <summary>
         /// 
@@ -250,21 +252,5 @@ namespace Telegram.Bot.Framework.Helpers
         /// <param name="text">标签内容</param>
         /// <returns>处理后的文本</returns>
         public abstract TelegramMessageBuilder HashTag(string text);
-    }
-
-    /// <summary>
-    /// 程序语言类型
-    /// </summary>
-    public enum Language
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        CSharp,
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Python,
     }
 }
