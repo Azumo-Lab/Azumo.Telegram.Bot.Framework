@@ -42,12 +42,22 @@ namespace Telegram.Bot.Framework.Controller.Results
         /// <summary>
         /// 发送的文件
         /// </summary>
-        protected ListAsyncDisposable<Stream> Files { get; } = new ListAsyncDisposable<Stream>();
+        protected ListAsyncDisposable<Stream> Files { get; } =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new ListAsyncDisposable<Stream>();
+#endif
 
         /// <summary>
         /// 发送的按钮
         /// </summary>
-        protected List<ActionButtonResult> ButtonResults { get; } = new List<ActionButtonResult>();
+        protected List<ActionButtonResult> ButtonResults { get; } =
+#if NET8_0_OR_GREATER
+            [];
+#else
+            new List<ActionButtonResult>();
+#endif
 
         /// <summary>
         /// 发送选项
