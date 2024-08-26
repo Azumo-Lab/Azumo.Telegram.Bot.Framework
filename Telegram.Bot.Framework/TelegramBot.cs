@@ -16,6 +16,7 @@
 //
 //  Author: 牛奶
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -63,7 +64,12 @@ namespace Telegram.Bot.Framework
         /// <summary>
         /// 程序执行时的服务提供者
         /// </summary>
-        private IServiceProvider RuntimeServiceProvider = null!;
+        internal static IServiceProvider MainServiceProvider = null!;
+
+        /// <summary>
+        /// 主要的配置文件
+        /// </summary>
+        internal static IConfiguration? MainConf;
 
         /// <summary>
         /// 程序执行日志
@@ -133,7 +139,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         public void Dispose()
         {
             StopAsync().Wait();
-            (RuntimeServiceProvider as IDisposable)?.Dispose();
+            (MainServiceProvider as IDisposable)?.Dispose();
             GC.SuppressFinalize(this);
         }
 
@@ -147,10 +153,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         public async Task StartAsync(bool wait = false)
         {
 #if NET6_0_OR_GREATER
-            ArgumentNullException.ThrowIfNull(RuntimeServiceProvider, nameof(RuntimeServiceProvider));
+            ArgumentNullException.ThrowIfNull(MainServiceProvider, nameof(MainServiceProvider));
 #else
-            if (RuntimeServiceProvider == null)
-                throw new ArgumentNullException(nameof(RuntimeServiceProvider));
+            if (MainServiceProvider == null)
+                throw new ArgumentNullException(nameof(MainServiceProvider));
 #endif
             Logger?.LogInformation("{A0}", LogoType3);
             Logger?.LogInformation(License, DateTime.Now.Year);
@@ -164,7 +170,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             if (wait)
             {
-                var token = RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>();
+                var token = MainServiceProvider.GetRequiredService<CancellationTokenSource>();
                 while (!token.Token.IsCancellationRequested)
                     await Task.Delay(TimeSpan.FromMinutes(1), token.Token);
             }
@@ -175,15 +181,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private async Task PipelineProc<T>() where T : Attribute
+        private static async Task PipelineProc<T>() where T : Attribute
         {
             var empty = Array.Empty<object>();
             var builder = PipelineFactory.GetPipelineBuilder<IServiceProvider, Task>(() => Task.CompletedTask);
             foreach (var (classType, attributes) in typeof(T).GetTypesWithAttribute())
-                if (ActivatorUtilities.CreateInstance(RuntimeServiceProvider, classType, empty) is IMiddleware<IServiceProvider, Task> middleware)
+                if (ActivatorUtilities.CreateInstance(MainServiceProvider, classType, empty) is IMiddleware<IServiceProvider, Task> middleware)
                     _ = builder.Use(middleware);
             var controller = builder.Build();
-            await controller.CurrentPipeline.Invoke(RuntimeServiceProvider);
+            await controller.CurrentPipeline.Invoke(MainServiceProvider);
         }
 
         /// <summary>
@@ -194,9 +200,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         {
             try
             {
-                RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>().CancelAfter(TimeSpan.FromSeconds(5));
-                var botClient = RuntimeServiceProvider.GetRequiredService<ITelegramBotClient>();
-                await botClient.CloseAsync(RuntimeServiceProvider.GetRequiredService<CancellationTokenSource>().Token);
+                MainServiceProvider.GetRequiredService<CancellationTokenSource>().CancelAfter(TimeSpan.FromSeconds(5));
+                var botClient = MainServiceProvider.GetRequiredService<ITelegramBotClient>();
+                await botClient.CloseAsync(MainServiceProvider.GetRequiredService<CancellationTokenSource>().Token);
             }
             catch (Exception)
             {
@@ -211,14 +217,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         /// </summary>
         /// <param name="module">模块</param>
         /// <returns>返回构建器</returns>
-        public ITelegramModuleBuilder AddModule
-#if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            (ITelegramModule? module)
-#else
-            (ITelegramModule module)
-#endif
+        public ITelegramModuleBuilder AddModule(ITelegramModule? module)
         {
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(module, nameof(module));
 #else
             if (module == null)
@@ -235,11 +236,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
         /// <param name="objects"></param>
         /// <returns></returns>
         public ITelegramModuleBuilder AddModule<T>(params object[] objects) where T : ITelegramModule =>
-#if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
             AddModule((ITelegramModule?)Activator.CreateInstance(typeof(T), objects));
-#else
-            AddModule((ITelegramModule)Activator.CreateInstance(typeof(T), objects));
-#endif
 
         /// <summary>
         /// 
@@ -258,8 +255,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
             _ = runtimeServiceCollection.AddSingleton<CancellationTokenSource>();
 
-            RuntimeServiceProvider = runtimeServiceCollection.BuildServiceProvider();
-            Logger = RuntimeServiceProvider.GetService<ILogger<TelegramBot>>();
+            MainServiceProvider = runtimeServiceCollection.BuildServiceProvider();
+
+            Logger = MainServiceProvider.GetService<ILogger<TelegramBot>>();
+            MainConf = MainServiceProvider.GetService<IConfiguration>();
+
             return this;
         }
 

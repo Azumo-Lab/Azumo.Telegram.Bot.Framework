@@ -16,6 +16,7 @@
 //
 //  Author: 牛奶
 
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,10 +34,70 @@ namespace Telegram.Bot.Framework
     public static partial class Extensions
     {
         /// <summary>
+        /// 图片的文件类型
+        /// </summary>
+        private static readonly string[] Image;
+
+        /// <summary>
+        /// 音频的文件类型
+        /// </summary>
+        private static readonly string[] Audio;
+
+        /// <summary>
+        /// 视频的文件类型
+        /// </summary>
+        private static readonly string[] Video;
+
+        /// <summary>
         /// 初始化
         /// </summary>
+        /// <remarks>
+        /// 对必要的内容进行初始化
+        /// </remarks>
         static Extensions()
         {
+            const string JPG = ".JPG";
+            const string JPEG = ".JPEG";
+            const string PNG = ".PNG";
+            const string GIF = ".GIF";
+            const string BMP = ".BMP";
+            const string WEBP = ".WEBP";
+            const string MP3 = ".MP3";
+            const string WAV = ".WAV";
+            const string OGG = ".OGG";
+            const string M4A = ".M4A";
+            const string MP4 = ".MP4";
+            const string AVI = ".AVI";
+            const string MKV = ".MKV";
+            const string MOV = ".MOV";
+            const string WMV = ".WMV";
+            // 初始化各个类型
+            // 首先从配置文件中读取，如果没有则使用默认值
+            IConfigurationSection fileType;
+            if (TelegramBot.MainConf == null || !(fileType = TelegramBot.MainConf.GetSection("FileType")).Exists())
+            {
+#if NET8_0_OR_GREATER
+                Image = [JPG, JPEG, PNG, GIF, BMP, WEBP];
+                Audio = [MP3, WAV, OGG, M4A];
+                Video = [MP4, AVI, MKV, MOV, WMV];
+#else
+                Image = new[] { JPG, JPEG, PNG, GIF, BMP, WEBP };
+                Audio = new[] { MP3, WAV, OGG, M4A };
+                Video = new[] { MP4, AVI, MKV, MOV, WMV };
+#endif
+            }
+            else
+            {
+                // 读取配置文件
+                // 如果配置文件中有Path字段则读取Path字段中的配置文件
+                IConfigurationSection filePath;
+                if ((filePath = fileType.GetSection("Path")).Exists())
+                    fileType = new ConfigurationBuilder().AddJsonFile(filePath.Value!).Build().GetSection("FileType");
+                Image = fileType.GetSection(nameof(Image)).GetChildren().Select(x => x.Value?.ToUpper()).Where(x => !string.IsNullOrEmpty(x)).ToArray()!;
+                Audio = fileType.GetSection(nameof(Audio)).GetChildren().Select(x => x.Value?.ToUpper()).Where(x => !string.IsNullOrEmpty(x)).ToArray()!;
+                Video = fileType.GetSection(nameof(Video)).GetChildren().Select(x => x.Value?.ToUpper()).Where(x => !string.IsNullOrEmpty(x)).ToArray()!;
+            } 
+
             AllTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).ToList();
             IGetParamTypeList = typeof(IGetParam).GetAllSameType()
                 .Where(x => Attribute.IsDefined(x, typeof(TypeForAttribute)))
@@ -62,17 +123,38 @@ namespace Telegram.Bot.Framework
         internal static IReadOnlyList<Type> AllTypes { get; }
 
         /// <summary>
+        /// 创建回调函数的Key值
+        /// </summary>
+        /// <remarks>
+        /// 回调函数使用这个Key值来进行识别
+        /// </remarks>
+        /// <returns>返回Key值</returns>
+        internal static string CreateCallBackHash()
+        {
+            var guid = Guid.NewGuid().ToByteArray();
+#if NET8_0_OR_GREATER
+            guid = MD5.HashData(guid);
+#else
+            using (var md5 = MD5.Create())
+            {
+                guid = md5.ComputeHash(guid);
+            }
+#endif
+            var result = guid.ByteToString();
+            return $"c{result}";
+        }
+
+        /// <summary>
         /// 获取文件类型
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// 通过文件的扩展名来判断文件的类型
+        /// </remarks>
+        /// <param name="fileName">文件的名称</param>
+        /// <returns><see cref="FileTypeEnum"/> 文件的类型</returns>
         public static FileTypeEnum GetFileType(string fileName)
         {
             var extension = Path.GetExtension(fileName);
-
-            var Image = new[] { ".JPG", ".JPEG", ".PNG", ".GIF", ".BMP", ".WEBP" };
-            var Audio = new[] { ".MP3", ".WAV", ".OGG", ".M4A" };
-            var Video = new[] { ".MP4", ".AVI", ".MKV", ".MOV", ".WMV" };
 
             var dic = new Dictionary<FileTypeEnum, string[]>
             {
@@ -90,6 +172,13 @@ namespace Telegram.Bot.Framework
 
             return FileTypeEnum.File;
         }
+
+        internal static string ByteToString(this byte[] bytes) =>
+#if NET8_0_OR_GREATER
+            Convert.ToHexString(bytes);
+#else
+            BitConverter.ToString(bytes).Replace("-", string.Empty);
+#endif
 
         /// <summary>
         /// 
@@ -177,25 +266,25 @@ namespace Telegram.Bot.Framework
     }
 
     /// <summary>
-    /// 
+    /// 文件的类型
     /// </summary>
     public enum FileTypeEnum
     {
         /// <summary>
-        /// 图片
+        /// 图片类型文件
         /// </summary>
         Image,
         /// <summary>
-        /// 音频
+        /// 音频类型文件
         /// </summary>
         Audio,
         /// <summary>
-        /// 视频
+        /// 视频类型文件
         /// </summary>
         Video,
         /// <summary>
-        /// 文件
+        /// 文件类型
         /// </summary>
-        File
+        File,
     }
 }

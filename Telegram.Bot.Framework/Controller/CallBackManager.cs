@@ -20,7 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Controller.Results;
 using Telegram.Bot.Framework.InternalCore.Install;
@@ -40,13 +39,17 @@ namespace Telegram.Bot.Framework.Controller
         private readonly IServiceProvider serviceProvider;
 
         private readonly Dictionary<int, string> callBackIds =
+#if NET8_0_OR_GREATER
+            [];
+#else
             new Dictionary<int, string>();
+#endif
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="serviceProvider"></param>
-        public CallBackManager(IServiceProvider serviceProvider) => 
+        public CallBackManager(IServiceProvider serviceProvider) =>
             this.serviceProvider = serviceProvider;
 
         /// <summary>
@@ -59,12 +62,10 @@ namespace Telegram.Bot.Framework.Controller
             var hashCode = buttonResult.Delegate.GetHashCode();
             if (!callBackIds.TryGetValue(hashCode, out var callbackData))
             {
-                callbackData = $"c{Guid.NewGuid().ToString().ToLower().Replace("-", string.Empty)}";
-
-                callbackData = callbackData[..30];
+                callbackData = Extensions.CreateCallBackHash();
 
                 var manager = serviceProvider.GetRequiredService<ICommandManager>();
-                TypeDescriptor.AddAttributes(buttonResult.Delegate.Method, new BotCommandAttribute(callbackData));
+                _ = TypeDescriptor.AddAttributes(buttonResult.Delegate.Method, new BotCommandAttribute(callbackData));
 
                 var executor = Factory.GetExecutorInstance(EnumCommandType.Func);
 
