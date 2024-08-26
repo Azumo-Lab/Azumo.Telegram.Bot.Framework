@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Telegram.Bot.Framework.Attributes;
 using Telegram.Bot.Framework.Controller.Params;
 
@@ -87,6 +89,90 @@ namespace Telegram.Bot.Framework
                     return item.Key;
 
             return FileTypeEnum.File;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="souceStr"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static string GetHash(string souceStr, int time = 765)
+        {
+            if (string.IsNullOrEmpty(souceStr))
+                return string.Empty;
+
+            static string ProcesssHashString(string input)
+            {
+                var first = input.FirstOrDefault();
+                if (first != char.MinValue)
+                {
+                RESWITCH:
+                    switch (first)
+                    {
+                        case '0':
+                            input += "{6720DA7E-1FFF-4463-B92D-24EA0C609A0B}";
+                            break;
+                        case '1':
+                            input += "{99D12C9C-B058-4B08-A805-982690EFA6A2}";
+                            break;
+                        case '2':
+                            input += "{B5842B21-9273-4C8B-BD28-0974389E31CA}";
+                            break;
+                        case '3':
+                            input += "{E73000E6-448B-411B-A067-8E3B937E30B4}";
+                            break;
+                        case '4':
+                            input += "{FB221488-7EA7-44A8-BBCF-3064A9057D0D}";
+                            break;
+                        case '5':
+                            input += "{31995C55-F3BB-4300-A726-1641D810EE9D}";
+                            break;
+                        case '6':
+                            input += "{94FD425C-2F53-4595-AEC5-45629E848B14}";
+                            break;
+                        case '7':
+                            input += "{2EC8F48A-9D43-4BAA-80FA-3F67E572CB94}";
+                            break;
+                        case '8':
+                            input += "{24D64E02-2358-45E2-A6DA-E536B3D0B782}";
+                            break;
+                        case '9':
+                            input += "{73F75073-BEF4-4658-BA80-EF27AD3BEB25}";
+                            break;
+                        default:
+                            input += "{6794A760-B73F-4AC8-AB22-76578CDA4AD4}";
+                            first = ((int)first).ToString().First();
+                            goto RESWITCH;
+                    }
+                    return input;
+                }
+                return string.Empty;
+            }
+
+            var hash = Encoding.UTF8.GetBytes(ProcesssHashString(souceStr));
+#if NET8_0_OR_GREATER
+            for (var i = 0; i < time; i++)
+            {
+                var timeStr = Convert.ToHexString(hash);
+                hash = Encoding.UTF8.GetBytes(ProcesssHashString(timeStr));
+                hash = SHA256.HashData(hash);
+                hash = MD5.HashData(hash);
+            }
+            return Convert.ToHexString(hash);
+#else
+            using (HashAlgorithm Sha256 = SHA256.Create(), Md5 = MD5.Create())
+            {
+                for (var i = 0; i < time; i++)
+                {
+                    var timeStr = BitConverter.ToString(hash).Replace("-", string.Empty);
+                    hash = Encoding.UTF8.GetBytes(ProcesssHashString(timeStr));
+                    hash = Sha256.ComputeHash(hash);
+                    hash = Md5.ComputeHash(hash);
+                }
+            }
+            return BitConverter.ToString(hash).Replace("-", string.Empty);
+#endif
         }
     }
 
