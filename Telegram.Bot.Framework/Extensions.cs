@@ -243,25 +243,24 @@ namespace Telegram.Bot.Framework
 #if NET8_0_OR_GREATER
             for (var i = 0; i < time; i++)
             {
-                var timeStr = Convert.ToHexString(hash);
+                var timeStr = ByteToString(hash);
                 hash = Encoding.UTF8.GetBytes(ProcesssHashString(timeStr));
                 hash = SHA256.HashData(hash);
                 hash = MD5.HashData(hash);
             }
-            return Convert.ToHexString(hash);
 #else
             using (HashAlgorithm Sha256 = SHA256.Create(), Md5 = MD5.Create())
             {
                 for (var i = 0; i < time; i++)
                 {
-                    var timeStr = BitConverter.ToString(hash).Replace("-", string.Empty);
+                    var timeStr = ByteToString(hash);
                     hash = Encoding.UTF8.GetBytes(ProcesssHashString(timeStr));
                     hash = Sha256.ComputeHash(hash);
                     hash = Md5.ComputeHash(hash);
                 }
             }
-            return BitConverter.ToString(hash).Replace("-", string.Empty);
 #endif
+            return ByteToString(hash);
         }
     }
 
